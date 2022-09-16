@@ -56,7 +56,6 @@ Board Game Platform (BGP) = Lobby Service + Lobby Service Web UI + Sample Game, 
 
 Fill e.g. names + link to github profiles in list below.
 
- * ~~Maximilian Schiedermeier - [https://github.com/kartoffelquadrat]~~
- * ...
+ * [Miguel Arrieta Torrecilla](https://github.com/Chuset21)
 
 
