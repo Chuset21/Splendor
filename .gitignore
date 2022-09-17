@@ -124,4 +124,9 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+##### PROJECT FILES TO IGNORE #####
+# [Eamonn's Files] #
+.prettierignore
+
+
 # End of https://www.toptal.com/developers/gitignore/api/linux,windows,macos,java,vim
