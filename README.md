@@ -1,6 +1,6 @@
 # COMP 361 Project
 
- > See also my video instuctions in the screencasts section on MyCourses.
+ > See also [my video instuctions](https://www.cs.mcgill.ca/~mschie3/COMP361/Repository-Best-Practices.mp4) in the screencasts section on MyCourses.
 
 ## The Rules
 
@@ -56,7 +56,6 @@ Board Game Platform (BGP) = Lobby Service + Lobby Service Web UI + Sample Game, 
 
 Fill e.g. names + link to github profiles in list below.
 
- * ~~Maximilian Schiedermeier - [https://github.com/kartoffelquadrat]~~
- * ...
+ * [Miguel Arrieta Torrecilla](https://github.com/Chuset21)
 
 
