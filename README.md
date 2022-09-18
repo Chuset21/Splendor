@@ -23,7 +23,7 @@ See [Static Content](#static-content)
 
  * [```.gitignore```](.gitignore): Preliminary git exclusion instructions. Visit [Toptal's generator](https://www.toptal.com/developers/gitignore) to update.
  * [```reports```](reports): Base directory for automatic report collection. Your weekly reports go here. Must be uploaded every monday noon **to master** and follow correct date string ```YYYY-MM-DD.md```. Use [template](reports/YYYY-MM-DD.md) for your own reports. Do not resubmit same report / copy paste.
- * [```docs```](docs): source directory for your [enabled GitHub Pages](https://comp361.github.io/f2022-hexanome-00/). (Update number in link). Configure IDE to generate API docs into this directory or build your own webpage (optional).
+ * [```docs```](docs): source directory for your [enabled GitHub Pages](https://comp361.github.io/f2022-hexanome-14/). (Update number in link). Configure IDE to generate API docs into this directory or build your own webpage (optional).
  *  [```client```](client): Place your client sources into this directory. Do not use a separate repository for your work.
  * [```server```](server): Place your Spring Boot Game Server sources in this directory. Do not use a separate repository for your work.
 
@@ -56,7 +56,8 @@ Board Game Platform (BGP) = Lobby Service + Lobby Service Web UI + Sample Game, 
 
 Fill e.g. names + link to github profiles in list below.
 
- * [Miguel Arrieta Torrecilla](https://github.com/Chuset21)
+  * [Miguel Arrieta Torrecilla](https://github.com/Chuset21)
   * [Eamonn Lye](https://github.com/eamonn-lye)
+  * [Kai Turanski](https://github.com/kailaidescope)
 
 
