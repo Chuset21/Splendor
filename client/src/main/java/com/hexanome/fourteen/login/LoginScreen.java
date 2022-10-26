@@ -14,20 +14,32 @@ public class LoginScreen extends Application {
     public void start(Stage stage) {
         Label id = new Label("User ID");
         Label pw = new Label("Password");
-        TextField tf1 = new TextField();
-        PasswordField tf2 = new PasswordField();
+        TextField tf = new TextField();
+        PasswordField password = new PasswordField();
 
-        Button b = new Button("Log in");
-        b.setOnAction(e -> System.out.println("You entered user ID: " + tf1.getText() + " and password: " + tf2.getText()));
+        Button loginButton = createButton(true);
+        loginButton.setOnAction(e -> System.out.printf("You entered user ID: %s and password: %s%n", tf.getText(), password.getText()));
+
+        final Button quit = createButton(false);
 
         GridPane root = new GridPane();
-        root.addRow(0, id, tf1);
-        root.addRow(1, pw, tf2);
-        root.addRow(2, b);
+        root.addRow(0, id, tf);
+        root.addRow(1, pw, password);
+        root.addRow(2, loginButton);
+        root.addRow(0, quit);
 
         Scene scene = new Scene(root, 800, 200);
+        scene.getStylesheets().add("login.css");
         stage.setScene(scene);
         stage.setTitle("Text Field Example");
         stage.show();
+    }
+
+    private Button createButton(boolean isLogIn) {
+        final Button button = new Button(isLogIn ? "Log In" : "Quit");
+        button.getStyleClass().add(isLogIn ? "login" : "quit");
+//        button.setStyle("-fx-text-fill: #FFFFFF;-fx-background-radius: 5;%s".formatted(isLogIn ? "-fx-background-color: #3699FF" : "-fx-background-color: #F64E60"));
+
+        return button;
     }
 }

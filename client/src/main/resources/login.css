@@ -1,0 +1,22 @@
+.button {
+    -fx-text-fill: #FFFFFF;
+    -fx-background-radius: 0.5em;
+    -fx-alignment: center;
+    -fx-border-width: 0;
+}
+
+.button:hover {
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-scale-z: 1.05;
+}
+
+.button.login {
+    -fx-font-size: 20pt;
+    -fx-background-color: #3699FF;
+}
+
+.button.quit {
+    -fx-font-size: 16pt;
+    -fx-background-color: #F64E60;
+}
