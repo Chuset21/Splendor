@@ -25,7 +25,7 @@ public class LoginScreen extends Application {
         root.addRow(1, pw, tf2);
         root.addRow(2, b);
 
-        Scene scene = new Scene(root, 800, 200);
+        Scene scene = new Scene(root, 800, 450);
         stage.setScene(scene);
         stage.setTitle("Text Field Example");
         stage.show();
