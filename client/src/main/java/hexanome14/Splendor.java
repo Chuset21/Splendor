@@ -25,7 +25,7 @@ public class Splendor extends Application {
                 System.getProperty("java.version"))
         );
         final Scene scene = new Scene(new StackPane(l), 640, 480);
-        stage.setScene(scene);
-        stage.show();
+        primaryStage.setScene(scene);
+        primaryStage.show();
     }
 }
