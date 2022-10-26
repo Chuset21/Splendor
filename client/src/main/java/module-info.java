@@ -1,5 +1,5 @@
-module com.sudoku.visual {
+module com.hexanome.fourteen {
     requires javafx.controls;
 
-    exports hexanome14;
+    exports com.hexanome.fourteen.login;
 }

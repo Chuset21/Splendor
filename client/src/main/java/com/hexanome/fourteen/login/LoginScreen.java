@@ -1,4 +1,4 @@
-package hexanome14;
+package com.hexanome.fourteen.login;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -16,19 +16,18 @@ public class LoginScreen extends Application {
         Label pw = new Label("Password");
         TextField tf1 = new TextField();
         PasswordField tf2 = new PasswordField();
-        Button b = new Button("Submit");
+
+        Button b = new Button("Log in");
         b.setOnAction(e -> System.out.println("You entered user ID: " + tf1.getText() + " and password: " + tf2.getText()));
+
         GridPane root = new GridPane();
         root.addRow(0, id, tf1);
         root.addRow(1, pw, tf2);
         root.addRow(2, b);
+
         Scene scene = new Scene(root, 800, 200);
         stage.setScene(scene);
         stage.setTitle("Text Field Example");
         stage.show();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 }
