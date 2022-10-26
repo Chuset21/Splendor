@@ -28,7 +28,7 @@ public class LoginScreen extends Application {
         root.addRow(2, loginButton);
         root.addRow(0, quit);
 
-        Scene scene = new Scene(root, 800, 200);
+        Scene scene = new Scene(root, 800, 450);
         scene.getStylesheets().add("login.css");
         stage.setScene(scene);
         stage.setTitle("Text Field Example");
