@@ -38,7 +38,6 @@ public class LoginScreen extends Application {
     private Button createButton(boolean isLogIn) {
         final Button button = new Button(isLogIn ? "Log In" : "Quit");
         button.getStyleClass().add(isLogIn ? "login" : "quit");
-//        button.setStyle("-fx-text-fill: #FFFFFF;-fx-background-radius: 5;%s".formatted(isLogIn ? "-fx-background-color: #3699FF" : "-fx-background-color: #F64E60"));
 
         return button;
     }
