@@ -6,10 +6,20 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
-public class HelloWorld extends Application {
+public class Splendor extends Application {
+
+    private static final int WIDTH = 1280;
+    private static final int HEIGHT = 720;
+    private static final int MARGIN_OUTER = 10;
+    private static final String TITLE = "Splendor";
+
+    public static void main(String[] args) {
+        launch();
+    }
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle(TITLE + " Hexanome 14");
         final Label l = new Label("Hello, JavaFX %s, running on Java %s.".formatted(
                 System.getProperty("javafx.version"),
                 System.getProperty("java.version"))
@@ -17,9 +27,5 @@ public class HelloWorld extends Application {
         final Scene scene = new Scene(new StackPane(l), 640, 480);
         stage.setScene(scene);
         stage.show();
-    }
-
-    public static void main(String[] args) {
-        launch();
     }
 }
