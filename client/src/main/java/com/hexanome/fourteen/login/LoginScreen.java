@@ -8,6 +8,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.TextField;
 
+import java.util.Objects;
+
 public class LoginScreen extends Application {
 
     private static final String SPLENDOR_TEXT = "SPLENDOR";
@@ -38,7 +40,7 @@ public class LoginScreen extends Application {
         grid.add(loginButton, 1, 3);
 
         Scene scene = new Scene(grid);
-        scene.getStylesheets().add("login.css");
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("login.css")).toExternalForm());
 
         stage.setScene(scene);
         stage.setTitle("Login Screen");
