@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
 
 public class Splendor extends Application {
 
@@ -21,6 +22,7 @@ public class Splendor extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        final FXMLLoader example = new FXMLLoader(getClass().getResource("example.fxml"));
         primaryStage.setTitle(TITLE + " Hexanome 14");
 
         HBox box = new HBox();
