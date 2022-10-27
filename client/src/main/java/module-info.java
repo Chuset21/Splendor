@@ -1,5 +1,8 @@
-module com.sudoku.visual {
+module com.hexanome.fourteen {
     requires javafx.controls;
-
-    exports hexanome14;
+    // Supposedly need this, but it's not working
+//    requires javafx.fxml;
+//
+//    opens com.hexanome.fourteen to javafx.fxml;
+    exports com.hexanome.fourteen;
 }

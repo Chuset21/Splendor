@@ -1,12 +1,11 @@
-package hexanome14;
+package com.hexanome.fourteen;
 
+import com.hexanome.fourteen.boards.OrientExpansion;
 import javafx.application.Application;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class Splendor extends Application {
@@ -36,7 +35,7 @@ public class Splendor extends Application {
         box.getChildren().add(l);
 
         button.setOnAction(actionEvent -> {
-            boards.OrientExpansion.startGame(primaryStage);
+            OrientExpansion.startGame(primaryStage);
         });
 
         final Scene scene = new Scene(box, 640, 480);

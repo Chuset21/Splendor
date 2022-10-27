@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>hexanome14</groupId>
-    <artifactId>hello-world</artifactId>
+    <artifactId>splendor</artifactId>
     <packaging>jar</packaging>
     <version>0.1.0-SNAPSHOT</version>
     <name>demo</name>
@@ -40,11 +40,16 @@
             <artifactId>javafx-controls</artifactId>
             <version>19</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>19</version>
+        </dependency>
     </dependencies>
 
     <build>
         <!-- Override default name of generated jars -->
-        <finalName>HelloWorld</finalName>
+        <finalName>Splendor</finalName>
 
         <plugins>
             <plugin>
@@ -52,7 +57,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>hexanome14.HelloWorld</mainClass>
+                    <mainClass>com.hexanome.fourteen.Splendor</mainClass>
                 </configuration>
             </plugin>
 
