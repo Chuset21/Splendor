@@ -20,7 +20,7 @@ public class LoginScreen extends Application {
         Button loginButton = createButton(true);
         loginButton.setOnAction(e -> System.out.printf("You entered user ID: %s and password: %s%n", tf.getText(), password.getText()));
 
-        final Button quit = createButton(false);
+        Button quit = createButton(false);
 
         GridPane root = new GridPane();
         root.addRow(0, id, tf);
@@ -28,10 +28,14 @@ public class LoginScreen extends Application {
         root.addRow(2, loginButton);
         root.addRow(0, quit);
 
-        Scene scene = new Scene(root, 800, 450);
+        Scene scene = new Scene(root);
         scene.getStylesheets().add("login.css");
+
         stage.setScene(scene);
-        stage.setTitle("Text Field Example");
+        stage.setTitle("Login Screen");
+        stage.setMinHeight(540);
+        stage.setMinWidth(960);
+        stage.setFullScreen(true);
         stage.show();
     }
 
