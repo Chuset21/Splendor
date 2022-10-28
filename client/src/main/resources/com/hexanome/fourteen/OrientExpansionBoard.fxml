@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.canvas.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Pane layoutX="538.0" layoutY="-22.0" prefHeight="200.0" prefWidth="532.0" style="-fx-background-color: #f7ebc6; -fx-background-radius: 20;">
+         <children>
+            <HBox alignment="CENTER" fillHeight="false" layoutX="10.0" layoutY="38.0" prefHeight="94.0" prefWidth="504.0" spacing="45.0">
+               <children>
+                  <Pane prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 10;" />
+                  <Pane layoutX="10.0" layoutY="10.0" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 10;" />
+                  <Pane layoutX="110.0" layoutY="10.0" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 10;" />
+                  <Pane layoutX="210.0" layoutY="10.0" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 10;" />
+               </children>
+            </HBox>
+            <Label alignment="CENTER" layoutX="187.0" layoutY="141.0" prefHeight="47.0" prefWidth="174.0" text="Players" textAlignment="CENTER">
+               <font>
+                  <Font name="Marlett" size="36.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+   </children>
+</Pane>
