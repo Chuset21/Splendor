@@ -33,26 +33,15 @@ public final class LoginScreen extends Application {
     public void start(Stage stage) {
         final Button splendorText = new Button(SPLENDOR_TEXT);
         splendorText.getStyleClass().add("splendor-title");
-        // Set position
-        AnchorPane.setTopAnchor(splendorText, 20d);
-        AnchorPane.setLeftAnchor(splendorText, 400d);
-        AnchorPane.setRightAnchor(splendorText, 400d);
+        setSplendorTextPosition(splendorText);
 
         final TextField username = new TextField();
         username.setPromptText(USERNAME_PROMPT);
-        // Set position
-        AnchorPane.setTopAnchor(username, 350d);
-        AnchorPane.setLeftAnchor(username, 700d);
-        AnchorPane.setRightAnchor(username, 700d);
-        AnchorPane.setBottomAnchor(username, 500d);
+        setUsernamePosition(username);
 
         final PasswordField password = new PasswordField();
         password.setPromptText(PASSWORD_PROMPT);
-        // Set position
-        AnchorPane.setTopAnchor(password, 420d);
-        AnchorPane.setLeftAnchor(password, 700d);
-        AnchorPane.setRightAnchor(password, 700d);
-        AnchorPane.setBottomAnchor(password, 430d);
+        setPasswordPosition(password);
 
         username.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
@@ -67,11 +56,7 @@ public final class LoginScreen extends Application {
         wrongCredentialsMsg.setTextAlignment(TextAlignment.CENTER);
         // Wrap it in a StackPane to center the message
         final StackPane centeredWCM = new StackPane(wrongCredentialsMsg);
-        // Set position
-        AnchorPane.setTopAnchor(centeredWCM, 490d);
-        AnchorPane.setLeftAnchor(centeredWCM, 700d);
-        AnchorPane.setRightAnchor(centeredWCM, 700d);
-        AnchorPane.setBottomAnchor(centeredWCM, 360d);
+        setCredentialsMsgPosition(centeredWCM);
 
         final Button loginButton = new Button("Log In");
         loginButton.setAlignment(Pos.CENTER);
@@ -89,10 +74,7 @@ public final class LoginScreen extends Application {
                 }
             }
         });
-        // Set position
-        AnchorPane.setTopAnchor(loginButton, 560d);
-        AnchorPane.setLeftAnchor(loginButton, 720d);
-        AnchorPane.setRightAnchor(loginButton, 720d);
+        setLoginButtonPosition(loginButton);
 
         password.setOnKeyPressed(event -> {
             if (event.getCode().equals(KeyCode.ENTER)) {
@@ -103,9 +85,7 @@ public final class LoginScreen extends Application {
         final Button quitButton = new Button("Quit");
         quitButton.getStyleClass().add("quit");
         quitButton.setOnAction(e -> exitPlatform());
-        // Set position
-        AnchorPane.setTopAnchor(quitButton, 7d);
-        AnchorPane.setRightAnchor(quitButton, 7d);
+        setQuitButtonPosition(quitButton);
 
         final AnchorPane root = new AnchorPane(splendorText, quitButton, username, password, centeredWCM, loginButton);
         final Scene scene = new Scene(root, WIDTH, HEIGHT);
@@ -118,10 +98,48 @@ public final class LoginScreen extends Application {
         stage.show();
     }
 
+    private static void setQuitButtonPosition(Button quitButton) {
+        AnchorPane.setTopAnchor(quitButton, 7d);
+        AnchorPane.setRightAnchor(quitButton, 7d);
+    }
+
+    private static void setLoginButtonPosition(Button loginButton) {
+        AnchorPane.setTopAnchor(loginButton, 560d);
+        AnchorPane.setLeftAnchor(loginButton, 720d);
+        AnchorPane.setRightAnchor(loginButton, 720d);
+    }
+
+    private static void setCredentialsMsgPosition(StackPane centeredWCM) {
+        AnchorPane.setTopAnchor(centeredWCM, 490d);
+        AnchorPane.setLeftAnchor(centeredWCM, 700d);
+        AnchorPane.setRightAnchor(centeredWCM, 700d);
+        AnchorPane.setBottomAnchor(centeredWCM, 360d);
+    }
+
+    private static void setPasswordPosition(PasswordField password) {
+        AnchorPane.setTopAnchor(password, 420d);
+        AnchorPane.setLeftAnchor(password, 700d);
+        AnchorPane.setRightAnchor(password, 700d);
+        AnchorPane.setBottomAnchor(password, 430d);
+    }
+
+    private static void setUsernamePosition(TextField username) {
+        AnchorPane.setTopAnchor(username, 350d);
+        AnchorPane.setLeftAnchor(username, 700d);
+        AnchorPane.setRightAnchor(username, 700d);
+        AnchorPane.setBottomAnchor(username, 500d);
+    }
+
+    private static void setSplendorTextPosition(Button splendorText) {
+        AnchorPane.setTopAnchor(splendorText, 20d);
+        AnchorPane.setLeftAnchor(splendorText, 400d);
+        AnchorPane.setRightAnchor(splendorText, 400d);
+    }
+
     /**
      * Shuts down the application
      */
-    private void exitPlatform() {
+    private static void exitPlatform() {
         Platform.exit();
         System.exit(0);
     }
