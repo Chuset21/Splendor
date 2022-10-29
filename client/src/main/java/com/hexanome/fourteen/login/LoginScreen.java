@@ -2,6 +2,7 @@ package com.hexanome.fourteen.login;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
@@ -73,6 +74,7 @@ public final class LoginScreen extends Application {
         AnchorPane.setBottomAnchor(centeredWCM, 360d);
 
         final Button loginButton = new Button("Log In");
+        loginButton.setAlignment(Pos.CENTER);
         loginButton.getStyleClass().add("login");
         loginButton.setOnAction(e -> {
             final String usernameContents = username.getText();
