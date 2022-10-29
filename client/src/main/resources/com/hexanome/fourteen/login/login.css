@@ -5,6 +5,10 @@
     -fx-border-width: 0;
 }
 
+#wrong-credentials {
+    -fx-font-size: 14pt;
+}
+
 .text-field {
     -fx-text-fill: #FFFFFF;
     -fx-font-size: 16pt;

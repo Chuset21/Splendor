@@ -3,24 +3,28 @@ package com.hexanome.fourteen.login;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.control.PasswordField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.*;
-import javafx.stage.Stage;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
 
 import java.util.Objects;
 
 public final class LoginScreen extends Application {
 
-    private static final String SPLENDOR_TEXT = "SPLENDOR";
-    private static final String PASSWORD_PROMPT = "Password";
-    private static final String USERNAME_PROMPT = "Username";
-
     private static final String USERNAME_STUB = "joebiden43";
     private static final String PASSWORD_STUB = "okay123";
 
+    private static final String SPLENDOR_TEXT = "SPLENDOR";
+    private static final String PASSWORD_PROMPT = "Password";
+    private static final String USERNAME_PROMPT = "Username";
+    private static final String WRONG_CREDENTIALS_MSG = "Incorrect username or password entered";
     private static final double WIDTH = 1600;
     private static final double HEIGHT = 900;
 
@@ -55,6 +59,19 @@ public final class LoginScreen extends Application {
             }
         });
 
+        // Have an invisible message, so it will only show when the wrong credentials are entered
+        final Text wrongCredentialsMsg = new Text(WRONG_CREDENTIALS_MSG);
+        wrongCredentialsMsg.setId("wrong-credentials");
+        wrongCredentialsMsg.setFill(Color.TRANSPARENT);
+        wrongCredentialsMsg.setTextAlignment(TextAlignment.CENTER);
+        // Wrap it in a StackPane to center the message
+        final StackPane centeredWCM = new StackPane(wrongCredentialsMsg);
+        // Set position
+        AnchorPane.setTopAnchor(centeredWCM, 490d);
+        AnchorPane.setLeftAnchor(centeredWCM, 700d);
+        AnchorPane.setRightAnchor(centeredWCM, 700d);
+        AnchorPane.setBottomAnchor(centeredWCM, 360d);
+
         final Button loginButton = new Button("Log In");
         loginButton.getStyleClass().add("login");
         loginButton.setOnAction(e -> {
@@ -63,9 +80,10 @@ public final class LoginScreen extends Application {
             if (!usernameContents.isBlank() && !passwordContents.isEmpty()) {
                 if (usernameContents.equals(USERNAME_STUB) && passwordContents.equals(PASSWORD_STUB)) {
                     // To be changed
-                    System.out.printf("You entered user ID: %s and password: %s%n", username.getText(), password.getText());
+                    System.out.println("Stub password and username entered");
                 } else {
-
+                    wrongCredentialsMsg.setFill(Color.RED);
+                    password.clear();
                 }
             }
         });
@@ -87,7 +105,7 @@ public final class LoginScreen extends Application {
         AnchorPane.setTopAnchor(quitButton, 7d);
         AnchorPane.setRightAnchor(quitButton, 7d);
 
-        final AnchorPane root = new AnchorPane(splendorText, quitButton, username, password, loginButton);
+        final AnchorPane root = new AnchorPane(splendorText, quitButton, username, password, centeredWCM, loginButton);
         final Scene scene = new Scene(root, WIDTH, HEIGHT);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("login.css")).toExternalForm());
 
