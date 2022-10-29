@@ -1,59 +1,108 @@
 package com.hexanome.fourteen.login;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
 import javafx.scene.control.TextField;
 
 import java.util.Objects;
 
-public class LoginScreen extends Application {
+public final class LoginScreen extends Application {
 
     private static final String SPLENDOR_TEXT = "SPLENDOR";
     private static final String PASSWORD_PROMPT = "Password";
     private static final String USERNAME_PROMPT = "Username";
 
+    private static final String USERNAME_STUB = "joebiden43";
+    private static final String PASSWORD_STUB = "okay123";
+
+    private static final double WIDTH = 1600;
+    private static final double HEIGHT = 900;
+
     @Override
     public void start(Stage stage) {
-        Button splendorText = new Button(SPLENDOR_TEXT);
+        final Button splendorText = new Button(SPLENDOR_TEXT);
         splendorText.getStyleClass().add("splendor-title");
+        // Set position
+        AnchorPane.setTopAnchor(splendorText, 20d);
+        AnchorPane.setLeftAnchor(splendorText, 400d);
+        AnchorPane.setRightAnchor(splendorText, 400d);
 
-        TextField username = new TextField();
+        final TextField username = new TextField();
         username.setPromptText(USERNAME_PROMPT);
+        // Set position
+        AnchorPane.setTopAnchor(username, 350d);
+        AnchorPane.setLeftAnchor(username, 700d);
+        AnchorPane.setRightAnchor(username, 700d);
+        AnchorPane.setBottomAnchor(username, 500d);
 
-        PasswordField password = new PasswordField();
+        final PasswordField password = new PasswordField();
         password.setPromptText(PASSWORD_PROMPT);
+        // Set position
+        AnchorPane.setTopAnchor(password, 420d);
+        AnchorPane.setLeftAnchor(password, 700d);
+        AnchorPane.setRightAnchor(password, 700d);
+        AnchorPane.setBottomAnchor(password, 430d);
 
-        Button loginButton = createButton(true);
-        loginButton.setOnAction(e -> System.out.printf("You entered user ID: %s and password: %s%n", username.getText(), password.getText()));
+        username.setOnKeyPressed(event -> {
+            if (event.getCode().equals(KeyCode.ENTER)) {
+                password.requestFocus();
+            }
+        });
 
-        Button quitButton = createButton(false);
+        final Button loginButton = new Button("Log In");
+        loginButton.getStyleClass().add("login");
+        loginButton.setOnAction(e -> {
+            final String usernameContents = username.getText();
+            final String passwordContents = password.getText();
+            if (!usernameContents.isBlank() && !passwordContents.isEmpty()) {
+                if (usernameContents.equals(USERNAME_STUB) && passwordContents.equals(PASSWORD_STUB)) {
+                    // To be changed
+                    System.out.printf("You entered user ID: %s and password: %s%n", username.getText(), password.getText());
+                } else {
 
-        GridPane grid = new GridPane();
-        grid.add(splendorText, 1, 0);
-        grid.add(quitButton, 2, 0);
-        grid.add(username, 1, 1);
-        grid.add(password, 1, 2);
-        grid.add(loginButton, 1, 3);
+                }
+            }
+        });
+        // Set position
+        AnchorPane.setTopAnchor(loginButton, 560d);
+        AnchorPane.setLeftAnchor(loginButton, 720d);
+        AnchorPane.setRightAnchor(loginButton, 720d);
 
-        Scene scene = new Scene(grid);
+        password.setOnKeyPressed(event -> {
+            if (event.getCode().equals(KeyCode.ENTER)) {
+                loginButton.fire();
+            }
+        });
+
+        final Button quitButton = new Button("Quit");
+        quitButton.getStyleClass().add("quit");
+        quitButton.setOnAction(e -> exitPlatform());
+        // Set position
+        AnchorPane.setTopAnchor(quitButton, 7d);
+        AnchorPane.setRightAnchor(quitButton, 7d);
+
+        final AnchorPane root = new AnchorPane(splendorText, quitButton, username, password, loginButton);
+        final Scene scene = new Scene(root, WIDTH, HEIGHT);
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("login.css")).toExternalForm());
 
         stage.setScene(scene);
         stage.setTitle("Login Screen");
-        stage.setMinHeight(540);
-        stage.setMinWidth(960);
-        stage.setFullScreen(true);
+        stage.setResizable(false);
+        stage.setOnCloseRequest(e -> exitPlatform());
         stage.show();
     }
 
-    private Button createButton(boolean isLogIn) {
-        final Button button = new Button(isLogIn ? "Log In" : "Quit");
-        button.getStyleClass().add(isLogIn ? "login" : "quit");
-
-        return button;
+    /**
+     * Shuts down the application
+     */
+    private void exitPlatform() {
+        Platform.exit();
+        System.exit(0);
     }
 }
