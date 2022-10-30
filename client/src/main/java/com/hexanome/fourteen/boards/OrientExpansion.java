@@ -30,6 +30,7 @@ public class OrientExpansion {
         Scene scene = new Scene(root);
 
         aPrimaryStage.setScene(scene);
+        aPrimaryStage.setResizable(false);
         aPrimaryStage.show();
     }
 

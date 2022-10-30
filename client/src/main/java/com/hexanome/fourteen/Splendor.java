@@ -24,7 +24,7 @@ public class Splendor extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        final FXMLLoader example = new FXMLLoader(Objects.requireNonNull(getClass().getResource("example.fxml")));
+        final FXMLLoader example = new FXMLLoader(Objects.requireNonNull(getClass().getResource("login.fxml")));
         primaryStage.setTitle(TITLE + " Hexanome 14");
 
         HBox box = new HBox();
