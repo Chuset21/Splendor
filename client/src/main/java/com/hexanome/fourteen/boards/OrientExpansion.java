@@ -4,21 +4,24 @@ import com.hexanome.fourteen.Splendor;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
+import java.net.URL;
 
 public class OrientExpansion {
 
     private static Scene aScene;
+    //@FXML private Button takeFromBankButton;
 
     public static void startGame(Stage aPrimaryStage) {
-        Label l = new Label("Welcome to the game of Splendor");
+        // Get path to fxml resource
+        URL fxmlURL = Splendor.class.getResource("/com/hexanome/fourteen/OrientExpansionBoard.fxml");
+        System.out.println("URL from FXML file:\n" + fxmlURL);
 
-        //Scene scene = new Scene(new StackPane(l), 750, 500);
+        // Set up fxml file loader
+        FXMLLoader loader = new FXMLLoader(fxmlURL);
 
-        FXMLLoader loader = new FXMLLoader(Splendor.class.getResource("OrientExpansionBoard.fxml"));
-
+        // Import root from fxml file
         Parent root;
         try{
             root = loader.load();
@@ -27,12 +30,19 @@ public class OrientExpansion {
             return;
         }
 
+        // Set up root on stage (window) and initialize stage settings
         Scene scene = new Scene(root);
 
         aPrimaryStage.setScene(scene);
+        aPrimaryStage.setTitle("Splendor");
         aPrimaryStage.setResizable(false);
+        aPrimaryStage.centerOnScreen();
         aPrimaryStage.show();
     }
 
+    /*@FXML
+    private void HandleTakeFromBankButtonClick(){
+
+    }*/
 
 }
