@@ -9,6 +9,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class Splendor extends Application {
@@ -24,7 +25,6 @@ public class Splendor extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        final FXMLLoader example = new FXMLLoader(Objects.requireNonNull(getClass().getResource("login.fxml")));
         primaryStage.setTitle(TITLE + " Hexanome 14");
 
         HBox box = new HBox();
@@ -39,7 +39,11 @@ public class Splendor extends Application {
         box.getChildren().add(l);
 
         button.setOnAction(actionEvent -> {
-            OrientExpansion.startGame(primaryStage);
+            try {
+                OrientExpansion.startGame(primaryStage);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         final Scene scene = new Scene(box, 640, 480);
