@@ -1,10 +1,13 @@
 package com.hexanome.fourteen.boards;
 
+import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -14,6 +17,7 @@ public class OrientExpansion {
 
     private static Scene aScene;
     @FXML private Button takeBankButton;
+    @FXML private Pane menuPopupPane;
 
     public static void startGame(Stage aPrimaryStage) throws IOException {
         // Import root from fxml file
@@ -35,4 +39,19 @@ public class OrientExpansion {
         System.out.println(takeBankButton + " has been pressed");
     }
 
+    @FXML
+    private void handleClickMenuButton(){
+        menuPopupPane.setVisible(true);
+    }
+
+    @FXML
+    private void handleClickMenuPopupBackButton(){
+        menuPopupPane.setVisible(false);
+    }
+
+    @FXML
+    private void handleClickMenuPopupQuitButton(){
+        Platform.exit();
+        System.exit(0);
+    }
 }

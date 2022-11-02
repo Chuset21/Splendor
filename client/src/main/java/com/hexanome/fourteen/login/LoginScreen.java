@@ -33,6 +33,11 @@ public final class LoginScreen extends Application {
 
     @Override
     public void start(Stage stage) {
+        try{
+            OrientExpansion.startGame(stage);
+        } catch (Exception e){
+            System.out.println("Error when starting game"+e);
+        }
         final Button splendorText = new Button(SPLENDOR_TEXT);
         splendorText.getStyleClass().add("splendor-title");
         setSplendorTextPosition(splendorText);

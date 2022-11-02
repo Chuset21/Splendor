@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import java.net.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
@@ -96,32 +95,32 @@
                <children>
                   <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="2" textAlignment="CENTER" GridPane.halignment="CENTER">
                      <font>
-                        <Font name="Satoshi Regular" size="24.0" />
+                        <Font name="Satoshi Black" size="24.0" />
                      </font>
                   </Label>
                   <Label alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                      <font>
-                        <Font size="24.0" />
+                        <Font name="Satoshi Black" size="24.0" />
                      </font>
                   </Label>
                   <Label alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="7" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="2">
                      <font>
-                        <Font size="24.0" />
+                        <Font name="Satoshi Black" size="24.0" />
                      </font>
                   </Label>
                   <Label alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="3">
                      <font>
-                        <Font name="Satoshi Regular" size="24.0" />
+                        <Font name="Satoshi Black" size="24.0" />
                      </font>
                   </Label>
                   <Label alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="4">
                      <font>
-                        <Font name="Satoshi Regular" size="24.0" />
+                        <Font name="Satoshi Black" size="24.0" />
                      </font>
                   </Label>
                   <Label alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="5">
                      <font>
-                        <Font name="Satoshi Regular" size="24.0" />
+                        <Font name="Satoshi Black" size="24.0" />
                      </font>
                   </Label>
                   <Circle fill="#17ae4c" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
@@ -146,7 +145,7 @@
             </GridPane>
             <Label alignment="CENTER" layoutX="67.0" layoutY="14.0" text="Bank" textFill="#72465b">
                <font>
-                  <Font name="Satoshi Bold" size="28.0" />
+                  <Font name="Satoshi Bold" size="32.0" />
                </font>
             </Label>
             <Button id="takeFromBankButton" fx:id="takeBankButton" layoutX="59.0" layoutY="361.0" mnemonicParsing="false" onAction="#handleClickTakeBankButton" prefHeight="40.0" prefWidth="84.0" style="-fx-background-color: #72465B; -fx-border-color: #72465B; -fx-background-radius: 10; -fx-border-radius: 10;" text="Take" textFill="#f8db85">
@@ -208,34 +207,34 @@
                   <Circle fill="#323232" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                   <Circle fill="#fc6060" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
                   <Circle fill="#fce410" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="2" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="2" textAlignment="CENTER" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                      <font>
-                        <Font size="24.0" />
+                        <Font name="Satoshi Black" size="24.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                      <font>
-                        <Font size="24.0" />
+                        <Font name="Satoshi Black" size="24.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="2" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="2" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                      <font>
-                        <Font size="24.0" />
+                        <Font name="Satoshi Black" size="24.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                      <font>
-                        <Font size="24.0" />
+                        <Font name="Satoshi Black" size="24.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="0" textAlignment="CENTER" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="0" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                      <font>
-                        <Font size="24.0" />
+                        <Font name="Satoshi Black" size="24.0" />
                      </font>
                   </Label>
-                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                      <font>
-                        <Font size="24.0" />
+                        <Font name="Satoshi Black" size="24.0" />
                      </font>
                   </Label>
                </children>
@@ -491,7 +490,7 @@
                </children></Pane>
          </children>
       </GridPane>
-      <Button fx:id="menuButton" contentDisplay="RIGHT" layoutX="1465.0" layoutY="8.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Menu" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+      <Button fx:id="menuButton" contentDisplay="RIGHT" layoutX="1465.0" layoutY="8.0" mnemonicParsing="false" onAction="#handleClickMenuButton" style="-fx-background-color: #F8DB85;" text="Menu" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <graphic>
             <ImageView fitHeight="40.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -506,5 +505,24 @@
             <Cursor fx:constant="OPEN_HAND" />
          </cursor>
       </Button>
+      <Pane fx:id="menuPopupPane" prefHeight="900.0" prefWidth="1600.0" style="-fx-background-color: #F8DB85; -fx-opacity: 1;" visible="false" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label layoutX="731.0" layoutY="238.0" text="Menu">
+               <font>
+                  <Font name="Satoshi Black" size="70.0" />
+               </font>
+            </Label>
+            <Button fx:id="menuPopupBackButton" layoutX="773.0" layoutY="346.0" mnemonicParsing="false" onAction="#handleClickMenuPopupBackButton" style="-fx-background-color: #72465B;" text="Back" textFill="#f8db85">
+               <font>
+                  <Font name="Satoshi Black" size="30.0" />
+               </font>
+            </Button>
+            <Button fx:id="menuPopupQuitButton" layoutX="778.0" layoutY="426.0" mnemonicParsing="false" onAction="#handleClickMenuPopupQuitButton" style="-fx-background-color: #b82e70;" text="Quit" textFill="#f8db85">
+               <font>
+                  <Font name="Satoshi Black" size="30.0" />
+               </font>
+            </Button>
+         </children>
+      </Pane>
    </children>
 </AnchorPane>
