@@ -1,6 +1,7 @@
 module com.hexanome.fourteen {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.desktop;
 
     opens com.hexanome.fourteen to javafx.fxml;
     opens com.hexanome.fourteen.boards to javafx.fxml;
