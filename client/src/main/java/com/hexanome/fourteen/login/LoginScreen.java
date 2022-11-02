@@ -33,8 +33,11 @@ public final class LoginScreen extends Application {
 
     @Override
     public void start(Stage stage) {
+
+        OrientExpansion gameBoard = new OrientExpansion();
+
         try{
-            OrientExpansion.startGame(stage);
+            gameBoard.startGame(stage);
         } catch (Exception e){
             System.out.println("Error when starting game"+e);
         }
@@ -74,7 +77,7 @@ public final class LoginScreen extends Application {
             if (!usernameContents.isBlank() && !passwordContents.isEmpty()) {
                 if (usernameContents.equals(USERNAME_STUB) && passwordContents.equals(PASSWORD_STUB)) {
                     try {
-                        OrientExpansion.startGame(stage);
+                        gameBoard.startGame(stage);
                     } catch (IOException ioException) {
                         throw new RuntimeException(ioException);
                     }

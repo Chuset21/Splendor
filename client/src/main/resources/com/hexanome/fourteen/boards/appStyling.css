@@ -2,3 +2,7 @@
     -fx-background-image: url('images/autumn_background.jpeg');
     -fx-background-size: 100% 100%;
 }
+
+.isTaking {
+    -fx-background-color: #DC1403;
+}
