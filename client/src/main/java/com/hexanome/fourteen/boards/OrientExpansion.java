@@ -18,6 +18,24 @@ public class OrientExpansion {
     private static Scene aScene;
     @FXML private Button takeBankButton;
     @FXML private Pane menuPopupPane;
+    private static int[] pGems = {2, 1, 2, 1, 0, 1};
+    private static int[] bGems = {2, 3, 7, 3, 3, 3};
+
+    @FXML private Label pGreenGemLabel;
+    @FXML private Label pWhiteGemLabel;
+    @FXML private Label pBlueGemLabel;
+    @FXML private Label pBlackGemLabel;
+    @FXML private Label pRedGemLabel;
+    @FXML private Label pYellowGemLabel;
+
+    @FXML private Label bGreenGemLabel;
+    @FXML private Label bWhiteGemLabel;
+    @FXML private Label bBlueGemLabel;
+    @FXML private Label bBlackGemLabel;
+    @FXML private Label bRedGemLabel;
+    @FXML private Label bYellowGemLabel;
+
+
 
     public static void startGame(Stage aPrimaryStage) throws IOException {
         // Import root from fxml file
