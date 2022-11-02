@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
 <?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.effect.*?>
@@ -10,12 +13,12 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="backgroundPane" minHeight="0.0" minWidth="0.0" prefHeight="900.0" prefWidth="1600.0" styleClass="anchor" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.boards.OrientExpansion">
+<AnchorPane fx:id="backgroundPane" minHeight="0.0" minWidth="0.0" prefHeight="900.0" prefWidth="1600.0" styleClass="anchor" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.boards.OrientExpansion">
    <stylesheets>
       <URL value="@appStyling.css" />
    </stylesheets>
    <children>
-      <Pane id="playersPane" layoutX="487.0" layoutY="-22.0" prefHeight="184.0" prefWidth="532.0" style="-fx-background-color: #F8DB85; -fx-background-radius: 20;" AnchorPane.topAnchor="-22.0">
+      <Pane id="playersPane" layoutX="487.0" layoutY="-22.0" prefHeight="184.0" prefWidth="532.0" style="-fx-background-color: #F8DB85; -fx-background-radius: 20;" AnchorPane.topAnchor="-25.0">
          <children>
             <Label alignment="CENTER" layoutX="166.0" layoutY="28.0" prefHeight="47.0" prefWidth="200.0" text="Billy's Turn" textAlignment="CENTER" textFill="#72465b">
                <font>
@@ -33,7 +36,7 @@
                            <effect>
                               <DropShadow blurType="GAUSSIAN" height="50.0" radius="24.5" width="50.0">
                                  <color>
-                                    <Color green="0.2666666805744171" blue="1.0" />
+                                    <Color blue="1.0" green="0.2666666805744171" />
                                  </color>
                               </DropShadow>
                            </effect></ImageView>
@@ -87,7 +90,7 @@
             </HBox>
          </children>
       </Pane>
-      <Pane id="bankPane" fx:id="tokenBankPane" layoutX="29.0" layoutY="208.0" prefHeight="415.0" prefWidth="200.0" style="-fx-background-color: #F8DB85; -fx-background-radius: 20;" AnchorPane.bottomAnchor="277.0" AnchorPane.leftAnchor="29.0">
+      <Pane id="bankPane" fx:id="tokenBankPane" layoutX="29.0" layoutY="208.0" prefHeight="415.0" prefWidth="200.0" style="-fx-background-color: #F8DB85; -fx-background-radius: 20;" AnchorPane.leftAnchor="29.0">
          <children>
             <GridPane id="bankMatrix" fx:id="tokenBankMatrix" alignment="CENTER" layoutX="56.0" layoutY="66.0" prefHeight="289.0" prefWidth="84.0">
                <children>
@@ -156,7 +159,7 @@
             </Button>
          </children>
       </Pane>
-      <Pane id="reservedPane" layoutX="29.0" layoutY="659.0" prefHeight="240.0" prefWidth="410.0" style="-fx-background-color: #FFDBDB; -fx-background-radius: 20;" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="29.0">
+      <Pane id="reservedPane" fx:id="reservedPane" layoutX="29.0" layoutY="709.0" prefHeight="240.0" prefWidth="410.0" style="-fx-background-color: #FFDBDB; -fx-background-radius: 20;" AnchorPane.bottomAnchor="-50.0" AnchorPane.leftAnchor="30.0">
          <children>
             <Label alignment="CENTER" layoutX="120.0" layoutY="5.0" prefHeight="47.0" prefWidth="174.0" text="Reserved" textAlignment="CENTER" textFill="#72465b">
                <font>
@@ -173,7 +176,7 @@
             </Pane>
          </children>
       </Pane>
-      <Pane id="purchasedPane" layoutX="1079.0" layoutY="659.0" prefHeight="240.0" prefWidth="410.0" style="-fx-background-color: #E9FFDB; -fx-background-radius: 20;" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="111.0">
+      <Pane id="purchasedPane" fx:id="purchasedPane" layoutX="1139.0" layoutY="709.0" prefHeight="240.0" prefWidth="410.0" style="-fx-background-color: #E9FFDB; -fx-background-radius: 20;" AnchorPane.bottomAnchor="-50.0" AnchorPane.rightAnchor="30.0">
          <children>
             <Label alignment="CENTER" layoutX="120.0" layoutY="5.0" prefHeight="47.0" prefWidth="174.0" text="Purchased" textAlignment="CENTER" textFill="#72465b">
                <font>
@@ -190,59 +193,68 @@
             <Pane layoutX="267.0" layoutY="62.0" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #E2A6FF; -fx-background-radius: 10;" />
          </children>
       </Pane>
-      <GridPane fx:id="tokenInventory" layoutX="540.0" layoutY="720.0" prefHeight="87.0" prefWidth="426.0" AnchorPane.bottomAnchor="121.0">
+      <AnchorPane layoutX="540.0" layoutY="659.0" AnchorPane.bottomAnchor="25.0">
          <children>
-            <Circle fill="#17ae4c" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <Circle fill="#dfe8e2" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <Circle fill="#3d91ff" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <Circle fill="#323232" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <Circle fill="#fc6060" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <Circle fill="#fce410" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="2" textAlignment="CENTER" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+            <Label alignment="CENTER" layoutX="160.0" text="Owned Gems" textAlignment="CENTER">
                <font>
-                  <Font name="Satoshi Bold" size="24.0" />
+                  <Font name="Satoshi Regular" size="18.0" />
                </font>
             </Label>
-            <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-               <font>
-                  <Font name="Satoshi Bold" size="24.0" />
-               </font>
-            </Label>
-            <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="2" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-               <font>
-                  <Font name="Satoshi Bold" size="24.0" />
-               </font>
-            </Label>
-            <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-               <font>
-                  <Font name="Satoshi Bold" size="24.0" />
-               </font>
-            </Label>
-            <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="0" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-               <font>
-                  <Font name="Satoshi Bold" size="24.0" />
-               </font>
-            </Label>
-            <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-               <font>
-                  <Font name="Satoshi Bold" size="24.0" />
-               </font>
-            </Label>
+            <GridPane fx:id="tokenInventory" layoutX="4.0" layoutY="2.0" prefHeight="115.0" prefWidth="428.0" AnchorPane.topAnchor="20.0">
+               <children>
+                  <Circle fill="#17ae4c" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <Circle fill="#dfe8e2" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <Circle fill="#3d91ff" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <Circle fill="#323232" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <Circle fill="#fc6060" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <Circle fill="#fce410" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="2" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="2" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="0" textAlignment="CENTER" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Label>
+               </children>
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints maxHeight="98.0" minHeight="10.0" prefHeight="81.0" vgrow="SOMETIMES" />
+                  <RowConstraints maxHeight="57.0" minHeight="1.0" prefHeight="50.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+            </GridPane>
          </children>
-         <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints maxHeight="98.0" minHeight="10.0" prefHeight="81.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="57.0" minHeight="1.0" prefHeight="50.0" vgrow="SOMETIMES" />
-         </rowConstraints>
-      </GridPane>
-      <GridPane fx:id="cardMatrix" alignment="CENTER" hgap="10.0" layoutX="309.0" layoutY="199.0" prefHeight="430.0" prefWidth="887.0" vgap="10.0" AnchorPane.topAnchor="200.0">
+      </AnchorPane>
+      <GridPane fx:id="cardMatrix" alignment="CENTER" hgap="10.0" layoutX="350.0" layoutY="200.0" prefHeight="430.0" prefWidth="887.0" vgap="10.0" AnchorPane.topAnchor="200.0">
         <columnConstraints>
           <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -479,10 +491,5 @@
                </children></Pane>
          </children>
       </GridPane>
-      <Label alignment="CENTER" layoutX="700.0" layoutY="659.0" text="Owned Gems" textAlignment="CENTER" textFill="WHITE">
-         <font>
-            <Font name="Satoshi Bold" size="18.0" />
-         </font>
-      </Label>
    </children>
 </AnchorPane>
