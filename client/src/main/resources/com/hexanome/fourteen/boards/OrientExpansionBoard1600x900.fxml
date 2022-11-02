@@ -24,7 +24,7 @@
                      <children>
                         <ImageView fitHeight="74.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../../../images/profile1.png" />
+                              <Image url="@images/profile1.png" />
                            </image>
                            <effect>
                               <DropShadow blurType="GAUSSIAN" height="50.0" radius="24.5" width="50.0">
@@ -38,21 +38,21 @@
                      <children>
                         <ImageView fitHeight="74.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../../../images/profile2.png" />
+                              <Image url="@images/profile2.png" />
                            </image></ImageView>
                      </children></Pane>
                   <Pane layoutX="110.0" layoutY="10.0" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 10;">
                      <children>
                         <ImageView fitHeight="74.0" fitWidth="76.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../../../images/profile3.png" />
+                              <Image url="@images/profile3.png" />
                            </image></ImageView>
                      </children></Pane>
                   <Pane layoutX="210.0" layoutY="10.0" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 10;">
                      <children>
                         <ImageView fitHeight="80.0" fitWidth="76.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
                            <image>
-                              <Image url="@../../../../images/profile4.png" />
+                              <Image url="@images/profile4.png" />
                            </image></ImageView>
                      </children></Pane>
                </children>
@@ -142,7 +142,7 @@
                   <Font name="Satoshi Bold" size="28.0" />
                </font>
             </Label>
-            <Button id="takeFromBankButton" fx:id="takeBankButton" layoutX="59.0" layoutY="361.0" mnemonicParsing="false" onAction="#HandleClick_takeBankButton" prefHeight="40.0" prefWidth="84.0" style="-fx-background-color: #72465B; -fx-border-color: #72465B; -fx-background-radius: 10; -fx-border-radius: 10;" text="Take" textFill="#f8db85">
+            <Button id="takeFromBankButton" fx:id="takeBankButton" layoutX="59.0" layoutY="361.0" mnemonicParsing="false" onAction="#handleClickTakeBankButton" prefHeight="40.0" prefWidth="84.0" style="-fx-background-color: #72465B; -fx-border-color: #72465B; -fx-background-radius: 10; -fx-border-radius: 10;" text="Take" textFill="#f8db85">
                <font>
                   <Font name="Satoshi Bold" size="18.0" />
                </font>
@@ -331,7 +331,7 @@
                <children>
                   <ImageView fitHeight="137.0" fitWidth="119.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../images/3a.png" />
+                        <Image url="@images/3a.png" />
                      </image>
                   </ImageView>
                </children>
@@ -340,7 +340,7 @@
                <children>
                   <ImageView fitHeight="137.0" fitWidth="98.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../images/2a.png" />
+                        <Image url="@images/2a.png" />
                      </image>
                   </ImageView>
                </children>
@@ -349,7 +349,7 @@
                <children>
                   <ImageView fitHeight="137.0" fitWidth="97.0" layoutX="3.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../images/2b.png" />
+                        <Image url="@images/2b.png" />
                      </image>
                   </ImageView>
                </children>
@@ -358,7 +358,7 @@
                <children>
                   <ImageView fitHeight="137.0" fitWidth="98.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../images/3a.png" />
+                        <Image url="@images/3a.png" />
                      </image>
                   </ImageView>
                </children>
@@ -367,7 +367,7 @@
                <children>
                   <ImageView fitHeight="137.0" fitWidth="98.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../images/orient_diamonds.png" />
+                        <Image url="@images/orient_diamonds.png" />
                      </image>
                   </ImageView>
                </children>
@@ -376,7 +376,7 @@
                <children>
                   <ImageView fitHeight="137.0" fitWidth="98.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../images/orient_sapphire.png" />
+                        <Image url="@images/orient_sapphire.png" />
                      </image>
                   </ImageView>
                </children>
@@ -385,35 +385,35 @@
                <children>
                   <ImageView fitHeight="137.0" fitWidth="97.0" layoutX="3.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../images/1b.png" />
+                        <Image url="@images/1b.png" />
                      </image></ImageView>
                </children></Pane>
             <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <children>
                   <ImageView fitHeight="137.0" fitWidth="99.0" layoutX="3.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../images/1a.png" />
+                        <Image url="@images/1a.png" />
                      </image></ImageView>
                </children></Pane>
             <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
                <children>
                   <ImageView fitHeight="137.0" fitWidth="102.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../images/2d.png" />
+                        <Image url="@images/2d.png" />
                      </image></ImageView>
                </children></Pane>
             <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="1">
                <children>
                   <ImageView fitHeight="137.0" fitWidth="102.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../images/2c.png" />
+                        <Image url="@images/2c.png" />
                      </image></ImageView>
                </children></Pane>
             <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="5" GridPane.rowIndex="1">
                <children>
                   <ImageView fitHeight="137.0" fitWidth="98.0" layoutX="3.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../images/bag.png" />
+                        <Image url="@images/bag.png" />
                      </image>
                   </ImageView>
                </children></Pane>
@@ -421,7 +421,7 @@
                <children>
                   <ImageView fitHeight="137.0" fitWidth="97.0" layoutX="3.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../images/bag.png" />
+                        <Image url="@images/bag.png" />
                      </image>
                   </ImageView>
                </children></Pane>
@@ -429,7 +429,7 @@
                <children>
                   <ImageView fitHeight="137.0" fitWidth="98.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../images/0a.png" />
+                        <Image url="@images/0a.png" />
                      </image>
                   </ImageView>
                </children></Pane>
@@ -437,7 +437,7 @@
                <children>
                   <ImageView fitHeight="137.0" fitWidth="98.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../images/0b.png" />
+                        <Image url="@images/0b.png" />
                      </image>
                   </ImageView>
                </children></Pane>
@@ -445,7 +445,7 @@
                <children>
                   <ImageView fitHeight="137.0" fitWidth="98.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../images/0c.png" />
+                        <Image url="@images/0c.png" />
                      </image>
                   </ImageView>
                </children></Pane>
@@ -453,7 +453,7 @@
                <children>
                   <ImageView fitHeight="137.0" fitWidth="98.0" layoutX="3.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../images/1a.png" />
+                        <Image url="@images/1a.png" />
                      </image>
                   </ImageView>
                </children></Pane>
@@ -461,7 +461,7 @@
                <children>
                   <ImageView fitHeight="137.0" fitWidth="102.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../images/joker.png" />
+                        <Image url="@images/joker.png" />
                      </image>
                   </ImageView>
                </children></Pane>
@@ -469,7 +469,7 @@
                <children>
                   <ImageView fitHeight="137.0" fitWidth="102.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../images/joker.png" />
+                        <Image url="@images/joker.png" />
                      </image>
                   </ImageView>
                </children></Pane>

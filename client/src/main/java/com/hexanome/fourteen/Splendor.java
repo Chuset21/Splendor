@@ -7,16 +7,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-import javafx.fxml.FXMLLoader;
 
 import java.io.IOException;
-import java.util.Objects;
 
 public class Splendor extends Application {
 
-    private static final int WIDTH = 1280;
-    private static final int HEIGHT = 720;
-    private static final int MARGIN_OUTER = 10;
+    private static final int WIDTH = 1600;
+    private static final int HEIGHT = 900;
     private static final String TITLE = "Splendor";
 
     public static void main(String[] args) {
@@ -46,7 +43,7 @@ public class Splendor extends Application {
             }
         });
 
-        final Scene scene = new Scene(box, 640, 480);
+        final Scene scene = new Scene(box, WIDTH, HEIGHT);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

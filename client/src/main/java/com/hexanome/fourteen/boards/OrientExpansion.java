@@ -1,6 +1,5 @@
 package com.hexanome.fourteen.boards;
 
-import com.hexanome.fourteen.Splendor;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,7 +8,6 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Objects;
 
 public class OrientExpansion {
@@ -32,7 +30,7 @@ public class OrientExpansion {
     }
 
     @FXML
-    private void HandleClick_takeBankButton(){
+    private void handleClickTakeBankButton(){
         System.out.println(takeBankButton + " has been pressed");
     }
 
