@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.effect.*?>
@@ -9,7 +10,10 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="backgroundPane" minHeight="0.0" minWidth="0.0" prefHeight="900.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.boards.OrientExpansion">
+<AnchorPane fx:id="backgroundPane" minHeight="0.0" minWidth="0.0" prefHeight="900.0" prefWidth="1600.0" styleClass="anchor" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.boards.OrientExpansion">
+   <stylesheets>
+      <URL value="@appStyling.css" />
+   </stylesheets>
    <children>
       <Pane id="playersPane" layoutX="487.0" layoutY="-22.0" prefHeight="184.0" prefWidth="532.0" style="-fx-background-color: #F8DB85; -fx-background-radius: 20;" AnchorPane.topAnchor="-22.0">
          <children>
@@ -109,12 +113,12 @@
                   </Label>
                   <Label alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="4">
                      <font>
-                        <Font size="24.0" />
+                        <Font name="Satoshi Regular" size="24.0" />
                      </font>
                   </Label>
                   <Label alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="5">
                      <font>
-                        <Font size="24.0" />
+                        <Font name="Satoshi Regular" size="24.0" />
                      </font>
                   </Label>
                   <Circle fill="#17ae4c" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
@@ -152,7 +156,7 @@
             </Button>
          </children>
       </Pane>
-      <Pane id="reservedPane" layoutX="29.0" layoutY="709.0" prefHeight="240.0" prefWidth="410.0" style="-fx-background-color: #FFDBDB; -fx-background-radius: 20;" AnchorPane.bottomAnchor="-49.0" AnchorPane.leftAnchor="29.0">
+      <Pane id="reservedPane" layoutX="29.0" layoutY="659.0" prefHeight="240.0" prefWidth="410.0" style="-fx-background-color: #FFDBDB; -fx-background-radius: 20;" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="29.0">
          <children>
             <Label alignment="CENTER" layoutX="120.0" layoutY="5.0" prefHeight="47.0" prefWidth="174.0" text="Reserved" textAlignment="CENTER" textFill="#72465b">
                <font>
@@ -169,7 +173,7 @@
             </Pane>
          </children>
       </Pane>
-      <Pane id="purchasedPane" layoutX="1139.0" layoutY="709.0" prefHeight="240.0" prefWidth="410.0" style="-fx-background-color: #E9FFDB; -fx-background-radius: 20;" AnchorPane.bottomAnchor="-49.0" AnchorPane.rightAnchor="51.0">
+      <Pane id="purchasedPane" layoutX="1079.0" layoutY="659.0" prefHeight="240.0" prefWidth="410.0" style="-fx-background-color: #E9FFDB; -fx-background-radius: 20;" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="111.0">
          <children>
             <Label alignment="CENTER" layoutX="120.0" layoutY="5.0" prefHeight="47.0" prefWidth="174.0" text="Purchased" textAlignment="CENTER" textFill="#72465b">
                <font>
@@ -186,7 +190,7 @@
             <Pane layoutX="267.0" layoutY="62.0" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #E2A6FF; -fx-background-radius: 10;" />
          </children>
       </Pane>
-      <GridPane fx:id="tokenInventory" layoutX="540.0" layoutY="720.0" prefHeight="115.0" prefWidth="428.0" AnchorPane.bottomAnchor="49.0">
+      <GridPane fx:id="tokenInventory" layoutX="540.0" layoutY="720.0" prefHeight="87.0" prefWidth="426.0" AnchorPane.bottomAnchor="121.0">
          <children>
             <Circle fill="#17ae4c" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
             <Circle fill="#dfe8e2" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
@@ -194,34 +198,34 @@
             <Circle fill="#323232" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
             <Circle fill="#fc6060" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
             <Circle fill="#fce410" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="2" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+            <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="2" textAlignment="CENTER" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                <font>
-                  <Font size="24.0" />
+                  <Font name="Satoshi Bold" size="24.0" />
                </font>
             </Label>
-            <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+            <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                <font>
-                  <Font size="24.0" />
+                  <Font name="Satoshi Bold" size="24.0" />
                </font>
             </Label>
-            <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="2" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+            <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="2" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                <font>
-                  <Font size="24.0" />
+                  <Font name="Satoshi Bold" size="24.0" />
                </font>
             </Label>
-            <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+            <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                <font>
-                  <Font size="24.0" />
+                  <Font name="Satoshi Bold" size="24.0" />
                </font>
             </Label>
-            <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="0" textAlignment="CENTER" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+            <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="0" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                <font>
-                  <Font size="24.0" />
+                  <Font name="Satoshi Bold" size="24.0" />
                </font>
             </Label>
-            <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+            <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                <font>
-                  <Font size="24.0" />
+                  <Font name="Satoshi Bold" size="24.0" />
                </font>
             </Label>
          </children>
@@ -475,10 +479,9 @@
                </children></Pane>
          </children>
       </GridPane>
-      <Pane layoutX="594.0" layoutY="670.0" prefHeight="27.0" prefWidth="111.0" />
-      <Label alignment="CENTER" layoutX="700.0" layoutY="659.0" text="Owned Gems" textAlignment="CENTER">
+      <Label alignment="CENTER" layoutX="700.0" layoutY="659.0" text="Owned Gems" textAlignment="CENTER" textFill="WHITE">
          <font>
-            <Font name="Satoshi Regular" size="18.0" />
+            <Font name="Satoshi Bold" size="18.0" />
          </font>
       </Label>
    </children>
