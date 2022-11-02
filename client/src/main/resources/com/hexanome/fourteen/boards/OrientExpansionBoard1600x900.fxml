@@ -486,5 +486,20 @@
                </children></Pane>
          </children>
       </GridPane>
+      <Button fx:id="menuButton" contentDisplay="RIGHT" layoutX="1465.0" layoutY="8.0" mnemonicParsing="false" style="-fx-background-color: transparent;" text="Menu" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+         <graphic>
+            <ImageView fitHeight="40.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@images/settings_gear.png" />
+               </image>
+            </ImageView>
+         </graphic>
+         <font>
+            <Font name="Satoshi Black" size="20.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="OPEN_HAND" />
+         </cursor>
+      </Button>
    </children>
 </AnchorPane>
