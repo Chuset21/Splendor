@@ -22,7 +22,6 @@ public class OrientExpansion {
         // Set up root on stage (window)
         Scene aScene = new Scene(root);
 
-
         // Initialize stage settings
         aPrimaryStage.setScene(aScene);
         aPrimaryStage.setTitle("Splendor");
