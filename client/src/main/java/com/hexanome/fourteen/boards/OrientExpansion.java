@@ -211,8 +211,10 @@ public class OrientExpansion {
                 addGemButtons.get(index).setDisable(true);
             }
 
+
+
             // If we took our maximum amount of gems, disable all buttons except "remove" for the gems we have
-            if (gemsTaken == 3) {
+            if (gemsTaken == 3 || gemsSelected.indexOf(Integer.valueOf(index)) != gemsSelected.lastIndexOf(Integer.valueOf(index))) {
                 for (int i = 0 ; i < 6; i++) {
                     addGemButtons.get(i).setDisable(true);
                     if (gemsSelected.contains(i)) {
@@ -243,10 +245,12 @@ public class OrientExpansion {
 
             if (!gemsSelected.contains(index)) {
                 removeGemButtons.get(index).setDisable(true);
-            }
+            }   
+
+
 
             // If we went from max to 2
-            if (gemsTaken == 2) {
+            if (gemsTaken == 2 || (gemsTaken == 1 && gemsSelected.indexOf(Integer.valueOf(index)) == gemsSelected.lastIndexOf(Integer.valueOf(index)))) {
                 for (int i = 0 ; i < 6; i++) {
 
                     if (gemsSelected.contains(i)) {
@@ -254,7 +258,6 @@ public class OrientExpansion {
                     } else {
                         removeGemButtons.get(i).setDisable(true);
                     }
-
 
                     // if we have inventory of that gem, enable the option
                     if (bGems[i] > 0) {
