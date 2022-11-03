@@ -41,7 +41,7 @@ public class OrientExpansion {
         Parent root = FXMLLoader.load(Objects.requireNonNull(OrientExpansion.class.getResource("OrientExpansionBoard1600x900.fxml")));
 
         // Set up root on stage (window)
-        Scene aScene = new Scene(root,1440,810);
+        Scene aScene = new Scene(root);
 
         // Initialize stage settings
         aPrimaryStage.setScene(aScene);
@@ -106,8 +106,13 @@ public class OrientExpansion {
 
     @FXML
     private void handleClickTakeBankButton(){
-        System.out.println(takeBankButton + " has been pressed");
         isTaking = !isTaking;
+
+        if(isTaking){
+            takeBankButton.textProperty().set("Take");
+        } else{
+            takeBankButton.textProperty().set("Open");
+        }
 
         if (isTaking) {
             gemsTaken = 0;
