@@ -9,6 +9,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -27,6 +29,11 @@ public class OrientExpansion {
     @FXML private List<Label> bGemLabels;
     @FXML private List<Button> removeGemButtons;
     @FXML private List<Button> addGemButtons;
+
+    @FXML private ImageView purchasableCard;
+    @FXML private ImageView purchasedStack;
+
+
 
 
     private int[] pGems = {2, 1, 2, 1, 0, 1};
@@ -52,7 +59,11 @@ public class OrientExpansion {
     }
 
 
-
+    public void handleClickPurchaseCard() {
+        Image cardPurchased = purchasableCard.getImage();
+        purchasableCard.setImage(null);
+        purchasedStack.setImage(cardPurchased);
+    }
 
     public void handleTakeGreenGemButton() {
         takeGem(0);
@@ -198,7 +209,7 @@ public class OrientExpansion {
             bGemLabels.get(index).textProperty().set(""+bGems[index]);
             pGemLabels.get(index).textProperty().set(""+pGems[index]);
 
-            // If we went from 0 to 1, reenable the "add" button
+            // If we went from 0 to 1, re-enable the "add" button
             if (bGems[index] == 1) {
                 addGemButtons.get(index).setDisable(false);
             }
