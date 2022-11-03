@@ -1,9 +1,7 @@
 package com.hexanome.fourteen.boards;
 
-import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -25,23 +24,33 @@ public class OrientExpansion {
     @FXML private Button takeBankButton;
     @FXML private Pane menuPopupPane;
 
+    //CARD FIELDS
+    //2D Array with all card FX ID names.
+    @FXML private static final String[][] CARDS = new String[3][6];
+    static {
+        for (int row = 1; row < 4; row++) {
+            for (int column = 1; column < 7; column++) {
+                CARDS[row-1][column-1] = "R" + row + "C" + column;
+            }
+        }
+    }
+    @FXML private ImageView selectedCard;
+    private String selectedCardId;
+    @FXML private ImageView purchasedStack;
+    @FXML private ImageView reservedStack;
+    @FXML private Pane cardActionsView;
+
+    //GEM FIELDS
     @FXML private List<Label> pGemLabels;
     @FXML private List<Label> bGemLabels;
     @FXML private List<Button> removeGemButtons;
     @FXML private List<Button> addGemButtons;
-
-    @FXML private ImageView purchasableCard;
-    @FXML private ImageView purchasedStack;
-
-
-
-
     private int[] pGems = {2, 1, 2, 1, 0, 1};
     private int[] bGems = {3, 3, 7, 3, 3, 3};
-
     private int gemsTaken = 0;
     private boolean isTaking = false;
     private List<Integer> gemsSelected;
+
 
     public void startGame(Stage aPrimaryStage) throws IOException {
         // Import root from fxml file
@@ -59,10 +68,28 @@ public class OrientExpansion {
     }
 
 
-    public void handleClickPurchaseCard() {
-        Image cardPurchased = purchasableCard.getImage();
-        purchasableCard.setImage(null);
+    public void handleCardSelect(MouseEvent event) {
+        selectedCard = (ImageView) event.getSource();
+        //Input validation for null spaces
+        if (selectedCard.getImage() == null) {
+            return;
+        }
+        selectedCardId = selectedCard.getId();
+        cardActionsView.setVisible(true);
+    }
+
+    public void handlePurchase() {
+        Image cardPurchased = selectedCard.getImage();
+        selectedCard.setImage(null);
         purchasedStack.setImage(cardPurchased);
+        cardActionsView.setVisible(false);
+    }
+
+    public void handleReserve() {
+        Image cardReserved = selectedCard.getImage();
+        selectedCard.setImage(null);
+        reservedStack.setImage(cardReserved);
+        cardActionsView.setVisible(false);
     }
 
     public void handleTakeGreenGemButton() {
