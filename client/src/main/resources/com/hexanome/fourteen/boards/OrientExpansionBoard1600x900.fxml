@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 <?import java.net.URL?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
@@ -17,755 +27,601 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="backgroundPane" minHeight="0.0" minWidth="0.0" prefHeight="900.0" prefWidth="1600.0"
-            styleClass="anchor" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.hexanome.fourteen.boards.OrientExpansion">
+<AnchorPane fx:id="backgroundPane" minHeight="0.0" minWidth="0.0" prefHeight="900.0" prefWidth="1600.0" styleClass="anchor" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.boards.OrientExpansion">
     <stylesheets>
-        <URL value="@appStyling.css"/>
+        <URL value="@appStyling.css" />
     </stylesheets>
     <children>
-        <Pane id="playersPane" fx:id="playersPane" layoutX="529.0" layoutY="-21.0" prefHeight="184.0" prefWidth="532.0"
-              style="-fx-background-color: #F8DB85; -fx-background-radius: 20;" AnchorPane.topAnchor="-21.0">
+        <Pane id="playersPane" fx:id="playersPane" layoutX="529.0" layoutY="-21.0" prefHeight="184.0" prefWidth="532.0" style="-fx-background-color: #F8DB85; -fx-background-radius: 20;" AnchorPane.topAnchor="-21.0">
             <children>
-                <Label alignment="CENTER" layoutX="166.0" layoutY="28.0" prefHeight="47.0" prefWidth="200.0"
-                       text="Billy's Turn" textAlignment="CENTER" textFill="#72465b">
+                <Label alignment="CENTER" layoutX="166.0" layoutY="28.0" prefHeight="47.0" prefWidth="200.0" text="Billy's Turn" textAlignment="CENTER" textFill="#72465b">
                     <font>
-                        <Font name="Satoshi Bold" size="24.0"/>
+                        <Font name="Satoshi Bold" size="24.0" />
                     </font>
                 </Label>
-                <HBox alignment="CENTER" fillHeight="false" layoutX="48.0" layoutY="75.0" prefHeight="74.0"
-                      prefWidth="436.0" spacing="45.0">
+                <HBox alignment="CENTER" fillHeight="false" layoutX="48.0" layoutY="75.0" prefHeight="74.0" prefWidth="436.0" spacing="45.0">
                     <children>
-                        <Pane prefHeight="90.0" prefWidth="90.0"
-                              style="-fx-background-color: #E79DB3; -fx-background-radius: 10;">
+                        <Pane prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 10;">
                             <children>
                                 <ImageView fitHeight="74.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@images/profile1.png"/>
+                                        <Image url="@images/profile1.png" />
                                     </image>
                                     <effect>
                                         <DropShadow blurType="GAUSSIAN" height="50.0" radius="24.5" width="50.0">
                                             <color>
-                                                <Color green="0.2666666805744171" blue="1.0"/>
+                                                <Color blue="1.0" green="0.2666666805744171" />
                                             </color>
                                         </DropShadow>
                                     </effect>
                                 </ImageView>
                             </children>
                         </Pane>
-                        <Pane layoutX="10.0" layoutY="10.0" prefHeight="90.0" prefWidth="90.0"
-                              style="-fx-background-color: #E79DB3; -fx-background-radius: 10;">
+                        <Pane layoutX="10.0" layoutY="10.0" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 10;">
                             <children>
                                 <ImageView fitHeight="74.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@images/profile2.png"/>
+                                        <Image url="@images/profile2.png" />
                                     </image>
                                 </ImageView>
                             </children>
                         </Pane>
-                        <Pane layoutX="110.0" layoutY="10.0" prefHeight="90.0" prefWidth="90.0"
-                              style="-fx-background-color: #E79DB3; -fx-background-radius: 10;">
+                        <Pane layoutX="110.0" layoutY="10.0" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 10;">
                             <children>
-                                <ImageView fitHeight="74.0" fitWidth="76.0" layoutX="1.0" pickOnBounds="true"
-                                           preserveRatio="true">
+                                <ImageView fitHeight="74.0" fitWidth="76.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@images/profile3.png"/>
+                                        <Image url="@images/profile3.png" />
                                     </image>
                                 </ImageView>
                             </children>
                         </Pane>
-                        <Pane layoutX="210.0" layoutY="10.0" prefHeight="90.0" prefWidth="90.0"
-                              style="-fx-background-color: #E79DB3; -fx-background-radius: 10;">
+                        <Pane layoutX="210.0" layoutY="10.0" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 10;">
                             <children>
-                                <ImageView fitHeight="80.0" fitWidth="76.0" layoutY="-1.0" pickOnBounds="true"
-                                           preserveRatio="true">
+                                <ImageView fitHeight="80.0" fitWidth="76.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
                                     <image>
-                                        <Image url="@images/profile4.png"/>
+                                        <Image url="@images/profile4.png" />
                                     </image>
                                 </ImageView>
                             </children>
                         </Pane>
                     </children>
                 </HBox>
-                <HBox alignment="CENTER" layoutX="50.0" layoutY="156.0" prefHeight="27.0" prefWidth="436.0"
-                      spacing="115.0">
+                <HBox alignment="CENTER" layoutX="50.0" layoutY="156.0" prefHeight="27.0" prefWidth="436.0" spacing="115.0">
                     <children>
                         <Label text="2">
                             <font>
-                                <Font name="Satoshi Bold" size="14.0"/>
+                                <Font name="Satoshi Bold" size="14.0" />
                             </font>
                         </Label>
                         <Label text="1">
                             <font>
-                                <Font name="Satoshi Bold" size="14.0"/>
+                                <Font name="Satoshi Bold" size="14.0" />
                             </font>
                         </Label>
                         <Label text="3">
                             <font>
-                                <Font name="Satoshi Bold" size="14.0"/>
+                                <Font name="Satoshi Bold" size="14.0" />
                             </font>
                         </Label>
                         <Label text="4">
                             <font>
-                                <Font name="Satoshi Bold" size="14.0"/>
+                                <Font name="Satoshi Bold" size="14.0" />
                             </font>
                         </Label>
                     </children>
                 </HBox>
             </children>
         </Pane>
-        <Pane id="bankPane" fx:id="tokenBankPane" layoutX="29.0" layoutY="208.0" prefHeight="415.0" prefWidth="200.0"
-              style="-fx-background-color: #F8DB85; -fx-background-radius: 20;" AnchorPane.leftAnchor="29.0">
+        <Pane id="bankPane" fx:id="tokenBankPane" layoutX="29.0" layoutY="208.0" prefHeight="415.0" prefWidth="200.0" style="-fx-background-color: #F8DB85; -fx-background-radius: 20;" AnchorPane.leftAnchor="29.0">
             <children>
-                <GridPane id="bankMatrix" fx:id="tokenBankMatrix" alignment="CENTER" layoutX="-1.0" layoutY="58.0"
-                          prefHeight="300.0" prefWidth="200.0">
+                <GridPane id="bankMatrix" fx:id="tokenBankMatrix" alignment="CENTER" layoutX="-1.0" layoutY="58.0" prefHeight="300.0" prefWidth="200.0">
                     <children>
-                        <Label fx:id="bGreenGemLabel" alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="3"
-                               textAlignment="CENTER" GridPane.columnIndex="1">
+                        <Label fx:id="bGreenGemLabel" alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.columnIndex="1">
                             <font>
-                                <Font name="Satoshi Black" size="24.0"/>
+                                <Font name="Satoshi Black" size="24.0" />
                             </font>
                         </Label>
-                        <Label fx:id="bWhiteGemLabel" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0"
-                               prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.columnIndex="1"
-                               GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                        <Label fx:id="bWhiteGemLabel" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                             <font>
-                                <Font name="Satoshi Black" size="24.0"/>
+                                <Font name="Satoshi Black" size="24.0" />
                             </font>
                         </Label>
-                        <Label fx:id="bBlueGemLabel" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0"
-                               prefWidth="53.0" text="7" textAlignment="CENTER" GridPane.columnIndex="1"
-                               GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                        <Label fx:id="bBlueGemLabel" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="7" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2">
                             <font>
-                                <Font name="Satoshi Black" size="24.0"/>
+                                <Font name="Satoshi Black" size="24.0" />
                             </font>
                         </Label>
-                        <Label fx:id="bBlackGemLabel" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0"
-                               prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.columnIndex="1"
-                               GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                        <Label fx:id="bBlackGemLabel" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3">
                             <font>
-                                <Font name="Satoshi Black" size="24.0"/>
+                                <Font name="Satoshi Black" size="24.0" />
                             </font>
                         </Label>
-                        <Label fx:id="bRedGemLabel" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0"
-                               prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.columnIndex="1"
-                               GridPane.halignment="CENTER" GridPane.rowIndex="4">
+                        <Label fx:id="bRedGemLabel" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4">
                             <font>
-                                <Font name="Satoshi Black" size="24.0"/>
+                                <Font name="Satoshi Black" size="24.0" />
                             </font>
                         </Label>
-                        <Label fx:id="bYellowGemLabel" alignment="CENTER" layoutX="10.0" layoutY="15.0"
-                               prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER"
-                               GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5">
+                        <Label fx:id="bYellowGemLabel" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5">
                             <font>
-                                <Font name="Satoshi Black" size="24.0"/>
+                                <Font name="Satoshi Black" size="24.0" />
                             </font>
                         </Label>
 
-                        <Circle fill="#17ae4c" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2"
-                                GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
-                        <Circle fill="#dfe8e2" layoutX="93.0" layoutY="32.0" radius="20.0" stroke="BLACK"
-                                strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER"
-                                GridPane.rowIndex="1" GridPane.valignment="CENTER"/>
-                        <Circle fill="#3d91ff" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK"
-                                strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER"
-                                GridPane.rowIndex="2" GridPane.valignment="CENTER"/>
-                        <Circle fill="#323232" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK"
-                                strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER"
-                                GridPane.rowIndex="3" GridPane.valignment="CENTER"/>
-                        <Circle fill="#fc6060" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK"
-                                strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER"
-                                GridPane.rowIndex="4" GridPane.valignment="CENTER"/>
-                        <Circle fill="#fce410" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK"
-                                strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER"
-                                GridPane.rowIndex="5" GridPane.valignment="CENTER"/>
-                        <Button fx:id="removeGreenButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false"
-                                onAction="#handleReturnGreenGemButton" prefHeight="25.0" prefWidth="25.0" text="-"
-                                visible="false"/>
-                        <Button fx:id="removeWhiteButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false"
-                                onAction="#handleReturnWhiteGemButton" prefHeight="25.0" prefWidth="25.0" text="-"
-                                visible="false" GridPane.rowIndex="1"/>
-                        <Button fx:id="removeBlueButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false"
-                                onAction="#handleReturnBlueGemButton" prefHeight="25.0" prefWidth="25.0" text="-"
-                                visible="false" GridPane.rowIndex="2"/>
-                        <Button fx:id="removeBlackButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false"
-                                onAction="#handleReturnBlackGemButton" prefHeight="25.0" prefWidth="25.0" text="-"
-                                visible="false" GridPane.rowIndex="3"/>
-                        <Button fx:id="removeRedButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false"
-                                onAction="#handleReturnRedGemButton" prefHeight="25.0" prefWidth="25.0" text="-"
-                                visible="false" GridPane.rowIndex="4"/>
-                        <Button fx:id="removeYellowButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false"
-                                onAction="#handleReturnYellowGemButton" prefHeight="25.0" prefWidth="25.0" text="-"
-                                visible="false" GridPane.rowIndex="5"/>
-                        <Button fx:id="addGreenButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false"
-                                onAction="#handleTakeGreenGemButton" prefHeight="25.0" prefWidth="25.0" text="+"
-                                visible="false" GridPane.columnIndex="3"/>
-                        <Button fx:id="addWhiteButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false"
-                                onAction="#handleTakeWhiteGemButton" prefHeight="25.0" prefWidth="25.0" text="+"
-                                visible="false" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
-                        <Button fx:id="addBlueButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false"
-                                onAction="#handleTakeBlueGemButton" prefHeight="25.0" prefWidth="25.0" text="+"
-                                visible="false" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
-                        <Button fx:id="addBlackButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false"
-                                onAction="#handleTakeBlackGemButton" prefHeight="25.0" prefWidth="25.0" text="+"
-                                visible="false" GridPane.columnIndex="3" GridPane.rowIndex="3"/>
-                        <Button fx:id="addRedButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false"
-                                onAction="#handleTakeRedGemButton" prefHeight="25.0" prefWidth="25.0" text="+"
-                                visible="false" GridPane.columnIndex="3" GridPane.rowIndex="4"/>
-                        <Button fx:id="addYellowButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false"
-                                onAction="#handleTakeYellowGemButton" prefHeight="25.0" prefWidth="25.0" text="+"
-                                visible="false" GridPane.columnIndex="3" GridPane.rowIndex="5"/>
+                        <Circle fill="#17ae4c" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Circle fill="#dfe8e2" layoutX="93.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                        <Circle fill="#3d91ff" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                        <Circle fill="#323232" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+                        <Circle fill="#fc6060" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+                        <Circle fill="#fce410" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+                        <Button fx:id="removeGreenButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onAction="#handleReturnGreenGemButton" prefHeight="25.0" prefWidth="25.0" text="-" visible="false" />
+                        <Button fx:id="removeWhiteButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onAction="#handleReturnWhiteGemButton" prefHeight="25.0" prefWidth="25.0" text="-" visible="false" GridPane.rowIndex="1" />
+                        <Button fx:id="removeBlueButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onAction="#handleReturnBlueGemButton" prefHeight="25.0" prefWidth="25.0" text="-" visible="false" GridPane.rowIndex="2" />
+                        <Button fx:id="removeBlackButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onAction="#handleReturnBlackGemButton" prefHeight="25.0" prefWidth="25.0" text="-" visible="false" GridPane.rowIndex="3" />
+                        <Button fx:id="removeRedButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onAction="#handleReturnRedGemButton" prefHeight="25.0" prefWidth="25.0" text="-" visible="false" GridPane.rowIndex="4" />
+                        <Button fx:id="removeYellowButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onAction="#handleReturnYellowGemButton" prefHeight="25.0" prefWidth="25.0" text="-" visible="false" GridPane.rowIndex="5" />
+                        <Button fx:id="addGreenButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onAction="#handleTakeGreenGemButton" prefHeight="25.0" prefWidth="25.0" text="+" visible="false" GridPane.columnIndex="3" />
+                        <Button fx:id="addWhiteButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onAction="#handleTakeWhiteGemButton" prefHeight="25.0" prefWidth="25.0" text="+" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                        <Button fx:id="addBlueButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onAction="#handleTakeBlueGemButton" prefHeight="25.0" prefWidth="25.0" text="+" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                        <Button fx:id="addBlackButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onAction="#handleTakeBlackGemButton" prefHeight="25.0" prefWidth="25.0" text="+" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                        <Button fx:id="addRedButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onAction="#handleTakeRedGemButton" prefHeight="25.0" prefWidth="25.0" text="+" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                        <Button fx:id="addYellowButton" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onAction="#handleTakeYellowGemButton" prefHeight="25.0" prefWidth="25.0" text="+" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="5" />
                     </children>
                     <columnConstraints>
-                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0"
-                                           prefWidth="50.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="69.0" minWidth="10.0" prefWidth="33.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="10.0" prefWidth="48.0"/>
-                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0"
-                                           prefWidth="50.0"/>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="69.0" minWidth="10.0" prefWidth="33.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="10.0" prefWidth="48.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                 </GridPane>
                 <Label alignment="CENTER" layoutX="67.0" layoutY="14.0" text="Bank" textFill="#72465b">
                     <font>
-                        <Font name="Satoshi Bold" size="32.0"/>
+                        <Font name="Satoshi Bold" size="32.0" />
                     </font>
                 </Label>
-                <Button id="takeFromBankButton" fx:id="takeBankButton" layoutX="59.0" layoutY="361.0"
-                        mnemonicParsing="false" onAction="#handleClickTakeBankButton" prefHeight="40.0" prefWidth="84.0"
-                        style="-fx-background-color: #72465B; -fx-border-color: #72465B; -fx-background-radius: 10; -fx-border-radius: 10;"
-                        text="Take" textFill="#f8db85">
+                <Button id="takeFromBankButton" fx:id="takeBankButton" layoutX="59.0" layoutY="361.0" mnemonicParsing="false" onAction="#handleClickTakeBankButton" prefHeight="40.0" prefWidth="84.0" style="-fx-background-color: #72465B; -fx-border-color: #72465B; -fx-background-radius: 10; -fx-border-radius: 10;" text="Open" textFill="#f8db85">
                     <font>
-                        <Font name="Satoshi Bold" size="18.0"/>
+                        <Font name="Satoshi Bold" size="18.0" />
                     </font>
                     <cursor>
-                        <Cursor fx:constant="HAND"/>
+                        <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
             </children>
         </Pane>
-        <AnchorPane fx:id="reservedPane" layoutX="30.0" layoutY="710.0" prefHeight="261.0" prefWidth="468.0"
-                    AnchorPane.bottomAnchor="-90.0" AnchorPane.leftAnchor="30.0">
+        <AnchorPane fx:id="reservedPane" layoutX="30.0" layoutY="710.0" prefHeight="261.0" prefWidth="468.0" AnchorPane.bottomAnchor="-90.0" AnchorPane.leftAnchor="30.0">
             <children>
-                <Pane opacity="0.5" prefHeight="261.0" prefWidth="468.0"
-                      style="-fx-background-color: #E79DB3; -fx-background-radius: 30;" AnchorPane.bottomAnchor="0.0"
-                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
-                <Pane layoutX="52.0" layoutY="62.0" prefHeight="164.0" prefWidth="119.0"
-                      style="-fx-background-color: #E2A6FF; -fx-background-radius: 10;" AnchorPane.leftAnchor="53.0"/>
-                <Label alignment="CENTER" layoutX="150.0" layoutY="5.0" prefHeight="47.0" prefWidth="174.0"
-                       text="Reserved" textAlignment="CENTER" textFill="WHITE">
+                <Pane opacity="0.5" prefHeight="261.0" prefWidth="468.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 30;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                <Pane layoutX="52.0" layoutY="62.0" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #E2A6FF; -fx-background-radius: 10;" AnchorPane.leftAnchor="53.0" />
+                <Label alignment="CENTER" layoutX="150.0" layoutY="5.0" prefHeight="47.0" prefWidth="174.0" text="Reserved" textAlignment="CENTER" textFill="WHITE">
                     <font>
-                        <Font name="Satoshi Bold" size="24.0"/>
+                        <Font name="Satoshi Bold" size="24.0" />
                     </font>
                 </Label>
                 <Pane layoutX="215.0" layoutY="61.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.rightAnchor="53.0">
                     <children>
-                        <Pane layoutX="80.0" layoutY="30.0" prefHeight="148.0" prefWidth="120.0"
-                              style="-fx-background-color: #C4E5BA; -fx-background-radius: 10;"/>
-                        <Pane layoutY="30.0" prefHeight="146.0" prefWidth="120.0"
-                              style="-fx-background-color: #DEF0FC; -fx-background-radius: 10;"/>
-                        <Pane layoutX="40.0" layoutY="-1.0" prefHeight="170.0" prefWidth="120.0"
-                              style="-fx-background-color: #F8F9CF; -fx-background-radius: 10;">
+                        <Pane layoutX="80.0" layoutY="30.0" prefHeight="148.0" prefWidth="120.0" style="-fx-background-color: #C4E5BA; -fx-background-radius: 10;" />
+                        <Pane layoutY="30.0" prefHeight="146.0" prefWidth="120.0" style="-fx-background-color: #DEF0FC; -fx-background-radius: 10;" />
+                        <Pane layoutX="40.0" layoutY="-1.0" prefHeight="170.0" prefWidth="120.0" style="-fx-background-color: #F8F9CF; -fx-background-radius: 10;">
                             <children>
-                                <ImageView fx:id="reservedStack" fitHeight="164.0" fitWidth="119.0" pickOnBounds="true"
-                                           preserveRatio="true"/>
+                                <ImageView fx:id="reservedStack" fitHeight="164.0" fitWidth="119.0" pickOnBounds="true" preserveRatio="true" />
                             </children>
                         </Pane>
                     </children>
                 </Pane>
             </children>
             <cursor>
-                <Cursor fx:constant="HAND"/>
+                <Cursor fx:constant="HAND" />
             </cursor>
         </AnchorPane>
-        <AnchorPane fx:id="purchasedPane" layoutX="40.0" layoutY="720.0" prefHeight="261.0" prefWidth="468.0"
-                    AnchorPane.bottomAnchor="-90.0" AnchorPane.rightAnchor="30.0">
+        <AnchorPane fx:id="purchasedPane" layoutX="40.0" layoutY="720.0" prefHeight="261.0" prefWidth="468.0" AnchorPane.bottomAnchor="-90.0" AnchorPane.rightAnchor="30.0">
             <children>
-                <Pane opacity="0.5" prefHeight="261.0" prefWidth="468.0"
-                      style="-fx-background-color: #5A9BD7; -fx-background-radius: 30;" AnchorPane.bottomAnchor="0.0"
-                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                <Pane opacity="0.5" prefHeight="261.0" prefWidth="468.0" style="-fx-background-color: #5A9BD7; -fx-background-radius: 30;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                 <Pane prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="53.0" AnchorPane.topAnchor="62.0">
                     <children>
-                        <Pane layoutX="80.0" layoutY="30.0" prefHeight="148.0" prefWidth="120.0"
-                              style="-fx-background-color: #C4E5BA; -fx-background-radius: 10;"/>
-                        <Pane layoutY="30.0" prefHeight="146.0" prefWidth="120.0"
-                              style="-fx-background-color: #DEF0FC; -fx-background-radius: 10;"/>
-                        <Pane layoutX="40.0" layoutY="-1.0" prefHeight="170.0" prefWidth="120.0"
-                              style="-fx-background-color: #F8F9CF; -fx-background-radius: 10;">
+                        <Pane layoutX="80.0" layoutY="30.0" prefHeight="148.0" prefWidth="120.0" style="-fx-background-color: #C4E5BA; -fx-background-radius: 10;" />
+                        <Pane layoutY="30.0" prefHeight="146.0" prefWidth="120.0" style="-fx-background-color: #DEF0FC; -fx-background-radius: 10;" />
+                        <Pane layoutX="40.0" layoutY="-1.0" prefHeight="170.0" prefWidth="120.0" style="-fx-background-color: #F8F9CF; -fx-background-radius: 10;">
                             <children>
-                                <ImageView fx:id="purchasedStack" fitHeight="164.0" fitWidth="119.0" pickOnBounds="true"
-                                           preserveRatio="true"/>
+                                <ImageView fx:id="purchasedStack" fitHeight="164.0" fitWidth="119.0" pickOnBounds="true" preserveRatio="true" />
                             </children>
                         </Pane>
                     </children>
                 </Pane>
-                <Pane layoutX="52.0" layoutY="62.0" prefHeight="164.0" prefWidth="119.0"
-                      style="-fx-background-color: #E2A6FF; -fx-background-radius: 10;" AnchorPane.rightAnchor="53.0"/>
-                <Label alignment="CENTER" layoutX="150.0" layoutY="5.0" prefHeight="47.0" prefWidth="174.0"
-                       text="Purchased" textAlignment="CENTER" textFill="WHITE">
+                <Pane layoutX="52.0" layoutY="62.0" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #E2A6FF; -fx-background-radius: 10;" AnchorPane.rightAnchor="53.0" />
+                <Label alignment="CENTER" layoutX="150.0" layoutY="5.0" prefHeight="47.0" prefWidth="174.0" text="Purchased" textAlignment="CENTER" textFill="WHITE">
                     <font>
-                        <Font name="Satoshi Bold" size="24.0"/>
+                        <Font name="Satoshi Bold" size="24.0" />
                     </font>
                 </Label>
             </children>
             <cursor>
-                <Cursor fx:constant="HAND"/>
+                <Cursor fx:constant="HAND" />
             </cursor>
         </AnchorPane>
         <AnchorPane fx:id="tokenInventoryPane" layoutX="577.0" layoutY="740.0" AnchorPane.bottomAnchor="25.0">
             <children>
-                <Label alignment="CENTER" layoutX="145.0" layoutY="-1.0" text="Owned Gems" textAlignment="CENTER"
-                       textFill="WHITE">
+                <Label alignment="CENTER" layoutX="145.0" layoutY="-1.0" text="Owned Gems" textAlignment="CENTER" textFill="WHITE">
                     <font>
-                        <Font name="Satoshi Regular" size="24.0"/>
+                        <Font name="Satoshi Regular" size="24.0" />
                     </font>
                 </Label>
-                <GridPane fx:id="tokenMatrix" layoutX="4.0" layoutY="2.0" prefHeight="115.0" prefWidth="428.0"
-                          AnchorPane.topAnchor="20.0">
+                <GridPane fx:id="tokenMatrix" layoutX="4.0" layoutY="2.0" prefHeight="115.0" prefWidth="428.0" AnchorPane.topAnchor="20.0">
                     <children>
-                        <Circle fill="#17ae4c" radius="20.0" stroke="BLACK" strokeType="INSIDE"
-                                GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
-                        <Circle fill="#dfe8e2" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1"
-                                GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
-                        <Circle fill="#3d91ff" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2"
-                                GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
-                        <Circle fill="#323232" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="3"
-                                GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
-                        <Circle fill="#fc6060" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="4"
-                                GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
-                        <Circle fill="#fce410" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="5"
-                                GridPane.halignment="CENTER" GridPane.valignment="CENTER"/>
-                        <Label fx:id="pGreenGemLabel" alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="2"
-                               textAlignment="CENTER" textFill="WHITE" GridPane.halignment="CENTER"
-                               GridPane.rowIndex="1">
+                        <Circle fill="#17ae4c" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Circle fill="#dfe8e2" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Circle fill="#3d91ff" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Circle fill="#323232" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Circle fill="#fc6060" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Circle fill="#fce410" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Label fx:id="pGreenGemLabel" alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="2" textAlignment="CENTER" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                             <font>
-                                <Font name="Satoshi Black" size="24.0"/>
+                                <Font name="Satoshi Black" size="24.0" />
                             </font>
                         </Label>
-                        <Label fx:id="pWhiteGemLabel" alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1"
-                               textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1"
-                               GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                        <Label fx:id="pWhiteGemLabel" alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                             <font>
-                                <Font name="Satoshi Black" size="24.0"/>
+                                <Font name="Satoshi Black" size="24.0" />
                             </font>
                         </Label>
-                        <Label fx:id="pBlueGemLabel" alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="2"
-                               textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2"
-                               GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                        <Label fx:id="pBlueGemLabel" alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="2" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                             <font>
-                                <Font name="Satoshi Black" size="24.0"/>
+                                <Font name="Satoshi Black" size="24.0" />
                             </font>
                         </Label>
-                        <Label fx:id="pBlackGemLabel" alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1"
-                               textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="3"
-                               GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                        <Label fx:id="pBlackGemLabel" alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                             <font>
-                                <Font name="Satoshi Black" size="24.0"/>
+                                <Font name="Satoshi Black" size="24.0" />
                             </font>
                         </Label>
-                        <Label fx:id="pRedGemLabel" alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="0"
-                               textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="4"
-                               GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                        <Label fx:id="pRedGemLabel" alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="0" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                             <font>
-                                <Font name="Satoshi Black" size="24.0"/>
+                                <Font name="Satoshi Black" size="24.0" />
                             </font>
                         </Label>
-                        <Label fx:id="pYellowGemLabel" alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1"
-                               textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="5"
-                               GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                        <Label fx:id="pYellowGemLabel" alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1">
                             <font>
-                                <Font name="Satoshi Black" size="24.0"/>
+                                <Font name="Satoshi Black" size="24.0" />
                             </font>
                         </Label>
                     </children>
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints maxHeight="98.0" minHeight="10.0" prefHeight="81.0" vgrow="SOMETIMES"/>
-                        <RowConstraints maxHeight="57.0" minHeight="1.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="98.0" minHeight="10.0" prefHeight="81.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="57.0" minHeight="1.0" prefHeight="50.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                 </GridPane>
             </children>
         </AnchorPane>
-        <GridPane fx:id="cardMatrix" alignment="CENTER" hgap="10.0" layoutX="350.0" layoutY="200.0" prefHeight="430.0"
-                  prefWidth="887.0" vgap="10.0" AnchorPane.topAnchor="200.0">
+        <GridPane fx:id="cardMatrix" alignment="CENTER" hgap="10.0" layoutX="350.0" layoutY="200.0" prefHeight="430.0" prefWidth="887.0" vgap="10.0" AnchorPane.topAnchor="200.0">
             <columnConstraints>
-                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0"
-                                   prefWidth="100.0"/>
-                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0"
-                                   prefWidth="100.0"/>
-                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0"
-                                   prefWidth="100.0"/>
-                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0"
-                                   prefWidth="100.0"/>
-                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0"
-                                   prefWidth="100.0"/>
-                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0"
-                                   prefWidth="100.0"/>
-                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0"
-                                   prefWidth="100.0"/>
-                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0"
-                                   prefWidth="100.0"/>
+                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" valignment="CENTER"
-                                vgrow="SOMETIMES"/>
-                <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" valignment="CENTER"
-                                vgrow="SOMETIMES"/>
-                <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" valignment="CENTER"
-                                vgrow="SOMETIMES"/>
+                <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <Pane fx:id="level3CardStack" prefHeight="164.0" prefWidth="119.0"
-                      style="-fx-background-color: #DEF0FC; -fx-background-radius: 10;">
+                <Pane fx:id="level3CardStack" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #DEF0FC; -fx-background-radius: 10;">
                     <children>
                         <Label layoutX="44.0" layoutY="49.0" text="III">
                             <font>
-                                <Font size="30.0"/>
+                                <Font size="30.0" />
                             </font>
                         </Label>
                     </children>
                     <cursor>
-                        <Cursor fx:constant="HAND"/>
+                        <Cursor fx:constant="HAND" />
                     </cursor>
                 </Pane>
-                <Pane fx:id="level2CardStack" prefHeight="164.0" prefWidth="119.0"
-                      style="-fx-background-color: #C4E5BA; -fx-background-radius: 10;" GridPane.rowIndex="1">
+                <Pane fx:id="level2CardStack" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #C4E5BA; -fx-background-radius: 10;" GridPane.rowIndex="1">
                     <children>
                         <Label layoutX="47.0" layoutY="49.0" text="II">
                             <font>
-                                <Font size="30.0"/>
+                                <Font size="30.0" />
                             </font>
                         </Label>
                     </children>
                     <cursor>
-                        <Cursor fx:constant="HAND"/>
+                        <Cursor fx:constant="HAND" />
                     </cursor>
                 </Pane>
-                <Pane fx:id="level1CardStack" prefHeight="164.0" prefWidth="119.0"
-                      style="-fx-background-color: #F8F9CF; -fx-background-radius: 10;" GridPane.rowIndex="2">
+                <Pane fx:id="level1CardStack" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #F8F9CF; -fx-background-radius: 10;" GridPane.rowIndex="2">
                     <children>
                         <Label layoutX="50.0" layoutY="48.0" text="I">
                             <font>
-                                <Font size="30.0"/>
+                                <Font size="30.0" />
                             </font>
                         </Label>
                     </children>
                     <cursor>
-                        <Cursor fx:constant="HAND"/>
+                        <Cursor fx:constant="HAND" />
                     </cursor>
                 </Pane>
-                <Pane fx:id="level1CardStack1" prefHeight="164.0" prefWidth="119.0"
-                      style="-fx-background-color: #fa8484; -fx-background-radius: 10;" GridPane.columnIndex="7"
-                      GridPane.rowIndex="2">
+                <Pane fx:id="level1CardStack1" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #fa8484; -fx-background-radius: 10;" GridPane.columnIndex="7" GridPane.rowIndex="2">
                     <children>
                         <Label layoutX="50.0" layoutY="48.0" text="I">
                             <font>
-                                <Font size="30.0"/>
+                                <Font size="30.0" />
                             </font>
                         </Label>
                     </children>
                     <cursor>
-                        <Cursor fx:constant="HAND"/>
+                        <Cursor fx:constant="HAND" />
                     </cursor>
                 </Pane>
-                <Pane fx:id="level2CardStack1" prefHeight="164.0" prefWidth="119.0"
-                      style="-fx-background-color: #fa8484; -fx-background-radius: 10;" GridPane.columnIndex="7"
-                      GridPane.rowIndex="1">
+                <Pane fx:id="level2CardStack1" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #fa8484; -fx-background-radius: 10;" GridPane.columnIndex="7" GridPane.rowIndex="1">
                     <children>
                         <Label layoutX="47.0" layoutY="49.0" text="II">
                             <font>
-                                <Font size="30.0"/>
+                                <Font size="30.0" />
                             </font>
                         </Label>
                     </children>
                     <cursor>
-                        <Cursor fx:constant="HAND"/>
+                        <Cursor fx:constant="HAND" />
                     </cursor>
                 </Pane>
-                <Pane fx:id="level3CardStack1" prefHeight="164.0" prefWidth="119.0"
-                      style="-fx-background-color: #fa8484; -fx-background-radius: 10;" GridPane.columnIndex="7">
+                <Pane fx:id="level3CardStack1" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #fa8484; -fx-background-radius: 10;" GridPane.columnIndex="7">
                     <children>
                         <Label layoutX="44.0" layoutY="49.0" text="III">
                             <font>
-                                <Font size="30.0"/>
+                                <Font size="30.0" />
                             </font>
                         </Label>
                     </children>
                     <cursor>
-                        <Cursor fx:constant="HAND"/>
+                        <Cursor fx:constant="HAND" />
                     </cursor>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
                     <children>
-                        <ImageView fx:id="R3C1" fitHeight="137.0" fitWidth="119.0" layoutX="2.0"
-                                   onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="R3C1" fitHeight="137.0" fitWidth="119.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@images/3a.png"/>
+                                <Image url="@images/3a.png" />
                             </image>
                         </ImageView>
                     </children>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
                     <children>
-                        <ImageView fx:id="R3C2" fitHeight="137.0" fitWidth="98.0" layoutX="2.0"
-                                   onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="R3C2" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@images/2a.png"/>
+                                <Image url="@images/2a.png" />
                             </image>
                         </ImageView>
                     </children>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3">
                     <children>
-                        <ImageView fx:id="R3C3" fitHeight="137.0" fitWidth="97.0" layoutX="3.0"
-                                   onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="R3C3" fitHeight="137.0" fitWidth="97.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@images/2b.png"/>
+                                <Image url="@images/2b.png" />
                             </image>
                         </ImageView>
                     </children>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4">
                     <children>
-                        <ImageView fx:id="R3C4" fitHeight="137.0" fitWidth="98.0" layoutX="2.0"
-                                   onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="R3C4" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@images/3a.png"/>
+                                <Image url="@images/3a.png" />
                             </image>
                         </ImageView>
                     </children>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="5">
                     <children>
-                        <ImageView fx:id="R3C5" fitHeight="137.0" fitWidth="98.0" layoutX="2.0"
-                                   onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="R3C5" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@images/orient_diamonds.png"/>
+                                <Image url="@images/orient_diamonds.png" />
                             </image>
                         </ImageView>
                     </children>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="6">
                     <children>
-                        <ImageView fx:id="R3C6" fitHeight="137.0" fitWidth="98.0" layoutX="2.0"
-                                   onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="R3C6" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@images/orient_sapphire.png"/>
+                                <Image url="@images/orient_sapphire.png" />
                             </image>
                         </ImageView>
                     </children>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                     <children>
-                        <ImageView fx:id="R2C1" fitHeight="137.0" fitWidth="97.0" layoutX="3.0"
-                                   onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="R2C1" fitHeight="137.0" fitWidth="97.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@images/1b.png"/>
+                                <Image url="@images/1b.png" />
                             </image>
                         </ImageView>
                     </children>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                     <children>
-                        <ImageView fx:id="R2C2" fitHeight="137.0" fitWidth="99.0" layoutX="3.0"
-                                   onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="R2C2" fitHeight="137.0" fitWidth="99.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@images/1a.png"/>
+                                <Image url="@images/1a.png" />
                             </image>
                         </ImageView>
                     </children>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
                     <children>
-                        <ImageView fx:id="R2C3" fitHeight="137.0" fitWidth="102.0" layoutX="2.0"
-                                   onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="R2C3" fitHeight="137.0" fitWidth="102.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@images/2d.png"/>
+                                <Image url="@images/2d.png" />
                             </image>
                         </ImageView>
                     </children>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="1">
                     <children>
-                        <ImageView fx:id="R2C4" fitHeight="137.0" fitWidth="102.0" layoutX="2.0"
-                                   onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="R2C4" fitHeight="137.0" fitWidth="102.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@images/2c.png"/>
+                                <Image url="@images/2c.png" />
                             </image>
                         </ImageView>
                     </children>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="5" GridPane.rowIndex="1">
                     <children>
-                        <ImageView fx:id="R2C5" fitHeight="137.0" fitWidth="98.0" layoutX="3.0"
-                                   onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="R2C5" fitHeight="137.0" fitWidth="98.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@images/bag.png"/>
+                                <Image url="@images/bag.png" />
                             </image>
                         </ImageView>
                     </children>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="6" GridPane.rowIndex="1">
                     <children>
-                        <ImageView fx:id="R2C6" fitHeight="137.0" fitWidth="97.0" layoutX="3.0"
-                                   onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="R2C6" fitHeight="137.0" fitWidth="97.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@images/bag.png"/>
+                                <Image url="@images/bag.png" />
                             </image>
                         </ImageView>
                     </children>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                     <children>
-                        <ImageView fx:id="R1C1" fitHeight="137.0" fitWidth="98.0" layoutX="2.0"
-                                   onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="R1C1" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@images/0a.png"/>
+                                <Image url="@images/0a.png" />
                             </image>
                         </ImageView>
                     </children>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
                     <children>
-                        <ImageView fx:id="R1C2" fitHeight="137.0" fitWidth="98.0" layoutX="2.0"
-                                   onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="R1C2" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@images/0b.png"/>
+                                <Image url="@images/0b.png" />
                             </image>
                         </ImageView>
                     </children>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
                     <children>
-                        <ImageView fx:id="R1C3" fitHeight="137.0" fitWidth="98.0" layoutX="2.0"
-                                   onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="R1C3" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@images/0c.png"/>
+                                <Image url="@images/0c.png" />
                             </image>
                         </ImageView>
                     </children>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="2">
                     <children>
-                        <ImageView fx:id="R1C4" fitHeight="137.0" fitWidth="98.0" layoutX="3.0"
-                                   onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="R1C4" fitHeight="137.0" fitWidth="98.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@images/1a.png"/>
+                                <Image url="@images/1a.png" />
                             </image>
                         </ImageView>
                     </children>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="5" GridPane.rowIndex="2">
                     <children>
-                        <ImageView fx:id="R1C5" fitHeight="137.0" fitWidth="102.0" layoutX="2.0"
-                                   onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="R1C5" fitHeight="137.0" fitWidth="102.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@images/joker.png"/>
+                                <Image url="@images/joker.png" />
                             </image>
                         </ImageView>
                     </children>
                 </Pane>
                 <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="6" GridPane.rowIndex="2">
                     <children>
-                        <ImageView fx:id="R1C6" fitHeight="137.0" fitWidth="102.0" layoutX="2.0"
-                                   onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="R1C6" fitHeight="137.0" fitWidth="102.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@images/joker.png"/>
+                                <Image url="@images/joker.png" />
                             </image>
                         </ImageView>
                     </children>
                 </Pane>
             </children>
         </GridPane>
-        <Button fx:id="menuButton" contentDisplay="RIGHT" layoutX="1465.0" layoutY="8.0" mnemonicParsing="false"
-                onAction="#handleClickMenuButton" style="-fx-background-color: #F8DB85;" text="Menu"
-                AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+        <Button fx:id="menuButton" contentDisplay="RIGHT" layoutX="1465.0" layoutY="8.0" mnemonicParsing="false" onAction="#handleClickMenuButton" style="-fx-background-color: #F8DB85;" text="Menu" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
             <graphic>
                 <ImageView fitHeight="40.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
                     <image>
-                        <Image url="@images/settings_gear.png"/>
+                        <Image url="@images/settings_gear.png" />
                     </image>
                 </ImageView>
             </graphic>
             <font>
-                <Font name="Satoshi Black" size="20.0"/>
+                <Font name="Satoshi Black" size="20.0" />
             </font>
             <cursor>
-                <Cursor fx:constant="OPEN_HAND"/>
+                <Cursor fx:constant="OPEN_HAND" />
             </cursor>
         </Button>
-        <Pane fx:id="menuPopupPane" prefHeight="900.0" prefWidth="1600.0"
-              style="-fx-background-color: #F8DB85; -fx-opacity: 1;" visible="false" AnchorPane.leftAnchor="0.0"
-              AnchorPane.topAnchor="0.0">
+        <Pane fx:id="menuPopupPane" prefHeight="900.0" prefWidth="1600.0" style="-fx-background-color: #F8DB85; -fx-opacity: 1;" visible="false" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
                 <Label layoutX="731.0" layoutY="238.0" text="Menu">
                     <font>
-                        <Font name="Satoshi Black" size="70.0"/>
+                        <Font name="Satoshi Black" size="70.0" />
                     </font>
                 </Label>
-                <Button fx:id="menuPopupBackButton" layoutX="693.0" layoutY="342.0" mnemonicParsing="false"
-                        onAction="#handleClickMenuPopupBackButton" style="-fx-background-color: #72465B;"
-                        text="Return to Game" textFill="#f8db85">
+                <Button fx:id="menuPopupBackButton" layoutX="693.0" layoutY="342.0" mnemonicParsing="false" onAction="#handleClickMenuPopupBackButton" style="-fx-background-color: #72465B;" text="Return to Game" textFill="#f8db85">
                     <font>
-                        <Font name="Satoshi Black" size="30.0"/>
+                        <Font name="Satoshi Black" size="30.0" />
                     </font>
                     <cursor>
-                        <Cursor fx:constant="HAND"/>
+                        <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
-                <Button fx:id="menuPopupQuitButton" layoutX="778.0" layoutY="426.0" mnemonicParsing="false"
-                        onAction="#handleClickMenuPopupQuitButton" style="-fx-background-color: #b82e70;" text="Quit"
-                        textFill="#f8db85">
+                <Button fx:id="menuPopupQuitButton" layoutX="778.0" layoutY="426.0" mnemonicParsing="false" onAction="#handleClickMenuPopupQuitButton" style="-fx-background-color: #b82e70;" text="Quit" textFill="#f8db85">
                     <font>
-                        <Font name="Satoshi Black" size="30.0"/>
+                        <Font name="Satoshi Black" size="30.0" />
                     </font>
                     <cursor>
-                        <Cursor fx:constant="HAND"/>
+                        <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
             </children>
 
         </Pane>
-        <Pane fx:id="cardActionsView" layoutX="10.0" layoutY="10.0" prefHeight="900.0" prefWidth="1600.0"
-              style="-fx-background-color: #F8DB85; -fx-opacity: 1;" visible="false">
+        <Pane fx:id="cardActionsView" layoutX="390.0" layoutY="58.0" prefHeight="620.0" prefWidth="813.0" style="-fx-background-color: #F8DB85; -fx-opacity: 1; -fx-background-radius: 30;" visible="false" AnchorPane.topAnchor="150.0">
             <children>
-                <Label layoutX="731.0" layoutY="238.0" text="Card Actions">
+                <Label layoutX="199.0" layoutY="160.0" text="Card Actions">
                     <font>
-                        <Font name="Satoshi Black" size="70.0"/>
+                        <Font name="Satoshi Black" size="70.0" />
                     </font>
                 </Label>
-                <Button fx:id="cardReserveButton" layoutX="693.0" layoutY="342.0" mnemonicParsing="false"
-                        onAction="#handleReserve" style="-fx-background-color: #72465B;" text="Reserve"
-                        textFill="#f8db85">
+                <Button fx:id="cardReserveButton" layoutX="328.0" layoutY="284.0" mnemonicParsing="false" onAction="#handleReserve" style="-fx-background-color: #72465B;" text="Reserve" textFill="#f8db85">
                     <font>
-                        <Font name="Satoshi Black" size="30.0"/>
+                        <Font name="Satoshi Black" size="30.0" />
                     </font>
                     <cursor>
-                        <Cursor fx:constant="HAND"/>
+                        <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
-                <Button fx:id="cardPurchaseButton" layoutX="778.0" layoutY="426.0" mnemonicParsing="false"
-                        onAction="#handlePurchase" style="-fx-background-color: #b82e70;" text="Purchase"
-                        textFill="#f8db85">
+                <Button fx:id="cardPurchaseButton" layoutX="320.0" layoutY="379.0" mnemonicParsing="false" onAction="#handlePurchase" style="-fx-background-color: #b82e70;" text="Purchase" textFill="#f8db85">
                     <font>
-                        <Font name="Satoshi Black" size="30.0"/>
+                        <Font name="Satoshi Black" size="30.0" />
                     </font>
                     <cursor>
-                        <Cursor fx:constant="HAND"/>
+                        <Cursor fx:constant="HAND" />
                     </cursor>
                 </Button>
             </children>
@@ -813,7 +669,5 @@
                 <fx:reference source="addYellowButton"/>
             </java.util.ArrayList>
         </fx:define>
-
-
     </children>
 </AnchorPane>

@@ -78,7 +78,7 @@ public class OrientExpansion {
         OrientExpansion.class.getResource("OrientExpansionBoard1600x900.fxml")));
 
     // Set up root on stage (window)
-    Scene aScene = new Scene(root);
+    Scene aScene = new Scene(root,1440,810);
 
     // Initialize stage settings
     aPrimaryStage.setScene(aScene);
