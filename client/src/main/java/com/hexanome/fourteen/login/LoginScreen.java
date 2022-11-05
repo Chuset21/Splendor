@@ -112,6 +112,7 @@ public final class LoginScreen extends Application {
     stage.setTitle("Login Screen");
     stage.setResizable(false);
     stage.setOnCloseRequest(e -> exitPlatform());
+    stage.centerOnScreen();
     stage.show();
   }
 
