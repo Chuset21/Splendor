@@ -113,8 +113,9 @@ public class Bank {
                 removeGemButtons.get(idx).setDisable(false);
             }
 
+
             if (bGems[idx] == 0
-                    || (bGems[idx] < 5 && selectedGems.contains(idx))
+                    || (bGems[idx] < 4 && selectedGems.contains(idx))
                     || handBucket.get(idx) > 0 && selectedGems.size() > 1
                     || selectedGems.size() == 3
                     || handBucket.containsValue(2)) {
