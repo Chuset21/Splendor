@@ -1,9 +1,9 @@
 package com.hexanome.fourteen.boards;
 
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -14,13 +14,17 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.net.URL;
+import java.util.*;
 
-public class OrientExpansion {
+public class OrientExpansion implements Initializable {
+
+    private final int[] GEM_INDEX = { 0, 1, 2, 3, 4, 5};
 
     private static Scene aScene;
+
+    Bank bank;
+
     @FXML private Button takeBankButton;
     @FXML private Pane menuPopupPane;
 
@@ -34,6 +38,7 @@ public class OrientExpansion {
             }
         }
     }
+
     @FXML private ImageView selectedCard;
     private String selectedCardId;
     @FXML private ImageView purchasedStack;
@@ -45,17 +50,10 @@ public class OrientExpansion {
     @FXML private List<Label> bGemLabels;
     @FXML private List<Button> removeGemButtons;
     @FXML private List<Button> addGemButtons;
-    private int[] pGems = {2, 1, 2, 1, 0, 1};
-    private int[] bGems = {3, 3, 7, 3, 3, 3};
-    private int gemsTaken = 0;
-    private boolean isTaking = false;
-    private List<Integer> gemsSelected;
-
 
     public void startGame(Stage aPrimaryStage) throws IOException {
         // Import root from fxml file
         Parent root = FXMLLoader.load(Objects.requireNonNull(OrientExpansion.class.getResource("OrientExpansionBoard1600x900.fxml")));
-
         // Set up root on stage (window)
         Scene aScene = new Scene(root);
 
@@ -67,6 +65,16 @@ public class OrientExpansion {
         aPrimaryStage.show();
     }
 
+    // Use this function if you want to initialize nodes and their properties.
+    // E.G. Button text, Labels positions, etc. etc.
+    private void init() {
+        bank = new Bank(4, addGemButtons, removeGemButtons, pGemLabels, bGemLabels, takeBankButton);
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        init();
+    }
 
     public void handleCardSelect(MouseEvent event) {
         selectedCard = (ImageView) event.getSource();
@@ -92,91 +100,32 @@ public class OrientExpansion {
         cardActionsView.setVisible(false);
     }
 
-    public void handleTakeGreenGemButton() {
-        takeGem(0);
-    }
+    public void handleTakeGreenGemButton() { bank.takeGem(0); }
 
-    public void handleReturnGreenGemButton() {
-        returnGem(0);
-    }
-    public void handleTakeWhiteGemButton() {
-        takeGem(1);
-    }
+    public void handleReturnGreenGemButton() { bank.returnGem(0); }
 
-    public void handleReturnWhiteGemButton() {
-        returnGem(1);
-    }
+    public void handleTakeWhiteGemButton() { bank.takeGem(1); }
 
-    public void handleTakeBlueGemButton() {
-        takeGem(2);
-    }
+    public void handleReturnWhiteGemButton() { bank.returnGem(1); }
 
-    public void handleReturnBlueGemButton() {
-        returnGem(2);
-    }
+    public void handleTakeBlueGemButton() { bank.takeGem(2); }
 
-    public void handleTakeBlackGemButton() {
-        takeGem(3);
-    }
+    public void handleReturnBlueGemButton() { bank.returnGem(2); }
 
-    public void handleReturnBlackGemButton() {
-        returnGem(3);
-    }
+    public void handleTakeBlackGemButton() { bank.takeGem(3); }
 
-    public void handleTakeRedGemButton() {
-        takeGem(4);
-    }
+    public void handleReturnBlackGemButton() { bank.returnGem(3); }
 
-    public void handleReturnRedGemButton() {
-        returnGem(4);
-    }
+    public void handleTakeRedGemButton() { bank.takeGem(4); }
 
-    public void handleTakeYellowGemButton() {
-        takeGem(5);
-    }
+    public void handleReturnRedGemButton() { bank.returnGem(4); }
 
-    public void handleReturnYellowGemButton() {
-        returnGem(5);
-    }
+    public void handleTakeYellowGemButton() { bank.takeGem(5); }
 
-
-
+    public void handleReturnYellowGemButton() { bank.returnGem(5); }
 
     @FXML
-    private void handleClickTakeBankButton(){
-        isTaking = !isTaking;
-
-        if(isTaking){
-            takeBankButton.textProperty().set("Take");
-        } else{
-            takeBankButton.textProperty().set("Open");
-        }
-
-        if (isTaking) {
-            gemsTaken = 0;
-            gemsSelected = new ArrayList<Integer>();
-            for (int i = 0; i < bGems.length; i++) {
-
-                // Set remove buttons as visible but disabled
-                removeGemButtons.get(i).setVisible(true);
-                removeGemButtons.get(i).setDisable(true);
-
-                // Set add buttons as visible, but disable if there's none in the bank
-                addGemButtons.get(i).setVisible(true);
-                if (bGems[i] == 0) {
-                    addGemButtons.get(i).setDisable(true);
-                } else {
-                    addGemButtons.get(i).setDisable(false);
-                }
-            }
-        } else {
-            // Otherwise, just hide all the buttons!
-            for (int i = 0; i < bGems.length; i++) {
-                removeGemButtons.get(i).setVisible(false);
-                addGemButtons.get(i).setVisible(false);
-            }
-        }
-    }
+    private void handleClickTakeBankButton(){ bank.toggle(); }
 
     @FXML
     private void handleClickMenuButton(){
@@ -194,82 +143,8 @@ public class OrientExpansion {
         System.exit(0);
     }
 
-    public void takeGem(int index) {
-        if (gemsTaken <= 3) {
-
-            gemsTaken++;
-            gemsSelected.add(index);
-            pGems[index]++;
-            bGems[index]--;
-
-            bGemLabels.get(index).textProperty().set(""+bGems[index]);
-            pGemLabels.get(index).textProperty().set(""+pGems[index]);
-
-            removeGemButtons.get(index).setDisable(false);
-            // If we hit 0 from this subtraction, disable the add button
-            if (bGems[index] == 0) {
-                addGemButtons.get(index).setDisable(true);
-            }
-
-
-
-            // If we took our maximum amount of gems, disable all buttons except "remove" for the gems we have
-            if (gemsTaken == 3 || gemsSelected.indexOf(Integer.valueOf(index)) != gemsSelected.lastIndexOf(Integer.valueOf(index))) {
-                for (int i = 0 ; i < 6; i++) {
-                    addGemButtons.get(i).setDisable(true);
-                    if (gemsSelected.contains(i)) {
-                        removeGemButtons.get(i).setDisable(false);
-                    } else {
-                        removeGemButtons.get(i).setDisable(true);
-                    }
-                }
-            }
-        }
-    }
-
-    public void returnGem(int index) {
-        if (gemsTaken > 0) {
-
-            gemsTaken--;
-            gemsSelected.remove(Integer.valueOf(index));
-            pGems[index]--;
-            bGems[index]++;
-
-            bGemLabels.get(index).textProperty().set(""+bGems[index]);
-            pGemLabels.get(index).textProperty().set(""+pGems[index]);
-
-            // If we went from 0 to 1, re-enable the "add" button
-            if (bGems[index] == 1) {
-                addGemButtons.get(index).setDisable(false);
-            }
-
-            if (!gemsSelected.contains(index)) {
-                removeGemButtons.get(index).setDisable(true);
-            }   
-
-
-
-            // If we went from max to 2
-            if (gemsTaken == 2 || (gemsTaken == 1 && gemsSelected.indexOf(Integer.valueOf(index)) == gemsSelected.lastIndexOf(Integer.valueOf(index)))) {
-                for (int i = 0 ; i < 6; i++) {
-
-                    if (gemsSelected.contains(i)) {
-                        removeGemButtons.get(i).setDisable(false);
-                    } else {
-                        removeGemButtons.get(i).setDisable(true);
-                    }
-
-                    // if we have inventory of that gem, enable the option
-                    if (bGems[i] > 0) {
-                        addGemButtons.get(i).setDisable(false);
-                    } else {
-                        addGemButtons.get(i).setDisable(true);
-                    }
-                }
-            }
-        }
-    }
 
 }
+
 
 

@@ -168,7 +168,7 @@
                   <Font name="Satoshi Bold" size="32.0" />
                </font>
             </Label>
-            <Button id="takeFromBankButton" fx:id="takeBankButton" layoutX="59.0" layoutY="361.0" mnemonicParsing="false" onAction="#handleClickTakeBankButton" prefHeight="40.0" prefWidth="84.0" style="-fx-background-color: #72465B; -fx-border-color: #72465B; -fx-background-radius: 10; -fx-border-radius: 10;" text="Take" textFill="#f8db85">
+            <Button id="takeFromBankButton" fx:id="takeBankButton" layoutX="59.0" layoutY="361.0" mnemonicParsing="false" onAction="#handleClickTakeBankButton" prefHeight="40.0" prefWidth="84.0" style="-fx-background-color: #72465B; -fx-border-color: #72465B; -fx-background-radius: 10; -fx-border-radius: 10;" text="Open" textFill="#f8db85">
                <font>
                   <Font name="Satoshi Bold" size="18.0" />
                </font>
