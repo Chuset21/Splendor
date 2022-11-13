@@ -19,14 +19,13 @@ import java.util.*;
 
 public class OrientExpansion implements Initializable {
 
-    private final int[] GEM_INDEX = { 0, 1, 2, 3, 4, 5};
-
     private static Scene aScene;
-
     Bank bank;
+    private String selectedCardId;
 
     @FXML private Button takeBankButton;
     @FXML private Pane menuPopupPane;
+    @FXML private Pane cardActionMenu;
 
     //CARD FIELDS
     //2D Array with all card FX ID names.
@@ -40,10 +39,9 @@ public class OrientExpansion implements Initializable {
     }
 
     @FXML private ImageView selectedCard;
-    private String selectedCardId;
     @FXML private ImageView purchasedStack;
     @FXML private ImageView reservedStack;
-    @FXML private Pane cardActionsView;
+    @FXML private ImageView cardActionImage;
 
     //GEM FIELDS
     @FXML private List<Label> pGemLabels;
@@ -62,6 +60,10 @@ public class OrientExpansion implements Initializable {
         aPrimaryStage.setTitle("Splendor");
         aPrimaryStage.setResizable(false);
         aPrimaryStage.centerOnScreen();
+
+        // Set up game screen
+        cardActionMenu.setVisible(false);
+
         aPrimaryStage.show();
     }
 
@@ -83,21 +85,22 @@ public class OrientExpansion implements Initializable {
             return;
         }
         selectedCardId = selectedCard.getId();
-        cardActionsView.setVisible(true);
+        cardActionImage.setImage(selectedCard.getImage());
+        cardActionMenu.setVisible(true);
     }
 
     public void handlePurchase() {
         Image cardPurchased = selectedCard.getImage();
         selectedCard.setImage(null);
         purchasedStack.setImage(cardPurchased);
-        cardActionsView.setVisible(false);
+        cardActionMenu.setVisible(false);
     }
 
     public void handleReserve() {
         Image cardReserved = selectedCard.getImage();
         selectedCard.setImage(null);
         reservedStack.setImage(cardReserved);
-        cardActionsView.setVisible(false);
+        cardActionMenu.setVisible(false);
     }
 
     public void handleTakeGreenGemButton() { bank.takeGem(0); }
@@ -143,6 +146,11 @@ public class OrientExpansion implements Initializable {
         System.exit(0);
     }
 
+    @FXML
+    private void handleExitCardMenu(){
+        selectedCard = null;
+        cardActionMenu.setVisible(false);
+    }
 
 }
 

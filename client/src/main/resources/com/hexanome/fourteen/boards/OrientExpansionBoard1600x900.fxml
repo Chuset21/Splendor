@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 <?import java.net.URL?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
@@ -17,7 +27,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="backgroundPane" minHeight="0.0" minWidth="0.0" prefHeight="900.0" prefWidth="1600.0" styleClass="anchor" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.boards.OrientExpansion">
+<AnchorPane fx:id="backgroundPane" minHeight="0.0" minWidth="0.0" prefHeight="900.0" prefWidth="1600.0" styleClass="anchor" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.boards.OrientExpansion">
    <stylesheets>
       <URL value="@appStyling.css" />
    </stylesheets>
@@ -40,7 +50,7 @@
                            <effect>
                               <DropShadow blurType="GAUSSIAN" height="50.0" radius="24.5" width="50.0">
                                  <color>
-                                    <Color green="0.2666666805744171" blue="1.0" />
+                                    <Color blue="1.0" green="0.2666666805744171" />
                                  </color>
                               </DropShadow>
                            </effect></ImageView>
@@ -94,7 +104,7 @@
             </HBox>
          </children>
       </Pane>
-      <Pane id="bankPane" fx:id="tokenBankPane" layoutX="29.0" layoutY="208.0" prefHeight="415.0" prefWidth="200.0" style="-fx-background-color: #F8DB85; -fx-background-radius: 20;" AnchorPane.leftAnchor="29.0">
+      <Pane id="bankPane" fx:id="cardActionMenu" layoutX="29.0" layoutY="208.0" prefHeight="415.0" prefWidth="200.0" style="-fx-background-color: #F8DB85; -fx-background-radius: 20;" AnchorPane.leftAnchor="29.0">
          <children>
             <GridPane id="bankMatrix" fx:id="tokenBankMatrix" alignment="CENTER" layoutX="-1.0" layoutY="58.0" prefHeight="300.0" prefWidth="200.0">
                <children>
@@ -566,31 +576,58 @@
          </children>
 
       </Pane>
-      <Pane fx:id="cardActionsView" layoutX="10.0" layoutY="10.0" prefHeight="900.0" prefWidth="1600.0" style="-fx-background-color: #F8DB85; -fx-opacity: 1;" visible="false">
+      <AnchorPane fx:id="cardActionMenu" layoutX="440.0" layoutY="157.0">
          <children>
-            <Label layoutX="731.0" layoutY="238.0" text="Card Actions">
-               <font>
-                  <Font name="Satoshi Black" size="70.0" />
-               </font>
-            </Label>
-            <Button fx:id="cardReserveButton" layoutX="693.0" layoutY="342.0" mnemonicParsing="false" onAction="#handleReserve" style="-fx-background-color: #72465B;" text="Reserve" textFill="#f8db85">
-               <font>
-                  <Font name="Satoshi Black" size="30.0" />
-               </font>
+            <Pane layoutX="456.0" opacity="0.5" prefHeight="600.0" prefWidth="700.0" style="-fx-background-color: #F8DB85; -fx-opacity: 0.7;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <BorderPane prefHeight="600.0" prefWidth="700.0">
+               <center>
+                  <VBox alignment="CENTER" spacing="30.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label text="Card Actions">
+                           <font>
+                              <Font name="Satoshi Black" size="70.0" />
+                           </font>
+                        </Label>
+                        <ImageView fx:id="cardActionImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                        <Button fx:id="cardReserveButton" mnemonicParsing="false" onAction="#handleReserve" style="-fx-background-color: #fc6060;" text="Reserve" textFill="WHITE">
+                           <font>
+                              <Font name="Satoshi Black" size="30.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                        <Button fx:id="cardPurchaseButton" mnemonicParsing="false" onAction="#handlePurchase" style="-fx-background-color: #5A9BD7;" text="Purchase" textFill="WHITE">
+                           <font>
+                              <Font name="Satoshi Black" size="30.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                     </children>
+                  </VBox>
+               </center>
+            </BorderPane>
+            <Button fx:id="exitCardActionMenu" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#handleExitCardMenu" style="-fx-background-color: transparent;" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                <cursor>
-                  <Cursor fx:constant="HAND" />
+                  <Cursor fx:constant="OPEN_HAND" />
                </cursor>
-            </Button>
-            <Button fx:id="cardPurchaseButton" layoutX="778.0" layoutY="426.0" mnemonicParsing="false" onAction="#handlePurchase" style="-fx-background-color: #b82e70;" text="Purchase" textFill="#f8db85">
                <font>
-                  <Font name="Satoshi Black" size="30.0" />
+                  <Font name="Satoshi Black" size="20.0" />
                </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
+               <graphic>
+                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/close_x.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
             </Button>
          </children>
-      </Pane>
+      </AnchorPane>
+
+
       <fx:define>
          <java.util.ArrayList fx:id="pGemLabels">
             <fx:reference source="pGreenGemLabel" />
