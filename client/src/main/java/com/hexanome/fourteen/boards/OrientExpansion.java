@@ -61,9 +61,6 @@ public class OrientExpansion implements Initializable {
         aPrimaryStage.setResizable(false);
         aPrimaryStage.centerOnScreen();
 
-        // Set up game screen
-        cardActionMenu.setVisible(false);
-
         aPrimaryStage.show();
     }
 
@@ -71,6 +68,8 @@ public class OrientExpansion implements Initializable {
     // E.G. Button text, Labels positions, etc. etc.
     private void init() {
         bank = new Bank(4, addGemButtons, removeGemButtons, pGemLabels, bGemLabels, takeBankButton);
+        // Set up game screen
+        cardActionMenu.setVisible(false);
     }
 
     @Override

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" style="-fx-background-color: #F8DB85;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.login.LoginScreen">
+   <children>
+      <BorderPane prefHeight="900.0" prefWidth="1600.0">
+         <top>
+            <Label text="Splendor" textFill="#72465b" BorderPane.alignment="BOTTOM_CENTER">
+               <font>
+                  <Font name="Satoshi Black" size="100.0" />
+               </font>
+               <BorderPane.margin>
+                  <Insets top="150.0" />
+               </BorderPane.margin>
+            </Label>
+         </top>
+         <center>
+            <VBox alignment="TOP_CENTER" fillWidth="false" prefHeight="419.0" prefWidth="1600.0" BorderPane.alignment="CENTER">
+               <children>
+                  <TextField fx:id="usernameField" alignment="CENTER" prefHeight="30.0" prefWidth="200.0" promptText="Username">
+                     <VBox.margin>
+                        <Insets bottom="20.0" top="80.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="25.0" />
+                     </font>
+                  </TextField>
+                  <PasswordField fx:id="passwordField" alignment="CENTER" prefHeight="30.0" prefWidth="200.0" promptText="Password">
+                     <VBox.margin>
+                        <Insets bottom="50.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="25.0" />
+                     </font>
+                  </PasswordField>
+                  <Button fx:id="loginButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleLogin" style="-fx-background-color: #72465B; -fx-border-color: #72465B; -fx-background-radius: 30; -fx-border-radius: 30;" text="Login" textFill="#f8db85">
+                     <font>
+                        <Font name="Satoshi Black" size="35.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+               </children>
+            </VBox>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>
