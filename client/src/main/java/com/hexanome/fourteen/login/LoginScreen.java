@@ -1,6 +1,7 @@
 package com.hexanome.fourteen.login;
 
 import com.hexanome.fourteen.boards.OrientExpansion;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -69,6 +70,12 @@ public final class LoginScreen implements Initializable {
         // Pass failed login message
         loginButton.setText("Failed login\nTry again");
 
+    }
+
+    @FXML
+    private void handleQuitButton(){
+        Platform.exit();
+        System.exit(0);
     }
 
     private void launchGame(){

@@ -52,7 +52,7 @@ public class OrientExpansion implements Initializable {
         // Import root from fxml file
         Parent root = FXMLLoader.load(Objects.requireNonNull(OrientExpansion.class.getResource("OrientExpansionBoard1600x900.fxml")));
         // Set up root on stage (window)
-        Scene aScene = new Scene(root);
+        Scene aScene = new Scene(root,1440,810);
 
         // Initialize stage settings
         aPrimaryStage.setScene(aScene);
@@ -66,7 +66,9 @@ public class OrientExpansion implements Initializable {
     // Use this function if you want to initialize nodes and their properties.
     // E.G. Button text, Labels positions, etc. etc.
     private void init() {
+        // Set up bank
         bank = new Bank(4, addGemButtons, removeGemButtons, pGemLabels, bGemLabels, takeBankButton);
+
         // Set up game screen
         cardActionMenu.setVisible(false);
     }
