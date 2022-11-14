@@ -19,7 +19,6 @@ import java.util.*;
 
 public class OrientExpansion implements Initializable {
 
-    private static Scene aScene;
     Bank bank;
     private String selectedCardId;
 
@@ -49,11 +48,11 @@ public class OrientExpansion implements Initializable {
     @FXML private List<Button> removeGemButtons;
     @FXML private List<Button> addGemButtons;
 
-    public void startGame(Stage aPrimaryStage) throws IOException {
+    public void goToGame(Stage aPrimaryStage) throws IOException {
         // Import root from fxml file
         Parent root = FXMLLoader.load(Objects.requireNonNull(OrientExpansion.class.getResource("OrientExpansionBoard1600x900.fxml")));
         // Set up root on stage (window)
-        Scene aScene = new Scene(root,1440,810);
+        Scene aScene = new Scene(root);
 
         // Initialize stage settings
         aPrimaryStage.setScene(aScene);

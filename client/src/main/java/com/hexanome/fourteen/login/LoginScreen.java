@@ -1,11 +1,9 @@
 package com.hexanome.fourteen.login;
 
 import com.hexanome.fourteen.boards.OrientExpansion;
-import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -13,34 +11,30 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
-public final class LoginScreen extends Application {
+public final class LoginScreen implements Initializable {
 
     private static Stage aPrimaryStage;
 
-    private static final String USERNAME_STUB = "joebiden43";
-    private static final String PASSWORD_STUB = "okay123";
-
-    private static final String SPLENDOR_TEXT = "SPLENDOR";
-    private static final String PASSWORD_PROMPT = "Password";
-    private static final String USERNAME_PROMPT = "Username";
-    private static final String WRONG_CREDENTIALS_MSG = "Incorrect username or password entered";
+    private static final ArrayList<String[]> CREDENTIALS = new ArrayList<>();
 
     @FXML private TextField usernameField;
     @FXML private TextField passwordField;
     @FXML private Button loginButton;
 
-    @Override
-    public void start(Stage stage) throws IOException {
+    public void goToLogin(Stage pStage) throws IOException {
 
-        aPrimaryStage = stage;
+        aPrimaryStage = pStage;
 
         // Import root from fxml file
         Parent root = FXMLLoader.load(Objects.requireNonNull(LoginScreen.class.getResource("LoginScreen.fxml")));
 
         // Set up root on stage (window)
-        Scene aScene = new Scene(root,1440,810);
+        Scene aScene = new Scene(root);
 
         // Initialize stage settings
         aPrimaryStage.setScene(aScene);
@@ -48,27 +42,42 @@ public final class LoginScreen extends Application {
         aPrimaryStage.setResizable(false);
         aPrimaryStage.centerOnScreen();
 
-        // Set up screen
-
         aPrimaryStage.show();
+    }
 
+    private void init(){
+        // Initialize credentials list with set of logins
+        CREDENTIALS.add(new String[]{"joebiden43","okay123"});
+        CREDENTIALS.add(new String[]{"test","test"});
+        CREDENTIALS.add(new String[]{"kai","hi"});
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        init();
     }
 
     @FXML
     private void handleLogin(){
-        if(usernameField.getText().equals(USERNAME_STUB) && passwordField.getText().equals( PASSWORD_STUB)){
-            launchGame();
-        } else{
-            System.out.println("Username input = "+usernameField.getText()+"\nPassword input = "+passwordField.getText());
-            loginButton.setText("Failed login\nTry again");
+        // Check if input credentials match any in the list of credentials
+        for(String[] cred : CREDENTIALS){
+            if(usernameField.getText().equals(cred[0]) && passwordField.getText().equals(cred[1])){
+                launchGame();
+            }
         }
+
+        // Pass failed login message
+        loginButton.setText("Failed login\nTry again");
+
     }
 
     private void launchGame(){
+        // Create new instance of a Splendor game
         OrientExpansion game = new OrientExpansion();
 
+        // Try launching the game
         try{
-            game.startGame(aPrimaryStage);
+            game.goToGame(aPrimaryStage);
         } catch(IOException ioe) {
             System.out.println("Error when starting game" + ioe);
         }
