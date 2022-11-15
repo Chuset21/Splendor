@@ -10,7 +10,7 @@ import java.util.List;
 public class Bank {
 
     // Fields [Internal]
-    public static final int[] GEM_INDEX = { 0, 1, 2, 3, 4, 5};
+    public static final int[] GEM_INDEX = {0, 1, 2, 3, 4, 5};
     private int[] pGems = new int[6]; // player's Gems (in Hand)
     private int[] bGems = new int[6]; // bank's Gems (in Bank)
     private List<Integer> selectedGems; // gems the player is currently selecting
@@ -42,7 +42,7 @@ public class Bank {
         isTaking = false;
 
         // Initialize Starting Tokens and the respective Labels
-        int initialTokens = (numPlayers < 4) ? (2+numPlayers) : 7;
+        int initialTokens = (numPlayers < 4) ? (2 + numPlayers) : 7;
 
         for (int idx : GEM_INDEX) {
             bGems[idx] = initialTokens;
@@ -85,8 +85,8 @@ public class Bank {
         bGems[index]--;
 
         // Update our text properties (Bank and Hand)
-        bGemLabels.get(index).textProperty().set(""+bGems[index]);
-        pGemLabels.get(index).textProperty().set(""+pGems[index]);
+        bGemLabels.get(index).textProperty().set("" + bGems[index]);
+        pGemLabels.get(index).textProperty().set("" + pGems[index]);
 
         // Update the buttons (specifically, their Abled/Disabled state)
         updateBankButtons();
@@ -100,8 +100,8 @@ public class Bank {
         bGems[index]++;
 
         // Update our text properties (Bank and Hand)
-        bGemLabels.get(index).textProperty().set(""+bGems[index]);
-        pGemLabels.get(index).textProperty().set(""+pGems[index]);
+        bGemLabels.get(index).textProperty().set("" + bGems[index]);
+        pGemLabels.get(index).textProperty().set("" + pGems[index]);
 
         // Update the buttons (specifically, their Abled/Disabled state)
         updateBankButtons();
@@ -115,7 +115,7 @@ public class Bank {
         // handBucket : <gem, count> of our current hand.
         Hashtable<Integer, Integer> handBucket = new Hashtable<>();
         for (int idx : GEM_INDEX) handBucket.put(idx, 0);
-        for (int gem : selectedGems) handBucket.put(gem, handBucket.get(gem)+1);
+        for (int gem : selectedGems) handBucket.put(gem, handBucket.get(gem) + 1);
 
         // Go through the buttons of each colour and enable/disable them accordingly.
         for (int idx : GEM_INDEX) {
@@ -130,10 +130,10 @@ public class Bank {
             // If (following 5 conditions) hold, 'add' should be enabled.
             //Otherwise, disable the 'add' button.
             if (bGems[idx] == 0
-                || (bGems[idx] < 4 && selectedGems.contains(idx))
-                || handBucket.get(idx) > 0 && selectedGems.size() > 1
-                || selectedGems.size() == 3
-                || handBucket.containsValue(2)) {
+                    || (bGems[idx] < 4 && selectedGems.contains(idx))
+                    || handBucket.get(idx) > 0 && selectedGems.size() > 1
+                    || selectedGems.size() == 3
+                    || handBucket.containsValue(2)) {
                 addGemButtons.get(idx).setDisable(true);
             } else {
                 addGemButtons.get(idx).setDisable(false);
@@ -141,10 +141,6 @@ public class Bank {
 
         }
     }
-
-
-
-
 
 
 }

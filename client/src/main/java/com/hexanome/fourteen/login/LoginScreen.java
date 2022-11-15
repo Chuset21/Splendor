@@ -23,9 +23,12 @@ public final class LoginScreen implements Initializable {
 
     private static final ArrayList<String[]> CREDENTIALS = new ArrayList<>();
 
-    @FXML private TextField usernameField;
-    @FXML private TextField passwordField;
-    @FXML private Button loginButton;
+    @FXML
+    private TextField usernameField;
+    @FXML
+    private TextField passwordField;
+    @FXML
+    private Button loginButton;
 
     public void goToLogin(Stage pStage) throws IOException {
 
@@ -46,11 +49,11 @@ public final class LoginScreen implements Initializable {
         aPrimaryStage.show();
     }
 
-    private void init(){
+    private void init() {
         // Initialize credentials list with set of logins
-        CREDENTIALS.add(new String[]{"joebiden43","okay123"});
-        CREDENTIALS.add(new String[]{"test","test"});
-        CREDENTIALS.add(new String[]{"kai","hi"});
+        CREDENTIALS.add(new String[]{"joebiden43", "okay123"});
+        CREDENTIALS.add(new String[]{"test", "test"});
+        CREDENTIALS.add(new String[]{"kai", "hi"});
     }
 
     @Override
@@ -59,10 +62,10 @@ public final class LoginScreen implements Initializable {
     }
 
     @FXML
-    private void handleLogin(){
+    private void handleLogin() {
         // Check if input credentials match any in the list of credentials
-        for(String[] cred : CREDENTIALS){
-            if(usernameField.getText().equals(cred[0]) && passwordField.getText().equals(cred[1])){
+        for (String[] cred : CREDENTIALS) {
+            if (usernameField.getText().equals(cred[0]) && passwordField.getText().equals(cred[1])) {
                 launchGame();
             }
         }
@@ -73,19 +76,19 @@ public final class LoginScreen implements Initializable {
     }
 
     @FXML
-    private void handleQuitButton(){
+    private void handleQuitButton() {
         Platform.exit();
         System.exit(0);
     }
 
-    private void launchGame(){
+    private void launchGame() {
         // Create new instance of a Splendor game
         OrientExpansion game = new OrientExpansion();
 
         // Try launching the game
-        try{
+        try {
             game.goToGame(aPrimaryStage);
-        } catch(IOException ioe) {
+        } catch (IOException ioe) {
             System.out.println("Error when starting game" + ioe);
         }
     }

@@ -15,7 +15,7 @@ public class Card {
     private final int aVictoryPoints;
     private final ImageView aCardImage;
 
-    public Card(HashMap<GemColors, Integer> pCost, GemColors pDiscountColor, int pDiscountAmt, Expansions pExpansion, int pLevel, int pVictoryPoints, ImageView pCardImage){
+    public Card(HashMap<GemColors, Integer> pCost, GemColors pDiscountColor, int pDiscountAmt, Expansions pExpansion, int pLevel, int pVictoryPoints, ImageView pCardImage) {
         aCost = new HashMap<>(pCost);
         aDiscountColor = pDiscountColor;
         aDiscountAmt = pDiscountAmt;
