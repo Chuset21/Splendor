@@ -5,7 +5,7 @@
     <artifactId>splendor_backend</artifactId>
     <packaging>jar</packaging>
     <version>0.1.0-SNAPSHOT</version>
-    <name>demo</name>
+    <name>splendor_backend</name>
     <url>https://maven.apache.org</url>
 
 
@@ -37,6 +37,11 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-shade-plugin</artifactId>
             <version>3.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.kartoffelquadrat</groupId>
+            <artifactId>asyncrestlib</artifactId>
+            <version>1.6.2</version>
         </dependency>
     </dependencies>
 
