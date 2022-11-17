@@ -56,7 +56,19 @@ public class OrientExpansion implements Initializable {
   @FXML
   private ImageView cardActionImage;
   @FXML
-  private ImageView testImageView;
+  private ArrayList<ImageView> level3CardViewsBase;
+  @FXML
+  private ArrayList<ImageView> level2CardViewsBase;
+  @FXML
+  private ArrayList<ImageView> level1CardViewsBase;
+  @FXML
+  private ArrayList<ImageView> level3CardViewsOrient;
+  @FXML
+  private ArrayList<ImageView> level2CardViewsOrient;
+  @FXML
+  private ArrayList<ImageView> level1CardViewsOrient;
+  @FXML
+  private ArrayList<ArrayList> cardViews;
 
   //GEM FIELDS
   @FXML
@@ -93,23 +105,34 @@ public class OrientExpansion implements Initializable {
     // Set up game screen
     cardActionMenu.setVisible(false);
 
-    // Initialize a list of cards to use for the game
-    gameCards = null;
-
-    try{
-      gameCards = Card.setupCards("CardData.csv");
-    } catch (IOException ioe){
-      ioe.printStackTrace();
-    }
-
-    // Print cards being used
-    System.out.println(gameCards);
-
+    // Set up cards
+    setupCards("CardData.csv");
   }
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
     init();
+  }
+
+  private void setupCards(String pCardDataCSV){
+    // Initialize a list of cards to use for the game
+    gameCards = null;
+
+    // Fill list with final cards
+    try{
+      gameCards = Card.setupCards(pCardDataCSV);
+    } catch (IOException ioe){
+      ioe.printStackTrace();
+    }
+
+    // Print cards being used (for testing)
+    System.out.println(gameCards);
+
+    for(ArrayList<ImageView> cl : cardViews){
+      for(ImageView iv : cl){
+        iv.setImage(null);
+      }
+    }
   }
 
   public void handleCardSelect(MouseEvent event) {
