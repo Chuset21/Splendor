@@ -14,12 +14,17 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.*;
 
 public class OrientExpansion implements Initializable {
 
   Bank bank;
+  private ArrayList<Card> gameCards;
+  private Stack<Card> level3Cards;
+  private Stack<Card> level2Cards;
+  private Stack<Card> level1Cards;
   private String selectedCardId;
 
   @FXML
@@ -88,13 +93,18 @@ public class OrientExpansion implements Initializable {
     // Set up game screen
     cardActionMenu.setVisible(false);
 
-    // Setup cards (testing)
-    Card.setupCards();
-    System.out.println(Card.getInitCards());
+    // Initialize a list of cards to use for the game
+    gameCards = null;
 
-    // Testing image
-    purchasedStack.setImage(Card.getInitCards().get(0));
-    reservedStack.setImage(Card.getInitCards().get(0));
+    try{
+      gameCards = Card.setupCards("CardData.csv");
+    } catch (IOException ioe){
+      ioe.printStackTrace();
+    }
+
+    // Print cards being used
+    System.out.println(gameCards);
+
   }
 
   @Override

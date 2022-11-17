@@ -3,11 +3,10 @@ package com.hexanome.fourteen.boards;
 import javafx.scene.image.Image;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Card extends Image {
-
-  private static final ArrayList<Card> aInitCards = new ArrayList<>();
 
   // Cost = { CostGreen, CostWhite, CostBlue, CostBlack, CostRed }
   private final int[] aCost;
@@ -40,10 +39,6 @@ public class Card extends Image {
     aVictoryPoints = pVictoryPoints;
   }
 
-  public static ArrayList<Card> getInitCards(){
-    return new ArrayList<>(aInitCards);
-  }
-
   /**
    * Allows the initialization of the whole deck through a csv file.
    *
@@ -51,35 +46,34 @@ public class Card extends Image {
    *
    * future plans: make this take a parameter of a .csv file name, have it return a list of cards so that the OrientExpansion class can handle the actual use of the cards and so the list isn't static
    */
-  public static void setupCards() {
-    try {
-      // Current line of CSV file
-      String curLine;
+  public static ArrayList<Card> setupCards(String csvFileName) throws IOException{
+    ArrayList<Card> cards = new ArrayList<>();
 
-      // Get CardData.csv file
-      BufferedReader br = new BufferedReader(new InputStreamReader(
-          Objects.requireNonNull(Card.class.getResourceAsStream("images/CardData.csv"))));
+    // Current line of CSV file
+    String curLine;
 
-      // Skip header of the CSV file
-      br.readLine();
+    // Get CardData.csv file
+    BufferedReader br = new BufferedReader(new InputStreamReader(
+            Objects.requireNonNull(Card.class.getResourceAsStream("images/"+csvFileName))));
 
-      // Read through lines of file and get card data
-      while ((curLine = br.readLine()) != null)
-      {
-        // Use comma as a delimiter
-        String[] cardData = curLine.split(",");
+    // Skip header of the CSV file
+    br.readLine();
 
-        System.out.println("Card [Disc color: "+GemColors.valueOf(cardData[5])+", Expansion: "+Expansions.valueOf(cardData[7])+", File path: images/"+cardData[cardData.length-1]+"]");
+    // Read through lines of file and get card data
+    while ((curLine = br.readLine()) != null) {
+      // Use comma as a delimiter
+      String[] cardData = curLine.split(",");
 
-        Card c = new Card(new int[]{Integer.valueOf(cardData[0]),Integer.valueOf(cardData[1]),
-                Integer.valueOf(cardData[2]),Integer.valueOf(cardData[3]),Integer.valueOf(cardData[4])},
-                GemColors.valueOf(cardData[5]) , Integer.valueOf(cardData[6]), Expansions.valueOf(cardData[7]),
-                Integer.valueOf(cardData[8]), Integer.valueOf(cardData[9]), Card.class.getResource("images/"+cardData[10]).toString());
-        aInitCards.add(c);
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
+      //System.out.println("Card [Disc color: " + GemColors.valueOf(cardData[5]) + ", Expansion: " + Expansions.valueOf(cardData[7]) + ", File path: images/" + cardData[cardData.length - 1] + "]");
+
+      Card c = new Card(new int[]{Integer.valueOf(cardData[0]), Integer.valueOf(cardData[1]),
+              Integer.valueOf(cardData[2]), Integer.valueOf(cardData[3]), Integer.valueOf(cardData[4])},
+              GemColors.valueOf(cardData[5]), Integer.valueOf(cardData[6]), Expansions.valueOf(cardData[7]),
+              Integer.valueOf(cardData[8]), Integer.valueOf(cardData[9]), Card.class.getResource("images/" + cardData[10]).toString());
+      cards.add(c);
     }
+
+    return cards;
   }
 
   /**
@@ -88,6 +82,6 @@ public class Card extends Image {
    * @return Name of card image
    */
   public String toString(){
-    return "A card with image: "+super.toString();
+    return "Card [cost,color,level,image] : ["+Arrays.toString(aCost)+","+aDiscountColor+","+aLevel+","+super.toString()+"]\n";
   }
 }
