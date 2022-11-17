@@ -45,6 +45,11 @@
             <artifactId>javafx-fxml</artifactId>
             <version>19</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.4.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -79,7 +84,7 @@
 
             <plugin>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.4.0</version>
+                <version>3.4.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
