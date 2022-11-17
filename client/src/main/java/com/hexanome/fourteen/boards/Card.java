@@ -57,7 +57,8 @@ public class Card extends Image {
       String curLine;
 
       // Get CardData.csv file
-      BufferedReader br = new BufferedReader(new FileReader("client/target/classes/com/hexanome/fourteen/boards/images/CardData.csv"));
+      BufferedReader br = new BufferedReader(new InputStreamReader(
+          Objects.requireNonNull(Card.class.getResourceAsStream("images/CardData.csv"))));
 
       // Skip header of the CSV file
       br.readLine();
