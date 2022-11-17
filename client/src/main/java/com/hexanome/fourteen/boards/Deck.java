@@ -16,5 +16,18 @@ public class Deck extends Stack<Card> {
         aLevel = pLevel;
         aExpansion = pExpansion;
     }
+
+    public int getLevel() {
+        return aLevel;
+    }
+
+    public Expansions getExpansion() {
+        return aExpansion;
+    }
+
+    @Override
+    public String toString() {
+        return "Level "+aLevel+" deck: "+super.toString();
+    }
 }
 

@@ -22,9 +22,13 @@ public class OrientExpansion implements Initializable {
 
   Bank bank;
   private ArrayList<Card> gameCards;
-  private Stack<Card> level3Cards;
-  private Stack<Card> level2Cards;
-  private Stack<Card> level1Cards;
+  private Deck level3Cards;
+  private Deck level2Cards;
+  private Deck level1Cards;
+  private Deck level3CardsOrient;
+  private Deck level2CardsOrient;
+  private Deck level1CardsOrient;
+  private ArrayList<Deck> gameDecks;
   private String selectedCardId;
 
   @FXML
@@ -125,13 +129,32 @@ public class OrientExpansion implements Initializable {
       ioe.printStackTrace();
     }
 
-    // Print cards being used (for testing)
-    System.out.println(gameCards);
-
+    // Clear all card views
     for(ArrayList<ImageView> cl : cardViews){
       for(ImageView iv : cl){
         iv.setImage(null);
       }
+    }
+
+    gameDecks = new ArrayList<>();
+    gameDecks.add(level3Cards = new Deck(3,Expansions.BASEGAME));
+    gameDecks.add(level2Cards = new Deck(2,Expansions.BASEGAME));
+    gameDecks.add(level1Cards = new Deck(1,Expansions.BASEGAME));
+    gameDecks.add(level3CardsOrient = new Deck(3,Expansions.ORIENT));
+    gameDecks.add(level2CardsOrient = new Deck(2,Expansions.ORIENT));
+    gameDecks.add(level1CardsOrient = new Deck(1,Expansions.ORIENT));
+
+    for(Card c : gameCards){
+        for(Deck d : gameDecks){
+          if(d.getLevel() == c.getLevel() && d.getExpansion() == c.getExpansion()){
+            d.push(c);
+          }
+        }
+    }
+    System.out.println(level1Cards+"\n"+level2Cards);
+
+    for(int i = 0; i<4; i++){
+      ((ImageView)cardViews.get(0).get(i)).setImage(level1Cards.pop());
     }
   }
 

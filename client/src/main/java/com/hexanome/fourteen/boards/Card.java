@@ -76,12 +76,20 @@ public class Card extends Image {
     return cards;
   }
 
+  public int getLevel() {
+    return aLevel;
+  }
+
+  public Expansions getExpansion() {
+    return aExpansion;
+  }
+
   /**
    * Converts card object into text
    *
    * @return Name of card image
    */
   public String toString(){
-    return "Card [cost,color,level,image] : ["+Arrays.toString(aCost)+","+aDiscountColor+","+aLevel+","+super.toString()+"]\n";
+    return "\nLevel "+aLevel+" card: ["+Arrays.toString(aCost)+","+aDiscountColor+","+super.toString()+"]";
   }
 }
