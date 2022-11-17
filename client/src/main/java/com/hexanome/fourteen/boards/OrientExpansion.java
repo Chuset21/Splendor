@@ -95,8 +95,6 @@ public class OrientExpansion implements Initializable {
     // Testing image
     purchasedStack.setImage(Card.getInitCards().get(0));
     reservedStack.setImage(Card.getInitCards().get(0));
-    System.out.println("Got image:\n"+(Card)reservedStack.getImage());
-
   }
 
   @Override

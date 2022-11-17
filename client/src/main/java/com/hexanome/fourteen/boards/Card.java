@@ -1,32 +1,27 @@
 package com.hexanome.fourteen.boards;
 
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.stage.FileChooser;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.URL;
+import java.io.*;
 import java.util.*;
 
 public class Card extends Image {
 
   private static final ArrayList<Card> aInitCards = new ArrayList<>();
 
-  private final HashMap<GemColors, Integer> aCost;
+  // Cost = { CostGreen, CostWhite, CostBlue, CostBlack, CostRed}
+  private final int[] aCost;
   private final GemColors aDiscountColor;
   private final int aDiscountAmt;
   private final Expansions aExpansion;
   private final int aLevel;
   private final int aVictoryPoints;
 
-  public Card(HashMap<GemColors, Integer> pCost, GemColors pDiscountColor, int pDiscountAmt,
-              Expansions pExpansion, int pLevel, int pVictoryPoints, File file) throws FileNotFoundException {
-    super(new FileInputStream(file));
+  public Card(int[] pCost, GemColors pDiscountColor, int pDiscountAmt,
+              Expansions pExpansion, int pLevel, int pVictoryPoints, String pFileString) {
+    super(pFileString);
 
-    aCost = new HashMap<>(pCost);
+    aCost = pCost;
     aDiscountColor = pDiscountColor;
     aDiscountAmt = pDiscountAmt;
     aExpansion = pExpansion;
@@ -39,29 +34,33 @@ public class Card extends Image {
   }
 
   public static void setupCards() {
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Select Profile Picture");
-    fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Image Files", "*.png", "*jpg"));
-    File selectedFile = fileChooser.showOpenDialog(null);
-    File selectedFileInput = selectedFile;
+    try {
+      // Current line of CSV file
+      String curLine;
 
-    //File selectedFile = new File(Objects.requireNonNull(Card.class.getClassLoader().getResource("images/0a.png").getFile()));
-    System.out.println(selectedFile.getPath());
+      // Get CardData.csv file
+      BufferedReader br = new BufferedReader(new FileReader("client/target/classes/com/hexanome/fourteen/boards/images/CardData.csv"));
 
+      // Skip header of the CSV file
+      br.readLine();
 
-    Card c = null;
-    if(selectedFile.exists()) {
+      // Read through lines of file and get card data
+      while ((curLine = br.readLine()) != null)
+      {
+        // Use comma as a delimiter
+        String[] cardData = curLine.split(",");
 
-      try {
-        c = new Card(new HashMap<GemColors, Integer>(), null, 0, null, 0, 0, selectedFile);
-      } catch (Exception ex) {
-        ex.printStackTrace();
+        System.out.println("Card [Disc color: "+GemColors.valueOf(cardData[5])+", Expansion: "+Expansions.valueOf(cardData[7])+", File path: images/"+cardData[cardData.length-1]+"]");
+
+        Card c = new Card(new int[]{Integer.valueOf(cardData[0]),Integer.valueOf(cardData[1]),
+                Integer.valueOf(cardData[2]),Integer.valueOf(cardData[3]),Integer.valueOf(cardData[4])},
+                GemColors.valueOf(cardData[5]) , Integer.valueOf(cardData[6]), Expansions.valueOf(cardData[7]),
+                Integer.valueOf(cardData[8]), Integer.valueOf(cardData[9]), Card.class.getResource("images/"+cardData[10]).toString());
+        aInitCards.add(c);
       }
+    } catch (IOException e) {
+      e.printStackTrace();
     }
-
-    aInitCards.add(c);
-
-    //System.out.println(Objects.requireNonNull(OrientExpansion.class.getResource("*.png")));
   }
 
   public String toString(){
