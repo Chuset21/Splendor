@@ -626,6 +626,8 @@
             </Button>
          </children>
       </AnchorPane>
+      <ImageView fx:id="testImageView" fitHeight="150.0" fitWidth="200.0" layoutX="164.0" layoutY="59.0" pickOnBounds="true" preserveRatio="true" />
+
 
       <fx:define>
          <java.util.ArrayList fx:id="pGemLabels">

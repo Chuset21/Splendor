@@ -50,6 +50,8 @@ public class OrientExpansion implements Initializable {
   private ImageView reservedStack;
   @FXML
   private ImageView cardActionImage;
+  @FXML
+  private ImageView testImageView;
 
   //GEM FIELDS
   @FXML
@@ -85,6 +87,16 @@ public class OrientExpansion implements Initializable {
 
     // Set up game screen
     cardActionMenu.setVisible(false);
+
+    // Setup cards (testing)
+    Card.setupCards();
+    System.out.println(Card.getInitCards());
+
+    // Testing image
+    purchasedStack.setImage(Card.getInitCards().get(0));
+    reservedStack.setImage(Card.getInitCards().get(0));
+    System.out.println("Got image:\n"+(Card)reservedStack.getImage());
+
   }
 
   @Override
@@ -107,6 +119,7 @@ public class OrientExpansion implements Initializable {
     Image cardPurchased = selectedCard.getImage();
     selectedCard.setImage(null);
     purchasedStack.setImage(cardPurchased);
+    System.out.println("Got image:\n"+purchasedStack.getImage());
     cardActionMenu.setVisible(false);
   }
 
@@ -114,6 +127,7 @@ public class OrientExpansion implements Initializable {
     Image cardReserved = selectedCard.getImage();
     selectedCard.setImage(null);
     reservedStack.setImage(cardReserved);
+    System.out.println("Got image:\n"+reservedStack.getImage());
     cardActionMenu.setVisible(false);
   }
 
