@@ -351,7 +351,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Pane>
-            <Pane fx:id="level1CardStack1" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #fa8484; -fx-background-radius: 10;" GridPane.columnIndex="7" GridPane.rowIndex="2">
+            <Pane fx:id="level1CardStackO" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #fa8484; -fx-background-radius: 10;" GridPane.columnIndex="7" GridPane.rowIndex="2">
                <children>
                   <Label layoutX="50.0" layoutY="48.0" text="I">
                      <font>
@@ -363,7 +363,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Pane>
-            <Pane fx:id="level2CardStack1" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #fa8484; -fx-background-radius: 10;" GridPane.columnIndex="7" GridPane.rowIndex="1">
+            <Pane fx:id="level2CardStackO" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #fa8484; -fx-background-radius: 10;" GridPane.columnIndex="7" GridPane.rowIndex="1">
                <children>
                   <Label layoutX="47.0" layoutY="49.0" text="II">
                      <font>
@@ -375,7 +375,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Pane>
-            <Pane fx:id="level3CardStack1" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #fa8484; -fx-background-radius: 10;" GridPane.columnIndex="7">
+            <Pane fx:id="level3CardStackO" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #fa8484; -fx-background-radius: 10;" GridPane.columnIndex="7">
                <children>
                   <Label layoutX="44.0" layoutY="49.0" text="III">
                      <font>
@@ -387,152 +387,96 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Pane>
-            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
-               <children>
-                  <ImageView fx:id="R3C1" fitHeight="137.0" fitWidth="119.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/3a.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </Pane>
-            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2">
-               <children>
-                  <ImageView fx:id="R3C2" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/2a.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </Pane>
-            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3">
-               <children>
-                  <ImageView fx:id="R3C3" fitHeight="137.0" fitWidth="97.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/2b.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </Pane>
-            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4">
-               <children>
-                  <ImageView fx:id="R3C4" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/3a.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </Pane>
-            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="5">
-               <children>
-                  <ImageView fx:id="R3C5" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/orient_diamonds.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </Pane>
-            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="6">
-               <children>
-                  <ImageView fx:id="R3C6" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/orient_sapphire.png" />
-                     </image>
-                  </ImageView>
-               </children>
-            </Pane>
-            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-               <children>
-                  <ImageView fx:id="R2C1" fitHeight="137.0" fitWidth="97.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/1b.png" />
-                     </image></ImageView>
-               </children></Pane>
-            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
-               <children>
-                  <ImageView fx:id="R2C2" fitHeight="137.0" fitWidth="99.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/1a.png" />
-                     </image></ImageView>
-               </children></Pane>
-            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
-               <children>
-                  <ImageView fx:id="R2C3" fitHeight="137.0" fitWidth="102.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/2d.png" />
-                     </image></ImageView>
-               </children></Pane>
-            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="1">
-               <children>
-                  <ImageView fx:id="R2C4" fitHeight="137.0" fitWidth="102.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/2c.png" />
-                     </image></ImageView>
-               </children></Pane>
-            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="5" GridPane.rowIndex="1">
-               <children>
-                  <ImageView fx:id="R2C5" fitHeight="137.0" fitWidth="98.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/bag.png" />
-                     </image>
-                  </ImageView>
-               </children></Pane>
-            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="6" GridPane.rowIndex="1">
-               <children>
-                  <ImageView fx:id="R2C6" fitHeight="137.0" fitWidth="97.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/bag.png" />
-                     </image>
-                  </ImageView>
-               </children></Pane>
-            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
-               <children>
-                  <ImageView fx:id="R1C1" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/0a.png" />
-                     </image>
-                  </ImageView>
-               </children></Pane>
-            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
-               <children>
-                  <ImageView fx:id="R1C2" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/0b.png" />
-                     </image>
-                  </ImageView>
-               </children></Pane>
-            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
-               <children>
-                  <ImageView fx:id="R1C3" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/0c.png" />
-                     </image>
-                  </ImageView>
-               </children></Pane>
-            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.rowIndex="2">
-               <children>
-                  <ImageView fx:id="R1C4" fitHeight="137.0" fitWidth="98.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/1a.png" />
-                     </image>
-                  </ImageView>
-               </children></Pane>
-            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="5" GridPane.rowIndex="2">
-               <children>
-                  <ImageView fx:id="R1C5" fitHeight="137.0" fitWidth="102.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/joker.png" />
-                     </image>
-                  </ImageView>
-               </children></Pane>
-            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="6" GridPane.rowIndex="2">
-               <children>
-                  <ImageView fx:id="R1C6" fitHeight="137.0" fitWidth="102.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/joker.png" />
-                     </image>
-                  </ImageView>
-               </children></Pane>
+            <ImageView fx:id="R3C1" fitHeight="137.0" fitWidth="119.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+               <image>
+                  <Image url="@images/3a.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="R3C2" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
+               <image>
+                  <Image url="@images/2a.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="R3C3" fitHeight="137.0" fitWidth="97.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
+               <image>
+                  <Image url="@images/2b.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="R3C4" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
+               <image>
+                  <Image url="@images/3a.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="R3C5" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5">
+               <image>
+                  <Image url="@images/orient_diamonds.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="R3C6" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6">
+               <image>
+                  <Image url="@images/orient_sapphire.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="R2C1" fitHeight="137.0" fitWidth="97.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <image>
+                  <Image url="@images/1b.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="R2C2" fitHeight="137.0" fitWidth="99.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <image>
+                  <Image url="@images/1a.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="R2C3" fitHeight="137.0" fitWidth="102.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.rowIndex="1">
+               <image>
+                  <Image url="@images/2d.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="R2C4" fitHeight="137.0" fitWidth="102.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4" GridPane.rowIndex="1">
+               <image>
+                  <Image url="@images/2c.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="R2C5" fitHeight="137.0" fitWidth="98.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5" GridPane.rowIndex="1">
+               <image>
+                  <Image url="@images/bag.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="R2C6" fitHeight="137.0" fitWidth="97.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.rowIndex="1">
+               <image>
+                  <Image url="@images/bag.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="R1C1" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <image>
+                  <Image url="@images/0a.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="R1C2" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="2">
+               <image>
+                  <Image url="@images/0b.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="R1C3" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.rowIndex="2">
+               <image>
+                  <Image url="@images/0c.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="R1C4" fitHeight="137.0" fitWidth="98.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4" GridPane.rowIndex="2">
+               <image>
+                  <Image url="@images/1a.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="R1C5" fitHeight="137.0" fitWidth="102.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5" GridPane.rowIndex="2">
+               <image>
+                  <Image url="@images/joker.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="R1C6" fitHeight="137.0" fitWidth="102.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.rowIndex="2">
+               <image>
+                  <Image url="@images/joker.png" />
+               </image>
+            </ImageView>
          </children>
       </GridPane>
       <Button fx:id="menuButton" contentDisplay="RIGHT" layoutX="1465.0" layoutY="8.0" mnemonicParsing="false" onAction="#handleClickMenuButton" style="-fx-background-color: #F8DB85;" text="Menu" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
@@ -670,6 +614,59 @@
             <fx:reference source="addBlackButton" />
             <fx:reference source="addRedButton" />
             <fx:reference source="addYellowButton" />
+         </java.util.ArrayList>
+      </fx:define>
+
+      <fx:define>
+         <java.util.ArrayList fx:id="level3CardViewsBase">
+            <fx:reference source="R3C1" />
+            <fx:reference source="R3C2" />
+            <fx:reference source="R3C3" />
+            <fx:reference source="R3C4" />
+         </java.util.ArrayList>
+      </fx:define>
+      <fx:define>
+         <java.util.ArrayList fx:id="level2CardViewsBase">
+            <fx:reference source="R2C1" />
+            <fx:reference source="R2C2" />
+            <fx:reference source="R2C3" />
+            <fx:reference source="R2C4" />
+         </java.util.ArrayList>
+      </fx:define>
+      <fx:define>
+         <java.util.ArrayList fx:id="level1CardViewsBase">
+            <fx:reference source="R1C1" />
+            <fx:reference source="R1C2" />
+            <fx:reference source="R1C3" />
+            <fx:reference source="R1C4" />
+         </java.util.ArrayList>
+      </fx:define>
+      <fx:define>
+         <java.util.ArrayList fx:id="level3CardViewsOrient">
+            <fx:reference source="R3C5" />
+            <fx:reference source="R3C6" />
+         </java.util.ArrayList>
+      </fx:define>
+      <fx:define>
+         <java.util.ArrayList fx:id="level2CardViewsOrient">
+            <fx:reference source="R2C5" />
+            <fx:reference source="R2C6" />
+         </java.util.ArrayList>
+      </fx:define>
+      <fx:define>
+         <java.util.ArrayList fx:id="level1CardViewsOrient">
+            <fx:reference source="R1C5" />
+            <fx:reference source="R1C6" />
+         </java.util.ArrayList>
+      </fx:define>
+      <fx:define>
+         <java.util.ArrayList fx:id="cardViews">
+            <fx:reference source="level1CardViewsBase" />
+            <fx:reference source="level2CardViewsBase" />
+            <fx:reference source="level3CardViewsBase" />
+            <fx:reference source="level1CardViewsOrient" />
+            <fx:reference source="level2CardViewsOrient" />
+            <fx:reference source="level3CardViewsOrient" />
          </java.util.ArrayList>
       </fx:define>
 
