@@ -9,7 +9,7 @@ public class Card extends Image {
 
   private static final ArrayList<Card> aInitCards = new ArrayList<>();
 
-  // Cost = { CostGreen, CostWhite, CostBlue, CostBlack, CostRed}
+  // Cost = { CostGreen, CostWhite, CostBlue, CostBlack, CostRed }
   private final int[] aCost;
   private final GemColors aDiscountColor;
   private final int aDiscountAmt;
@@ -17,6 +17,17 @@ public class Card extends Image {
   private final int aLevel;
   private final int aVictoryPoints;
 
+  /**
+   * Builds a fully functional card object
+   *
+   * @param pCost = cost of card in format { CostGreen, CostWhite, CostBlue, CostBlack, CostRed } where all costs are integers
+   * @param pDiscountColor = color of the card's discount
+   * @param pDiscountAmt = number of gems in card's discount
+   * @param pExpansion = which expansion the card belongs to
+   * @param pLevel = level of the card as an integer
+   * @param pVictoryPoints = number of victory points card has
+   * @param pFileString = full path of the image file
+   */
   public Card(int[] pCost, GemColors pDiscountColor, int pDiscountAmt,
               Expansions pExpansion, int pLevel, int pVictoryPoints, String pFileString) {
     super(pFileString);
@@ -33,6 +44,13 @@ public class Card extends Image {
     return new ArrayList<>(aInitCards);
   }
 
+  /**
+   * Allows the initialization of the whole deck through a csv file.
+   *
+   * @post = The ArrayList aInitCards contains a list of every card initialized from CardData.csv
+   *
+   * future plans: make this take a parameter of a .csv file name, have it return a list of cards so that the OrientExpansion class can handle the actual use of the cards and so the list isn't static
+   */
   public static void setupCards() {
     try {
       // Current line of CSV file
@@ -63,6 +81,11 @@ public class Card extends Image {
     }
   }
 
+  /**
+   * Converts card object into text
+   *
+   * @return Name of card image
+   */
   public String toString(){
     return "A card with image: "+super.toString();
   }
