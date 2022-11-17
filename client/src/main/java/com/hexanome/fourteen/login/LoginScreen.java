@@ -89,9 +89,7 @@ public final class LoginScreen implements Initializable {
     // Try launching the game
     try {
       game.goToGame(aPrimaryStage);
-    } catch (IOException ioe) {
-      System.out.println("Error when starting game" + ioe);
-    }
+    } catch (Exception ex) {ex.printStackTrace();}
   }
 
 }
