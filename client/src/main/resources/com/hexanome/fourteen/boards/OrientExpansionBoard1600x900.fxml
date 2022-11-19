@@ -520,9 +520,9 @@
          </children>
 
       </Pane>
-      <AnchorPane fx:id="cardActionMenu" layoutX="440.0" layoutY="157.0" visible="false">
+      <AnchorPane fx:id="cardActionMenu" layoutX="440.0" layoutY="157.0">
          <children>
-            <Pane layoutX="456.0" opacity="0.5" prefHeight="600.0" prefWidth="700.0" style="-fx-background-color: #F8DB85; -fx-opacity: 0.7;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Pane layoutX="456.0" prefHeight="600.0" prefWidth="700.0" style="-fx-background-color: #F8DB85; -fx-opacity: 0.7;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
             <BorderPane prefHeight="600.0" prefWidth="700.0">
                <center>
                   <VBox alignment="CENTER" spacing="30.0" BorderPane.alignment="CENTER">
@@ -568,6 +568,72 @@
                   </ImageView>
                </graphic>
             </Button>
+            <GridPane id="bankMatrix" fx:id="tokenActionMatrix" alignment="CENTER" prefHeight="300.0" prefWidth="200.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="20.0">
+               <children>
+                  <Label fx:id="actionGreenGemLabel" alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.columnIndex="1">
+                     <font>
+                        <Font name="Satoshi Black" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="actionWhiteGemLabel" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                     <font>
+                        <Font name="Satoshi Black" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="actionBlueGemLabel" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="7" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                     <font>
+                        <Font name="Satoshi Black" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="actionBlackGemLabel" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                     <font>
+                        <Font name="Satoshi Black" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="actionRedGemLabel" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+                     <font>
+                        <Font name="Satoshi Black" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="actionYellowGemLabel" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="0" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5">
+                     <font>
+                        <Font name="Satoshi Black" size="24.0" />
+                     </font>
+                  </Label>
+                  <Circle fill="#17ae4c" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                  <Circle fill="#dfe8e2" layoutX="93.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                  <Circle fill="#3d91ff" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                  <Circle fill="#323232" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+                  <Circle fill="#fc6060" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+                  <Circle fill="#fce410" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+                  <Button fx:id="removeGreenButton1" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="-" visible="false" />
+                  <Button fx:id="removeWhiteButton1" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="-" visible="false" GridPane.rowIndex="1" />
+                  <Button fx:id="removeBlueButton1" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="-" visible="false" GridPane.rowIndex="2" />
+                  <Button fx:id="removeBlackButton1" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="-" visible="false" GridPane.rowIndex="3" />
+                  <Button fx:id="removeRedButton1" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="-" visible="false" GridPane.rowIndex="4" />
+                  <Button fx:id="removeYellowButton1" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="-" visible="false" GridPane.rowIndex="5" />
+                  <Button fx:id="addGreenButton1" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="+" visible="false" GridPane.columnIndex="3" />
+                  <Button fx:id="addWhiteButton1" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="+" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                  <Button fx:id="addBlueButton1" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="+" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                  <Button fx:id="addBlackButton1" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="+" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                  <Button fx:id="addRedButton1" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="+" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                  <Button fx:id="addYellowButton1" maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" text="+" visible="false" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+               </children>
+               <columnConstraints>
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="69.0" minWidth="10.0" prefWidth="33.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="10.0" prefWidth="48.0" />
+                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+            </GridPane>
          </children>
       </AnchorPane>
       <ImageView fx:id="testImageView" fitHeight="150.0" fitWidth="200.0" layoutX="164.0" layoutY="59.0" pickOnBounds="true" preserveRatio="true" />
@@ -592,6 +658,17 @@
             <fx:reference source="bBlackGemLabel" />
             <fx:reference source="bRedGemLabel" />
             <fx:reference source="bYellowGemLabel" />
+         </java.util.ArrayList>
+      </fx:define>
+
+      <fx:define>
+         <java.util.ArrayList fx:id="actionGemLabels">
+            <fx:reference source="actionGreenGemLabel" />
+            <fx:reference source="actionWhiteGemLabel" />
+            <fx:reference source="actionBlueGemLabel" />
+            <fx:reference source="actionBlackGemLabel" />
+            <fx:reference source="actionRedGemLabel" />
+            <fx:reference source="actionYellowGemLabel" />
          </java.util.ArrayList>
       </fx:define>
 

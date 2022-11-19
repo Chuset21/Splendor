@@ -66,11 +66,18 @@ public class Card extends Image {
 
       //System.out.println("Card [Disc color: " + GemColors.valueOf(cardData[5]) + ", Expansion: " + Expansions.valueOf(cardData[7]) + ", File path: images/" + cardData[cardData.length - 1] + "]");
 
-      Card c = new Card(new int[]{Integer.valueOf(cardData[0]), Integer.valueOf(cardData[1]),
-              Integer.valueOf(cardData[2]), Integer.valueOf(cardData[3]), Integer.valueOf(cardData[4])},
-              GemColors.valueOf(cardData[5]), Integer.valueOf(cardData[6]), Expansions.valueOf(cardData[7]),
-              Integer.valueOf(cardData[8]), Integer.valueOf(cardData[9]), Card.class.getResource("images/" + cardData[10]).toString());
-      cards.add(c);
+      // Add given number of the card type
+      for(int i = 0; i < Integer.valueOf(cardData[11]);i++){
+
+        // Create card
+        Card c = new Card(new int[]{Integer.valueOf(cardData[0]), Integer.valueOf(cardData[1]),
+                Integer.valueOf(cardData[2]), Integer.valueOf(cardData[3]), Integer.valueOf(cardData[4])},
+                GemColors.valueOf(cardData[5]), Integer.valueOf(cardData[6]), Expansions.valueOf(cardData[7]),
+                Integer.valueOf(cardData[8]), Integer.valueOf(cardData[9]), Card.class.getResource("images/tempcards/" + cardData[10]).toString());
+
+        // Add card to cards list
+        cards.add(c);
+      }
     }
 
     return cards;
@@ -83,6 +90,8 @@ public class Card extends Image {
   public Expansions getExpansion() {
     return aExpansion;
   }
+
+  public int[] getCost(){ return aCost; }
 
   /**
    * Converts card object into text
