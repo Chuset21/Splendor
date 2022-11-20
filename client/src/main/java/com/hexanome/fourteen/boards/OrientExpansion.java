@@ -22,9 +22,13 @@ public class OrientExpansion implements Initializable {
 
   Bank bank;
   private ArrayList<Card> gameCards;
-  private Stack<Card> level3Cards;
-  private Stack<Card> level2Cards;
-  private Stack<Card> level1Cards;
+  private Deck level3Cards;
+  private Deck level2Cards;
+  private Deck level1Cards;
+  private Deck level3CardsOrient;
+  private Deck level2CardsOrient;
+  private Deck level1CardsOrient;
+  private ArrayList<Deck> gameDecks;
   private String selectedCardId;
 
   @FXML
@@ -76,6 +80,8 @@ public class OrientExpansion implements Initializable {
   @FXML
   private List<Label> bGemLabels;
   @FXML
+  private List<Label> actionGemLabels;
+  @FXML
   private List<Button> removeGemButtons;
   @FXML
   private List<Button> addGemButtons;
@@ -85,7 +91,7 @@ public class OrientExpansion implements Initializable {
     Parent root = FXMLLoader.load(Objects.requireNonNull(
         OrientExpansion.class.getResource("OrientExpansionBoard1600x900.fxml")));
     // Set up root on stage (window)
-    Scene aScene = new Scene(root, 1440, 810);
+    Scene aScene = new Scene(root);
 
     // Initialize stage settings
     aPrimaryStage.setScene(aScene);
@@ -125,40 +131,104 @@ public class OrientExpansion implements Initializable {
       ioe.printStackTrace();
     }
 
-    // Print cards being used (for testing)
-    System.out.println(gameCards);
-
+    // Clear all card views
     for(ArrayList<ImageView> cl : cardViews){
       for(ImageView iv : cl){
         iv.setImage(null);
       }
     }
+
+    gameDecks = new ArrayList<>();
+    gameDecks.add(level3Cards = new Deck(3,Expansions.BASEGAME,level3CardViewsBase));
+    gameDecks.add(level2Cards = new Deck(2,Expansions.BASEGAME,level2CardViewsBase));
+    gameDecks.add(level1Cards = new Deck(1,Expansions.BASEGAME,level1CardViewsBase));
+    gameDecks.add(level3CardsOrient = new Deck(3,Expansions.ORIENT,level3CardViewsOrient));
+    gameDecks.add(level2CardsOrient = new Deck(2,Expansions.ORIENT,level2CardViewsOrient));
+    gameDecks.add(level1CardsOrient = new Deck(1,Expansions.ORIENT,level1CardViewsOrient));
+
+    for(Card c : gameCards){
+        for(Deck d : gameDecks){
+          if(d.getLevel() == c.getLevel() && d.getExpansion() == c.getExpansion()){
+            d.push(c);
+          }
+        }
+    }
+
+    // This just prints the level 1 and 2 base game cards in their respective Decks
+    //System.out.println(level1Cards+"\n"+level2Cards);
+
+    for(int i = 0; i<4; i++){
+      ((ImageView)cardViews.get(0).get(i)).setImage(level1Cards.pop());
+    }
   }
 
   public void handleCardSelect(MouseEvent event) {
+    // Get imageview
     selectedCard = (ImageView) event.getSource();
+
     //Input validation for null spaces
     if (selectedCard.getImage() == null) {
       return;
     }
+
+    // Get id of imageview
     selectedCardId = selectedCard.getId();
+
+    // Set action pane image to the selected card
     cardActionImage.setImage(selectedCard.getImage());
+
+    // Set values in action pane to the card's cost
+    for(int i = 0;i<((Card)selectedCard.getImage()).getCost().length;i++){
+      // Set label string to the respective cost of the card
+      actionGemLabels.get(i).setText(((Card)selectedCard.getImage()).getCost()[i]+"");
+    }
+
+    // Set gold gems to 0 -> !!!can change this later when implementing gold purchases!!!
+    actionGemLabels.get(5).setText("0");
+
+    // Open menu
     cardActionMenu.setVisible(true);
   }
 
   public void handlePurchase() {
-    Image cardPurchased = selectedCard.getImage();
+    // Get card to be purchased
+    Card cardPurchased = (Card)selectedCard.getImage();
+
+    // Clear imageview of purchased card
     selectedCard.setImage(null);
+
+    // Refill imageview if a card is left in the deck
+    for(Deck d : gameDecks){
+      if(d.hasCardSlot(selectedCard) && !d.empty()){
+        selectedCard.setImage(d.pop());
+      }
+    }
+
+    // Put purchased card in inventory
     purchasedStack.setImage(cardPurchased);
-    System.out.println("Got image:\n"+purchasedStack.getImage());
+
+    // Close card menu
     cardActionMenu.setVisible(false);
   }
 
   public void handleReserve() {
-    Image cardReserved = selectedCard.getImage();
+    // Get card to be purchased
+    Card cardReserved = (Card)selectedCard.getImage();
+
+    // Clear imageview of reserved card
     selectedCard.setImage(null);
+
+    // Refill imageview if a card is left in the deck
+    for(Deck d : gameDecks){
+      if(d.hasCardSlot(selectedCard) && !d.empty()){
+        selectedCard.setImage(d.pop());
+      }
+    }
+
+    // Put reserved card in inventory
     reservedStack.setImage(cardReserved);
-    System.out.println("Got image:\n"+reservedStack.getImage());
+
+    // Close card menu
     cardActionMenu.setVisible(false);
   }
 
