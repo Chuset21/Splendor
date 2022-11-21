@@ -1,6 +1,6 @@
 package com.hexanome.fourteen.lobbyui;
 
-import com.hexanome.fourteen.boards.OrientExpansion;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -84,7 +84,7 @@ public class LobbyController implements Initializable {
     aPrimaryStage.show();
   }
 
-  public void handleCreateGame() {
+  public void handleCreateGameButton() {
     //Switch scene to create game details (game rule selection)
     try {
       Parent root = FXMLLoader.load(getClass().getResource("createGame.fxml"));
@@ -94,7 +94,7 @@ public class LobbyController implements Initializable {
     }
   }
 
-  public void handleJoinGame() {
+  public void handleJoinGameButton() {
     //Switch scene to join game details (lobby selection)
     try {
       Parent root = FXMLLoader.load(getClass().getResource("joinGame.fxml"));
@@ -104,7 +104,7 @@ public class LobbyController implements Initializable {
     }
   }
 
-  public void handleLoadGame() {
+  public void handleLoadGameButton() {
     //Switch scene to load game details (chose game save)
     try {
       Parent root = FXMLLoader.load(getClass().getResource("loadGame.fxml"));
@@ -113,5 +113,9 @@ public class LobbyController implements Initializable {
       e.printStackTrace();
     }
 
+  }
+  public void handleQuitButton() {
+    Platform.exit();
+    System.exit(0);
   }
 }
