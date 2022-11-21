@@ -1,6 +1,7 @@
 package com.hexanome.fourteen.login;
 
 import com.hexanome.fourteen.boards.OrientExpansion;
+import com.hexanome.fourteen.lobbyui.LobbyController;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -55,6 +56,7 @@ public final class LoginScreen implements Initializable {
     CREDENTIALS.add(new String[] {"joebiden43", "okay123"});
     CREDENTIALS.add(new String[] {"test", "test"});
     CREDENTIALS.add(new String[] {"kai", "hi"});
+    CREDENTIALS.add(new String[] {"a", "a"});
   }
 
   @Override
@@ -84,12 +86,16 @@ public final class LoginScreen implements Initializable {
 
   private void launchGame() {
     // Create new instance of a Splendor game
-    OrientExpansion game = new OrientExpansion();
+    //OrientExpansion game = new OrientExpansion();
+    LobbyController game = new LobbyController();
 
     // Try launching the game
     try {
-      game.goToGame(aPrimaryStage);
-    } catch (Exception ex) {ex.printStackTrace();}
+      game.goToChoiceSelect(aPrimaryStage);
+      //game.goToGame(aPrimaryStage);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
   }
 
 }

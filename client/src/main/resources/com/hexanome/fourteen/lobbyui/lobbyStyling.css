@@ -1,0 +1,48 @@
+/* LOCAL BACKGROUND EFFECTS */
+#choiceSelectAnchor {
+    -fx-background-image: url('images/white_sand.jpg');
+    -fx-background-size: 100% 100%;
+}
+#opacityPane {
+    -fx-background-color: white;
+    -fx-opacity: 20%;
+}
+#buttonsOpacityPane {
+    -fx-background-color: white;
+    -fx-opacity: 50%;
+    -fx-background-radius: 30 30 30 30;
+}
+#titleOpacityPane {
+    -fx-background-color: white;
+    -fx-opacity: 50%;
+    -fx-background-radius: 30 30 30 30;
+}
+
+/* GLOBAL BUTTON EFFECTS */
+.button:hover {
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+    -fx-scale-z: 1.1;
+}
+.button:pressed {
+    -fx-background-insets: 2;
+}
+
+/* LOCAL BUTTON EFFECTS */
+#newGameButton{
+    -fx-background-color: #00D23B;
+    -fx-background-radius: 20 20 20 20;
+}
+
+#createGameButton{
+    -fx-background-color: #3699FF;
+    -fx-background-radius: 20 20 20 20;
+}
+#joinGameButton{
+    -fx-background-color: #3699FF;
+    -fx-background-radius: 20 20 20 20;
+}
+#quitButton{
+    -fx-background-color: #F64E60;
+    -fx-background-radius: 20 20 20 20;
+}
