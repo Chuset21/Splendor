@@ -8,9 +8,9 @@
 
 <AnchorPane fx:id="choiceSelectAnchor" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.LobbyController">
    <children>
-      <Pane fx:id="opacityPane" layoutX="-3.0" layoutY="-4.0" prefHeight="710.0" prefWidth="1204.0" />
-      <Pane fx:id="titleOpacityPane" layoutX="320.0" layoutY="39.0" prefHeight="224.0" prefWidth="570.0" />
-      <Pane fx:id="buttonsOpacityPane" layoutX="120.0" layoutY="343.0" prefHeight="154.0" prefWidth="976.0" />
+      <Pane fx:id="bgOpacityPane" layoutX="-3.0" layoutY="-4.0" prefHeight="710.0" prefWidth="1204.0" />
+      <Pane fx:id="stdOpacityPane" layoutX="320.0" layoutY="39.0" prefHeight="224.0" prefWidth="570.0" />
+      <Pane fx:id="stdOpacityPane" layoutX="120.0" layoutY="343.0" prefHeight="154.0" prefWidth="976.0" />
       <Button fx:id="newGameButton" layoutX="144.0" layoutY="384.0" mnemonicParsing="false" onMouseClicked="#handleCreateGameButton" prefHeight="78.0" prefWidth="230.0" text="New" textAlignment="CENTER">
          <font>
             <Font name="Satoshi Bold" size="24.0" />

@@ -33,11 +33,29 @@ public class LobbyController implements Initializable {
   @FXML
   private Pane opacityPane;
   @FXML
-  private Pane titleOpacityPane;
+  private Pane stdOpacityPane;
   @FXML
   private Pane buttonsOpacityPane;
   @FXML
   private Button backButton;
+  @FXML
+  private TextField createLobbyPasswordField;
+  @FXML
+  private ToggleButton selectOrientToggle;
+  @FXML
+  private ToggleButton selectExtraToggle;
+  @FXML
+  private ToggleButton maxPlayerToggleOne;
+  @FXML
+  private ToggleButton maxPlayerToggleTwo;
+  @FXML
+  private ToggleButton maxPlayerToggleThree;
+  @FXML
+  private ToggleButton maxPlayerToggleFour;
+  @FXML
+  private Button createLobbyButton;
+
+
 
   public void goToChoiceSelect(Stage pStage) throws IOException {
     aPrimaryStage = pStage;
@@ -71,9 +89,11 @@ public class LobbyController implements Initializable {
   public void loadScene(Parent root) {
     //Push the current scene to the scene stack
     scenePath.push(aPrimaryStage.getScene());
-
     //Load Scene
     Scene scene = new Scene(root);
+    //Set Scene Styling
+    scene.getStylesheets().add(getClass().getResource("lobbyStyling.css").toExternalForm());
+    //Set and Display Scene
     aPrimaryStage.setScene(scene);
     aPrimaryStage.show();
   }
@@ -89,7 +109,7 @@ public class LobbyController implements Initializable {
     try {
       Parent root = FXMLLoader.load(getClass().getResource("createGame.fxml"));
       loadScene(root);
-    } catch(Exception e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }
@@ -99,7 +119,7 @@ public class LobbyController implements Initializable {
     try {
       Parent root = FXMLLoader.load(getClass().getResource("joinGame.fxml"));
       loadScene(root);
-    } catch(Exception e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
   }
@@ -109,11 +129,11 @@ public class LobbyController implements Initializable {
     try {
       Parent root = FXMLLoader.load(getClass().getResource("loadGame.fxml"));
       loadScene(root);
-    } catch(Exception e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
-
   }
+
   public void handleQuitButton() {
     Platform.exit();
     System.exit(0);
