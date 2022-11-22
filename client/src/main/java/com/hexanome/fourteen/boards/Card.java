@@ -1,10 +1,15 @@
 package com.hexanome.fourteen.boards;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
+//import java.util.*;
 import javafx.scene.image.Image;
 
-import java.io.*;
-import java.lang.reflect.Array;
-import java.util.*;
 
 public class Card extends Image {
 
@@ -17,9 +22,10 @@ public class Card extends Image {
   private final int aVictoryPoints;
 
   /**
-   * Builds a fully functional card object
+   * Builds a fully functional card object.
    *
-   * @param pCost = cost of card in format { CostGreen, CostWhite, CostBlue, CostBlack, CostRed } where all costs are integers
+   * @param pCost = cost of card in format { CostGreen, CostWhite, CostBlue, CostBlack, CostRed }
+   *              where all costs are integers
    * @param pDiscountColor = color of the card's discount
    * @param pDiscountAmt = number of gems in card's discount
    * @param pExpansion = which expansion the card belongs to
@@ -44,9 +50,11 @@ public class Card extends Image {
    *
    * @post = The ArrayList aInitCards contains a list of every card initialized from CardData.csv
    *
-   * future plans: make this take a parameter of a .csv file name, have it return a list of cards so that the OrientExpansion class can handle the actual use of the cards and so the list isn't static
+   * future plans: make this take a parameter of a .csv file name, have it return a list of cards
+   * so that the OrientExpansion class can handle the actual use of the cards and so the list
+   * isn't static
    */
-  public static ArrayList<Card> setupCards(String csvFileName) throws IOException{
+  public static ArrayList<Card> setupCards(String csvFileName) throws IOException {
     ArrayList<Card> cards = new ArrayList<>();
 
     // Current line of CSV file
@@ -54,7 +62,7 @@ public class Card extends Image {
 
     // Get CardData.csv file
     BufferedReader br = new BufferedReader(new InputStreamReader(
-            Objects.requireNonNull(Card.class.getResourceAsStream("images/"+csvFileName))));
+            Objects.requireNonNull(Card.class.getResourceAsStream("images/" + csvFileName))));
 
     // Skip header of the CSV file
     br.readLine();
@@ -64,16 +72,20 @@ public class Card extends Image {
       // Use comma as a delimiter
       String[] cardData = curLine.split(",");
 
-      //System.out.println("Card [Disc color: " + GemColors.valueOf(cardData[5]) + ", Expansion: " + Expansions.valueOf(cardData[7]) + ", File path: images/" + cardData[cardData.length - 1] + "]");
+      //System.out.println("Card [Disc color: " + GemColors.valueOf(cardData[5]) + ",
+      //Expansion: " + Expansions.valueOf(cardData[7]) + ",
+      //File path: images/" + cardData[cardData.length - 1] + "]");
 
       // Add given number of the card type
-      for(int i = 0; i < Integer.valueOf(cardData[11]);i++){
+      for (int i = 0; i < Integer.valueOf(cardData[11]); i++) {
 
         // Create card
         Card c = new Card(new int[]{Integer.valueOf(cardData[0]), Integer.valueOf(cardData[1]),
-                Integer.valueOf(cardData[2]), Integer.valueOf(cardData[3]), Integer.valueOf(cardData[4])},
-                GemColors.valueOf(cardData[5]), Integer.valueOf(cardData[6]), Expansions.valueOf(cardData[7]),
-                Integer.valueOf(cardData[8]), Integer.valueOf(cardData[9]), Card.class.getResource("images/tempcards/" + cardData[10]).toString());
+                Integer.valueOf(cardData[2]), Integer.valueOf(cardData[3]),
+                Integer.valueOf(cardData[4])}, GemColors.valueOf(cardData[5]),
+                Integer.valueOf(cardData[6]), Expansions.valueOf(cardData[7]),
+                Integer.valueOf(cardData[8]), Integer.valueOf(cardData[9]),
+                Card.class.getResource("images/tempcards/" + cardData[10]).toString());
 
         // Add card to cards list
         cards.add(c);
@@ -91,14 +103,17 @@ public class Card extends Image {
     return aExpansion;
   }
 
-  public int[] getCost(){ return aCost; }
+  public int[] getCost() {
+    return aCost;
+  }
 
   /**
-   * Converts card object into text
+   * Converts card object into text.
    *
    * @return Name of card image
    */
-  public String toString(){
-    return "\nLevel "+aLevel+" card: ["+Arrays.toString(aCost)+","+aDiscountColor+","+super.toString()+"]";
+  public String toString() {
+    return "\nLevel " + aLevel + " card: [" + Arrays.toString(aCost) + "," + aDiscountColor
+            + "," + super.toString() + "]";
   }
 }
