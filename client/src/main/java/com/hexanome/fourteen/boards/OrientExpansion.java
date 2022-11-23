@@ -7,20 +7,24 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.*;
 
 public class OrientExpansion implements Initializable {
-
   Bank bank;
+  public int numPlayers = 4;
+
+  public static final int[] GEM_INDEX = {0, 1, 2, 3, 4, 5};
+
+  // Player's Info
+  private int[] playerGems = new int[6]; // player's Gems (in Hand)
+
   private ArrayList<Card> gameCards;
   private Deck level3Cards;
   private Deck level2Cards;
@@ -105,9 +109,14 @@ public class OrientExpansion implements Initializable {
   // Use this function if you want to initialize nodes and their properties.
   // E.G. Button text, Labels positions, etc. etc.
   private void init() {
-    // Set up bank
-    bank = new Bank(4, addGemButtons, removeGemButtons, pGemLabels, bGemLabels, takeBankButton);
 
+    // Set up bank
+    bank = new Bank(numPlayers, addGemButtons, removeGemButtons, pGemLabels, bGemLabels, takeBankButton);
+
+    // Initialize the player's gems
+    for (int idx : GEM_INDEX) {
+      pGemLabels.get(idx).textProperty().set("" + playerGems[idx]);
+    }
     // Set up game screen
     cardActionMenu.setVisible(false);
 
@@ -233,51 +242,51 @@ public class OrientExpansion implements Initializable {
   }
 
   public void handleTakeGreenGemButton() {
-    bank.takeGem(0);
+    bank.takeGem(playerGems,0);
   }
 
   public void handleReturnGreenGemButton() {
-    bank.returnGem(0);
+    bank.returnGem(playerGems,0);
   }
 
   public void handleTakeWhiteGemButton() {
-    bank.takeGem(1);
+    bank.takeGem(playerGems,1);
   }
 
   public void handleReturnWhiteGemButton() {
-    bank.returnGem(1);
+    bank.returnGem(playerGems, 1);
   }
 
   public void handleTakeBlueGemButton() {
-    bank.takeGem(2);
+    bank.takeGem(playerGems, 2);
   }
 
   public void handleReturnBlueGemButton() {
-    bank.returnGem(2);
+    bank.returnGem(playerGems, 2);
   }
 
   public void handleTakeBlackGemButton() {
-    bank.takeGem(3);
+    bank.takeGem(playerGems, 3);
   }
 
   public void handleReturnBlackGemButton() {
-    bank.returnGem(3);
+    bank.returnGem(playerGems, 3);
   }
 
   public void handleTakeRedGemButton() {
-    bank.takeGem(4);
+    bank.takeGem(playerGems, 4);
   }
 
   public void handleReturnRedGemButton() {
-    bank.returnGem(4);
+    bank.returnGem(playerGems, 4);
   }
 
   public void handleTakeYellowGemButton() {
-    bank.takeGem(5);
+    bank.takeGem(playerGems, 5);
   }
 
   public void handleReturnYellowGemButton() {
-    bank.returnGem(5);
+    bank.returnGem(playerGems, 5);
   }
 
   @FXML
