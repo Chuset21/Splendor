@@ -69,6 +69,7 @@ public final class LoginScreen implements Initializable {
     // Check if input credentials match any in the list of credentials
     for (String[] cred : CREDENTIALS) {
       if (usernameField.getText().equals(cred[0]) && passwordField.getText().equals(cred[1])) {
+        System.out.println();
         launchGame();
       }
     }

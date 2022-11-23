@@ -6,40 +6,38 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="choiceSelectAnchor" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.LobbyController">
+<AnchorPane fx:id="anchorPane" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.LobbyController">
    <children>
-      <Pane fx:id="bgOpacityPane" layoutX="-3.0" layoutY="-4.0" prefHeight="710.0" prefWidth="1204.0" />
-      <Pane fx:id="stdOpacityPane" layoutX="320.0" layoutY="39.0" prefHeight="224.0" prefWidth="570.0" />
-      <Pane fx:id="stdOpacityPane" layoutX="120.0" layoutY="343.0" prefHeight="154.0" prefWidth="976.0" />
-      <Button fx:id="newGameButton" layoutX="144.0" layoutY="384.0" mnemonicParsing="false" onMouseClicked="#handleCreateGameButton" prefHeight="78.0" prefWidth="230.0" text="New" textAlignment="CENTER">
+      <Pane fx:id="stdOpacityPane" layoutX="294.0" layoutY="25.0" prefHeight="184.0" prefWidth="601.0" />
+      <Button fx:id="createGameButton" layoutX="753.0" layoutY="412.0" mnemonicParsing="false" onMouseClicked="#handleLoadGameButton" prefHeight="78.0" prefWidth="230.0" text="Load" textAlignment="CENTER">
          <font>
             <Font name="Satoshi Bold" size="24.0" />
          </font>
       </Button>
-      <Button fx:id="joinGameButton" layoutX="486.0" layoutY="381.0" mnemonicParsing="false" onMouseClicked="#handleJoinGameButton" prefHeight="78.0" prefWidth="230.0" text="Join" textAlignment="CENTER">
+      <Button fx:id="newGameButton" layoutX="220.0" layoutY="410.0" mnemonicParsing="false" onMouseClicked="#handleCreateGameButton" prefHeight="78.0" prefWidth="230.0" text="New" textAlignment="CENTER">
          <font>
             <Font name="Satoshi Bold" size="24.0" />
          </font>
       </Button>
-      <Button fx:id="createGameButton" layoutX="829.0" layoutY="383.0" mnemonicParsing="false" onMouseClicked="#handleLoadGameButton" prefHeight="78.0" prefWidth="230.0" text="Load" textAlignment="CENTER">
+      <Button fx:id="joinGameButton" layoutX="486.0" layoutY="411.0" mnemonicParsing="false" onMouseClicked="#handleJoinGameButton" prefHeight="78.0" prefWidth="230.0" text="Join" textAlignment="CENTER">
          <font>
             <Font name="Satoshi Bold" size="24.0" />
          </font>
       </Button>
-      <Text layoutX="460.0" layoutY="135.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Splendor">
-         <font>
-            <Font name="Bonny Bold" size="96.0" />
-         </font>
-      </Text>
-      <Text layoutX="391.0" layoutY="224.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back joebiden43!">
-         <font>
-            <Font name="Satoshi Regular" size="36.0" />
-         </font>
-      </Text>
       <Button fx:id="quitButton" layoutX="1078.0" layoutY="42.0" mnemonicParsing="false" onMouseClicked="#handleQuitButton" text="Quit">
          <font>
             <Font name="Satoshi Bold" size="24.0" />
          </font>
       </Button>
+      <Text layoutX="370.0" layoutY="265.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back joebiden43!">
+         <font>
+            <Font name="Satoshi Bold" size="36.0" />
+         </font>
+      </Text>
+      <Text layoutX="384.0" layoutY="156.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Splendor">
+         <font>
+            <Font name="Sharpie Regular" size="124.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>

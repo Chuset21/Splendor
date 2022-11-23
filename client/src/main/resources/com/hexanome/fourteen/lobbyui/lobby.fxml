@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="anchorPane" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.LobbyController">
+    <children>
+        <Button fx:id="leaveLobbyButton" layoutX="316.0" layoutY="44.0" mnemonicParsing="false" onMouseClicked="#unloadScene" text="Leave">
+            <font>
+                <Font name="Satoshi Bold" size="24.0" />
+            </font></Button>
+          <Text layoutX="76.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Billy Bob's Lobby">
+              <font>
+                  <Font name="Satoshi Bold" size="26.0" />
+              </font>
+          </Text>
+      <Text layoutX="76.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3/4 Players">
+         <font>
+            <Font name="Satoshi Bold" size="18.0" />
+         </font>
+      </Text>
+        <Pane fx:id="textOpacityPane" layoutX="139.0" layoutY="163.0" prefHeight="392.0" prefWidth="874.0">
+            <children>
+                <Text layoutX="37.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Players">
+                    <font>
+                        <Font name="Satoshi Bold" size="20.0" />
+                    </font>
+                </Text>
+            <Pane layoutX="35.0" layoutY="206.0" prefHeight="112.0" prefWidth="336.0">
+               <children>
+                  <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="16.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true" />
+                  <Text layoutX="131.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Billy Bob">
+                     <font>
+                        <Font name="Satoshi Bold" size="20.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="131.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ready">
+                     <font>
+                        <Font name="Satoshi Regular" size="20.0" />
+                     </font>
+                  </Text>
+               </children>
+            </Pane>
+            <Pane layoutX="463.0" layoutY="210.0" prefHeight="112.0" prefWidth="336.0">
+               <children>
+                  <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="16.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true" />
+                  <Text layoutX="131.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Billy Bob">
+                     <font>
+                        <Font name="Satoshi Bold" size="20.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="131.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ready">
+                     <font>
+                        <Font name="Satoshi Regular" size="20.0" />
+                     </font>
+                  </Text>
+               </children>
+            </Pane>
+            <Pane layoutX="460.0" layoutY="71.0" prefHeight="112.0" prefWidth="336.0">
+               <children>
+                  <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="16.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true" />
+                  <Text layoutX="131.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Billy Bob">
+                     <font>
+                        <Font name="Satoshi Bold" size="20.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="131.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ready">
+                     <font>
+                        <Font name="Satoshi Regular" size="20.0" />
+                     </font>
+                  </Text>
+               </children>
+            </Pane>
+            <Pane layoutX="37.0" layoutY="69.0" prefHeight="112.0" prefWidth="336.0">
+               <children>
+                  <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="16.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true" />
+                  <Text layoutX="131.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Billy Bob">
+                     <font>
+                        <Font name="Satoshi Bold" size="20.0" />
+                     </font>
+                  </Text>
+                  <Text layoutX="131.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ready">
+                     <font>
+                        <Font name="Satoshi Regular" size="20.0" />
+                     </font>
+                  </Text>
+               </children>
+            </Pane>
+            </children></Pane>
+      <Button fx:id="readyUpButton" layoutX="540.0" layoutY="579.0" mnemonicParsing="false" text="Ready">
+         <font>
+            <Font name="Satoshi Bold" size="24.0" />
+         </font>
+      </Button>
+    </children>
+</AnchorPane>

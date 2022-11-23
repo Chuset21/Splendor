@@ -1,11 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-
-<AnchorPane prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.LobbyController">
+<AnchorPane fx:id="anchorPane" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.LobbyController">
    <children>
-      <Button fx:id="backButton" layoutX="238.0" layoutY="74.0" mnemonicParsing="false" onMouseClicked="#unloadScene" text="Back" textAlignment="CENTER" />
+      <Button fx:id="backButton" layoutX="20.0" layoutY="21.0" mnemonicParsing="false" onMouseClicked="#unloadScene" text="Back">
+         <font>
+            <Font name="Satoshi Bold" size="24.0" />
+         </font></Button>
+      <Pane fx:id="textOpacityPane" layoutX="487.0" layoutY="29.0" prefHeight="70.0" prefWidth="220.0">
+         <children>
+            <Text layoutX="25.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lobby Search">
+               <font>
+                  <Font name="Satoshi Bold" size="26.0" />
+               </font>
+            </Text>
+         </children></Pane>
+      <Pane fx:id="textOpacityPane" layoutX="75.0" layoutY="121.0" prefHeight="70.0" prefWidth="1047.0">
+         <children>
+            <Text layoutX="37.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rooms">
+               <font>
+                  <Font name="Satoshi Italic" size="26.0" />
+               </font>
+            </Text>
+            <Text layoutX="901.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Status">
+               <font>
+                  <Font name="Satoshi Italic" size="26.0" />
+               </font>
+            </Text>
+            <Text layoutX="617.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mode">
+               <font>
+                  <Font name="Satoshi Italic" size="26.0" />
+               </font>
+            </Text>
+         </children></Pane>
+      <ScrollPane hbarPolicy="NEVER" layoutX="76.0" layoutY="222.0" prefHeight="388.0" prefWidth="1045.0" vbarPolicy="ALWAYS">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="444.0" prefWidth="1027.0">
+               <children>
+                  <Pane layoutX="17.0" layoutY="18.0" prefHeight="112.0" prefWidth="991.0">
+                     <children>
+                        <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="16.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true" />
+                        <Text layoutX="122.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Billy Bob's Lobby">
+                           <font>
+                              <Font name="Satoshi Regular" size="20.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="121.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3/4 Players">
+                           <font>
+                              <Font name="Satoshi Regular" size="20.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="601.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Orient">
+                           <font>
+                              <Font name="Satoshi Regular" size="20.0" />
+                           </font>
+                        </Text>
+                        <Button fx:id="joinLobbyButton" layoutX="875.0" layoutY="33.0" mnemonicParsing="false" onMouseClicked="#handleJoinLobbyButton" text="Join">
+                           <font>
+                              <Font name="Satoshi Bold" size="24.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </Pane>
+                  <Pane layoutX="17.0" layoutY="150.0" prefHeight="112.0" prefWidth="991.0">
+                     <children>
+                        <ImageView fitHeight="90.0" fitWidth="90.0" layoutX="16.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true" />
+                        <Text layoutX="122.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="John Smiths's Lobby">
+                           <font>
+                              <Font name="Satoshi Regular" size="20.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="121.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4/4 Players">
+                           <font>
+                              <Font name="Satoshi Regular" size="20.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="601.0" layoutY="63.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Normal">
+                           <font>
+                              <Font name="Satoshi Regular" size="20.0" />
+                           </font>
+                        </Text>
+                        <Button fx:id="fullLobbyButton" layoutX="875.0" layoutY="33.0" mnemonicParsing="false" text="Full">
+                           <font>
+                              <Font name="Satoshi Bold" size="24.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </Pane>
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
    </children>
 </AnchorPane>

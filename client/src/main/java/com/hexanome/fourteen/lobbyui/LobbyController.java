@@ -16,10 +16,11 @@ import java.util.*;
 
 public class LobbyController implements Initializable {
   private static Stage aPrimaryStage;
-  private static Stack<Scene> scenePath = new Stack();
+  private static Stack<Scene> scenePath = new Stack<>();
 
   private String username;
-
+  @FXML
+  private AnchorPane anchorPane;
   @FXML
   private Button newGameButton;
   @FXML
@@ -29,13 +30,7 @@ public class LobbyController implements Initializable {
   @FXML
   private Button quitButton;
   @FXML
-  private AnchorPane choiceSelectAnchor;
-  @FXML
-  private Pane opacityPane;
-  @FXML
   private Pane stdOpacityPane;
-  @FXML
-  private Pane buttonsOpacityPane;
   @FXML
   private Button backButton;
   @FXML
@@ -54,15 +49,25 @@ public class LobbyController implements Initializable {
   private ToggleButton maxPlayerToggleFour;
   @FXML
   private Button createLobbyButton;
-
-
+  @FXML
+  private ToggleButton saveGameOneToggle;
+  @FXML
+  private ToggleButton saveGameTwoToggle;
+  @FXML
+  private Button joinLobbyButton;
+  @FXML
+  private Button fullLobbyButton;
+  @FXML
+  private Button readyUpButton;
+  @FXML
+  private Button leaveLobbyButton;
 
   public void goToChoiceSelect(Stage pStage) throws IOException {
     aPrimaryStage = pStage;
 
     // Import root from fxml file
-    Parent root = FXMLLoader.load(Objects.requireNonNull(
-        LobbyController.class.getResource("choiceSelect.fxml")));
+    Parent root = FXMLLoader.load(
+        Objects.requireNonNull(LobbyController.class.getResource("choiceSelect.fxml")));
     // Set up root on stage (window)
     Scene aScene = new Scene(root);
     aScene.getStylesheets().add(getClass().getResource("lobbyStyling.css").toExternalForm());
@@ -137,5 +142,23 @@ public class LobbyController implements Initializable {
   public void handleQuitButton() {
     Platform.exit();
     System.exit(0);
+  }
+
+  public void handleJoinLobbyButton() {
+    try {
+      Parent root = FXMLLoader.load(getClass().getResource("lobby.fxml"));
+      loadScene(root);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void handleCreateLobbyButton() {
+    try {
+      Parent root = FXMLLoader.load(getClass().getResource("lobby.fxml"));
+      loadScene(root);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 }

@@ -1,24 +1,28 @@
-/* LOCAL BACKGROUND EFFECTS */
+/* GLOBAL BACKGROUND STYLES */
+#anchorPane {
+    -fx-background-color: linear-gradient(to bottom right,#E7E7E7, lightsteelblue);
+}
+
+/* LOCAL BACKGROUND STYLES */
 #choiceSelectAnchor {
     -fx-background-image: url('images/lobby_background.jpg');
     -fx-background-size: 100% 100%;
 }
 
-#bgOpacityPane {
-    -fx-background-color: white;
-    -fx-opacity: 10%;
-}
-
 #stdOpacityPane {
-    -fx-background-color: white;
+    -fx-background-color: grey;
     -fx-opacity: 30%;
     -fx-background-radius: 30 30 30 30;
 }
 
 #textOpacityPane {
-    -fx-background-color: lightgrey;
-    -fx-opacity: 70%;
+    -fx-background-color: #F3F6F9;
     -fx-background-radius: 30 30 30 30;
+}
+
+/* GLOBAL TEXT STYLES */
+.text-area {
+    -fx-background-color: #464E5F;
 }
 
 /* GLOBAL BUTTON STYLES */
@@ -52,12 +56,12 @@
 }
 
 /* LOCAL BUTTON STYLES */
-#newGameButton {
+#newGameButton, #joinLobbyButton {
     -fx-background-color: #00D23B;
     -fx-background-radius: 20 20 20 20;
 }
 
-#createGameButton#createLobbyButton {
+#createGameButton, #createLobbyButton, #readyUpButton {
     -fx-background-color: #3699FF;
     -fx-background-radius: 20 20 20 20;
 }
@@ -72,7 +76,7 @@
     -fx-background-radius: 20 20 20 20;
 }
 
-#backButton {
+#backButton, #leaveLobbyButton {
     -fx-background-color: #F64E60;
     -fx-background-radius: 10 10 10 10;
 }
