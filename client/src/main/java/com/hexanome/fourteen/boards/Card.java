@@ -106,6 +106,12 @@ public class Card extends Image {
   public int[] getCost() {
     return aCost;
   }
+  public GemColors getDiscountColor() {
+    return aDiscountColor;
+  }
+  public int getDiscountAmount() {
+    return aDiscountAmt;
+  }
 
   /**
    * Converts card object into text.
