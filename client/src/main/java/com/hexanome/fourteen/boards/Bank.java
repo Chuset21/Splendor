@@ -1,5 +1,6 @@
 package com.hexanome.fourteen.boards;
 
+import java.util.HashSet;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
@@ -59,6 +60,7 @@ public class Bank {
   // If Toggled off, it simply hides all shop buttons.
   public void toggle() {
     isTaking = !isTaking;
+
     if (isTaking) {
       selectedGems.clear();
       takeBankButton.textProperty().set("Take");
@@ -67,6 +69,7 @@ public class Bank {
         addGemButtons.get(idx).setVisible(true);
       }
       updateBankButtons();
+
     } else {
       takeBankButton.textProperty().set("Open");
       // Otherwise, just hide all the buttons!
@@ -143,7 +146,25 @@ public class Bank {
         addGemButtons.get(idx).setDisable(false);
       }
 
+      // If not enough gems are taken
+      if ((selectedGems.size() < 2) || (selectedGems.size() == 2 && !hasDoubleColour())) {
+        takeBankButton.setDisable(true);
+      } else {
+        takeBankButton.setDisable(false);
+      }
     }
+  }
+
+  private boolean hasDoubleColour() {
+    // handBucket : <gem, count> of our current hand.
+    HashSet<Integer> handBucket = new HashSet<>();
+    for (int gem : selectedGems) {
+
+      if (handBucket.contains(gem)) return true;
+
+      handBucket.add(gem);
+    }
+    return false;
   }
 
 
