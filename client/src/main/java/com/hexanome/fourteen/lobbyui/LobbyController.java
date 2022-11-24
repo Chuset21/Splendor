@@ -7,8 +7,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
@@ -61,6 +64,22 @@ public class LobbyController implements Initializable {
   private Button readyUpButton;
   @FXML
   private Button leaveLobbyButton;
+  @FXML
+  private ImageView playerOneAvatar;
+  @FXML
+  private ImageView playerTwoAvatar;
+  @FXML
+  private ImageView playerThreeAvatar;
+  @FXML
+  private ImageView playerFourAvatar;
+  @FXML
+  private Text playerOneReadyText;
+  @FXML
+  private Text playerTwoReadyText;
+  @FXML
+  private Text playerThreeReadyText;
+  @FXML
+  private Text playerFourReadyText;
 
   public void goToChoiceSelect(Stage pStage) throws IOException {
     aPrimaryStage = pStage;
@@ -159,6 +178,17 @@ public class LobbyController implements Initializable {
       loadScene(root);
     } catch (Exception e) {
       e.printStackTrace();
+    }
+  }
+
+  // This needs revamping and variable changing and stuff.
+  // Need to disable other toggles when one if selected.
+  // This is where curl call to lobby service saved games would go I believe.
+  // I'll finish this Thursday afternoon hopefully!
+  public void handleGameSaveToggle(MouseEvent event) {
+    saveGameOneToggle = (ToggleButton) event.getSource();
+    if (saveGameOneToggle.isSelected()) {
+      System.out.println("SELECTED GAME SAVE ONE");
     }
   }
 }
