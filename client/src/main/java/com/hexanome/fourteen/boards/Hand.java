@@ -65,7 +65,7 @@ public class Hand {
       reservedCards.add(card);
     }
   }
-  
+
 
   private int enumToIndex(GemColors gcolor) {
     switch (gcolor) {
