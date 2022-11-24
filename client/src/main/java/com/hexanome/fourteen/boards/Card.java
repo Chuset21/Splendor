@@ -13,7 +13,7 @@ import javafx.scene.image.Image;
 
 public class Card extends Image {
 
-  // Cost = { CostGreen, CostWhite, CostBlue, CostBlack, CostRed }
+  // Cost = { CostGreen, CostWhite, CostBlue, CostBlack, CostRed, CostYellow }
   private final int[] aCost;
   private final GemColors aDiscountColor;
   private final int aDiscountAmt;

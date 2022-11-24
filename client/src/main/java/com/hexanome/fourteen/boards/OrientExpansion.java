@@ -42,6 +42,11 @@ public class OrientExpansion implements Initializable {
   private Pane menuPopupPane;
   @FXML
   private Pane cardActionMenu;
+  @FXML
+  private Button cardReserveButton;
+  @FXML
+  private Button cardPurchaseButton;
+
 
   //CARD FIELDS
   //2D Array with all card FX ID names.
@@ -181,6 +186,8 @@ public class OrientExpansion implements Initializable {
     // Get imageview
     selectedCard = (ImageView) event.getSource();
 
+
+
     //Input validation for null spaces
     if (selectedCard.getImage() == null) {
       return;
@@ -201,8 +208,30 @@ public class OrientExpansion implements Initializable {
     // Set gold gems to 0 -> !!!can change this later when implementing gold purchases!!!
     actionGemLabels.get(5).setText("0");
 
+    ///// Handle Purchase Availability (By default: is available)
+    cardPurchaseButton.setDisable(false);
+
+    // get the player's hand and the cost of the card
+    Hand pHand = player.getHand();
+    int[] selectedCost = ((Card)selectedCard.getImage()).getCost();
+
+    for (int i = 0 ; i < 5; i++) {
+      //if (selectedCost[i] > pHand.Gems[i] + pHand.gemDiscounts[i]) {
+      if (selectedCost[i] > pHand.Gems[i]) {
+        cardPurchaseButton.setDisable(true);
+        break;
+      }
+    }
+    //// Handle Reserve Availability
+    if (pHand.reservedCards.size() < 3) {
+      cardReserveButton.setDisable(false);
+    } else {
+      cardReserveButton.setDisable(true);
+    }
+
     // Open menu
     cardActionMenu.setVisible(true);
+
   }
 
   public void handlePurchase() {
@@ -224,6 +253,9 @@ public class OrientExpansion implements Initializable {
     // Put purchased card in inventory
     purchasedStack.setImage(cardPurchased);
 
+    // Add purchased card to player's hand
+    player.getHand().purchasedCards.add(cardPurchased);
+
     // Close card menu
     cardActionMenu.setVisible(false);
   }
@@ -244,6 +276,9 @@ public class OrientExpansion implements Initializable {
 
     // Put reserved card in inventory
     reservedStack.setImage(cardReserved);
+
+    // Add the card to the player's hand
+    player.getHand().reservedCards.add(cardReserved);
 
     // Close card menu
     cardActionMenu.setVisible(false);

@@ -10,7 +10,7 @@ public class Hand {
   int prestigePoints;
   List<Card> purchasedCards;
   List<Card> reservedCards;
-  int[] gemDiscounts;
+  public int[] gemDiscounts;
   public int[] Gems;
 
 
