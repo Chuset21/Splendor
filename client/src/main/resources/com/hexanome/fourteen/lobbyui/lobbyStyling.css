@@ -1,6 +1,9 @@
 /* GLOBAL BACKGROUND STYLES */
 #anchorPane {
+    /*
     -fx-background-color: linear-gradient(to bottom right,#E7E7E7, lightsteelblue);
+    */
+    -fx-background-color: #F8DB85
 }
 
 /* LOCAL BACKGROUND STYLES */
@@ -21,8 +24,8 @@
 }
 
 /* GLOBAL TEXT STYLES */
-.text-area {
-    -fx-background-color: #464E5F;
+.textFill {
+    -fx-background-color: #72465b;
 }
 
 /* GLOBAL BUTTON STYLES */

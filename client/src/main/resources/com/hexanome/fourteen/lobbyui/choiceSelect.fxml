@@ -2,24 +2,22 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane fx:id="anchorPane" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.LobbyController">
    <children>
-      <Pane fx:id="stdOpacityPane" layoutX="294.0" layoutY="25.0" prefHeight="184.0" prefWidth="601.0" />
-      <Button fx:id="createGameButton" layoutX="753.0" layoutY="412.0" mnemonicParsing="false" onMouseClicked="#handleLoadGameButton" prefHeight="78.0" prefWidth="230.0" text="Load" textAlignment="CENTER">
+      <Button fx:id="createGameButton" layoutX="753.0" layoutY="434.0" mnemonicParsing="false" onMouseClicked="#handleLoadGameButton" prefHeight="78.0" prefWidth="230.0" text="Load" textAlignment="CENTER">
          <font>
             <Font name="Satoshi Bold" size="24.0" />
          </font>
       </Button>
-      <Button fx:id="newGameButton" layoutX="220.0" layoutY="410.0" mnemonicParsing="false" onMouseClicked="#handleCreateGameButton" prefHeight="78.0" prefWidth="230.0" text="New" textAlignment="CENTER">
+      <Button fx:id="newGameButton" layoutX="220.0" layoutY="432.0" mnemonicParsing="false" onMouseClicked="#handleCreateGameButton" prefHeight="78.0" prefWidth="230.0" text="New" textAlignment="CENTER">
          <font>
             <Font name="Satoshi Bold" size="24.0" />
          </font>
       </Button>
-      <Button fx:id="joinGameButton" layoutX="486.0" layoutY="411.0" mnemonicParsing="false" onMouseClicked="#handleJoinGameButton" prefHeight="78.0" prefWidth="230.0" text="Join" textAlignment="CENTER">
+      <Button fx:id="joinGameButton" layoutX="486.0" layoutY="433.0" mnemonicParsing="false" onMouseClicked="#handleJoinGameButton" prefHeight="78.0" prefWidth="230.0" text="Join" textAlignment="CENTER">
          <font>
             <Font name="Satoshi Bold" size="24.0" />
          </font>
@@ -29,14 +27,14 @@
             <Font name="Satoshi Bold" size="24.0" />
          </font>
       </Button>
-      <Text layoutX="370.0" layoutY="265.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back joebiden43!">
+      <Text fill="#72465b" layoutX="379.0" layoutY="338.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back joebiden43!">
          <font>
             <Font name="Satoshi Bold" size="36.0" />
          </font>
       </Text>
-      <Text layoutX="384.0" layoutY="156.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Splendor">
+      <Text fill="#72465b" layoutX="434.0" layoutY="267.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Splendor">
          <font>
-            <Font name="Sharpie Regular" size="124.0" />
+            <Font name="Sharpie Regular" size="100.0" />
          </font>
       </Text>
    </children>
