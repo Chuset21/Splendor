@@ -25,6 +25,7 @@ public class OrientExpansion implements Initializable {
   // Player's Info
   private int[] playerGems = new int[6]; // player's Gems (in Hand)
 
+  private Player player;
   private ArrayList<Card> gameCards;
   private Deck level3Cards;
   private Deck level2Cards;
@@ -41,6 +42,11 @@ public class OrientExpansion implements Initializable {
   private Pane menuPopupPane;
   @FXML
   private Pane cardActionMenu;
+  @FXML
+  private Button cardReserveButton;
+  @FXML
+  private Button cardPurchaseButton;
+
 
   //CARD FIELDS
   //2D Array with all card FX ID names.
@@ -113,15 +119,20 @@ public class OrientExpansion implements Initializable {
     // Set up bank
     bank = new Bank(numPlayers, addGemButtons, removeGemButtons, pGemLabels, bGemLabels, takeBankButton);
 
+    // Set up players
+    player = new Player("0","joebiden43");
+
     // Initialize the player's gems
     for (int idx : GEM_INDEX) {
       pGemLabels.get(idx).textProperty().set("" + playerGems[idx]);
     }
+
     // Set up game screen
     cardActionMenu.setVisible(false);
 
     // Set up cards
     setupCards("CardData.csv");
+
   }
 
   @Override
@@ -175,6 +186,8 @@ public class OrientExpansion implements Initializable {
     // Get imageview
     selectedCard = (ImageView) event.getSource();
 
+
+
     //Input validation for null spaces
     if (selectedCard.getImage() == null) {
       return;
@@ -195,13 +208,37 @@ public class OrientExpansion implements Initializable {
     // Set gold gems to 0 -> !!!can change this later when implementing gold purchases!!!
     actionGemLabels.get(5).setText("0");
 
+    ///// Handle Purchase Availability (By default: is available)
+    cardPurchaseButton.setDisable(false);
+
+    // get the player's hand and the cost of the card
+    Hand pHand = player.getHand();
+    int[] selectedCost = ((Card)selectedCard.getImage()).getCost();
+
+    for (int i = 0 ; i < 5; i++) {
+      //if (selectedCost[i] > pHand.Gems[i] + pHand.gemDiscounts[i]) {
+      if (selectedCost[i] > pHand.Gems[i]) {
+        cardPurchaseButton.setDisable(true);
+        break;
+      }
+    }
+    //// Handle Reserve Availability
+    if (pHand.reservedCards.size() < 3) {
+      cardReserveButton.setDisable(false);
+    } else {
+      cardReserveButton.setDisable(true);
+    }
+
     // Open menu
     cardActionMenu.setVisible(true);
+
   }
 
   public void handlePurchase() {
+
     // Get card to be purchased
     Card cardPurchased = (Card)selectedCard.getImage();
+
 
     // Clear imageview of purchased card
     selectedCard.setImage(null);
@@ -215,6 +252,9 @@ public class OrientExpansion implements Initializable {
 
     // Put purchased card in inventory
     purchasedStack.setImage(cardPurchased);
+
+    // Add purchased card to player's hand
+    player.getHand().purchasedCards.add(cardPurchased);
 
     // Close card menu
     cardActionMenu.setVisible(false);
@@ -237,56 +277,59 @@ public class OrientExpansion implements Initializable {
     // Put reserved card in inventory
     reservedStack.setImage(cardReserved);
 
+    // Add the card to the player's hand
+    player.getHand().reservedCards.add(cardReserved);
+
     // Close card menu
     cardActionMenu.setVisible(false);
   }
 
   public void handleTakeGreenGemButton() {
-    bank.takeGem(playerGems,0);
+    bank.takeGem(player.getHand().Gems,0);
   }
 
   public void handleReturnGreenGemButton() {
-    bank.returnGem(playerGems,0);
+    bank.returnGem(player.getHand().Gems,0);
   }
 
   public void handleTakeWhiteGemButton() {
-    bank.takeGem(playerGems,1);
+    bank.takeGem(player.getHand().Gems,1);
   }
 
   public void handleReturnWhiteGemButton() {
-    bank.returnGem(playerGems, 1);
+    bank.returnGem(player.getHand().Gems, 1);
   }
 
   public void handleTakeBlueGemButton() {
-    bank.takeGem(playerGems, 2);
+    bank.takeGem(player.getHand().Gems, 2);
   }
 
   public void handleReturnBlueGemButton() {
-    bank.returnGem(playerGems, 2);
+    bank.returnGem(player.getHand().Gems, 2);
   }
 
   public void handleTakeBlackGemButton() {
-    bank.takeGem(playerGems, 3);
+    bank.takeGem(player.getHand().Gems, 3);
   }
 
   public void handleReturnBlackGemButton() {
-    bank.returnGem(playerGems, 3);
+    bank.returnGem(player.getHand().Gems, 3);
   }
 
   public void handleTakeRedGemButton() {
-    bank.takeGem(playerGems, 4);
+    bank.takeGem(player.getHand().Gems, 4);
   }
 
   public void handleReturnRedGemButton() {
-    bank.returnGem(playerGems, 4);
+    bank.returnGem(player.getHand().Gems, 4);
   }
 
   public void handleTakeYellowGemButton() {
-    bank.takeGem(playerGems, 5);
+    bank.takeGem(player.getHand().Gems, 5);
   }
 
   public void handleReturnYellowGemButton() {
-    bank.returnGem(playerGems, 5);
+    bank.returnGem(player.getHand().Gems, 5);
   }
 
   @FXML
