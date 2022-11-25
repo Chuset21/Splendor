@@ -1,40 +1,53 @@
 package com.hexanome.fourteen.boards;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.List;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-
+/**
+ * A Bank Class to allow handling of Gems.
+ */
 public class Bank {
 
   // Fields [Internal]
   public static final int[] GEM_INDEX = {0, 1, 2, 3, 4, 5};
   public boolean isTaking; // If the Shop interface is open or not.
-  private int[] bGems = new int[6]; // bank's Gems (in Bank)
+  private int[] bankGems = new int[6]; // bank's Gems (in Bank)
   private List<Integer> selectedGems; // gems the player is currently selecting
 
   // Fields [Scene Nodes]
   List<Button> addGemButtons;
   List<Button> removeGemButtons;
-  List<Label> pGemLabels; // Includes reference to the players gems labels so bank can just update it itself.
-  List<Label> bGemLabels;
+  List<Label> gemLabels;
+  // Includes reference to the players gems labels so bank can just update it itself.
+  List<Label> bankGemLabels;
   Button takeBankButton;
 
+  /**
+   * Constructor for our Bank object to be made.
+   *
+   * @param numPlayers       The number of Players in the game
+   * @param addGemButtons    The button to add Gems
+   * @param removeGemButtons The button to remove Gems
+   * @param gemLabels        The names of each Gem
+   * @param bankGemLabels    The names of each Gem the Bank uses
+   * @param takeBankButton   Button to allow you take Gems from the Bank
+   */
   public Bank(int numPlayers,
               List<Button> addGemButtons,
               List<Button> removeGemButtons,
-              List<Label> pGemLabels,
-              List<Label> bGemLabels,
+              List<Label> gemLabels,
+              List<Label> bankGemLabels,
               Button takeBankButton) {
 
     // Initialize/Link our Objects
     this.addGemButtons = addGemButtons;
     this.removeGemButtons = removeGemButtons;
-    this.pGemLabels = pGemLabels;
-    this.bGemLabels = bGemLabels;
+    this.gemLabels = gemLabels;
+    this.bankGemLabels = bankGemLabels;
     this.takeBankButton = takeBankButton;
     this.selectedGems = new ArrayList<>();
     isTaking = false;
@@ -43,17 +56,18 @@ public class Bank {
     int initialTokens = (numPlayers < 4) ? (2 + numPlayers) : 7;
 
     for (int idx : GEM_INDEX) {
-      bGems[idx] = initialTokens;
-      bGemLabels.get(idx).textProperty().set("" + bGems[idx]);
+      bankGems[idx] = initialTokens;
+      bankGemLabels.get(idx).textProperty().set("" + bankGems[idx]);
     }
 
     //Initialize Bank Button
     takeBankButton.textProperty().set("Open");
   }
 
-  // Toggles the SHOP.
-  // If Toggled on, it begins a new buying session.
-  // If Toggled off, it simply hides all shop buttons.
+  /**
+   * Toggles the Shop functionality which allows a Player to begin a buy session(Toggle on)
+   * or hide the Shop(Toggle Off).
+   */
   public void toggle() {
     isTaking = !isTaking;
 
@@ -76,31 +90,43 @@ public class Bank {
     }
   }
 
+  /**
+   * Allows a Player to take Gems.
+   *
+   * @param playerGems The Player Gems
+   * @param index      The index in the list
+   */
   public void takeGem(int[] playerGems, int index) {
 
     // Update the internal values
     selectedGems.add(index);
     playerGems[index]++;
-    bGems[index]--;
+    bankGems[index]--;
 
     // Update our text properties (Bank and Hand)
-    bGemLabels.get(index).textProperty().set("" + bGems[index]);
-    pGemLabels.get(index).textProperty().set("" + playerGems[index]);
+    bankGemLabels.get(index).textProperty().set("" + bankGems[index]);
+    gemLabels.get(index).textProperty().set("" + playerGems[index]);
 
-    // Update the buttons (specifically, their Abled/Disabled state)
+    // Update the buttons (specifically, their Enabled/Disabled state)
     updateBankButtons();
   }
 
+  /**
+   * Allows a Player to return Gems.
+   *
+   * @param playerGems The Player Gems
+   * @param index      The index in the list
+   */
   public void returnGem(int[] playerGems, int index) {
 
     //Update Values
     selectedGems.remove(Integer.valueOf(index));
     playerGems[index]--;
-    bGems[index]++;
+    bankGems[index]++;
 
     // Update our text properties (Bank and Hand)
-    bGemLabels.get(index).textProperty().set("" + bGems[index]);
-    pGemLabels.get(index).textProperty().set("" + playerGems[index]);
+    bankGemLabels.get(index).textProperty().set("" + bankGems[index]);
+    gemLabels.get(index).textProperty().set("" + playerGems[index]);
 
     // Update the buttons (specifically, their Abled/Disabled state)
     updateBankButtons();
@@ -113,12 +139,12 @@ public class Bank {
 
     // handBucket : <gem, count> of our current hand.
     Hashtable<Integer, Integer> handBucket = new Hashtable<>();
-      for (int idx : GEM_INDEX) {
-          handBucket.put(idx, 0);
-      }
-      for (int gem : selectedGems) {
-          handBucket.put(gem, handBucket.get(gem) + 1);
-      }
+    for (int idx : GEM_INDEX) {
+      handBucket.put(idx, 0);
+    }
+    for (int gem : selectedGems) {
+      handBucket.put(gem, handBucket.get(gem) + 1);
+    }
 
     // Go through the buttons of each colour and enable/disable them accordingly.
     for (int idx : GEM_INDEX) {
@@ -132,8 +158,8 @@ public class Bank {
       }
       // If (following 5 conditions) hold, 'add' should be enabled.
       //Otherwise, disable the 'add' button.
-      if (bGems[idx] == 0
-          || (bGems[idx] < 4 && selectedGems.contains(idx))
+      if (bankGems[idx] == 0
+          || (bankGems[idx] < 4 && selectedGems.contains(idx))
           || handBucket.get(idx) > 0 && selectedGems.size() > 1
           || selectedGems.size() == 3
           || handBucket.containsValue(2)) {
@@ -156,7 +182,9 @@ public class Bank {
     HashSet<Integer> handBucket = new HashSet<>();
     for (int gem : selectedGems) {
 
-      if (handBucket.contains(gem)) return true;
+      if (handBucket.contains(gem)) {
+        return true;
+      }
 
       handBucket.add(gem);
     }
