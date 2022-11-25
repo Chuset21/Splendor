@@ -18,7 +18,7 @@ public class Card extends Image {
   private final int[] cost;
   private final GemColors discountColor;
   private final int discountAmt;
-  private final Expansions expansion;
+  private final Expansions expansions;
   private final int level;
   private final int prestigePoints;
 
@@ -41,7 +41,7 @@ public class Card extends Image {
     this.cost = cost;
     this.discountColor = discountColor;
     this.discountAmt = discountAmt;
-    expansion = expansions;
+    this.expansions = expansions;
     this.level = level;
     this.prestigePoints = prestigePoints;
   }
@@ -101,8 +101,8 @@ public class Card extends Image {
     return level;
   }
 
-  public Expansions getExpansion() {
-    return expansion;
+  public Expansions getExpansions() {
+    return expansions;
   }
 
   public int[] getCost() {
