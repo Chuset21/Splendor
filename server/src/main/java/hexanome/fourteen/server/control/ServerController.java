@@ -1,7 +1,6 @@
 package hexanome.fourteen.server.control;
 
 import hexanome.fourteen.server.Mapper;
-import hexanome.fourteen.server.model.LoginResponse;
 import hexanome.fourteen.server.model.board.expansion.Expansion;
 import java.util.Arrays;
 import javax.annotation.PostConstruct;
@@ -87,9 +86,9 @@ public class ServerController {
       }
 
       String response = responseEntity.getBody();
-      LoginResponse loginResponse = gsonInstance.gson.fromJson(response, LoginResponse.class);
-      accessToken = encodePlusSign(loginResponse.accessToken());
-      refreshToken = encodePlusSign(loginResponse.refreshToken());
+      LoginForm loginForm = gsonInstance.gson.fromJson(response, LoginForm.class);
+      accessToken = encodePlusSign(loginForm.accessToken());
+      refreshToken = encodePlusSign(loginForm.refreshToken());
       return true;
     } catch (HttpClientErrorException ignored) {
       return false;
@@ -113,7 +112,7 @@ public class ServerController {
             PASSWORD), HttpMethod.POST, requestEntity1, String.class);
 
     String curAccessToken = encodePlusSign(
-        gsonInstance.gson.fromJson(responseEntity1.getBody(), LoginResponse.class).accessToken());
+        gsonInstance.gson.fromJson(responseEntity1.getBody(), LoginForm.class).accessToken());
 
     // We are logged in as maex
     RestTemplate rest2 = new RestTemplate();
@@ -209,7 +208,7 @@ public class ServerController {
 
       String response = responseEntity.getBody();
       accessToken =
-          encodePlusSign(gsonInstance.gson.fromJson(response, LoginResponse.class).accessToken());
+          encodePlusSign(gsonInstance.gson.fromJson(response, LoginForm.class).accessToken());
       return true;
     } catch (HttpClientErrorException ignored) {
       return false;

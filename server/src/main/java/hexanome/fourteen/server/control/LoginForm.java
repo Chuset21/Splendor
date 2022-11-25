@@ -1,9 +1,9 @@
-package hexanome.fourteen.server.model;
+package hexanome.fourteen.server.control;
 
 /**
  * Login Response model.
  */
-public final class LoginResponse {
+public final class LoginForm {
   private String accessToken;
   private transient String tokenType;
   private String refreshToken;
@@ -13,7 +13,7 @@ public final class LoginResponse {
   /**
    * No args constructor for GSON to use.
    */
-  public LoginResponse() {
+  public LoginForm() {
   }
 
   public String accessToken() {
