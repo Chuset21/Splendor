@@ -28,13 +28,13 @@ public class LobbyServiceCallbacksController {
   }
 
   @PutMapping(value = "{gameid}", consumes = "application/json; charset=utf-8")
-  public ResponseEntity<String> foo(@PathVariable String gameid,
-                                    @RequestBody LaunchGameForm launchGameForm) {
+  public ResponseEntity<String> launchGame(@PathVariable String gameid,
+                                           @RequestBody LaunchGameForm launchGameForm) {
     return null;
   }
 
   @DeleteMapping("{gameid}")
-  public ResponseEntity<String> fooDelete(@PathVariable String gameid) {
+  public ResponseEntity<String> deleteGame(@PathVariable String gameid) {
     return null;
   }
 
