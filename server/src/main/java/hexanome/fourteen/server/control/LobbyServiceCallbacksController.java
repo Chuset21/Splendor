@@ -1,5 +1,7 @@
 package hexanome.fourteen.server.control;
 
+import hexanome.fourteen.server.Mapper;
+import hexanome.fourteen.server.model.board.expansion.Expansion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,15 +18,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/games/")
 public class LobbyServiceCallbacksController {
 
-  private final GsonInstance gsonInstance;
+  private final Mapper<String, Expansion> stringExpansionMapper;
 
   /**
    * Constructor.
    *
-   * @param gsonInstance common gson instance
+   * @param stringExpansionMapper string to expansion mapper
    */
-  public LobbyServiceCallbacksController(@Autowired GsonInstance gsonInstance) {
-    this.gsonInstance = gsonInstance;
+  public LobbyServiceCallbacksController(
+      @Autowired Mapper<String, Expansion> stringExpansionMapper) {
+    this.stringExpansionMapper = stringExpansionMapper;
   }
 
   @PutMapping(value = "{gameid}", consumes = "application/json; charset=utf-8")

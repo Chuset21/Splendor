@@ -1,6 +1,6 @@
 package hexanome.fourteen.server.model.board.card;
 
-import hexanome.fourteen.server.model.board.Expansion;
+import hexanome.fourteen.server.model.board.expansion.Expansion;
 import hexanome.fourteen.server.model.board.gem.Gems;
 
 /**

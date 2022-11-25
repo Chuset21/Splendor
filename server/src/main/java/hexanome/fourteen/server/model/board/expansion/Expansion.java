@@ -1,4 +1,4 @@
-package hexanome.fourteen.server.model.board;
+package hexanome.fourteen.server.model.board.expansion;
 
 /**
  * Expansion.

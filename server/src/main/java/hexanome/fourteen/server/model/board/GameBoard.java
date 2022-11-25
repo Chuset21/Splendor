@@ -1,6 +1,7 @@
 package hexanome.fourteen.server.model.board;
 
 import hexanome.fourteen.server.model.board.card.Card;
+import hexanome.fourteen.server.model.board.expansion.Expansion;
 import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import java.util.HashMap;

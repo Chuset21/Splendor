@@ -1,6 +1,8 @@
 package hexanome.fourteen.server.control;
 
+import hexanome.fourteen.server.Mapper;
 import hexanome.fourteen.server.model.LoginResponse;
+import hexanome.fourteen.server.model.board.expansion.Expansion;
 import java.util.Arrays;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -22,8 +24,9 @@ public class ServerController {
   public static final String LS_LOCATION = "http://127.0.0.1:4242/";
   private static final String USERNAME = "splendor";
   private static final String PASSWORD = "abc123_ABC123";
-  private static final String[] GAME_SERVICE_NAMES = {"Splendor Standard", "Splendor Orient"};
   private static final String GAME_SERVICE_LOCATION = "http://127.0.0.1:4243/splendor";
+  private String[] gameServiceNames;
+  private final Mapper<Expansion, String> expansionStringMapper;
   private final GsonInstance gsonInstance;
   public String accessToken;
   private String refreshToken;
@@ -32,9 +35,12 @@ public class ServerController {
    * Constructor.
    *
    * @param gsonInstance common gson instance
+   * @param expansionStringMapper expansion to string mapper
    */
-  public ServerController(@Autowired GsonInstance gsonInstance) {
+  public ServerController(@Autowired GsonInstance gsonInstance,
+                          @Autowired Mapper<Expansion, String> expansionStringMapper) {
     this.gsonInstance = gsonInstance;
+    this.expansionStringMapper = expansionStringMapper;
   }
 
 
@@ -43,6 +49,10 @@ public class ServerController {
    */
   @PostConstruct
   private void loginAndRegister() {
+    gameServiceNames = new String[] {
+        expansionStringMapper.map(Expansion.STANDARD),
+        expansionStringMapper.map(Expansion.ORIENT)
+    };
     if (!login()) {
       // If login failed, create the user and try again
       createUser();
@@ -139,7 +149,7 @@ public class ServerController {
    * @return true if successful, false otherwise
    */
   private boolean registerGameServices() {
-    return Arrays.stream(GAME_SERVICE_NAMES).allMatch(this::registerGameService);
+    return Arrays.stream(gameServiceNames).allMatch(this::registerGameService);
   }
 
   /**
@@ -251,7 +261,7 @@ public class ServerController {
    * @return true if successful, false otherwise
    */
   private boolean tryUnregisterGameServices() {
-    return Arrays.stream(GAME_SERVICE_NAMES).allMatch(this::unregisterGameService);
+    return Arrays.stream(gameServiceNames).allMatch(this::unregisterGameService);
   }
 
   /**
