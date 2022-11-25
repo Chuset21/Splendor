@@ -217,7 +217,7 @@ public class OrientExpansion implements Initializable {
 
     for (int i = 0 ; i < 5; i++) {
       //if (selectedCost[i] > pHand.Gems[i] + pHand.gemDiscounts[i]) {
-      if (selectedCost[i] > pHand.Gems[i]) {
+      if (selectedCost[i] > pHand.gems[i]) {
         cardPurchaseButton.setDisable(true);
         break;
       }
@@ -285,51 +285,51 @@ public class OrientExpansion implements Initializable {
   }
 
   public void handleTakeGreenGemButton() {
-    bank.takeGem(player.getHand().Gems,0);
+    bank.takeGem(player.getHand().gems,0);
   }
 
   public void handleReturnGreenGemButton() {
-    bank.returnGem(player.getHand().Gems,0);
+    bank.returnGem(player.getHand().gems,0);
   }
 
   public void handleTakeWhiteGemButton() {
-    bank.takeGem(player.getHand().Gems,1);
+    bank.takeGem(player.getHand().gems,1);
   }
 
   public void handleReturnWhiteGemButton() {
-    bank.returnGem(player.getHand().Gems, 1);
+    bank.returnGem(player.getHand().gems, 1);
   }
 
   public void handleTakeBlueGemButton() {
-    bank.takeGem(player.getHand().Gems, 2);
+    bank.takeGem(player.getHand().gems, 2);
   }
 
   public void handleReturnBlueGemButton() {
-    bank.returnGem(player.getHand().Gems, 2);
+    bank.returnGem(player.getHand().gems, 2);
   }
 
   public void handleTakeBlackGemButton() {
-    bank.takeGem(player.getHand().Gems, 3);
+    bank.takeGem(player.getHand().gems, 3);
   }
 
   public void handleReturnBlackGemButton() {
-    bank.returnGem(player.getHand().Gems, 3);
+    bank.returnGem(player.getHand().gems, 3);
   }
 
   public void handleTakeRedGemButton() {
-    bank.takeGem(player.getHand().Gems, 4);
+    bank.takeGem(player.getHand().gems, 4);
   }
 
   public void handleReturnRedGemButton() {
-    bank.returnGem(player.getHand().Gems, 4);
+    bank.returnGem(player.getHand().gems, 4);
   }
 
   public void handleTakeYellowGemButton() {
-    bank.takeGem(player.getHand().Gems, 5);
+    bank.takeGem(player.getHand().gems, 5);
   }
 
   public void handleReturnYellowGemButton() {
-    bank.returnGem(player.getHand().Gems, 5);
+    bank.returnGem(player.getHand().gems, 5);
   }
 
   @FXML

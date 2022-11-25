@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.image.ImageView;
 
+/**
+ * A Class that implements the functionality needed for Player's Hand i.e their cards, gems etc.
+ */
 public class Hand {
 
 
@@ -11,7 +14,7 @@ public class Hand {
   List<Card> purchasedCards;
   List<Card> reservedCards;
   public int[] gemDiscounts;
-  public int[] Gems;
+  public int[] gems;
 
 
   // TODO:
@@ -21,43 +24,57 @@ public class Hand {
   ImageView purchasedStack;
   ImageView reservedStack;
 
-
+  /**
+   * A Constructor for the Hand.
+   */
   public Hand() {
-    Gems = new int[6];
+    gems = new int[6];
     gemDiscounts = new int[6];
     prestigePoints = 0;
     purchasedCards = new ArrayList<Card>();
     reservedCards = new ArrayList<Card>();
   }
 
+  /**
+   * Allows Player to purchase a Card.
+   *
+   * @param card The Card the Player wishes to purchase
+   */
   public void purchase(Card card) {
 
     // Get card info
     int[] cost = card.getCost();
-    int dsc_idx = enumToIndex(card.getDiscountColor());
-    int dsc_amt = card.getDiscountAmount();
+    int discountIdx = enumToIndex(card.getDiscountColor());
+    int discountAmount = card.getDiscountAmount();
 
     // Check that we CAN purchase it
     for (int i = 0; i < 6; i++) {
-      if (cost[i] > (Gems[i]+gemDiscounts[i])) return;
+      if (cost[i] > (gems[i] + gemDiscounts[i])) {
+        return;
+      }
     }
 
     // Update player's gems
     for (int i = 0; i < 6; i++) {
       // only subtract if (COST-DISCOUNT) is greater than 0,
       // We don't want to be adding gems by accident
-      if (cost[i]-gemDiscounts[i] > 0) {
-        Gems[i] -= (cost[i]-gemDiscounts[i]);
+      if (cost[i] - gemDiscounts[i] > 0) {
+        gems[i] -= (cost[i] - gemDiscounts[i]);
       }
     }
 
     // Update discounts
-    gemDiscounts[dsc_idx] = dsc_amt;
+    gemDiscounts[discountIdx] = discountAmount;
 
     // Update cards list
     purchasedCards.add(card);
   }
 
+  /**
+   * Allows Player to reserve a Card.
+   *
+   * @param card The Card the Player wishes to reserve
+   */
   public void reserve(Card card) {
 
     if (reservedCards.size() <= 3) {
