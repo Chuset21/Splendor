@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import hexanome.fourteen.server.model.LoginResponse;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -65,8 +66,9 @@ public class ServerController {
     }
     String response = responseEntity.getBody();
     LoginResponse loginResponse = gson.fromJson(response, LoginResponse.class);
-    accessToken = loginResponse.accessToken();
-    refreshToken = loginResponse.refreshToken();
+    System.out.println(response);
+    accessToken = encodePlusSign(loginResponse.accessToken());
+    refreshToken = encodePlusSign(loginResponse.refreshToken());
     return true;
   }
 
@@ -141,7 +143,46 @@ public class ServerController {
       return false;
     }
     String response = responseEntity.getBody();
-    accessToken = gson.fromJson(response, LoginResponse.class).accessToken();
+    accessToken = encodePlusSign(gson.fromJson(response, LoginResponse.class).accessToken());
     return true;
+  }
+
+
+  /**
+   * Unregister the game service before shutting down.
+   */
+  @PreDestroy
+  private void unregisterGameService() {
+    if (!tryUnregisterGameService()) {
+      refreshToken();
+      tryUnregisterGameService();
+    }
+  }
+
+  /**
+   * Try to unregister the game service.
+   *
+   * @return true if successful, false otherwise.
+   */
+  private boolean tryUnregisterGameService() {
+    RestTemplate rest = new RestTemplate();
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=");
+
+    HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
+    ResponseEntity<String> responseEntity = rest.exchange(
+        "%sapi/gameservices/%s?access_token=%s".formatted(LS_LOCATION, GAME_SERVICE_NAME,
+            accessToken), HttpMethod.DELETE, requestEntity, String.class);
+    return responseEntity.getStatusCode().value() == 200;
+  }
+
+  /**
+   * Replace all plus signs with %2B for proper encoding in URL.
+   *
+   * @param rawString The string to be encoded
+   * @return The encoded string.
+   */
+  private String encodePlusSign(String rawString) {
+    return rawString.replace("+", "%2B");
   }
 }
