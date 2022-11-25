@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -58,18 +59,23 @@ public class ServerController {
         "user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true";
 
     HttpEntity<String> requestEntity = new HttpEntity<>(body, headers);
-    ResponseEntity<String> responseEntity = rest.exchange(
-        "%soauth/token?grant_type=password&username=%s&password=%s".formatted(LS_LOCATION, USERNAME,
-            PASSWORD), HttpMethod.POST, requestEntity, String.class);
-    if (responseEntity.getStatusCode().value() != 200) {
+    try {
+      ResponseEntity<String> responseEntity = rest.exchange(
+          "%soauth/token?grant_type=password&username=%s&password=%s".formatted(LS_LOCATION,
+              USERNAME,
+              PASSWORD), HttpMethod.POST, requestEntity, String.class);
+      if (responseEntity.getStatusCode().value() != 200) {
+        return false;
+      }
+
+      String response = responseEntity.getBody();
+      LoginResponse loginResponse = gson.fromJson(response, LoginResponse.class);
+      accessToken = encodePlusSign(loginResponse.accessToken());
+      refreshToken = encodePlusSign(loginResponse.refreshToken());
+      return true;
+    } catch (HttpClientErrorException ignored) {
       return false;
     }
-    String response = responseEntity.getBody();
-    LoginResponse loginResponse = gson.fromJson(response, LoginResponse.class);
-    System.out.println(response);
-    accessToken = encodePlusSign(loginResponse.accessToken());
-    refreshToken = encodePlusSign(loginResponse.refreshToken());
-    return true;
   }
 
   /**
@@ -98,10 +104,14 @@ public class ServerController {
         }""".formatted(GAME_SERVICE_LOCATION, GAME_SERVICE_NAME, GAME_SERVICE_NAME);
 
     HttpEntity<String> requestEntity = new HttpEntity<>(body, headers);
-    ResponseEntity<String> responseEntity = rest.exchange(
-        "%sapi/gameservices/%s?access_token=%s".formatted(LS_LOCATION, GAME_SERVICE_NAME,
-            accessToken), HttpMethod.PUT, requestEntity, String.class);
-    return responseEntity.getStatusCode().value() == 200;
+    try {
+      ResponseEntity<String> responseEntity = rest.exchange(
+          "%sapi/gameservices/%s?access_token=%s".formatted(LS_LOCATION, GAME_SERVICE_NAME,
+              accessToken), HttpMethod.PUT, requestEntity, String.class);
+      return responseEntity.getStatusCode().value() == 200;
+    } catch (HttpClientErrorException ignored) {
+      return false;
+    }
   }
 
   /**
@@ -115,10 +125,14 @@ public class ServerController {
     headers.add("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=");
 
     HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
-    ResponseEntity<String> responseEntity =
-        rest.exchange("%sapi/gameservices/%s".formatted(LS_LOCATION, GAME_SERVICE_NAME),
-            HttpMethod.GET, requestEntity, String.class);
-    return responseEntity.getStatusCode().value() == 200;
+    try {
+      ResponseEntity<String> responseEntity =
+          rest.exchange("%sapi/gameservices/%s".formatted(LS_LOCATION, GAME_SERVICE_NAME),
+              HttpMethod.GET, requestEntity, String.class);
+      return responseEntity.getStatusCode().value() == 200;
+    } catch (HttpClientErrorException ignored) {
+      return false;
+    }
   }
 
   /**
@@ -136,15 +150,20 @@ public class ServerController {
         "user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true";
 
     HttpEntity<String> requestEntity = new HttpEntity<>(body, headers);
-    ResponseEntity<String> responseEntity = rest.exchange(
-        "%soauth/token?grant_type=refresh_token&refresh_token=%s".formatted(LS_LOCATION,
-            refreshToken), HttpMethod.POST, requestEntity, String.class);
-    if (responseEntity.getStatusCode().value() != 200) {
+    try {
+      ResponseEntity<String> responseEntity = rest.exchange(
+          "%soauth/token?grant_type=refresh_token&refresh_token=%s".formatted(LS_LOCATION,
+              refreshToken), HttpMethod.POST, requestEntity, String.class);
+      if (responseEntity.getStatusCode().value() != 200) {
+        return false;
+      }
+
+      String response = responseEntity.getBody();
+      accessToken = encodePlusSign(gson.fromJson(response, LoginResponse.class).accessToken());
+      return true;
+    } catch (HttpClientErrorException ignored) {
       return false;
     }
-    String response = responseEntity.getBody();
-    accessToken = encodePlusSign(gson.fromJson(response, LoginResponse.class).accessToken());
-    return true;
   }
 
 
@@ -170,10 +189,14 @@ public class ServerController {
     headers.add("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=");
 
     HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
-    ResponseEntity<String> responseEntity = rest.exchange(
-        "%sapi/gameservices/%s?access_token=%s".formatted(LS_LOCATION, GAME_SERVICE_NAME,
-            accessToken), HttpMethod.DELETE, requestEntity, String.class);
-    return responseEntity.getStatusCode().value() == 200;
+    try {
+      ResponseEntity<String> responseEntity = rest.exchange(
+          "%sapi/gameservices/%s?access_token=%s".formatted(LS_LOCATION, GAME_SERVICE_NAME,
+              accessToken), HttpMethod.DELETE, requestEntity, String.class);
+      return responseEntity.getStatusCode().value() == 200;
+    } catch (HttpClientErrorException ignored) {
+      return false;
+    }
   }
 
   /**
