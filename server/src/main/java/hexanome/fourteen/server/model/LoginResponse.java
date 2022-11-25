@@ -4,19 +4,16 @@ package hexanome.fourteen.server.model;
  * Login Response model.
  */
 public final class LoginResponse {
-  private final String accessToken;
-  private final transient String tokenType;
-  private final String refreshToken;
-  private final transient int expiresIn;
-  private final transient String scope;
+  private String accessToken;
+  private transient String tokenType;
+  private String refreshToken;
+  private transient int expiresIn;
+  private transient String scope;
 
-  public LoginResponse(String accessToken, String tokenType, String refreshToken,
-                       int expiresIn, String scope) {
-    this.accessToken = accessToken;
-    this.tokenType = tokenType;
-    this.refreshToken = refreshToken;
-    this.expiresIn = expiresIn;
-    this.scope = scope;
+  /**
+   * No args constructor for GSON to use.
+   */
+  public LoginResponse() {
   }
 
   public String accessToken() {
