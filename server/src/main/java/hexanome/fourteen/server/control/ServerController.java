@@ -34,7 +34,7 @@ public class ServerController {
   /**
    * Constructor.
    *
-   * @param gsonInstance common gson instance
+   * @param gsonInstance          common gson instance
    * @param expansionStringMapper expansion to string mapper
    */
   public ServerController(@Autowired GsonInstance gsonInstance,
@@ -42,7 +42,6 @@ public class ServerController {
     this.gsonInstance = gsonInstance;
     this.expansionStringMapper = expansionStringMapper;
   }
-
 
   /**
    * Login and register when booting up the application.
@@ -153,16 +152,12 @@ public class ServerController {
   }
 
   /**
-   * Register the game service if not registered already.
+   * Register the game service.
    *
    * @param gameServiceName the game service to be registered
    * @return true if successful, false otherwise
    */
   private boolean registerGameService(String gameServiceName) {
-    if (isGameRegistered(gameServiceName)) {
-      return true;
-    }
-
     RestTemplate rest = new RestTemplate();
     HttpHeaders headers = new HttpHeaders();
     headers.add("Content-Type", "application/json");
@@ -183,28 +178,6 @@ public class ServerController {
       ResponseEntity<String> responseEntity = rest.exchange(
           "%sapi/gameservices/%s?access_token=%s".formatted(LS_LOCATION, gameServiceName,
               accessToken), HttpMethod.PUT, requestEntity, String.class);
-      return responseEntity.getStatusCode().value() == 200;
-    } catch (HttpClientErrorException ignored) {
-      return false;
-    }
-  }
-
-  /**
-   * Check if the game service is already registered.
-   *
-   * @param gameServiceName the game service to check for registration
-   * @return true if the game service is already registered, false otherwise
-   */
-  private boolean isGameRegistered(String gameServiceName) {
-    RestTemplate rest = new RestTemplate();
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=");
-
-    HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
-    try {
-      ResponseEntity<String> responseEntity =
-          rest.exchange("%sapi/gameservices/%s".formatted(LS_LOCATION, gameServiceName),
-              HttpMethod.GET, requestEntity, String.class);
       return responseEntity.getStatusCode().value() == 200;
     } catch (HttpClientErrorException ignored) {
       return false;
