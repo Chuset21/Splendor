@@ -1,6 +1,7 @@
 package hexanome.fourteen.server.control;
 
 import hexanome.fourteen.server.model.LoginResponse;
+import java.util.Arrays;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class ServerController {
   public static final String LS_LOCATION = "http://127.0.0.1:4242/";
   private static final String USERNAME = "splendor";
   private static final String PASSWORD = "abc123_ABC123";
-  private static final String GAME_SERVICE_NAME = "Splendor";
+  private static final String[] GAME_SERVICE_NAMES = {"Splendor Standard", "Splendor Orient"};
   private static final String GAME_SERVICE_LOCATION = "http://127.0.0.1:4243/splendor";
   private final GsonInstance gsonInstance;
   public String accessToken;
@@ -49,8 +50,8 @@ public class ServerController {
         throw new RuntimeException("Was not able to login");
       }
     }
-    if (!registerGameService()) {
-      throw new RuntimeException("Was not able to register with game service");
+    if (!registerGameServices()) {
+      throw new RuntimeException("Was not able to register the game services");
     }
   }
 
@@ -133,12 +134,22 @@ public class ServerController {
   }
 
   /**
-   * Register the game service if not registered already.
+   * Register all game services.
    *
    * @return true if successful, false otherwise
    */
-  private boolean registerGameService() {
-    if (getGameService()) {
+  private boolean registerGameServices() {
+    return Arrays.stream(GAME_SERVICE_NAMES).allMatch(this::registerGameService);
+  }
+
+  /**
+   * Register the game service if not registered already.
+   *
+   * @param gameServiceName the game service to be registered
+   * @return true if successful, false otherwise
+   */
+  private boolean registerGameService(String gameServiceName) {
+    if (isGameRegistered(gameServiceName)) {
       return true;
     }
 
@@ -153,14 +164,14 @@ public class ServerController {
             "maxSessionPlayers": 4,
             "minSessionPlayers": 2,
             "name": "%s",
-            "displayName": "%s.",
+            "displayName": "%s",
             "webSupport": "true"
-        }""".formatted(GAME_SERVICE_LOCATION, GAME_SERVICE_NAME, GAME_SERVICE_NAME);
+        }""".formatted(GAME_SERVICE_LOCATION, gameServiceName, gameServiceName);
 
     HttpEntity<String> requestEntity = new HttpEntity<>(body, headers);
     try {
       ResponseEntity<String> responseEntity = rest.exchange(
-          "%sapi/gameservices/%s?access_token=%s".formatted(LS_LOCATION, GAME_SERVICE_NAME,
+          "%sapi/gameservices/%s?access_token=%s".formatted(LS_LOCATION, gameServiceName,
               accessToken), HttpMethod.PUT, requestEntity, String.class);
       return responseEntity.getStatusCode().value() == 200;
     } catch (HttpClientErrorException ignored) {
@@ -171,9 +182,10 @@ public class ServerController {
   /**
    * Check if the game service is already registered.
    *
+   * @param gameServiceName the game service to check for registration
    * @return true if the game service is already registered, false otherwise
    */
-  private boolean getGameService() {
+  private boolean isGameRegistered(String gameServiceName) {
     RestTemplate rest = new RestTemplate();
     HttpHeaders headers = new HttpHeaders();
     headers.add("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=");
@@ -181,7 +193,7 @@ public class ServerController {
     HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
     try {
       ResponseEntity<String> responseEntity =
-          rest.exchange("%sapi/gameservices/%s".formatted(LS_LOCATION, GAME_SERVICE_NAME),
+          rest.exchange("%sapi/gameservices/%s".formatted(LS_LOCATION, gameServiceName),
               HttpMethod.GET, requestEntity, String.class);
       return responseEntity.getStatusCode().value() == 200;
     } catch (HttpClientErrorException ignored) {
@@ -226,19 +238,29 @@ public class ServerController {
    * Unregister the game service before shutting down.
    */
   @PreDestroy
-  private void unregisterGameService() {
-    if (!tryUnregisterGameService()) {
+  private void unregisterGameServices() {
+    if (!tryUnregisterGameServices()) {
       refreshToken();
-      tryUnregisterGameService();
+      tryUnregisterGameServices();
     }
+  }
+
+  /**
+   * Unregister all game services.
+   *
+   * @return true if successful, false otherwise
+   */
+  private boolean tryUnregisterGameServices() {
+    return Arrays.stream(GAME_SERVICE_NAMES).allMatch(this::unregisterGameService);
   }
 
   /**
    * Try to unregister the game service.
    *
+   * @param gameServiceName the game service to be unregistered
    * @return true if successful, false otherwise.
    */
-  private boolean tryUnregisterGameService() {
+  private boolean unregisterGameService(String gameServiceName) {
     RestTemplate rest = new RestTemplate();
     HttpHeaders headers = new HttpHeaders();
     headers.add("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=");
@@ -246,7 +268,7 @@ public class ServerController {
     HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
     try {
       ResponseEntity<String> responseEntity = rest.exchange(
-          "%sapi/gameservices/%s?access_token=%s".formatted(LS_LOCATION, GAME_SERVICE_NAME,
+          "%sapi/gameservices/%s?access_token=%s".formatted(LS_LOCATION, gameServiceName,
               accessToken), HttpMethod.DELETE, requestEntity, String.class);
       return responseEntity.getStatusCode().value() == 200;
     } catch (HttpClientErrorException ignored) {
