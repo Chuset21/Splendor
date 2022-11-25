@@ -1,6 +1,11 @@
 package com.hexanome.fourteen.login;
 
 import com.hexanome.fourteen.boards.OrientExpansion;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,12 +16,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.ResourceBundle;
-
+/**
+ * Class that shows the LoginScreen for users.
+ */
 public final class LoginScreen implements Initializable {
 
   private static Stage aPrimaryStage;
@@ -30,19 +32,25 @@ public final class LoginScreen implements Initializable {
   @FXML
   private Button loginButton;
 
-  public void goToLogin(Stage pStage) throws IOException {
+  /**
+   * Actually displays the LoginScreen for the user to see and interact with.
+   *
+   * @param stage The Stage that will be used
+   * @throws IOException Is thrown when invalid input is found
+   */
+  public void goToLogin(Stage stage) throws IOException {
 
-    aPrimaryStage = pStage;
+    aPrimaryStage = stage;
 
     // Import root from fxml file
     Parent root =
         FXMLLoader.load(Objects.requireNonNull(LoginScreen.class.getResource("LoginScreen.fxml")));
 
     // Set up root on stage (window)
-    Scene aScene = new Scene(root);
+    Scene scene = new Scene(root);
 
     // Initialize stage settings
-    aPrimaryStage.setScene(aScene);
+    aPrimaryStage.setScene(scene);
     aPrimaryStage.setTitle("Splendor");
     aPrimaryStage.setResizable(false);
     aPrimaryStage.centerOnScreen();
@@ -89,7 +97,9 @@ public final class LoginScreen implements Initializable {
     // Try launching the game
     try {
       game.goToGame(aPrimaryStage);
-    } catch (Exception ex) {ex.printStackTrace();}
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
   }
 
 }
