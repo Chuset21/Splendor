@@ -1,11 +1,9 @@
 package hexanome.fourteen.server.control;
 
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import hexanome.fourteen.server.model.LoginResponse;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -25,11 +23,18 @@ public class ServerController {
   private static final String PASSWORD = "abc123_ABC123";
   private static final String GAME_SERVICE_NAME = "Splendor";
   private static final String GAME_SERVICE_LOCATION = "http://127.0.0.1:4243/splendor";
-  private final Gson gson =
-      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-          .create();
+  private final GsonInstance gsonInstance;
   public String accessToken;
   private String refreshToken;
+
+  /**
+   * Constructor.
+   *
+   * @param gsonInstance common gson instance
+   */
+  public ServerController(@Autowired GsonInstance gsonInstance) {
+    this.gsonInstance = gsonInstance;
+  }
 
 
   /**
@@ -72,7 +77,7 @@ public class ServerController {
       }
 
       String response = responseEntity.getBody();
-      LoginResponse loginResponse = gson.fromJson(response, LoginResponse.class);
+      LoginResponse loginResponse = gsonInstance.gson.fromJson(response, LoginResponse.class);
       accessToken = encodePlusSign(loginResponse.accessToken());
       refreshToken = encodePlusSign(loginResponse.refreshToken());
       return true;
@@ -97,8 +102,8 @@ public class ServerController {
         "%soauth/token?grant_type=password&username=maex&password=%s".formatted(LS_LOCATION,
             PASSWORD), HttpMethod.POST, requestEntity1, String.class);
 
-    String curAccessToken =
-        encodePlusSign(gson.fromJson(responseEntity1.getBody(), LoginResponse.class).accessToken());
+    String curAccessToken = encodePlusSign(
+        gsonInstance.gson.fromJson(responseEntity1.getBody(), LoginResponse.class).accessToken());
 
     // We are logged in as maex
     RestTemplate rest2 = new RestTemplate();
@@ -208,7 +213,8 @@ public class ServerController {
       }
 
       String response = responseEntity.getBody();
-      accessToken = encodePlusSign(gson.fromJson(response, LoginResponse.class).accessToken());
+      accessToken =
+          encodePlusSign(gsonInstance.gson.fromJson(response, LoginResponse.class).accessToken());
       return true;
     } catch (HttpClientErrorException ignored) {
       return false;
