@@ -1,7 +1,7 @@
 package hexanome.fourteen.server.model.board;
 
 /**
- * Expansion
+ * Expansion.
  */
 public enum Expansion {
   STANDARD,

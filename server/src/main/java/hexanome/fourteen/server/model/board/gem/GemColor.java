@@ -1,7 +1,7 @@
 package hexanome.fourteen.server.model.board.gem;
 
 /**
- * Gem color
+ * Gem color.
  */
 public enum GemColor {
   RED,

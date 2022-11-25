@@ -37,7 +37,7 @@ public final class GameBoard {
    */
   private final Player leadingPlayer;
   private final Set<Player> players;
-  private final String gameID;
+  private final String gameid;
 
   /**
    * @param availableNobles The nobles on the board
@@ -47,10 +47,10 @@ public final class GameBoard {
    *                        We can use the sublist method for this I believe.
    * @param expansions      The set of expansions
    * @param players         The players
-   * @param gameID          The game ID
+   * @param gameid          The game ID
    */
   public GameBoard(Set<Noble> availableNobles, List<List<Card>> cards, Set<Expansion> expansions,
-                   Set<Player> players, String gameID) {
+                   Set<Player> players, String gameid) {
     playerTurnMap = new HashMap<>();
     int count = 0;
     for (Player player : players) {
@@ -68,7 +68,7 @@ public final class GameBoard {
     this.cards = cards;
     this.expansions = expansions;
     this.players = players;
-    this.gameID = gameID;
+    this.gameid = gameid;
   }
 
   public int playerTurn() {
@@ -104,7 +104,7 @@ public final class GameBoard {
   }
 
   public String gameID() {
-    return gameID;
+    return gameid;
   }
 
   @Override
@@ -123,13 +123,13 @@ public final class GameBoard {
            Objects.equals(this.cards, that.cards) &&
            Objects.equals(this.expansions, that.expansions) &&
            Objects.equals(this.leadingPlayer, that.leadingPlayer) &&
-           Objects.equals(this.players, that.players) && Objects.equals(this.gameID, that.gameID);
+           Objects.equals(this.players, that.players) && Objects.equals(this.gameid, that.gameid);
   }
 
   @Override
   public int hashCode() {
     return Objects.hash(playerTurn, playerTurnMap, availableNobles, availableGems, cards,
-        expansions, leadingPlayer, players, gameID);
+        expansions, leadingPlayer, players, gameid);
   }
 
   @Override
@@ -137,7 +137,7 @@ public final class GameBoard {
     return "GameBoard[" + "playerTurn=" + playerTurn + ", " + "playerTurnMap=" + playerTurnMap +
            ", " + "availableNobles=" + availableNobles + ", " + "availableGems=" + availableGems +
            ", " + "cards=" + cards + ", " + "expansions=" + expansions + ", " + "leadingPlayer=" +
-           leadingPlayer + ", " + "players=" + players + ", " + "gameID=" + gameID + ']';
+           leadingPlayer + ", " + "players=" + players + ", " + "gameID=" + gameid + ']';
   }
 
 }

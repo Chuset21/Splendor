@@ -3,7 +3,8 @@ package hexanome.fourteen.server.model.board.card;
 import hexanome.fourteen.server.model.board.gem.GemColor;
 
 /**
- * Standard Card
+ * Standard Card.
+ *
  * @param gemDiscount   the amount of gems to be discounted
  * @param discountColor the color of the gems to be discounted
  */

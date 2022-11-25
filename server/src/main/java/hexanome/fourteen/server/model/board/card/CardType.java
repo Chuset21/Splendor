@@ -1,7 +1,7 @@
 package hexanome.fourteen.server.model.board.card;
 
 /**
- * Card Type
+ * Card Type.
  */
 public interface CardType {
 }

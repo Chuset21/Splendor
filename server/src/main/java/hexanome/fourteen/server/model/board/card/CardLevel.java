@@ -1,7 +1,7 @@
 package hexanome.fourteen.server.model.board.card;
 
 /**
- * Card level
+ * Card level.
  */
 public enum CardLevel {
   ONE,
