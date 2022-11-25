@@ -1,26 +1,35 @@
 package com.hexanome.fourteen.boards;
 
+/**
+ * A Class that implements the functionality needed for a Player.
+ */
 public class Player {
-  String aUserID;
-  String aUsername;
-  public Hand aHand;
+  String userId;
+  String username;
+  public Hand hand;
 
-  public Player(String pUserID, String pUsername) {
-    aUserID = pUserID;
-    aUsername = pUsername;
-    aHand = new Hand();
+  /**
+   * A Constructor for a Player.
+   *
+   * @param userId   The Player's User ID
+   * @param username The Player's Username
+   */
+  public Player(String userId, String username) {
+    this.userId = userId;
+    this.username = username;
+    hand = new Hand();
   }
 
   public Hand getHand() {
-    return aHand;
+    return hand;
   }
 
-  public String getUserID() {
-    return aUserID;
+  public String getUserId() {
+    return userId;
   }
 
   public String getUsername() {
-    return aUsername;
+    return username;
   }
 
 }
