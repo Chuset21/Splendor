@@ -9,7 +9,7 @@ import hexanome.fourteen.server.model.User;
 public final class LaunchGameForm {
   private String creator;
   @SerializedName("gameServer")
-  private transient String gameServer;
+  private String gameType; // This will tell us the expansion
   private User[] players;
   @SerializedName("savegame")
   private String saveGame;
@@ -25,7 +25,7 @@ public final class LaunchGameForm {
   }
 
   public String gameServer() {
-    return gameServer;
+    return gameType;
   }
 
   public User[] players() {
