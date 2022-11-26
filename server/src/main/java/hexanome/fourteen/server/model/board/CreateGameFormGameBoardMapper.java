@@ -2,7 +2,7 @@ package hexanome.fourteen.server.model.board;
 
 import hexanome.fourteen.server.Mapper;
 import hexanome.fourteen.server.control.CreateGameForm;
-import hexanome.fourteen.server.control.LaunchGameForm;
+import hexanome.fourteen.server.control.PutGameForm;
 import hexanome.fourteen.server.model.User;
 import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.expansion.Expansion;
@@ -31,14 +31,14 @@ public class CreateGameFormGameBoardMapper implements Mapper<CreateGameForm, Gam
 
   @Override
   public GameBoard map(CreateGameForm createGameForm) {
-    final LaunchGameForm launchGameForm = createGameForm.launchGameForm();
+    final PutGameForm putGameForm = createGameForm.putGameForm();
     Set<Noble> nobles = null; // TODO
     List<List<Card>> cards = null; // TODO
-    Set<Expansion> expansions = Set.of(stringExpansionMapper.map(launchGameForm.gameType()));
-    Set<Player> players = Arrays.stream(launchGameForm.players()).map(userPlayerMapper::map)
+    Set<Expansion> expansions = Set.of(stringExpansionMapper.map(putGameForm.gameType()));
+    Set<Player> players = Arrays.stream(putGameForm.players()).map(userPlayerMapper::map)
         .collect(Collectors.toSet());
     String gameid = createGameForm.gameid();
-    String creator = launchGameForm.creator();
+    String creator = putGameForm.creator();
 
     return new GameBoard(nobles, cards, expansions, players, gameid, creator);
   }

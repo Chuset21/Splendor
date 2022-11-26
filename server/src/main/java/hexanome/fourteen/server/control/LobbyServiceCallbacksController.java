@@ -17,8 +17,8 @@ public class LobbyServiceCallbacksController {
 
   @PutMapping(value = "{gameid}", consumes = "application/json; charset=utf-8")
   public ResponseEntity<String> launchGame(@PathVariable String gameid,
-                                           @RequestBody LaunchGameForm launchGameForm) {
-    new CreateGameForm(launchGameForm, gameid); // TODO use
+                                           @RequestBody PutGameForm putGameForm) {
+    new CreateGameForm(putGameForm, gameid); // TODO use
     return null;
   }
 
