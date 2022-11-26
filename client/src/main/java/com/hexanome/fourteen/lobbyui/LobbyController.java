@@ -211,10 +211,11 @@ public class LobbyController implements Initializable {
         getJavaFXControlName(maxPlayersSetting.getSelectedToggle().toString());
 
     String[] lobbyData = new String[] {selectedExpansion, selectedMaxPlayers};
+    System.out.println(Arrays.toString(lobbyData));
   }
 
   public void handleGameSaveToggle(MouseEvent event) {
-    GameSave selectedSave = new GameSave(event.getSource().toString());
-    System.out.println(selectedSave.getName());
+    SavedGame selectedSave = new SavedGame(event.getSource());
+    System.out.println(selectedSave.getGameName());
   }
 }
