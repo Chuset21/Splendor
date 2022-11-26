@@ -10,15 +10,15 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * Server Controller stub.
+ * Server Service.
  */
-@RestController
-public class ServerController {
+@Service
+public class ServerService {
 
   public static final String LS_LOCATION = "http://127.0.0.1:4242/";
   private static final String USERNAME = "splendor";
@@ -36,8 +36,8 @@ public class ServerController {
    * @param gsonInstance          common gson instance
    * @param expansionStringMapper expansion to string mapper
    */
-  public ServerController(@Autowired GsonInstance gsonInstance,
-                          @Autowired Mapper<Expansion, String> expansionStringMapper) {
+  public ServerService(@Autowired GsonInstance gsonInstance,
+                       @Autowired Mapper<Expansion, String> expansionStringMapper) {
     this.gsonInstance = gsonInstance;
     this.expansionStringMapper = expansionStringMapper;
   }
@@ -118,13 +118,7 @@ public class ServerController {
     headers2.add("Content-Type", "application/json");
     headers2.add("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=");
 
-    String body2 = """
-        {
-            "name": "%s",
-            "password": "%s",
-            "preferredColour": "01FFFF",
-            "role": "ROLE_SERVICE"
-        }""".formatted(USERNAME, PASSWORD);
+    String body2 = gsonInstance.gson.toJson(new AccountCreationForm(USERNAME, PASSWORD));
 
     HttpEntity<String> requestEntity2 = new HttpEntity<>(body2, headers2);
     rest2.exchange(
@@ -178,15 +172,8 @@ public class ServerController {
     headers.add("Content-Type", "application/json");
     headers.add("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=");
 
-    String body = """
-        {
-            "location": "%s",
-            "maxSessionPlayers": 4,
-            "minSessionPlayers": 2,
-            "name": "%s",
-            "displayName": "%s",
-            "webSupport": "true"
-        }""".formatted(GAME_SERVICE_LOCATION, gameServiceName, gameServiceName);
+    String body = gsonInstance.gson.toJson(
+        new RegisterGameServiceForm(GAME_SERVICE_LOCATION, gameServiceName, gameServiceName));
 
     HttpEntity<String> requestEntity = new HttpEntity<>(body, headers);
     try {
