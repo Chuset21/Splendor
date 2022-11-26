@@ -1,5 +1,6 @@
 package hexanome.fourteen.server.control;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,12 +20,12 @@ public class LobbyServiceCallbacksController {
   public ResponseEntity<String> launchGame(@PathVariable String gameid,
                                            @RequestBody PutGameForm putGameForm) {
     new CreateGameForm(putGameForm, gameid); // TODO use
-    return null;
+    return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
   @DeleteMapping("{gameid}")
   public ResponseEntity<String> deleteGame(@PathVariable String gameid) {
-    return null;
+    return ResponseEntity.ok("Game ID: %s received".formatted(gameid)); // TODO implement
   }
 
 }
