@@ -31,7 +31,7 @@ public final class GameBoard {
    * The gems in the bank.
    */
   private final Gems availableGems;
-  private final List<List<Card>> cards;
+  private final Set<List<Card>> cards;
   private final Set<Expansion> expansions;
   /**
    * The current leading player.
@@ -55,7 +55,7 @@ public final class GameBoard {
    * @param gameid          The game ID
    * @param creator         The creator of the game
    */
-  public GameBoard(Set<Noble> availableNobles, List<List<Card>> cards, Set<Expansion> expansions,
+  public GameBoard(Set<Noble> availableNobles, Set<List<Card>> cards, Set<Expansion> expansions,
                    Set<Player> players, String gameid, String creator) {
     playerTurnMap = new HashMap<>();
     int count = 0;
@@ -95,7 +95,7 @@ public final class GameBoard {
     return availableGems;
   }
 
-  public List<List<Card>> cards() {
+  public Set<List<Card>> cards() {
     return cards;
   }
 

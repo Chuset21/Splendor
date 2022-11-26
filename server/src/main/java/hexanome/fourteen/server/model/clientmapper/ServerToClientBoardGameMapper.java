@@ -6,9 +6,10 @@ import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.expansion.Expansion;
 import hexanome.fourteen.server.model.board.player.Player;
 import hexanome.fourteen.server.model.sent.SentGameBoard;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.springframework.stereotype.Component;
 
 /**
@@ -19,7 +20,7 @@ public class ServerToClientBoardGameMapper implements Mapper<GameBoard, SentGame
   @Override
   public SentGameBoard map(GameBoard gameBoard) {
     final Map<Integer, Player> playerTurnMap = gameBoard.playerTurnMap();
-    final List<List<Card>> sentCards = new ArrayList<>();
+    final Set<List<Card>> sentCards = new HashSet<>();
     for (List<Card> cards : gameBoard.cards()) {
       if (!cards.isEmpty()) {
         final int limit =
@@ -29,7 +30,7 @@ public class ServerToClientBoardGameMapper implements Mapper<GameBoard, SentGame
     }
 
     return new SentGameBoard(playerTurnMap.get(gameBoard.playerTurn()).uid(),
-        gameBoard.availableNobles(), gameBoard.availableGems(), sentCards,
+        gameBoard.availableNobles(), gameBoard.availableGems(), sentCards, gameBoard.expansions(),
         gameBoard.leadingPlayer(), gameBoard.players(), gameBoard.gameid(), gameBoard.creator());
   }
 }

@@ -56,14 +56,13 @@ public class LobbyServiceCallbacksController {
   @PutMapping(value = "{gameid}", consumes = "application/json; charset=utf-8")
   public ResponseEntity<String> launchGame(@PathVariable String gameid,
                                            @RequestBody LaunchGameForm launchGameForm) {
-    gameManager.put(gameid, // TODO add checks
-        createGame(gameid, launchGameForm));
+    gameManager.put(gameid, createGame(gameid, launchGameForm)); // TODO add checks
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
   private GameBoard createGame(String gameid, LaunchGameForm launchGameForm) {
     Set<Noble> nobles = null; // TODO
-    List<List<Card>> cards = null; // TODO
+    Set<List<Card>> cards = null; // TODO
     Set<Expansion> expansions = Set.of(stringExpansionMapper.map(launchGameForm.gameType()));
     Set<Player> players = Arrays.stream(launchGameForm.players()).map(userPlayerMapper::map)
         .collect(Collectors.toSet());
