@@ -47,10 +47,8 @@ public class ServerController {
    */
   @PostConstruct
   private void loginAndRegister() {
-    gameServiceNames = new String[] {
-        expansionStringMapper.map(Expansion.STANDARD),
-        expansionStringMapper.map(Expansion.ORIENT)
-    };
+    gameServiceNames = new String[] {expansionStringMapper.map(Expansion.STANDARD),
+        expansionStringMapper.map(Expansion.ORIENT)};
     if (!login()) {
       // If login failed, create the user and try again
       createUser();
@@ -147,7 +145,25 @@ public class ServerController {
    * @return true if successful, false otherwise
    */
   private boolean registerGameServices() {
-    return Arrays.stream(gameServiceNames).allMatch(this::registerGameService);
+    RestTemplate rest = new RestTemplate();
+    HttpHeaders headers = new HttpHeaders();
+    headers.add("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=");
+
+    HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
+    ResponseEntity<String> responseEntity =
+        rest.exchange("%sapi/gameservices".formatted(LS_LOCATION), HttpMethod.GET, requestEntity,
+            String.class);
+    String response = responseEntity.getBody();
+    if (response == null) {
+      return false;
+    }
+
+    for (String gameServiceName : gameServiceNames) {
+      if (!response.contains(gameServiceName) && !registerGameService(gameServiceName)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /**
