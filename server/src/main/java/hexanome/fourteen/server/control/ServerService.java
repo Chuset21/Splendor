@@ -153,8 +153,10 @@ public class ServerService {
     }
 
     for (String gameServiceName : gameServiceNames) {
-      if (!response.contains(gameServiceName) && !registerGameService(gameServiceName)) {
-        return false;
+      if (!response.contains(gameServiceName)) {
+        if (!registerGameService(gameServiceName)) {
+          return false;
+        }
       }
     }
     return true;
