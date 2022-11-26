@@ -18,18 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/games/")
 public class LobbyServiceCallbacksController {
 
-  private final Mapper<String, Expansion> stringExpansionMapper;
-
-  /**
-   * Constructor.
-   *
-   * @param stringExpansionMapper string to expansion mapper
-   */
-  public LobbyServiceCallbacksController(
-      @Autowired Mapper<String, Expansion> stringExpansionMapper) {
-    this.stringExpansionMapper = stringExpansionMapper;
-  }
-
   @PutMapping(value = "{gameid}", consumes = "application/json; charset=utf-8")
   public ResponseEntity<String> launchGame(@PathVariable String gameid,
                                            @RequestBody LaunchGameForm launchGameForm) {
