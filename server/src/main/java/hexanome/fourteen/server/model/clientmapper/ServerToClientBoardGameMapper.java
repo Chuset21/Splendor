@@ -9,10 +9,12 @@ import hexanome.fourteen.server.model.sent.SentGameBoard;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.springframework.stereotype.Component;
 
 /**
  * Mapper used to only send the necessary information to the client.
  */
+@Component
 public class ServerToClientBoardGameMapper implements Mapper<GameBoard, SentGameBoard> {
   @Override
   public SentGameBoard map(GameBoard gameBoard) {
