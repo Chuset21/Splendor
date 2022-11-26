@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,19 +30,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/games/")
 public class LobbyServiceCallbacksController {
 
-  private Map<String, GameBoard> gameManager;
+  private final Map<String, GameBoard> gameManager;
   private final Mapper<User, Player> userPlayerMapper;
   private final Mapper<String, Expansion> stringExpansionMapper;
 
+  /**
+   * Constructor.
+   */
   public LobbyServiceCallbacksController(@Autowired Mapper<User, Player> userPlayerMapper,
                                          @Autowired
                                          Mapper<String, Expansion> stringExpansionMapper) {
     this.userPlayerMapper = userPlayerMapper;
     this.stringExpansionMapper = stringExpansionMapper;
-  }
-
-  @PostConstruct
-  private void initGameManager() {
     gameManager = new HashMap<>();
   }
 
