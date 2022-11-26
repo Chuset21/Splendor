@@ -15,6 +15,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +28,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Controller to handle lobby service callbacks.
@@ -120,8 +125,11 @@ public class LobbyServiceCallbacksController {
    */
   @GetMapping(produces = "application/json; charset=utf-8")
   public ResponseEntity<String> retrieveGame(@RequestParam("access_token") String accessToken) {
-    // TODO get username from access token
-    String username = null;
+    final String username = getUsername(accessToken);
+    if (username == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
+    }
+
     final GameBoard gameBoard = getGame(username);
     if (gameBoard == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Game not found.");
@@ -129,6 +137,21 @@ public class LobbyServiceCallbacksController {
       final SentGameBoard sentGameBoard = gameBoardMapper.map(gameBoard);
       return ResponseEntity.status(HttpStatus.OK)
           .body(gsonInstance.gson.toJson(sentGameBoard, SentGameBoard.class));
+    }
+  }
+
+  private String getUsername(String accessToken) {
+    RestTemplate rest = new RestTemplate();
+    HttpHeaders headers = new HttpHeaders();
+
+    HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
+    try {
+      ResponseEntity<String> responseEntity = rest.exchange(
+          "%soauth/username?access_token=%s".formatted(ServerService.LS_LOCATION, accessToken),
+          HttpMethod.GET, requestEntity, String.class);
+      return responseEntity.getBody();
+    } catch (HttpClientErrorException ignored) {
+      return null;
     }
   }
 }
