@@ -39,17 +39,17 @@ public class LobbyController implements Initializable {
   @FXML
   private TextField createLobbyPasswordField;
   @FXML
-  private ToggleButton selectOrientToggle;
+  private ToggleButton selectOrientToggle = new ToggleButton();
   @FXML
-  private ToggleButton selectExtraToggle;
+  private ToggleButton selectExtraToggle = new ToggleButton();
   @FXML
-  private ToggleButton maxPlayerToggleOne;
+  private ToggleButton maxPlayerToggleOne = new ToggleButton();
   @FXML
-  private ToggleButton maxPlayerToggleTwo;
+  private ToggleButton maxPlayerToggleTwo = new ToggleButton();
   @FXML
-  private ToggleButton maxPlayerToggleThree;
+  private ToggleButton maxPlayerToggleThree = new ToggleButton();
   @FXML
-  private ToggleButton maxPlayerToggleFour;
+  private ToggleButton maxPlayerToggleFour = new ToggleButton();
   @FXML
   private Button createLobbyButton;
   @FXML
@@ -80,6 +80,11 @@ public class LobbyController implements Initializable {
   private Text playerThreeReadyText;
   @FXML
   private Text playerFourReadyText;
+  @FXML
+  private final ToggleGroup maxPlayersSetting = new ToggleGroup();
+  @FXML
+  private final ToggleGroup expansionSetting = new ToggleGroup();
+
 
   public void goToChoiceSelect(Stage pStage) throws IOException {
     aPrimaryStage = pStage;
@@ -108,6 +113,21 @@ public class LobbyController implements Initializable {
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
     init();
+
+    //Initialize ToggleGroup and Toggles for selecting max players in the create game menu
+    ArrayList<ToggleButton> maxPlayersToggles = new ArrayList<ToggleButton>(
+        Arrays.asList(maxPlayerToggleOne, maxPlayerToggleTwo, maxPlayerToggleThree,
+            maxPlayerToggleFour));
+    for (Toggle toggle : maxPlayersToggles) {
+      toggle.setToggleGroup(maxPlayersSetting);
+    }
+
+    //Initialize ToggleGroup and Toggles for selecting an expansion in the create game menu
+    ArrayList<ToggleButton> expansionToggles =
+        new ArrayList<ToggleButton>(Arrays.asList(selectExtraToggle, selectOrientToggle));
+    for (Toggle toggle : expansionToggles) {
+      toggle.setToggleGroup(expansionSetting);
+    }
   }
 
   public void loadScene(Parent root) {
@@ -172,6 +192,11 @@ public class LobbyController implements Initializable {
     }
   }
 
+  public String getJavaFXControlName(String toStringResult) {
+    int end = toStringResult.indexOf("]") + 1;
+    return toStringResult.substring(end).replaceAll("'", "");
+  }
+
   public void handleCreateLobbyButton() {
     try {
       Parent root = FXMLLoader.load(getClass().getResource("lobby.fxml"));
@@ -179,16 +204,17 @@ public class LobbyController implements Initializable {
     } catch (Exception e) {
       e.printStackTrace();
     }
+
+    String selectedExpansion =
+        getJavaFXControlName(expansionSetting.getSelectedToggle().toString());
+    String selectedMaxPlayers =
+        getJavaFXControlName(maxPlayersSetting.getSelectedToggle().toString());
+
+    String[] lobbyData = new String[] {selectedExpansion, selectedMaxPlayers};
   }
 
-  // This needs revamping and variable changing and stuff.
-  // Need to disable other toggles when one if selected.
-  // This is where curl call to lobby service saved games would go I believe.
-  // I'll finish this Thursday afternoon hopefully!
   public void handleGameSaveToggle(MouseEvent event) {
-    saveGameOneToggle = (ToggleButton) event.getSource();
-    if (saveGameOneToggle.isSelected()) {
-      System.out.println("SELECTED GAME SAVE ONE");
-    }
+    GameSave selectedSave = new GameSave(event.getSource().toString());
+    System.out.println(selectedSave.getName());
   }
 }
