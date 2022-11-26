@@ -1,15 +1,12 @@
 package com.hexanome.fourteen.login;
 
 import com.hexanome.fourteen.boards.OrientExpansion;
-<<<<<<< HEAD
 import com.hexanome.fourteen.lobbyui.LobbyController;
-=======
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.ResourceBundle;
->>>>>>> 25eac92b2e68f400d581151473ff75536bc66043
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -103,12 +100,8 @@ public final class LoginScreen implements Initializable {
 
     // Try launching the game
     try {
-<<<<<<< HEAD
       game.goToChoiceSelect(aPrimaryStage);
       //game.goToGame(aPrimaryStage);
-=======
-      game.goToGame(aPrimaryStage);
->>>>>>> 25eac92b2e68f400d581151473ff75536bc66043
     } catch (Exception ex) {
       ex.printStackTrace();
     }
