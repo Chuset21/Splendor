@@ -36,7 +36,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @RestController
 @RequestMapping("/api/games/")
-public class LobbyServiceCallbacksController {
+public class GameHandlerController {
 
   private final Map<Set<String>, GameBoard> gameManager;
   private final Mapper<User, Player> userPlayerMapper;
@@ -47,12 +47,12 @@ public class LobbyServiceCallbacksController {
   /**
    * Constructor.
    */
-  public LobbyServiceCallbacksController(@Autowired Mapper<User, Player> userPlayerMapper,
-                                         @Autowired
+  public GameHandlerController(@Autowired Mapper<User, Player> userPlayerMapper,
+                               @Autowired
                                          Mapper<String, Expansion> stringExpansionMapper,
-                                         @Autowired
+                               @Autowired
                                          Mapper<GameBoard, SentGameBoard> gameBoardMapper,
-                                         @Autowired GsonInstance gsonInstance) {
+                               @Autowired GsonInstance gsonInstance) {
     this.userPlayerMapper = userPlayerMapper;
     this.stringExpansionMapper = stringExpansionMapper;
     this.gameBoardMapper = gameBoardMapper;
