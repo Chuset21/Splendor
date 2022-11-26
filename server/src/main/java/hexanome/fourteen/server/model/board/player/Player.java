@@ -1,4 +1,6 @@
-package hexanome.fourteen.server.model.board;
+package hexanome.fourteen.server.model.board.player;
+
+import hexanome.fourteen.server.model.board.Hand;
 
 /**
  * Player.
