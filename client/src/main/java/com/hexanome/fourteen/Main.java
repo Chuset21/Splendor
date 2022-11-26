@@ -16,8 +16,8 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
   private static final String HTTP_STRING = "http://%s:%s/";
-  private static final String LOBBY_SERVICE_PORT = "4042";
-  private static final String SERVER_PORT = "4043";
+  private static final String LOBBY_SERVICE_PORT = "4242";
+  private static final String SERVER_PORT = "4243";
   private static final String DEFAULT_IP = "127.0.0.1";
   public static String lsLocation;
   public static String serverLocation;
