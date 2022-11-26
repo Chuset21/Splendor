@@ -1,8 +1,5 @@
 package hexanome.fourteen.server.control;
 
-import hexanome.fourteen.server.Mapper;
-import hexanome.fourteen.server.model.board.expansion.Expansion;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
