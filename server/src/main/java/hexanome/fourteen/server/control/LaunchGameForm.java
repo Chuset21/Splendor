@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName;
 import hexanome.fourteen.server.model.User;
 
 /**
- * Put game form.
+ * Launch game form.
  */
-public final class PutGameForm {
+public final class LaunchGameForm {
   private String creator;
   @SerializedName("gameServer")
   private String gameType; // This will tell us the expansion
@@ -17,7 +17,7 @@ public final class PutGameForm {
   /**
    * No args constructor.
    */
-  public PutGameForm() {
+  public LaunchGameForm() {
   }
 
   public String creator() {
