@@ -270,6 +270,6 @@ public class ServerService {
    * @return The encoded string.
    */
   private String encodePlusSign(String rawString) {
-    return rawString.replace("+", "%2B");
+    return rawString.replaceAll("\\+", "%2B");
   }
 }
