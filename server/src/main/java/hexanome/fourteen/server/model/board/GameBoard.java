@@ -66,8 +66,9 @@ public final class GameBoard {
     leadingPlayer = playerTurnMap.get(0);
 
     availableGems = new Gems();
+    final int gemAmount = count == 2 ? 4 : count == 3 ? 5 : 7;
     for (GemColor gemColor : GemColor.values()) {
-      availableGems.put(gemColor, 10);
+      availableGems.put(gemColor, gemAmount);
     }
     availableGems.put(GemColor.GOLD, 5);
 
