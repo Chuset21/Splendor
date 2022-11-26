@@ -24,7 +24,7 @@ public final class LaunchGameForm {
     return creator;
   }
 
-  public String gameServer() {
+  public String gameType() {
     return gameType;
   }
 

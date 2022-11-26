@@ -34,7 +34,7 @@ public class CreateGameFormGameBoardMapper implements Mapper<CreateGameForm, Gam
     final LaunchGameForm launchGameForm = createGameForm.launchGameForm();
     Set<Noble> nobles = null; // TODO
     List<List<Card>> cards = null; // TODO
-    Set<Expansion> expansions = Set.of(stringExpansionMapper.map(launchGameForm.gameServer()));
+    Set<Expansion> expansions = Set.of(stringExpansionMapper.map(launchGameForm.gameType()));
     Set<Player> players = Arrays.stream(launchGameForm.players()).map(userPlayerMapper::map)
         .collect(Collectors.toSet());
     String gameid = createGameForm.gameid();
