@@ -27,7 +27,7 @@
             <Font name="Satoshi Bold" size="24.0" />
          </font>
       </Button>
-      <Text fill="#72465b" layoutX="379.0" layoutY="338.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back joebiden43!">
+      <Text fill="#72465b" layoutX="486.0" layoutY="335.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back">
          <font>
             <Font name="Satoshi Bold" size="36.0" />
          </font>
@@ -35,6 +35,11 @@
       <Text fill="#72465b" layoutX="434.0" layoutY="267.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Splendor">
          <font>
             <Font name="Sharpie Regular" size="100.0" />
+         </font>
+      </Text>
+      <Text fx:id="displayUsername" fill="#72465b" layoutX="526.0" layoutY="383.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username">
+         <font>
+            <Font name="Satoshi Bold" size="36.0" />
          </font>
       </Text>
    </children>
