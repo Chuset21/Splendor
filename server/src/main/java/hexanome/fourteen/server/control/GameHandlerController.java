@@ -14,10 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import kong.unirest.Unirest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,8 +26,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * Controller to handle lobby service callbacks.
@@ -48,10 +44,8 @@ public class GameHandlerController {
    * Constructor.
    */
   public GameHandlerController(@Autowired Mapper<User, Player> userPlayerMapper,
-                               @Autowired
-                                         Mapper<String, Expansion> stringExpansionMapper,
-                               @Autowired
-                                         Mapper<GameBoard, SentGameBoard> gameBoardMapper,
+                               @Autowired Mapper<String, Expansion> stringExpansionMapper,
+                               @Autowired Mapper<GameBoard, SentGameBoard> gameBoardMapper,
                                @Autowired GsonInstance gsonInstance) {
     this.userPlayerMapper = userPlayerMapper;
     this.stringExpansionMapper = stringExpansionMapper;
@@ -70,8 +64,7 @@ public class GameHandlerController {
   public ResponseEntity<String> launchGame(@PathVariable String gameid,
                                            @RequestBody LaunchGameForm launchGameForm) {
     gameManager.put(
-        Arrays.stream(launchGameForm.players()).map(User::name)
-            .collect(Collectors.toSet()),
+        Arrays.stream(launchGameForm.players()).map(User::name).collect(Collectors.toSet()),
         createGame(gameid, launchGameForm)); // TODO add checks
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
@@ -132,7 +125,7 @@ public class GameHandlerController {
 
     final GameBoard gameBoard = getGame(username);
     if (gameBoard == null) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Game not found.");
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
     } else {
       final SentGameBoard sentGameBoard = gameBoardMapper.map(gameBoard);
       return ResponseEntity.status(HttpStatus.OK)
@@ -141,17 +134,7 @@ public class GameHandlerController {
   }
 
   private String getUsername(String accessToken) {
-    RestTemplate rest = new RestTemplate();
-    HttpHeaders headers = new HttpHeaders();
-
-    HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
-    try {
-      ResponseEntity<String> responseEntity = rest.exchange(
-          "%soauth/username?access_token=%s".formatted(ServerService.LS_LOCATION, accessToken),
-          HttpMethod.GET, requestEntity, String.class);
-      return responseEntity.getBody();
-    } catch (HttpClientErrorException ignored) {
-      return null;
-    }
+    return Unirest.post("%soauth/username".formatted(ServerService.LS_LOCATION))
+        .queryString("access_token", accessToken).asString().getBody();
   }
 }
