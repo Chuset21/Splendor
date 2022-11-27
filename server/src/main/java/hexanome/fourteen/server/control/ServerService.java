@@ -133,21 +133,18 @@ public class ServerService {
    * @return true if successful, false otherwise
    */
   private boolean registerGameServices() {
-    RestTemplate rest = new RestTemplate();
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=");
+    HttpResponse<String> response =
+        Unirest.get("%sapi/gameservices".formatted(LS_LOCATION))
+            .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+            .asString();
 
-    HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
-    ResponseEntity<String> responseEntity =
-        rest.exchange("%sapi/gameservices".formatted(LS_LOCATION), HttpMethod.GET, requestEntity,
-            String.class);
-    String response = responseEntity.getBody();
-    if (response == null) {
+    String gameServices = response.getBody();
+    if (gameServices == null) {
       return false;
     }
 
     for (String gameServiceName : gameServiceNames) {
-      if (!response.contains(gameServiceName)) {
+      if (!gameServices.contains(gameServiceName)) {
         if (!registerGameService(gameServiceName)) {
           return false;
         }
@@ -215,41 +212,27 @@ public class ServerService {
    */
   @PreDestroy
   private void unregisterGameServices() {
-    if (!tryUnregisterGameServices()) {
-      refreshToken();
-      tryUnregisterGameServices();
-    }
+    refreshToken();
+    tryUnregisterGameServices();
   }
 
   /**
    * Unregister all game services.
-   *
-   * @return true if successful, false otherwise
    */
-  private boolean tryUnregisterGameServices() {
-    return Arrays.stream(gameServiceNames).allMatch(this::unregisterGameService);
+  private void tryUnregisterGameServices() {
+    Arrays.stream(gameServiceNames).forEach(this::unregisterGameService);
   }
 
   /**
    * Try to unregister the game service.
    *
    * @param gameServiceName the game service to be unregistered
-   * @return true if successful, false otherwise.
    */
-  private boolean unregisterGameService(String gameServiceName) {
-    RestTemplate rest = new RestTemplate();
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=");
-
-    HttpEntity<String> requestEntity = new HttpEntity<>("", headers);
-    try {
-      ResponseEntity<String> responseEntity = rest.exchange(
-          "%sapi/gameservices/%s?access_token=%s".formatted(LS_LOCATION, gameServiceName,
-              accessToken), HttpMethod.DELETE, requestEntity, String.class);
-      return responseEntity.getStatusCode().value() == 200;
-    } catch (HttpClientErrorException ignored) {
-      return false;
-    }
+  private void unregisterGameService(String gameServiceName) {
+    Unirest.delete("%sapi/gameservices/%s".formatted(LS_LOCATION, gameServiceName))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", accessToken)
+        .asEmpty();
   }
 
   /**
