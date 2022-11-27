@@ -8,6 +8,19 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 public class RestLauncher {
+
+  /**
+   * Constructor.
+   */
+  public RestLauncher() {
+
+  }
+
+  /**
+   * Main method to allow our Application to run.
+   *
+   * @param args Arguments to be passed
+   */
   public static void main(String[] args) {
     SpringApplication.run(RestLauncher.class, args);
   }
