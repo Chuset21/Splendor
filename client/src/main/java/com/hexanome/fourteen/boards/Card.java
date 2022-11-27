@@ -76,20 +76,17 @@ public class Card extends Image {
       //Expansion: " + Expansions.valueOf(cardData[7]) + ",
       //File path: images/" + cardData[cardData.length - 1] + "]");
 
-      // Add given number of the card type
-      for (int i = 0; i < Integer.valueOf(cardData[11]); i++) {
+      // Create card
+      Card c = new Card(new int[]{Integer.valueOf(cardData[0]), Integer.valueOf(cardData[1]),
+              Integer.valueOf(cardData[2]), Integer.valueOf(cardData[3]),
+              Integer.valueOf(cardData[4])}, GemColors.valueOf(cardData[5]),
+              Integer.valueOf(cardData[6]), Expansions.valueOf(cardData[7]),
+              Integer.valueOf(cardData[8]), Integer.valueOf(cardData[9]),
+              Card.class.getResource("images/tempcards/" + cardData[10]).toString());
 
-        // Create card
-        Card c = new Card(new int[]{Integer.valueOf(cardData[0]), Integer.valueOf(cardData[1]),
-                Integer.valueOf(cardData[2]), Integer.valueOf(cardData[3]),
-                Integer.valueOf(cardData[4])}, GemColors.valueOf(cardData[5]),
-                Integer.valueOf(cardData[6]), Expansions.valueOf(cardData[7]),
-                Integer.valueOf(cardData[8]), Integer.valueOf(cardData[9]),
-                Card.class.getResource("images/tempcards/" + cardData[10]).toString());
+      // Add card to cards list
+      cards.add(c);
 
-        // Add card to cards list
-        cards.add(c);
-      }
     }
 
     return cards;
