@@ -165,42 +165,92 @@ public final class GameBoard {
     return decks;
   }
 
+  /**
+   * A Getter for the Player's Turn.
+   *
+   * @return The Player's Turn
+   */
   public int playerTurn() {
     return playerTurn;
   }
 
+  /**
+   * A Getter for the Player's Turn Map.
+   *
+   * @return The Player's Turn Map
+   */
   public Map<Integer, Player> playerTurnMap() {
     return playerTurnMap;
   }
 
+  /**
+   * A Getter for the Available Nobles.
+   *
+   * @return The Available Nobles
+   */
   public Set<Noble> availableNobles() {
     return availableNobles;
   }
 
+  /**
+   * A Getter for the Available Gems.
+   *
+   * @return The Available Gems
+   */
   public Gems availableGems() {
     return availableGems;
   }
 
+  /**
+   * A Getter for the Available Cards.
+   *
+   * @return The Available Cards
+   */
   public Set<List<Card>> cards() {
     return cards;
   }
 
+  /**
+   * A Getter for the current chosen Expansions.
+   *
+   * @return The chosen Expansions
+   */
   public Set<Expansion> expansions() {
     return expansions;
   }
 
+  /**
+   * A Getter for the current Leading Player.
+   *
+   * @return The Leading Player
+   */
   public Player leadingPlayer() {
     return leadingPlayer;
   }
 
+  /**
+   * A Getter for the all the Players in the Game.
+   *
+   * @return The Players in the Game
+   */
   public Set<Player> players() {
     return players;
   }
 
+  /**
+   * A Getter for the Game ID.
+   *
+   * @return The Game ID
+   */
   public String gameid() {
     return gameid;
   }
 
+  /**
+   * A Getter for the Creator of the Game.
+   *
+   * @return The Creator of the Game
+   */
   public String creator() {
     return creator;
   }
