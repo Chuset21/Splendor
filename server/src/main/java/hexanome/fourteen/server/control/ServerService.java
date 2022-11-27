@@ -5,6 +5,8 @@ import hexanome.fourteen.server.model.board.expansion.Expansion;
 import java.util.Arrays;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -67,30 +69,22 @@ public class ServerService {
    * @return true if successful, false otherwise
    */
   private boolean login() {
-    RestTemplate rest = new RestTemplate();
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=");
+    HttpResponse<String> response = Unirest.post("%soauth/token".formatted(LS_LOCATION))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("grant_type", "password")
+        .queryString("username", USERNAME)
+        .queryString("password", PASSWORD)
+        .body("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true")
+        .asString();
 
-    String body =
-        "user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true";
-
-    HttpEntity<String> requestEntity = new HttpEntity<>(body, headers);
-    try {
-      ResponseEntity<String> responseEntity = rest.exchange(
-          "%soauth/token?grant_type=password&username=%s&password=%s".formatted(LS_LOCATION,
-              USERNAME, PASSWORD), HttpMethod.POST, requestEntity, String.class);
-      if (responseEntity.getStatusCode().value() != 200) {
-        return false;
-      }
-
-      String response = responseEntity.getBody();
-      LoginForm loginForm = gsonInstance.gson.fromJson(response, LoginForm.class);
-      accessToken = encodePlusSign(loginForm.accessToken());
-      refreshToken = encodePlusSign(loginForm.refreshToken());
-      return true;
-    } catch (HttpClientErrorException ignored) {
+    if (response.getStatus() != 200) {
       return false;
     }
+
+    LoginForm loginForm = gsonInstance.gson.fromJson(response.getBody(), LoginForm.class);
+    accessToken = encodePlusSign(loginForm.accessToken());
+    refreshToken = encodePlusSign(loginForm.refreshToken());
+    return true;
   }
 
   /**
@@ -169,23 +163,18 @@ public class ServerService {
    * @return true if successful, false otherwise
    */
   private boolean registerGameService(String gameServiceName) {
-    RestTemplate rest = new RestTemplate();
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("Content-Type", "application/json");
-    headers.add("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=");
-
     String body = gsonInstance.gson.toJson(
         new RegisterGameServiceForm(GAME_SERVICE_LOCATION, gameServiceName, gameServiceName));
 
-    HttpEntity<String> requestEntity = new HttpEntity<>(body, headers);
-    try {
-      ResponseEntity<String> responseEntity = rest.exchange(
-          "%sapi/gameservices/%s?access_token=%s".formatted(LS_LOCATION, gameServiceName,
-              accessToken), HttpMethod.PUT, requestEntity, String.class);
-      return responseEntity.getStatusCode().value() == 200;
-    } catch (HttpClientErrorException ignored) {
-      return false;
-    }
+    HttpResponse<String> response =
+        Unirest.put("%sapi/gameservices/%s".formatted(LS_LOCATION, gameServiceName))
+            .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+            .header("Content-Type", "application/json")
+            .queryString("access_token", accessToken)
+            .body(body)
+            .asString();
+
+    return response.getStatus() == 200;
   }
 
   /**
