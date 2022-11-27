@@ -47,6 +47,7 @@ public class GameHandlerController {
    * @param stringExpansionMapper The String to Expansion Mapper
    * @param gameBoardMapper       The GameBard Mapper
    * @param gsonInstance          The GSON we will be using
+   * @param lsLocation            The LobbyService Location
    */
   public GameHandlerController(@Autowired Mapper<User, Player> userPlayerMapper,
                                @Autowired Mapper<String, Expansion> stringExpansionMapper,
