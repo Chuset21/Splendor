@@ -2,18 +2,12 @@ package hexanome.fourteen.server.control;
 
 import hexanome.fourteen.server.Mapper;
 import hexanome.fourteen.server.model.board.expansion.Expansion;
-import java.util.Arrays;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * Server Service.
@@ -89,40 +83,26 @@ public class ServerService {
    * Create our user.
    */
   private void createUser() {
-    RestTemplate rest1 = new RestTemplate();
-    HttpHeaders headers1 = new HttpHeaders();
-    headers1.add("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=");
-
-    String body1 =
-        "user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true";
-
-    HttpEntity<String> requestEntity1 = new HttpEntity<>(body1, headers1);
-    ResponseEntity<String> responseEntity1 = rest1.exchange(
-        "%soauth/token?grant_type=password&username=maex&password=%s".formatted(LS_LOCATION,
-            PASSWORD), HttpMethod.POST, requestEntity1, String.class);
+    HttpResponse<String> loginResponse = Unirest.post("%soauth/token".formatted(LS_LOCATION))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc")
+        .queryString("grant_type", "password").queryString("username", "maex")
+        .queryString("password", PASSWORD)
+        .body("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true")
+        .asString();
 
     String curAccessToken = encodePlusSign(
-        gsonInstance.gson.fromJson(responseEntity1.getBody(), LoginForm.class).accessToken());
+        gsonInstance.gson.fromJson(loginResponse.getBody(), LoginForm.class).accessToken());
 
     // We are logged in as maex
-    RestTemplate rest2 = new RestTemplate();
-    HttpHeaders headers2 = new HttpHeaders();
-    headers2.add("Content-Type", "application/json");
-    headers2.add("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=");
-
-    String body2 = gsonInstance.gson.toJson(new AccountCreationForm(USERNAME, PASSWORD));
-
-    HttpEntity<String> requestEntity2 = new HttpEntity<>(body2, headers2);
-    rest2.exchange(
-        "%sapi/users/%s?access_token=%s".formatted(LS_LOCATION, USERNAME, curAccessToken),
-        HttpMethod.PUT, requestEntity2, String.class);
+    Unirest.put("%sapi/users/%s".formatted(LS_LOCATION, USERNAME))
+        .header("Content-Type", "application/json")
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", curAccessToken)
+        .body(gsonInstance.gson.toJson(new AccountCreationForm(USERNAME, PASSWORD))).asEmpty();
 
     // We have now added our user and are going to log out maex
-    RestTemplate rest = new RestTemplate();
-
-    HttpEntity<String> requestEntity = new HttpEntity<>("", new HttpHeaders());
-    rest.exchange("%soauth/active?access_token=%s".formatted(LS_LOCATION, curAccessToken),
-        HttpMethod.DELETE, requestEntity, String.class);
+    Unirest.delete("%soauth/active".formatted(LS_LOCATION))
+        .queryString("access_token", curAccessToken).asEmpty();
   }
 
   /**

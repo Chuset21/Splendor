@@ -16,9 +16,17 @@ public class AccountCreationForm {
 
   }
 
+  /**
+   * Constructor.
+   *
+   * @param name     Name
+   * @param password Password
+   */
   public AccountCreationForm(String name, String password) {
     this.name = name;
     this.password = password;
+    preferredColour = "01FFFF";
+    role = "ROLE_SERVICE";
   }
 
   public String getName() {
