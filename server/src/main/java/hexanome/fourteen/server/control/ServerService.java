@@ -204,7 +204,9 @@ public class ServerService {
    * Unregister all game services.
    */
   private void tryUnregisterGameServices() {
-    Arrays.stream(gameServiceNames).forEach(this::unregisterGameService);
+    for (String gameServiceName : gameServiceNames) {
+      unregisterGameService(gameServiceName);
+    }
   }
 
   /**
