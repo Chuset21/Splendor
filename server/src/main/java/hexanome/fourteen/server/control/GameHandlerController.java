@@ -78,9 +78,16 @@ public class GameHandlerController {
     return new GameBoard(nobles, expansions, players, gameid, creator);
   }
 
+  /**
+   * Remove a game with a matching game ID.
+   *
+   * @param gameid game ID to remove
+   */
   @DeleteMapping("{gameid}")
   public ResponseEntity<String> deleteGame(@PathVariable String gameid) {
-    removeGame(gameid); // TODO implement properly
+    if (!removeGame(gameid)) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
+    }
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
