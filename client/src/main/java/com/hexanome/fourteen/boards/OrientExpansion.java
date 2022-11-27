@@ -29,8 +29,6 @@ public class OrientExpansion implements Initializable {
   public static final int[] GEM_INDEX = {0, 1, 2, 3, 4, 5};
 
   // Player's Info
-  private int[] playerGems = new int[6]; // player's Gems (in Hand)
-
   private Player player;
   private ArrayList<Card> gameCards;
   private Deck level3Cards;
@@ -137,7 +135,7 @@ public class OrientExpansion implements Initializable {
 
     // Initialize the player's gems
     for (int idx : GEM_INDEX) {
-      gemLabels.get(idx).textProperty().set("" + playerGems[idx]);
+      gemLabels.get(idx).textProperty().set("" + player.getHand().gems[idx]);
     }
 
     // Set up game screen

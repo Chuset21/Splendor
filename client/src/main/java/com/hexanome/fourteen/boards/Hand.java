@@ -48,14 +48,14 @@ public class Hand {
     int discountAmount = card.getDiscountAmount();
 
     // Check that we CAN purchase it
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 5; i++) {
       if (cost[i] > (gems[i] + gemDiscounts[i])) {
         return;
       }
     }
 
     // Update player's gems
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 5; i++) {
       // only subtract if (COST-DISCOUNT) is greater than 0,
       // We don't want to be adding gems by accident
       if (cost[i] - gemDiscounts[i] > 0) {
