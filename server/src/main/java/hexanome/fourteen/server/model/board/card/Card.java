@@ -27,18 +27,38 @@ public abstract class Card {
     this.expansion = expansion;
   }
 
+  /**
+   * A Getter to get the Prestige Points of the Card.
+   *
+   * @return Prestige Points of the Card
+   */
   public int prestigePoints() {
     return prestigePoints;
   }
 
+  /**
+   * A Getter to get the Cost of the Card.
+   *
+   * @return Cost of the Card
+   */
   public Gems cost() {
     return cost;
   }
 
+  /**
+   * A Getter to get the Level of the Card.
+   *
+   * @return Level of the Card
+   */
   public CardLevel level() {
     return level;
   }
 
+  /**
+   * A Getter to get which Expansion in which the Card is a part of.
+   *
+   * @return Expansion of the Card
+   */
   public Expansion expansion() {
     return expansion;
   }
