@@ -136,14 +136,13 @@ public class ServerService {
    * @return true if successful, false otherwise
    */
   private boolean registerGameService(String gameServiceName) {
-    String body = gsonInstance.gson.toJson(
-        new RegisterGameServiceForm(GAME_SERVICE_LOCATION, gameServiceName, gameServiceName));
-
-    HttpResponse<String> response =
+    HttpResponse<?> response =
         Unirest.put("%sapi/gameservices/%s".formatted(LS_LOCATION, gameServiceName))
             .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
             .header("Content-Type", "application/json").queryString("access_token", accessToken)
-            .body(body).asString();
+            .body(gsonInstance.gson.toJson(
+                new RegisterGameServiceForm(GAME_SERVICE_LOCATION, gameServiceName,
+                    gameServiceName))).asEmpty();
 
     return response.getStatus() == 200;
   }
