@@ -1,5 +1,6 @@
 package com.hexanome.fourteen.lobbyui;
 
+import com.hexanome.fourteen.login.LoginScreen;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -107,7 +108,7 @@ public class LobbyController implements Initializable {
   }
 
   private void init() {
-    username = "joebiden43";
+    username = LoginScreen.userid;
   }
 
   @Override

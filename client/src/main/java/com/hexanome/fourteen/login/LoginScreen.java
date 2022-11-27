@@ -33,6 +33,7 @@ public final class LoginScreen implements Initializable {
           .create();
   public static String accessToken = "";
   public static String refreshToken = "";
+  public static String userid = "";
 
   @FXML
   private TextField usernameField;
@@ -129,6 +130,7 @@ public final class LoginScreen implements Initializable {
     }
 
     if (login(username, password)) {
+      userid = username;
       launchGame();
     } else {
       failedLogin();
