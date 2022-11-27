@@ -28,10 +28,20 @@ public final class StandardCard extends Card {
     this.discountColor = discountColor;
   }
 
+  /**
+   * A Getter for the Gem Discount associated with the StandardCard.
+   *
+   * @return The Gem Discount
+   */
   public int gemDiscount() {
     return gemDiscount;
   }
 
+  /**
+   * A Getter for the Discount Color associated with the StandardCard.
+   *
+   * @return The Discount Color
+   */
   public GemColor discountColor() {
     return discountColor;
   }
