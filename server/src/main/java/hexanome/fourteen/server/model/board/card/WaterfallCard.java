@@ -31,14 +31,29 @@ public final class WaterfallCard extends Card {
     this.freeCardLevel = freeCardLevel;
   }
 
+  /**
+   * A Getter for the Gem Discount of a WaterfallCard.
+   *
+   * @return The Gem Discount
+   */
   public int gemDiscount() {
     return gemDiscount;
   }
 
+  /**
+   * A Getter for the Discount Color of a WaterfallCard.
+   *
+   * @return The Discount Color
+   */
   public GemColor discountColor() {
     return discountColor;
   }
 
+  /**
+   * A Getter for the Free Card Level of a WaterfallCard.
+   *
+   * @return The Free Card Level
+   */
   public CardLevel freeCardLevel() {
     return freeCardLevel;
   }
