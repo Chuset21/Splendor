@@ -116,7 +116,7 @@ public class GameHandlerController {
    *
    * @param accessToken The user's access token who is sending the request
    */
-  @GetMapping(produces = "application/json; charset=utf-8")
+  @GetMapping(value = "board", produces = "application/json; charset=utf-8")
   public ResponseEntity<String> retrieveGame(@RequestParam("access_token") String accessToken) {
     final String username = getUsername(accessToken);
     if (username == null) {
