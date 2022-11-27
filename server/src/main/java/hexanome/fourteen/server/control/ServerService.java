@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class ServerService {
 
+  /**
+   * Permanent location of Lobby Service.
+   */
   public static final String LS_LOCATION = "http://127.0.0.1:4242/";
   private static final String USERNAME = "splendor";
   private static final String PASSWORD = "abc123_ABC123";
@@ -22,6 +25,10 @@ public class ServerService {
   private String[] gameServiceNames;
   private final Mapper<Expansion, String> expansionStringMapper;
   private final GsonInstance gsonInstance;
+
+  /**
+   * Access Token needed.
+   */
   public String accessToken;
   private String refreshToken;
 
