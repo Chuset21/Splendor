@@ -16,7 +16,6 @@ public class AccountCreationForm {
    * No args constructor.
    */
   public AccountCreationForm() {
-
   }
 
   /**
