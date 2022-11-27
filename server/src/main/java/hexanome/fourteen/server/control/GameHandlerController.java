@@ -12,11 +12,17 @@ import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import hexanome.fourteen.server.model.board.player.Player;
 import hexanome.fourteen.server.model.sent.SentGameBoard;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import kong.unirest.Unirest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,92 +81,13 @@ public class GameHandlerController {
 
   private GameBoard createGame(String gameid, LaunchGameForm launchGameForm) {
     Set<Noble> nobles = null; // TODO
-    Set<List<Card>> cards = getDecks("CardData.csv");
 
     Set<Expansion> expansions = Set.of(stringExpansionMapper.map(launchGameForm.gameType()));
     Set<Player> players = Arrays.stream(launchGameForm.players()).map(userPlayerMapper::map)
         .collect(Collectors.toSet());
     String creator = launchGameForm.creator();
 
-    return new GameBoard(nobles, cards, expansions, players, gameid, creator);
-  }
-
-  private Set<List<Card>> getDecks(String pCardDataCSV){
-
-    //Initialize a list of cards to use for the game
-
-    HashSet<List<Card>> decks = new HashSet<List<Card>>();
-
-    // Fill list with final cards
-    try {
-
-      List<Card> levelOne = new ArrayList<Card>();
-      List<Card> levelTwo = new ArrayList<Card>();
-      List<Card> levelThree = new ArrayList<Card>();
-      List<Card> oLevelOne = new ArrayList<Card>();
-      List<Card> oLevelTwo = new ArrayList<Card>();
-      List<Card> oLevelThree = new ArrayList<Card>();
-
-      // Current line of CSV file
-      String curLine;
-
-      // Get CardData.csv file
-      BufferedReader br = new BufferedReader(new InputStreamReader(
-              Objects.requireNonNull(Card.class.getResourceAsStream(pCardDataCSV))));
-
-      // Skip header of the CSV file
-      br.readLine();
-
-      // Read through lines of file and get card data
-      while ((curLine = br.readLine()) != null) {
-
-        // Use comma as a delimiter
-        String[] cardData = curLine.split(",");
-
-        // Get the Cost
-        Gems cost = new Gems();
-        cost.put(GemColor.GREEN, Integer.valueOf(cardData[0]));
-        cost.put(GemColor.WHITE, Integer.valueOf(cardData[1]));
-        cost.put(GemColor.BLUE, Integer.valueOf(cardData[2]));
-        cost.put(GemColor.BLACK, Integer.valueOf(cardData[3]));
-        cost.put(GemColor.RED, Integer.valueOf(cardData[4]));
-
-        // Get the level and expansion
-        CardLevel level = CardLevel.valueOf(cardData[8]);
-        Expansion expansion = Expansion.valueOf(cardData[7]);
-
-        // Create card
-        Card c = new StandardCard(Integer.valueOf(cardData[9]), cost, level, expansion,
-                Integer.valueOf(cardData[6]), GemColor.valueOf(cardData[5]));
-
-        // Add the card to respective list
-        if (expansion == Expansion.STANDARD) {
-          switch (level) {
-            case ONE -> levelOne.add(c);
-            case TWO -> levelTwo.add(c);
-            case THREE -> levelThree.add(c);
-          }
-        } else if (expansion == Expansion.ORIENT) {
-          switch (level) {
-            case ONE -> oLevelOne.add(c);
-            case TWO -> oLevelTwo.add(c);
-            case THREE -> oLevelThree.add(c);
-          }
-        }
-      }
-
-      decks.add(levelOne);
-      decks.add(levelTwo);
-      decks.add(levelThree);
-      decks.add(oLevelOne);
-      decks.add(oLevelTwo);
-      decks.add(oLevelThree);
-
-    } catch (IOException ioe){
-      ioe.printStackTrace();
-    }
-
-    return null;
+    return new GameBoard(nobles, expansions, players, gameid, creator);
   }
 
   @DeleteMapping("{gameid}")

@@ -1,13 +1,21 @@
 package hexanome.fourteen.server.model.board;
 
 import hexanome.fourteen.server.model.board.card.Card;
+import hexanome.fourteen.server.model.board.card.CardLevel;
+import hexanome.fourteen.server.model.board.card.StandardCard;
 import hexanome.fourteen.server.model.board.expansion.Expansion;
 import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import hexanome.fourteen.server.model.board.player.Player;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 
@@ -31,6 +39,12 @@ public final class GameBoard {
    * The gems in the bank.
    */
   private final Gems availableGems;
+  /**
+   * The cards on the board, including the one's that are not face up.
+   * I'm interpreting it as each list being a list of a certain
+   * level of cards, with the first x amount in each list being the cards
+   * that are face up.
+   */
   private final Set<List<Card>> cards;
   private final Set<Expansion> expansions;
   /**
@@ -45,18 +59,13 @@ public final class GameBoard {
    * Constructor.
    *
    * @param availableNobles The nobles on the board
-   * @param cards           The cards on the board, including the one's that are not face up.
-   *                        I'm interpreting it as each list being a list of a certain
-   *                        level of cards, with the first x amount in each list being the cards
-   *                        that are face up.
-   *                        We can use the sublist method for this I believe.
    * @param expansions      The set of expansions
    * @param players         The players
    * @param gameid          The game ID
    * @param creator         The creator of the game
    */
-  public GameBoard(Set<Noble> availableNobles, Set<List<Card>> cards, Set<Expansion> expansions,
-                   Set<Player> players, String gameid, String creator) {
+  public GameBoard(Set<Noble> availableNobles, Set<Expansion> expansions, Set<Player> players,
+                   String gameid, String creator) {
     playerTurnMap = new HashMap<>();
     int count = 0;
     for (Player player : players) {
@@ -73,11 +82,87 @@ public final class GameBoard {
     availableGems.put(GemColor.GOLD, 5);
 
     this.availableNobles = availableNobles;
-    this.cards = cards;
+    this.cards = getDecks(expansions);
     this.expansions = expansions;
     this.players = players;
     this.gameid = gameid;
     this.creator = creator;
+  }
+
+  private static Set<List<Card>> getDecks(Set<Expansion> expansions) {
+    Set<List<Card>> decks = new HashSet<>();
+
+    List<Card> levelOne = new ArrayList<>();
+    List<Card> levelTwo = new ArrayList<>();
+    List<Card> levelThree = new ArrayList<>();
+
+    List<Card> orientLevelOne = new ArrayList<>();
+    List<Card> orientLevelTwo = new ArrayList<>();
+    List<Card> orientLevelThree = new ArrayList<>();
+    // Fill list with final cards
+    try {
+      // Get CardData.csv file
+      BufferedReader br = new BufferedReader(new InputStreamReader(
+          Objects.requireNonNull(GameBoard.class.getResourceAsStream("CardData.csv"))));
+
+      // Skip header of the CSV file
+      br.readLine();
+
+      String curLine;
+      // Read through lines of file and get card data
+      while ((curLine = br.readLine()) != null) {
+
+        // Use comma as a delimiter
+        String[] cardData = curLine.split(",");
+
+        // Get the Cost
+        Gems cost = new Gems();
+        cost.put(GemColor.GREEN, Integer.valueOf(cardData[0]));
+        cost.put(GemColor.WHITE, Integer.valueOf(cardData[1]));
+        cost.put(GemColor.BLUE, Integer.valueOf(cardData[2]));
+        cost.put(GemColor.BLACK, Integer.valueOf(cardData[3]));
+        cost.put(GemColor.RED, Integer.valueOf(cardData[4]));
+
+        // Get the level and expansion
+        CardLevel level = CardLevel.valueOf(cardData[8]);
+        Expansion expansion = Expansion.valueOf(cardData[7]);
+
+        // Create card
+        Card c = new StandardCard(Integer.parseInt(cardData[9]), cost, level, expansion,
+            Integer.parseInt(cardData[6]), GemColor.valueOf(cardData[5]));
+
+        // Add the card to respective list
+        if (expansion == Expansion.STANDARD) {
+          switch (level) {
+            case ONE -> levelOne.add(c);
+            case TWO -> levelTwo.add(c);
+            case THREE -> levelThree.add(c);
+            default -> throw new IllegalStateException("Unexpected value: " + level);
+          }
+        } else if (expansions.contains(Expansion.ORIENT) && expansion == Expansion.ORIENT) {
+          switch (level) {
+            case ONE -> orientLevelOne.add(c);
+            case TWO -> orientLevelTwo.add(c);
+            case THREE -> orientLevelThree.add(c);
+            default -> throw new IllegalStateException("Unexpected value: " + level);
+          }
+        }
+      }
+
+      decks.add(levelOne);
+      decks.add(levelTwo);
+      decks.add(levelThree);
+      if (expansions.contains(Expansion.ORIENT)) {
+        decks.add(orientLevelOne);
+        decks.add(orientLevelTwo);
+        decks.add(orientLevelThree);
+      }
+
+    } catch (IOException ioe) {
+      throw new RuntimeException(ioe);
+    }
+
+    return decks;
   }
 
   public int playerTurn() {
