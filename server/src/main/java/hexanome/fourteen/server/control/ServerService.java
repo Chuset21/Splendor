@@ -74,8 +74,8 @@ public class ServerService {
     }
 
     LoginForm loginForm = gsonInstance.gson.fromJson(response.getBody(), LoginForm.class);
-    accessToken = encodePlusSign(loginForm.accessToken());
-    refreshToken = encodePlusSign(loginForm.refreshToken());
+    accessToken = loginForm.accessToken();
+    refreshToken = loginForm.refreshToken();
     return true;
   }
 
@@ -90,8 +90,8 @@ public class ServerService {
         .body("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true")
         .asString();
 
-    String curAccessToken = encodePlusSign(
-        gsonInstance.gson.fromJson(loginResponse.getBody(), LoginForm.class).accessToken());
+    String curAccessToken =
+        gsonInstance.gson.fromJson(loginResponse.getBody(), LoginForm.class).accessToken();
 
     // We are logged in as maex
     Unirest.put("%sapi/users/%s".formatted(LS_LOCATION, USERNAME))
@@ -136,15 +136,12 @@ public class ServerService {
    * @return true if successful, false otherwise
    */
   private boolean registerGameService(String gameServiceName) {
-    HttpResponse<?> response =
-        Unirest.put("%sapi/gameservices/%s".formatted(LS_LOCATION, gameServiceName))
-            .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-            .header("Content-Type", "application/json").queryString("access_token", accessToken)
-            .body(gsonInstance.gson.toJson(
-                new RegisterGameServiceForm(GAME_SERVICE_LOCATION, gameServiceName,
-                    gameServiceName))).asEmpty();
-
-    return response.getStatus() == 200;
+    return Unirest.put("%sapi/gameservices/%s".formatted(LS_LOCATION, gameServiceName))
+               .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+               .header("Content-Type", "application/json").queryString("access_token", accessToken)
+               .body(gsonInstance.gson.toJson(
+                   new RegisterGameServiceForm(GAME_SERVICE_LOCATION, gameServiceName,
+                       gameServiceName))).asEmpty().getStatus() == 200;
   }
 
   /**
@@ -164,8 +161,7 @@ public class ServerService {
       return false;
     }
 
-    accessToken = encodePlusSign(
-        gsonInstance.gson.fromJson(response.getBody(), LoginForm.class).accessToken());
+    accessToken = gsonInstance.gson.fromJson(response.getBody(), LoginForm.class).accessToken();
     return true;
   }
 
@@ -197,15 +193,5 @@ public class ServerService {
     Unirest.delete("%sapi/gameservices/%s".formatted(LS_LOCATION, gameServiceName))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("access_token", accessToken).asEmpty();
-  }
-
-  /**
-   * Replace all plus signs with %2B for proper encoding in URL.
-   *
-   * @param rawString The string to be encoded
-   * @return The encoded string.
-   */
-  private String encodePlusSign(String rawString) {
-    return rawString.replaceAll("\\+", "%2B");
   }
 }
