@@ -129,7 +129,6 @@ public final class LoginScreen implements Initializable {
     }
 
     if (login(username, password)) {
-      updateAccessToken();
       launchGame();
     } else {
       failedLogin();
