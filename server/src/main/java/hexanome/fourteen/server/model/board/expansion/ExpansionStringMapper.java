@@ -8,6 +8,19 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ExpansionStringMapper implements Mapper<Expansion, String> {
+
+  /**
+   * Constructor.
+   */
+  public ExpansionStringMapper() {
+  }
+
+  /**
+   * A Map of Expansion which returns the name of the Expansion.
+   *
+   * @param expansion The Expansion
+   * @return The Name of the Expansion
+   */
   @Override
   public String map(Expansion expansion) {
     return expansion.name();
