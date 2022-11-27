@@ -27,17 +27,17 @@
             <Font name="Satoshi Bold" size="24.0" />
          </font>
       </Button>
-      <Text fill="#72465b" layoutX="486.0" layoutY="335.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back">
+      <Text fill="#72465b" layoutX="486.0" layoutY="335.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back" textAlignment="CENTER">
          <font>
             <Font name="Satoshi Bold" size="36.0" />
          </font>
       </Text>
-      <Text fill="#72465b" layoutX="434.0" layoutY="267.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Splendor">
+      <Text fill="#72465b" layoutX="434.0" layoutY="267.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Splendor" textAlignment="CENTER">
          <font>
             <Font name="Sharpie Regular" size="100.0" />
          </font>
       </Text>
-      <Text fx:id="displayUsername" fill="#72465b" layoutX="526.0" layoutY="383.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username">
+      <Text fx:id="displayUsername" fill="#72465b" layoutX="526.0" layoutY="383.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" textAlignment="CENTER">
          <font>
             <Font name="Satoshi Bold" size="36.0" />
          </font>
