@@ -1,5 +1,8 @@
 package com.hexanome.fourteen;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.hexanome.fourteen.login.LoginScreen;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -12,6 +15,9 @@ import javafx.stage.Stage;
  */
 public class Main extends Application {
 
+  public static final Gson GSON =
+      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+          .create();
   private static final String HTTP_STRING = "http://%s:%s/";
   private static final String LOBBY_SERVICE_PORT = "4242";
   private static final String DEFAULT_IP = "127.0.0.1";

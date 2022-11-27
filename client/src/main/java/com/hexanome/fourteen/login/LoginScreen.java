@@ -1,8 +1,5 @@
 package com.hexanome.fourteen.login;
 
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.hexanome.fourteen.Main;
 import com.hexanome.fourteen.lobbyui.LobbyController;
 import java.io.IOException;
@@ -27,10 +24,6 @@ import kong.unirest.Unirest;
 public final class LoginScreen implements Initializable {
 
   private static Stage aPrimaryStage;
-
-  private static final Gson GSON =
-      new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-          .create();
   public static String accessToken = "";
   public static String refreshToken = "";
   public static String userid = "";
@@ -110,7 +103,7 @@ public final class LoginScreen implements Initializable {
     }
 
     final LoginResponse loginResponse =
-        GSON.fromJson(response.getBody(), LoginResponse.class);
+        Main.GSON.fromJson(response.getBody(), LoginResponse.class);
     accessToken = loginResponse.accessToken();
     refreshToken = loginResponse.refreshToken();
     return true;
