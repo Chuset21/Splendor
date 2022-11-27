@@ -7,6 +7,7 @@ import javax.annotation.PreDestroy;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,12 +16,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class ServerService {
 
-  public static final String LS_LOCATION = "http://127.0.0.1:4242/";
-  private static final String USERNAME = "splendor";
-  private static final String PASSWORD = "abc123_ABC123";
-  private static final String GAME_SERVICE_LOCATION = "http://127.0.0.1:4243/splendor";
-  private String[] gameServiceNames;
-  private final Mapper<Expansion, String> expansionStringMapper;
+  private final String username;
+  private final String password;
+  private final String lsLocation;
+  private final String gameServiceLocation;
+  private final String[] gameServiceNames;
   private final GsonInstance gsonInstance;
   public String accessToken;
   private String refreshToken;
@@ -32,9 +32,19 @@ public class ServerService {
    * @param expansionStringMapper expansion to string mapper
    */
   public ServerService(@Autowired GsonInstance gsonInstance,
-                       @Autowired Mapper<Expansion, String> expansionStringMapper) {
+                       @Autowired Mapper<Expansion, String> expansionStringMapper,
+                       @Value("${server.port}") String port,
+                       @Value("${service.address}") String address,
+                       @Value("${ls.location}") String lsLocation,
+                       @Value("${service.username}") String username,
+                       @Value("${service.password}") String password) {
     this.gsonInstance = gsonInstance;
-    this.expansionStringMapper = expansionStringMapper;
+    gameServiceLocation = "http://%s:%s/".formatted(address, port);
+    this.lsLocation = lsLocation;
+    this.username = username;
+    this.password = password;
+    gameServiceNames = new String[] {expansionStringMapper.map(Expansion.STANDARD),
+        expansionStringMapper.map(Expansion.ORIENT)};
   }
 
   /**
@@ -42,8 +52,6 @@ public class ServerService {
    */
   @PostConstruct
   private void loginAndRegister() {
-    gameServiceNames = new String[] {expansionStringMapper.map(Expansion.STANDARD),
-        expansionStringMapper.map(Expansion.ORIENT)};
     if (!login()) {
       // If login failed, create the user and try again
       createUser();
@@ -62,10 +70,10 @@ public class ServerService {
    * @return true if successful, false otherwise
    */
   private boolean login() {
-    HttpResponse<String> response = Unirest.post("%soauth/token".formatted(LS_LOCATION))
+    HttpResponse<String> response = Unirest.post("%soauth/token".formatted(lsLocation))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-        .queryString("grant_type", "password").queryString("username", USERNAME)
-        .queryString("password", PASSWORD)
+        .queryString("grant_type", "password").queryString("username", username)
+        .queryString("password", password)
         .body("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true")
         .asString();
 
@@ -83,10 +91,10 @@ public class ServerService {
    * Create our user.
    */
   private void createUser() {
-    HttpResponse<String> loginResponse = Unirest.post("%soauth/token".formatted(LS_LOCATION))
+    HttpResponse<String> loginResponse = Unirest.post("%soauth/token".formatted(lsLocation))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc")
         .queryString("grant_type", "password").queryString("username", "maex")
-        .queryString("password", PASSWORD)
+        .queryString("password", password)
         .body("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true")
         .asString();
 
@@ -94,14 +102,14 @@ public class ServerService {
         gsonInstance.gson.fromJson(loginResponse.getBody(), LoginForm.class).accessToken();
 
     // We are logged in as maex
-    Unirest.put("%sapi/users/%s".formatted(LS_LOCATION, USERNAME))
+    Unirest.put("%sapi/users/%s".formatted(lsLocation, username))
         .header("Content-Type", "application/json")
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("access_token", curAccessToken)
-        .body(gsonInstance.gson.toJson(new AccountCreationForm(USERNAME, PASSWORD))).asEmpty();
+        .body(gsonInstance.gson.toJson(new AccountCreationForm(username, password))).asEmpty();
 
     // We have now added our user and are going to log out maex
-    Unirest.delete("%soauth/active".formatted(LS_LOCATION))
+    Unirest.delete("%soauth/active".formatted(lsLocation))
         .queryString("access_token", curAccessToken).asEmpty();
   }
 
@@ -111,7 +119,7 @@ public class ServerService {
    * @return true if successful, false otherwise
    */
   private boolean registerGameServices() {
-    HttpResponse<String> response = Unirest.get("%sapi/gameservices".formatted(LS_LOCATION))
+    HttpResponse<String> response = Unirest.get("%sapi/gameservices".formatted(lsLocation))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=").asString();
 
     String gameServices = response.getBody();
@@ -136,11 +144,11 @@ public class ServerService {
    * @return true if successful, false otherwise
    */
   private boolean registerGameService(String gameServiceName) {
-    return Unirest.put("%sapi/gameservices/%s".formatted(LS_LOCATION, gameServiceName))
+    return Unirest.put("%sapi/gameservices/%s".formatted(lsLocation, gameServiceName))
                .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
                .header("Content-Type", "application/json").queryString("access_token", accessToken)
                .body(gsonInstance.gson.toJson(
-                   new RegisterGameServiceForm(GAME_SERVICE_LOCATION, gameServiceName,
+                   new RegisterGameServiceForm(gameServiceLocation, gameServiceName,
                        gameServiceName))).asEmpty().getStatus() == 200;
   }
 
@@ -151,7 +159,7 @@ public class ServerService {
    * @return true if successful, false otherwise
    */
   public boolean refreshToken() {
-    HttpResponse<String> response = Unirest.post("%soauth/token".formatted(LS_LOCATION))
+    HttpResponse<String> response = Unirest.post("%soauth/token".formatted(lsLocation))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("grant_type", "refresh_token").queryString("refresh_token", refreshToken)
         .body("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true")
@@ -190,7 +198,7 @@ public class ServerService {
    * @param gameServiceName the game service to be unregistered
    */
   private void unregisterGameService(String gameServiceName) {
-    Unirest.delete("%sapi/gameservices/%s".formatted(LS_LOCATION, gameServiceName))
+    Unirest.delete("%sapi/gameservices/%s".formatted(lsLocation, gameServiceName))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("access_token", accessToken).asEmpty();
   }
