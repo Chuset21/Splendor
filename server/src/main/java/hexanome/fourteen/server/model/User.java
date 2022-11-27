@@ -16,10 +16,20 @@ public final class User {
   public User() {
   }
 
+  /**
+   * A Getter for the Name of a User.
+   *
+   * @return The Name
+   */
   public String name() {
     return name;
   }
 
+  /**
+   * A Getter for the Preferred Colour of a User.
+   *
+   * @return The Preferred Colour
+   */
   public String preferredColour() {
     return preferredColour;
   }

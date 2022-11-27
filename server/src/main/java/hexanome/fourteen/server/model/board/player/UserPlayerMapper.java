@@ -9,6 +9,13 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class UserPlayerMapper implements Mapper<User, Player> {
+  /**
+   * Constructor.
+   */
+  public UserPlayerMapper() {
+
+  }
+
   @Override
   public Player map(User user) {
     return new Player(user.name());

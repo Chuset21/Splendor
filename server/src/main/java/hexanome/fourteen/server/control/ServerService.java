@@ -36,6 +36,11 @@ public class ServerService {
    *
    * @param gsonInstance          common gson instance
    * @param expansionStringMapper expansion to string mapper
+   * @param port The Port
+   * @param address The IP Address
+   * @param lsLocation The LobbyService Location
+   * @param username The Username
+   * @param password The Password
    */
   public ServerService(@Autowired GsonInstance gsonInstance,
                        @Autowired Mapper<Expansion, String> expansionStringMapper,
