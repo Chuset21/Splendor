@@ -13,7 +13,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -71,8 +70,7 @@ public class ServerService {
   private boolean login() {
     HttpResponse<String> response = Unirest.post("%soauth/token".formatted(LS_LOCATION))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-        .queryString("grant_type", "password")
-        .queryString("username", USERNAME)
+        .queryString("grant_type", "password").queryString("username", USERNAME)
         .queryString("password", PASSWORD)
         .body("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true")
         .asString();
@@ -133,10 +131,8 @@ public class ServerService {
    * @return true if successful, false otherwise
    */
   private boolean registerGameServices() {
-    HttpResponse<String> response =
-        Unirest.get("%sapi/gameservices".formatted(LS_LOCATION))
-            .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-            .asString();
+    HttpResponse<String> response = Unirest.get("%sapi/gameservices".formatted(LS_LOCATION))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=").asString();
 
     String gameServices = response.getBody();
     if (gameServices == null) {
@@ -166,10 +162,8 @@ public class ServerService {
     HttpResponse<String> response =
         Unirest.put("%sapi/gameservices/%s".formatted(LS_LOCATION, gameServiceName))
             .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-            .header("Content-Type", "application/json")
-            .queryString("access_token", accessToken)
-            .body(body)
-            .asString();
+            .header("Content-Type", "application/json").queryString("access_token", accessToken)
+            .body(body).asString();
 
     return response.getStatus() == 200;
   }
@@ -181,29 +175,19 @@ public class ServerService {
    * @return true if successful, false otherwise
    */
   public boolean refreshToken() {
-    RestTemplate rest = new RestTemplate();
-    HttpHeaders headers = new HttpHeaders();
-    headers.add("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=");
+    HttpResponse<String> response = Unirest.post("%soauth/token".formatted(LS_LOCATION))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("grant_type", "refresh_token").queryString("refresh_token", refreshToken)
+        .body("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true")
+        .asString();
 
-    String body =
-        "user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true";
-
-    HttpEntity<String> requestEntity = new HttpEntity<>(body, headers);
-    try {
-      ResponseEntity<String> responseEntity = rest.exchange(
-          "%soauth/token?grant_type=refresh_token&refresh_token=%s".formatted(LS_LOCATION,
-              refreshToken), HttpMethod.POST, requestEntity, String.class);
-      if (responseEntity.getStatusCode().value() != 200) {
-        return false;
-      }
-
-      String response = responseEntity.getBody();
-      accessToken =
-          encodePlusSign(gsonInstance.gson.fromJson(response, LoginForm.class).accessToken());
-      return true;
-    } catch (HttpClientErrorException ignored) {
+    if (response.getStatus() != 200) {
       return false;
     }
+
+    accessToken = encodePlusSign(
+        gsonInstance.gson.fromJson(response.getBody(), LoginForm.class).accessToken());
+    return true;
   }
 
 
@@ -231,8 +215,7 @@ public class ServerService {
   private void unregisterGameService(String gameServiceName) {
     Unirest.delete("%sapi/gameservices/%s".formatted(LS_LOCATION, gameServiceName))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-        .queryString("access_token", accessToken)
-        .asEmpty();
+        .queryString("access_token", accessToken).asEmpty();
   }
 
   /**
