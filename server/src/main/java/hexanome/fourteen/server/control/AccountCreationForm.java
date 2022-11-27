@@ -1,11 +1,14 @@
 package hexanome.fourteen.server.control;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Account creation form.
  */
 public class AccountCreationForm {
   private String name;
   private String password;
+  @SerializedName("preferredColour")
   private String preferredColour;
   private String role;
 
