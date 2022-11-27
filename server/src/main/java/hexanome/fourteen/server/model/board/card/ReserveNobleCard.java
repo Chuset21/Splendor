@@ -29,10 +29,20 @@ public final class ReserveNobleCard extends Card {
     this.discountColor = discountColor;
   }
 
+  /**
+   * A Getter for the Gem Discount.
+   *
+   * @return Gem Discount
+   */
   public int gemDiscount() {
     return gemDiscount;
   }
 
+  /**
+   * A Getter for the Color of the Gem which is allowing a Discount.
+   *
+   * @return Gem Discount
+   */
   public GemColor discountColor() {
     return discountColor;
   }
