@@ -1,28 +1,37 @@
 package com.hexanome.fourteen.lobbyui;
 
 import com.hexanome.fourteen.login.LoginScreen;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.ResourceBundle;
+import java.util.Stack;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import java.io.IOException;
-import java.net.URL;
-import java.util.*;
 
 public class LobbyController implements Initializable {
   private static Stage aPrimaryStage;
   private static Stack<Scene> scenePath = new Stack<>();
 
-  private String username;
+  @FXML
+  private Text displayUsername;
   @FXML
   private AnchorPane anchorPane;
   @FXML
@@ -95,7 +104,7 @@ public class LobbyController implements Initializable {
         Objects.requireNonNull(LobbyController.class.getResource("choiceSelect.fxml")));
     // Set up root on stage (window)
     Scene aScene = new Scene(root);
-    aScene.getStylesheets().add(getClass().getResource("lobbyStyling.css").toExternalForm());
+    aScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("lobbyStyling.css")).toExternalForm());
 
 
     // Initialize stage settings
@@ -108,7 +117,7 @@ public class LobbyController implements Initializable {
   }
 
   private void init() {
-    username = LoginScreen.userid;
+    displayUsername.setText(LoginScreen.userid);
   }
 
   @Override
