@@ -40,6 +40,11 @@ public class GameHandlerController {
 
   /**
    * Constructor.
+   *
+   * @param userPlayerMapper      The User to Player Mapper
+   * @param stringExpansionMapper The String to Expansion Mapper
+   * @param gameBoardMapper       The GameBard Mapper
+   * @param gsonInstance          The GSON we will be using
    */
   public GameHandlerController(@Autowired Mapper<User, Player> userPlayerMapper,
                                @Autowired Mapper<String, Expansion> stringExpansionMapper,
@@ -57,6 +62,7 @@ public class GameHandlerController {
    *
    * @param gameid         The game id for the created game
    * @param launchGameForm The information needed to create the game
+   * @return The full response
    */
   @PutMapping(value = "{gameid}", consumes = "application/json; charset=utf-8")
   public ResponseEntity<String> launchGame(@PathVariable String gameid,
@@ -82,6 +88,7 @@ public class GameHandlerController {
    * Remove a game with a matching game ID.
    *
    * @param gameid game ID to remove
+   * @return The full response
    */
   @DeleteMapping("{gameid}")
   public ResponseEntity<String> deleteGame(@PathVariable String gameid) {
@@ -120,6 +127,7 @@ public class GameHandlerController {
    * Get a game board.
    *
    * @param accessToken The user's access token who is sending the request
+   * @return The full response
    */
   @GetMapping(value = "board", produces = "application/json; charset=utf-8")
   public ResponseEntity<String> retrieveGame(@RequestParam("access_token") String accessToken) {
