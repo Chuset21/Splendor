@@ -25,6 +25,11 @@ public final class SatchelCard extends Card {
     this.gemColor = gemColor;
   }
 
+  /**
+   * A Getter for the Gem Color of the Satchel Card.
+   *
+   * @return The Gem Color
+   */
   public GemColor gemColor() {
     return gemColor;
   }

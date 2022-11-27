@@ -52,50 +52,110 @@ public final class Hand {
     gemDiscounts = new Gems();
   }
 
+  /**
+   * A Getter for the Gems.
+   *
+   * @return Gems owned.
+   */
   public Gems gems() {
     return gems;
   }
 
+  /**
+   * A Getter for the Reserved Cards.
+   *
+   * @return Cards reserved.
+   */
   public Set<Card> reservedCards() {
     return reservedCards;
   }
 
+  /**
+   * A Getter for the Purchased Cards.
+   *
+   * @return Cards purchased.
+   */
   public Set<Card> purchasedCards() {
     return purchasedCards;
   }
 
+  /**
+   * A Getter for the Noble that is visiting.
+   *
+   * @return The Noble that is visiting.
+   */
   public Noble visitedNoble() {
     return visitedNoble;
   }
 
+  /**
+   * A Getter for the Noble that has been reserved.
+   *
+   * @return The Noble that has been reserved.
+   */
   public Noble reservedNoble() {
     return reservedNoble;
   }
 
+  /**
+   * A Getter for the Gem Discounts the Player currently has.
+   *
+   * @return The Gem Discounts the Player currently has.
+   */
   public Gems gemDiscounts() {
     return gemDiscounts;
   }
 
+  /**
+   * A Setter for the Gems.
+   *
+   * @param gems Gems to set
+   */
   public void setGems(Gems gems) {
     this.gems = gems;
   }
 
+  /**
+   * A Setter for the Reserved Cards.
+   *
+   * @param reservedCards Cards that have been reserved to set
+   */
   public void setReservedCards(Set<Card> reservedCards) {
     this.reservedCards = reservedCards;
   }
 
+  /**
+   * A Setter for the Purchased Cards.
+   *
+   * @param purchasedCards Cards that have been purchased to set
+   */
   public void setPurchasedCards(Set<Card> purchasedCards) {
     this.purchasedCards = purchasedCards;
   }
 
+  /**
+   * A Setter for the Visited Noble.
+   *
+   * @param visitedNoble The Visiting Noble to set
+   */
   public void setVisitedNoble(Noble visitedNoble) {
     this.visitedNoble = visitedNoble;
   }
 
+  /**
+   * A Setter for the Reserved Noble.
+   *
+   * @param reservedNoble The Visiting Noble that has been reserved to set
+   */
   public void setReservedNoble(Noble reservedNoble) {
     this.reservedNoble = reservedNoble;
   }
 
+  /**
+   * A Setter for the Gem Discounts.
+   *
+   * @param gemDiscounts The Gem Discounts that have been allocated to set
+   */
   public void setGemDiscounts(Gems gemDiscounts) {
     this.gemDiscounts = gemDiscounts;
   }

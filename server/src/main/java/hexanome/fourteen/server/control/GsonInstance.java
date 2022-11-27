@@ -12,8 +12,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class GsonInstance {
 
+  /**
+   * GSON Object.
+   */
   public Gson gson;
 
+  /**
+   * GSON Constructor.
+   */
   public GsonInstance() {
   }
 

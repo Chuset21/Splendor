@@ -17,6 +17,20 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ServerToClientBoardGameMapper implements Mapper<GameBoard, SentGameBoard> {
+
+  /**
+   * Constructor.
+   */
+  public ServerToClientBoardGameMapper() {
+
+  }
+
+  /**
+   * A Constructor to send a made GameBoard.
+   *
+   * @param gameBoard The Object to Map
+   * @return The created GameBoard.
+   */
   @Override
   public SentGameBoard map(GameBoard gameBoard) {
     final Map<Integer, Player> playerTurnMap = gameBoard.playerTurnMap();

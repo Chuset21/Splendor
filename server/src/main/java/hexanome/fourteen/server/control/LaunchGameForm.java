@@ -20,18 +20,38 @@ public final class LaunchGameForm {
   public LaunchGameForm() {
   }
 
+  /**
+   * A Getter for the Creator of a Game.
+   *
+   * @return The Creator
+   */
   public String creator() {
     return creator;
   }
 
+  /**
+   * A Getter for the Game Type of a Game.
+   *
+   * @return The Game Type
+   */
   public String gameType() {
     return gameType;
   }
 
+  /**
+   * A Getter for the Players of a Game.
+   *
+   * @return The Players
+   */
   public User[] players() {
     return players;
   }
 
+  /**
+   * A Getter for the Save Game of a Game.
+   *
+   * @return The Save Game
+   */
   public String saveGame() {
     return saveGame;
   }

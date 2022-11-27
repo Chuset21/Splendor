@@ -7,4 +7,11 @@ import java.util.HashMap;
  * A mapping of gem colors to an amount of gems.
  */
 public final class Gems extends HashMap<GemColor, Integer> {
+
+  /**
+   * Constructor.
+   */
+  public Gems() {
+
+  }
 }

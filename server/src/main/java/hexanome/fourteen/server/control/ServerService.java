@@ -18,10 +18,16 @@ public class ServerService {
 
   private final String username;
   private final String password;
+  /**
+   * Permanent location of Lobby Service.
+   */
   private final String lsLocation;
   private final String gameServiceLocation;
   private final String[] gameServiceNames;
   private final GsonInstance gsonInstance;
+  /**
+   * Access Token needed.
+   */
   public String accessToken;
   private String refreshToken;
 

@@ -33,15 +33,29 @@ public final class SacrificeCard extends Card {
     this.sacrificeColor = sacrificeColor;
   }
 
-
+  /**
+   * A Getter for the Gem Discount associated with the Sacrifice Card.
+   *
+   * @return The Gem Discount.
+   */
   public int gemDiscount() {
     return gemDiscount;
   }
 
+  /**
+   * A Getter for the Discount Color associated with the Sacrifice Card.
+   *
+   * @return The Discount Color.
+   */
   public GemColor discountColor() {
     return discountColor;
   }
 
+  /**
+   * A Getter for the Color to be Sacrificed to acquire the Sacrifice Card.
+   *
+   * @return The Sacrifice Color.
+   */
   public GemColor sacrificeColor() {
     return sacrificeColor;
   }
