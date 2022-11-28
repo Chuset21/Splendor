@@ -26,12 +26,12 @@ class PlayerTest {
   }
 
   @Test
-  void testUid() {
+  public void testUid() {
     assertEquals("user", player.uid());
   }
 
   @Test
-  void testHand() {
+  public void testHand() {
     assertEquals(new Hand(), player.hand());
   }
 }
