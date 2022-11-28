@@ -20,10 +20,16 @@ import java.util.*;
 public class LobbyController implements Initializable {
   private static Stage aPrimaryStage;
   private static Stack<Scene> scenePath = new Stack<>();
-
   private String username;
+
+  // To replace <username> with username, use .replaceAll()
+  private final String welcomeTextTemplate = "Weclome back <username>!";
+
+
   @FXML
   private AnchorPane anchorPane;
+  @FXML
+  private Text welcomeText;
   @FXML
   private Button newGameButton;
   @FXML
@@ -42,8 +48,6 @@ public class LobbyController implements Initializable {
   private ToggleButton selectOrientToggle = new ToggleButton();
   @FXML
   private ToggleButton selectExtraToggle = new ToggleButton();
-  @FXML
-  private ToggleButton maxPlayerToggleOne = new ToggleButton();
   @FXML
   private ToggleButton maxPlayerToggleTwo = new ToggleButton();
   @FXML
@@ -86,8 +90,9 @@ public class LobbyController implements Initializable {
   private final ToggleGroup expansionSetting = new ToggleGroup();
 
 
-  public void goToChoiceSelect(Stage pStage) throws IOException {
+  public void goToChoiceSelect(Stage pStage, String pUsername) throws IOException {
     aPrimaryStage = pStage;
+    this.username = pUsername;
 
     // Import root from fxml file
     Parent root = FXMLLoader.load(
@@ -107,7 +112,8 @@ public class LobbyController implements Initializable {
   }
 
   private void init() {
-    username = "joebiden43";
+    // Initialize welcome message with username
+    //welcomeText.setText(welcomeTextTemplate.replaceAll("<username>", this.username));
   }
 
   @Override
@@ -116,7 +122,7 @@ public class LobbyController implements Initializable {
 
     //Initialize ToggleGroup and Toggles for selecting max players in the create game menu
     ArrayList<ToggleButton> maxPlayersToggles = new ArrayList<ToggleButton>(
-        Arrays.asList(maxPlayerToggleOne, maxPlayerToggleTwo, maxPlayerToggleThree,
+        Arrays.asList(maxPlayerToggleTwo, maxPlayerToggleThree,
             maxPlayerToggleFour));
     for (Toggle toggle : maxPlayersToggles) {
       toggle.setToggleGroup(maxPlayersSetting);

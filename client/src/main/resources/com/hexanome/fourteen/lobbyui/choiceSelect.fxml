@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.LobbyController">
+<AnchorPane fx:id="anchorPane" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.LobbyController">
    <children>
       <Button fx:id="createGameButton" layoutX="753.0" layoutY="434.0" mnemonicParsing="false" onMouseClicked="#handleLoadGameButton" prefHeight="78.0" prefWidth="230.0" text="Load" textAlignment="CENTER">
          <font>
@@ -27,7 +31,7 @@
             <Font name="Satoshi Bold" size="24.0" />
          </font>
       </Button>
-      <Text fill="#72465b" layoutX="379.0" layoutY="338.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back joebiden43!">
+      <Text fx:id="welcomeText" fill="#72465b" layoutX="379.0" layoutY="338.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back joebiden43!">
          <font>
             <Font name="Satoshi Bold" size="36.0" />
          </font>

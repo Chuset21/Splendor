@@ -70,7 +70,7 @@ public final class LoginScreen implements Initializable {
     for (String[] cred : CREDENTIALS) {
       if (usernameField.getText().equals(cred[0]) && passwordField.getText().equals(cred[1])) {
         System.out.println();
-        launchGame();
+        launchGame(usernameField.getText());
       }
     }
 
@@ -85,14 +85,14 @@ public final class LoginScreen implements Initializable {
     System.exit(0);
   }
 
-  private void launchGame() {
+  private void launchGame(String username) {
     // Create new instance of a Splendor game
     //OrientExpansion game = new OrientExpansion();
     LobbyController game = new LobbyController();
 
     // Try launching the game
     try {
-      game.goToChoiceSelect(aPrimaryStage);
+      game.goToChoiceSelect(aPrimaryStage, username);
       //game.goToGame(aPrimaryStage);
     } catch (Exception ex) {
       ex.printStackTrace();
