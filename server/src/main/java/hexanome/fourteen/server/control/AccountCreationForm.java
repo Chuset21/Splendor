@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Account creation form.
  */
-public class AccountCreationForm {
+public final class AccountCreationForm {
   private String name;
   private String password;
   @SerializedName("preferredColour")
