@@ -37,4 +37,19 @@ public class LobbyServiceCaller {
                .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
                .queryString("access_token", authtoken).asEmpty().getStatus() == 200;
   }
+
+  /**
+   * Leave a session.
+   *
+   * @param player    The player requesting to leave
+   * @param authtoken The player's token
+   * @param sessionid The session ID
+   * @return true if successful, false otherwise
+   */
+  public static boolean leaveSession(String player, String authtoken, String sessionid) {
+    return
+        Unirest.delete("%sapi/sessions/%s/players/%s".formatted(Main.lsLocation, sessionid, player))
+            .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+            .queryString("access_token", authtoken).asEmpty().getStatus() == 200;
+  }
 }
