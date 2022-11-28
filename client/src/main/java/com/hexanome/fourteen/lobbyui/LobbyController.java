@@ -1,10 +1,12 @@
 package com.hexanome.fourteen.lobbyui;
 
+import com.hexanome.fourteen.boards.Expansions;
 import com.hexanome.fourteen.login.LoginScreen;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -12,6 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.io.IOException;
@@ -89,15 +92,24 @@ public class LobbyController implements Initializable {
   private final ToggleGroup maxPlayersSetting = new ToggleGroup();
   @FXML
   private final ToggleGroup expansionSetting = new ToggleGroup();
+  @FXML
+  private ScrollPane lobbyScrollView;
+  @FXML
+  private VBox lobbyVBox;
+  @FXML
+  private Pane defaultLobby;
+  @FXML
+  private Button addLobby;
 
 
   public void goToChoiceSelect(Stage pStage, String username) throws IOException {
     aPrimaryStage = pStage;
     LobbyController.username = username;
 
+    // Create loader class
+    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(LobbyController.class.getResource("choiceSelect.fxml")));
     // Import root from fxml file
-    Parent root = FXMLLoader.load(
-        Objects.requireNonNull(LobbyController.class.getResource("choiceSelect.fxml")));
+    Parent root = loader.load();
     // Set up root on stage (window)
     Scene aScene = new Scene(root);
     aScene.getStylesheets().add(getClass().getResource("lobbyStyling.css").toExternalForm());
@@ -226,5 +238,13 @@ public class LobbyController implements Initializable {
   public void handleGameSaveToggle(MouseEvent event) {
     SavedGame selectedSave = new SavedGame(event.getSource());
     System.out.println(selectedSave.getGameName());
+  }
+
+  @FXML
+  private void handleAddLobby(){
+    if(defaultLobby != null){
+      DisplayLobby lobby = new DisplayLobby("cat.jpg","new lobby", 3,4, Expansions.ORIENT);
+      lobbyVBox.getChildren().add(lobby);
+    }
   }
 }
