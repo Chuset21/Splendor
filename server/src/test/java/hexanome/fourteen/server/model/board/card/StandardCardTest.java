@@ -38,23 +38,12 @@ public class StandardCardTest {
   public void testPrestigePoints() {
     this.standardCard =
         new StandardCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor);
-    assertEquals(prestigePoints, this.standardCard.prestigePoints());
+    assertEquals(prestigePoints, standardCard.prestigePoints());
   }
 
   @Test
   public void testCost() {
-    cost = new Gems();
-    cost.put(GemColor.GREEN, 1);
-    cost.put(GemColor.BLUE, 2);
-    cost.put(GemColor.WHITE, 3);
-    this.standardCard =
-        new StandardCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor);
-
-    Gems equCost = new Gems();
-    equCost.put(GemColor.GREEN, 1);
-    equCost.put(GemColor.BLUE, 2);
-    equCost.put(GemColor.WHITE, 3);
-    assertEquals(cost, standardCard.cost());
+    assertEquals(new Gems(cost), standardCard.cost());
   }
 
   @Test

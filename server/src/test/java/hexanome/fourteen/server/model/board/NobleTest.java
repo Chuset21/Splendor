@@ -1,6 +1,5 @@
 package hexanome.fourteen.server.model.board;
 
-import hexanome.fourteen.server.model.board.card.StandardCard;
 import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import org.junit.jupiter.api.BeforeAll;
@@ -32,10 +31,7 @@ public class NobleTest {
 
     @Test
     public void testCost() {
-        Gems equCost = new Gems();
-        equCost.put(GemColor.BLACK, 3);
-        equCost.put(GemColor.BLUE, 2);
-        equCost.put(GemColor.RED, 3);
+        Gems equCost = new Gems(cost);
 
         assertEquals(equCost.get(GemColor.BLACK), noble.cost().get(GemColor.BLACK));
         assertEquals(equCost.get(GemColor.BLUE), noble.cost().get(GemColor.BLUE));
