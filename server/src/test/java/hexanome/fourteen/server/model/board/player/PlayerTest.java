@@ -1,16 +1,37 @@
 package hexanome.fourteen.server.model.board.player;
 
+import hexanome.fourteen.server.model.board.Hand;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
+@TestInstance(PER_CLASS)
 class PlayerTest {
 
-    @Test
-    void uid() {
-    }
+  static Player player;
 
-    @Test
-    void hand() {
-    }
+  @BeforeAll
+  public static void setUp() {
+    player = new Player("user");
+  }
+
+  @Test
+  public void testPlayerConstructor() {
+    final Player p = new Player("user", new Hand());
+    assertEquals(player.uid(), p.uid());
+    assertEquals(player.hand(), p.hand());
+  }
+
+  @Test
+  void testUid() {
+    assertEquals("user", player.uid());
+  }
+
+  @Test
+  void testHand() {
+    assertEquals(new Hand(), player.hand());
+  }
 }
