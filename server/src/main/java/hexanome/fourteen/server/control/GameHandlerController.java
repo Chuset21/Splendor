@@ -213,19 +213,40 @@ public class GameHandlerController {
     }
 
     // verify that the amount of gems is enough to buy the card
-    final Gems equivalentPayment = getPaymentWithoutGoldGems(substitutedGems, gemsToPayWith);
-    if (!card.cost().equals(equivalentPayment)) {
+    if (!card.cost().equals(getPaymentWithoutGoldGems(substitutedGems, gemsToPayWith))) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("card cost does not match payment");
     }
 
-    // Actually buy the card now
-    hand.purchasedCards().add(card);
     // Remove the card from the game board
     if (!removeCardFromDeck(decks, card)) {
+      // This should never happen
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
+    // Add the card to the player's hand
+    hand.purchasedCards().add(card);
+    // Take gems from player
+    removeGems(ownedGems, gemsToPayWith);
+    // Add gems to bank
+    addGems(gameBoard.availableGems(), gemsToPayWith);
 
     return ResponseEntity.status(HttpStatus.OK).body(null);
+  }
+
+  private void addGems(Gems gemsToAddTo, Gems gemsToAdd) {
+    gemsToAdd.forEach(
+        (key, value) -> gemsToAddTo.compute(key, (k, v) -> v == null ? value : v + value));
+  }
+
+  private void removeGems(Gems gemsToRemoveFrom, Gems gemsToRemove) {
+    gemsToRemove.forEach((key, amountToRemove) -> {
+      final int amount = gemsToRemoveFrom.get(key);
+      final int newValue = amount - amountToRemove;
+      if (newValue == 0) {
+        gemsToRemoveFrom.remove(key);
+      } else {
+        gemsToRemoveFrom.put(key, newValue);
+      }
+    });
   }
 
   private boolean removeCardFromDeck(Set<List<Card>> decks, Card card) {
