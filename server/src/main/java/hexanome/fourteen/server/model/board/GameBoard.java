@@ -91,7 +91,13 @@ public final class GameBoard {
     this.creator = creator;
   }
 
-  private static Set<List<Card>> getDecks(Set<Expansion> expansions) {
+  /**
+   * A Getter for the Decks within the game.
+   *
+   * @param expansions Expansions being played.
+   * @return All the decks within the game.
+   */
+  public static Set<List<Card>> getDecks(Set<Expansion> expansions) {
     Set<List<Card>> decks = new HashSet<>();
 
     List<Card> levelOne = new ArrayList<>();

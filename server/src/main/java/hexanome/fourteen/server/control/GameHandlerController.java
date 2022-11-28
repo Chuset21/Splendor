@@ -18,9 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import kong.unirest.Unirest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/games/")
 public class GameHandlerController {
 
-  private final String lsLocation;
+  private final LobbyServiceCaller lobbyService;
   private final Map<Set<String>, GameBoard> gameManager;
   private final Mapper<User, Player> userPlayerMapper;
   private final Mapper<String, Expansion> stringExpansionMapper;
@@ -50,22 +48,22 @@ public class GameHandlerController {
   /**
    * Constructor.
    *
+   * @param lobbyService          Lobby service
    * @param userPlayerMapper      The User to Player Mapper
    * @param stringExpansionMapper The String to Expansion Mapper
    * @param gameBoardMapper       The GameBard Mapper
    * @param gsonInstance          The GSON we will be using
-   * @param lsLocation            The LobbyService Location
    */
-  public GameHandlerController(@Autowired Mapper<User, Player> userPlayerMapper,
+  public GameHandlerController(@Autowired LobbyServiceCaller lobbyService,
+                               @Autowired Mapper<User, Player> userPlayerMapper,
                                @Autowired Mapper<String, Expansion> stringExpansionMapper,
                                @Autowired Mapper<GameBoard, SentGameBoard> gameBoardMapper,
-                               @Autowired GsonInstance gsonInstance,
-                               @Value("${ls.location}") String lsLocation) {
+                               @Autowired GsonInstance gsonInstance) {
+    this.lobbyService = lobbyService;
     this.userPlayerMapper = userPlayerMapper;
     this.stringExpansionMapper = stringExpansionMapper;
     this.gameBoardMapper = gameBoardMapper;
     this.gsonInstance = gsonInstance;
-    this.lsLocation = lsLocation;
     gameManager = new HashMap<>();
   }
 
@@ -136,8 +134,7 @@ public class GameHandlerController {
   }
 
   private String getUsername(String accessToken) {
-    return Unirest.post("%soauth/username".formatted(lsLocation))
-        .queryString("access_token", accessToken).asString().getBody();
+    return lobbyService.getUsername(accessToken);
   }
 
   /**
