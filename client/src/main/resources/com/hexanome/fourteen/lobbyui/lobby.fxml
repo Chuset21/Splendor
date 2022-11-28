@@ -4,7 +4,12 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -31,78 +36,110 @@
                         <Font name="Satoshi Bold" size="20.0" />
                     </font>
                 </Text>
-            <Pane layoutX="35.0" layoutY="206.0" prefHeight="112.0" prefWidth="336.0">
+            <GridPane fx:id="lobbyGrid" layoutX="38.0" layoutY="115.0" prefHeight="258.0" prefWidth="797.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
                <children>
-                  <ImageView fx:id="playerThreeAvatar" fitHeight="90.0" fitWidth="90.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/cat.jpg" />
-                     </image></ImageView>
-                  <Text layoutX="131.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="John Smith">
-                     <font>
-                        <Font name="Satoshi Bold" size="20.0" />
-                     </font>
-                  </Text>
-                  <Text fx:id="playerThreeReadyText" fill="#16c605" layoutX="131.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ready">
-                     <font>
-                        <Font name="Satoshi Bold" size="20.0" />
-                     </font>
-                  </Text>
+                  <HBox fx:id="defaultPlayer" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <ImageView fx:id="playerThreeAvatar" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/cat.jpg" />
+                           </image>
+                        </ImageView>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="John Smith">
+                                 <font>
+                                    <Font name="Satoshi Bold" size="20.0" />
+                                 </font>
+                              </Text>
+                              <Text fx:id="playerThreeReadyText" fill="#16c605" strokeType="OUTSIDE" strokeWidth="0.0" text="Ready">
+                                 <font>
+                                    <Font name="Satoshi Bold" size="20.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox fx:id="defaultPlayer1" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+                     <children>
+                        <ImageView fx:id="playerThreeAvatar1" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/cat.jpg" />
+                           </image>
+                        </ImageView>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="John Smith">
+                                 <font>
+                                    <Font name="Satoshi Bold" size="20.0" />
+                                 </font>
+                              </Text>
+                              <Text fx:id="playerThreeReadyText1" fill="#16c605" strokeType="OUTSIDE" strokeWidth="0.0" text="Ready">
+                                 <font>
+                                    <Font name="Satoshi Bold" size="20.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox fx:id="defaultPlayer11" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
+                     <children>
+                        <ImageView fx:id="playerThreeAvatar11" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/cat.jpg" />
+                           </image>
+                        </ImageView>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="John Smith">
+                                 <font>
+                                    <Font name="Satoshi Bold" size="20.0" />
+                                 </font>
+                              </Text>
+                              <Text fx:id="playerThreeReadyText11" fill="#16c605" strokeType="OUTSIDE" strokeWidth="0.0" text="Ready">
+                                 <font>
+                                    <Font name="Satoshi Bold" size="20.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox fx:id="defaultPlayer12" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                     <children>
+                        <ImageView fx:id="playerThreeAvatar12" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/cat.jpg" />
+                           </image>
+                        </ImageView>
+                        <VBox prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="John Smith">
+                                 <font>
+                                    <Font name="Satoshi Bold" size="20.0" />
+                                 </font>
+                              </Text>
+                              <Text fx:id="playerThreeReadyText12" fill="#16c605" strokeType="OUTSIDE" strokeWidth="0.0" text="Ready">
+                                 <font>
+                                    <Font name="Satoshi Bold" size="20.0" />
+                                 </font>
+                              </Text>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
                </children>
-            </Pane>
-            <Pane layoutX="463.0" layoutY="210.0" prefHeight="112.0" prefWidth="336.0">
-               <children>
-                  <ImageView fx:id="playerFourAvatar" fitHeight="90.0" fitWidth="90.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/chameleon.jpg" />
-                     </image></ImageView>
-                  <Text layoutX="131.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Benedict Archibald">
-                     <font>
-                        <Font name="Satoshi Bold" size="20.0" />
-                     </font>
-                  </Text>
-                  <Text fx:id="playerFourReadyText" fill="#16c605" layoutX="131.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ready">
-                     <font>
-                        <Font name="Satoshi Bold" size="20.0" />
-                     </font>
-                  </Text>
-               </children>
-            </Pane>
-            <Pane layoutX="460.0" layoutY="71.0" prefHeight="112.0" prefWidth="336.0">
-               <children>
-                  <ImageView fx:id="playerTwoAvatar" fitHeight="90.0" fitWidth="90.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/squirrel.jpg" />
-                     </image></ImageView>
-                  <Text layoutX="131.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="James Doe">
-                     <font>
-                        <Font name="Satoshi Bold" size="20.0" />
-                     </font>
-                  </Text>
-                  <Text fx:id="playerTwoReadyText" fill="#da0000" layoutX="131.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Not Ready">
-                     <font>
-                        <Font name="Satoshi Bold" size="20.0" />
-                     </font>
-                  </Text>
-               </children>
-            </Pane>
-            <Pane layoutX="37.0" layoutY="69.0" prefHeight="112.0" prefWidth="336.0">
-               <children>
-                  <ImageView fx:id="playerOneAvatar" fitHeight="90.0" fitWidth="90.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/dog.jpg" />
-                     </image></ImageView>
-                  <Text layoutX="131.0" layoutY="41.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Billy Bob">
-                     <font>
-                        <Font name="Satoshi Bold" size="20.0" />
-                     </font>
-                  </Text>
-                  <Text fx:id="playerOneReadyText" fill="#16c605" layoutX="131.0" layoutY="76.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ready">
-                     <font>
-                        <Font name="Satoshi Bold" size="20.0" />
-                     </font>
-                  </Text>
-               </children>
-            </Pane>
+            </GridPane>
             </children></Pane>
       <Button fx:id="readyUpButton" layoutX="98.0" layoutY="581.0" mnemonicParsing="false" text="Ready">
          <font>
