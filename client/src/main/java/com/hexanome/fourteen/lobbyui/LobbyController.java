@@ -13,6 +13,8 @@ import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -20,6 +22,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import javafx.util.converter.ByteStringConverter;
 
 public class LobbyController implements Initializable {
   private static Stage aPrimaryStage;
@@ -100,6 +103,10 @@ public class LobbyController implements Initializable {
   private Pane defaultLobby;
   @FXML
   private Button addLobby;
+  @FXML
+  private GridPane lobbyGrid;
+  @FXML
+  private HBox defaultPlayer;
 
 
   public void goToChoiceSelect(Stage pStage, String username) throws IOException {
@@ -204,6 +211,7 @@ public class LobbyController implements Initializable {
     System.exit(0);
   }
 
+  @FXML
   public void handleJoinLobbyButton() {
     try {
       Parent root = FXMLLoader.load(getClass().getResource("lobby.fxml"));
