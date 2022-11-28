@@ -1,7 +1,7 @@
 package com.hexanome.fourteen;
 
-import com.hexanome.fourteen.lobbyui.SessionForm;
-import com.hexanome.fourteen.lobbyui.SessionsForm;
+import com.hexanome.fourteen.form.lobbyservice.SessionForm;
+import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
 import kong.unirest.Unirest;
 
 /**

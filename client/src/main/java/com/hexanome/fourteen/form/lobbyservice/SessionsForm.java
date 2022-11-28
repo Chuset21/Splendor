@@ -1,4 +1,4 @@
-package com.hexanome.fourteen.lobbyui;
+package com.hexanome.fourteen.form.lobbyservice;
 
 import java.util.Map;
 
