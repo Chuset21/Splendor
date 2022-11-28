@@ -14,23 +14,23 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 public class StandardCardTest {
 
   // Testing Object
-  StandardCard standardCard;
+  static StandardCard standardCard;
 
   // Test values
-  Gems cost;
-  final int prestigePoints = 3;
-  final CardLevel cardLevel = CardLevel.THREE;
-  final Expansion expansion = Expansion.STANDARD;
-  final int gemDiscount = 1;
-  final GemColor discountColor = GemColor.RED;
+  static Gems cost;
+  static final int prestigePoints = 3;
+  static final CardLevel cardLevel = CardLevel.THREE;
+  static final Expansion expansion = Expansion.STANDARD;
+  static final int gemDiscount = 1;
+  static final GemColor discountColor = GemColor.RED;
 
   @BeforeAll
-  public void setUp() {
+  public static void setUp() {
     cost = new Gems();
     cost.put(GemColor.GREEN, 1);
     cost.put(GemColor.BLUE, 2);
     cost.put(GemColor.WHITE, 3);
-    this.standardCard =
+    standardCard =
         new StandardCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor);
   }
 
