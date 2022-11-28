@@ -307,8 +307,8 @@ public class GameHandlerController {
 
   private boolean hasEnoughGems(Gems ownedGems, Gems gemsToPayWith) {
     return gemsToPayWith.entrySet().stream().noneMatch(
-        entry -> !ownedGems.containsKey(entry.getKey()) ||
-                 ownedGems.get(entry.getKey()) < entry.getValue());
+        entry -> !ownedGems.containsKey(entry.getKey())
+                 || ownedGems.get(entry.getKey()) < entry.getValue());
   }
 
   private Hand getHand(Collection<Player> players, String username) {
