@@ -8,8 +8,8 @@ import hexanome.fourteen.server.model.board.gem.Gems;
  * Standard Card.
  */
 public final class StandardCard extends Card {
-  private final int gemDiscount;
-  private final GemColor discountColor;
+  private int gemDiscount;
+  private GemColor discountColor;
 
   /**
    * Constructor.
@@ -26,6 +26,13 @@ public final class StandardCard extends Card {
     super(prestigePoints, cost, level, expansion);
     this.gemDiscount = gemDiscount;
     this.discountColor = discountColor;
+  }
+
+  /**
+   * No args constructor.
+   */
+  public StandardCard() {
+    super();
   }
 
   /**

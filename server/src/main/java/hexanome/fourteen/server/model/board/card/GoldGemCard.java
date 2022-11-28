@@ -20,9 +20,11 @@ public final class GoldGemCard extends Card {
     super(prestigePoints, cost, level, expansion);
   }
 
-  @Override
-  public int hashCode() {
-    return super.hashCode();
+  /**
+   * No args constructor.
+   */
+  public GoldGemCard() {
+    super();
   }
 
   @Override

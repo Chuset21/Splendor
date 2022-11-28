@@ -8,8 +8,8 @@ import hexanome.fourteen.server.model.board.gem.Gems;
  * Reserve Noble Card.
  */
 public final class ReserveNobleCard extends Card {
-  private final int gemDiscount;
-  private final GemColor discountColor;
+  private int gemDiscount;
+  private GemColor discountColor;
 
   /**
    * Constructor.
@@ -27,6 +27,13 @@ public final class ReserveNobleCard extends Card {
     super(prestigePoints, cost, level, expansion);
     this.gemDiscount = gemDiscount;
     this.discountColor = discountColor;
+  }
+
+  /**
+   * No args constructor.
+   */
+  public ReserveNobleCard() {
+    super();
   }
 
   /**
