@@ -1,13 +1,15 @@
 package com.hexanome.fourteen;
 
+import com.hexanome.fourteen.form.lobbyservice.CreateSessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
+import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 
 /**
  * Class containing calls to lobby service involving sessions.
  */
-public class LobbyServiceCaller {
+public final class LobbyServiceCaller {
   /**
    * Private constructor to stop instantiation.
    */
@@ -17,12 +19,17 @@ public class LobbyServiceCaller {
   /**
    * Synchronously get sessions.
    *
-   * @return sessions form containing all sessions
+   * @return Sessions form containing all sessions. Returns null if the request fails.
    */
   public static SessionsForm getSessions() {
-    return Main.GSON.fromJson(Unirest.get("%sapi/sessions".formatted(Main.lsLocation))
-        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=").asString()
-        .getBody(), SessionsForm.class);
+    HttpResponse<String> response = Unirest.get("%sapi/sessions".formatted(Main.lsLocation))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=").asString();
+
+    if (response.getStatus() != 200) {
+      return null;
+    }
+
+    return Main.GSON.fromJson(response.getBody(), SessionsForm.class);
   }
 
   /**
@@ -58,12 +65,18 @@ public class LobbyServiceCaller {
    * Synchronously get session details.
    *
    * @param sessionid The session ID
-   * @return the details on a specific session
+   * @return The details on a specific session. Returns null if response fails.
    */
   public static SessionForm getSessionDetails(String sessionid) {
-    return Main.GSON.fromJson(Unirest.get("%sapi/sessions/%s".formatted(Main.lsLocation, sessionid))
-        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=").asString()
-        .getBody(), SessionForm.class);
+    HttpResponse<String> response =
+        Unirest.get("%sapi/sessions/%s".formatted(Main.lsLocation, sessionid))
+            .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=").asString();
+
+    if (response.getStatus() != 200) {
+      return null;
+    }
+
+    return Main.GSON.fromJson(response.getBody(), SessionForm.class);
   }
 
   /**
@@ -76,5 +89,27 @@ public class LobbyServiceCaller {
     return Unirest.post("%sapi/sessions/%s".formatted(Main.lsLocation, sessionid))
                .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=").asEmpty()
                .getStatus() == 200;
+  }
+
+  /**
+   * Create a session.
+   *
+   * @param authtoken         The player's token
+   * @param createSessionForm The form to create a session
+   * @return The session ID corresponding to the newly created session.
+   *     Returns null if the session couldn't be created
+   */
+  public static String createSession(String authtoken, CreateSessionForm createSessionForm) {
+    HttpResponse<String> response = Unirest.post("%sapi/sessions".formatted(Main.lsLocation))
+        .header("Content-Type", "application/json")
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", authtoken).body(Main.GSON.toJson(createSessionForm))
+        .asString();
+
+    if (response.getStatus() != 200) {
+      return null;
+    }
+
+    return response.getBody();
   }
 }
