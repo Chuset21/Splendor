@@ -272,10 +272,10 @@ public final class GameBoard {
         players.stream().filter(p -> p.hand().prestigePoints() > leadingCount).toList();
 
     if (playersWithHigherCount.isEmpty()) {
-      final Stream<Player> playersWithEqualCount =
-          players.stream().filter(p -> p.hand().prestigePoints() == leadingCount);
-      if (playersWithEqualCount.count() > 1) {
-        leadingPlayer = playersWithEqualCount.min(
+      final List<Player> playersWithEqualCount =
+          players.stream().filter(p -> p.hand().prestigePoints() == leadingCount).toList();
+      if (playersWithEqualCount.size() > 1) {
+        leadingPlayer = playersWithEqualCount.stream().min(
             Comparator.comparingInt(p -> p.hand().purchasedCards().size())).orElse(leadingPlayer);
       }
     } else {
