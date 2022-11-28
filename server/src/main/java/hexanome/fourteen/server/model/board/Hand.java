@@ -11,6 +11,7 @@ import java.util.Set;
  * A player's hand.
  */
 public final class Hand {
+  private int prestigePoints;
   private Gems gems;
   private Set<Card> reservedCards;
   private Set<Card> purchasedCards;
@@ -21,6 +22,7 @@ public final class Hand {
   /**
    * Constructor.
    *
+   * @param prestigePoints the amount of prestige points the player has
    * @param gems           the amount of gems the owned
    * @param reservedCards  the reserved cards
    * @param purchasedCards the purchased cards
@@ -28,8 +30,10 @@ public final class Hand {
    * @param reservedNoble  the reserved noble
    * @param gemDiscounts   the gem discounts
    */
-  public Hand(Gems gems, Set<Card> reservedCards, Set<Card> purchasedCards, Noble visitedNoble,
+  public Hand(int prestigePoints, Gems gems, Set<Card> reservedCards, Set<Card> purchasedCards,
+              Noble visitedNoble,
               Noble reservedNoble, Gems gemDiscounts) {
+    this.prestigePoints = prestigePoints;
     this.gems = gems;
     this.reservedCards = reservedCards;
     this.purchasedCards = purchasedCards;
@@ -43,6 +47,7 @@ public final class Hand {
    * For the demo we start with 3 of each gem.
    */
   public Hand() {
+    prestigePoints = 0;
     gems = new Gems();
     Arrays.stream(GemColor.values()).forEach(e -> gems.put(e, 3));
     reservedCards = new HashSet<>();
@@ -50,6 +55,15 @@ public final class Hand {
     visitedNoble = null;
     reservedNoble = null;
     gemDiscounts = new Gems();
+  }
+
+  /**
+   * A Getter for the prestige points.
+   *
+   * @return Player's prestige points
+   */
+  public int prestigePoints() {
+    return prestigePoints;
   }
 
   /**
@@ -107,6 +121,15 @@ public final class Hand {
   }
 
   /**
+   * A Setter for the prestige points.
+   *
+   * @param prestigePoints prestige points to set
+   */
+  public void setPrestigePoints(int prestigePoints) {
+    this.prestigePoints = prestigePoints;
+  }
+
+  /**
    * A Setter for the Gems.
    *
    * @param gems Gems to set
@@ -158,5 +181,23 @@ public final class Hand {
    */
   public void setGemDiscounts(Gems gemDiscounts) {
     this.gemDiscounts = gemDiscounts;
+  }
+
+  /**
+   * Increment prestige points.
+   *
+   * @param prestigePoints prestige points to add
+   */
+  public void incrementPrestigePoints(int prestigePoints) {
+    this.prestigePoints += prestigePoints;
+  }
+
+  /**
+   * Decrement prestige points.
+   *
+   * @param prestigePoints prestige points to remove
+   */
+  public void decrementPrestigePoints(int prestigePoints) {
+    this.prestigePoints -= prestigePoints;
   }
 }

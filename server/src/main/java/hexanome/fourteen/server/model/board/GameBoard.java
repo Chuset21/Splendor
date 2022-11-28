@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Stream;
 
 /**
  * Game Board.
@@ -50,7 +52,7 @@ public final class GameBoard {
   /**
    * The current leading player.
    */
-  private final Player leadingPlayer;
+  private Player leadingPlayer;
   private final Set<Player> players;
   private final String gameid;
   private final String creator;
@@ -253,5 +255,25 @@ public final class GameBoard {
    */
   public String creator() {
     return creator;
+  }
+
+  /**
+   * Compute the leading player.
+   */
+  public void computeLeadingPlayer() {
+    final int leadingCount = leadingPlayer.hand().prestigePoints();
+    final List<Player> playersWithHigherCount =
+        players.stream().filter(p -> p.hand().prestigePoints() > leadingCount).toList();
+
+    if (playersWithHigherCount.isEmpty()) {
+      final Stream<Player> playersWithEqualCount =
+          players.stream().filter(p -> p.hand().prestigePoints() == leadingCount);
+      if (playersWithEqualCount.count() > 1) {
+        leadingPlayer = playersWithEqualCount.min(
+            Comparator.comparingInt(p -> p.hand().purchasedCards().size())).orElse(leadingPlayer);
+      }
+    } else {
+      leadingPlayer = playersWithHigherCount.get(0);
+    }
   }
 }

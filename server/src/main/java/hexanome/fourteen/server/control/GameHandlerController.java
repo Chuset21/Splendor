@@ -173,7 +173,8 @@ public class GameHandlerController {
   @PostMapping(value = "card", consumes = "application/json; charset=utf-8")
   public ResponseEntity<String> purchaseCard(@RequestParam("access_token") String accessToken,
                                              @RequestBody PurchaseCardForm purchaseCardForm) {
-    // TODO check what type of card it is and add the prestige points, gem discounts, etc
+    // TODO check what type of card it is and perform the relevant action,
+    //  e.g. adding the gem discounts
     final String username = getUsername(accessToken);
     if (username == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
@@ -224,12 +225,16 @@ public class GameHandlerController {
       // This should never happen
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
+    // Increment the player's prestige points
+    hand.incrementPrestigePoints(card.prestigePoints());
     // Add the card to the player's hand
     hand.purchasedCards().add(card);
     // Take gems from player
     removeGems(ownedGems, gemsToPayWith);
     // Add gems to bank
     addGems(gameBoard.availableGems(), gemsToPayWith);
+    // Compute the leading player
+    gameBoard.computeLeadingPlayer();
 
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
@@ -302,8 +307,8 @@ public class GameHandlerController {
 
   private boolean hasEnoughGems(Gems ownedGems, Gems gemsToPayWith) {
     return gemsToPayWith.entrySet().stream().noneMatch(
-        entry -> !ownedGems.containsKey(entry.getKey())
-                 || ownedGems.get(entry.getKey()) < entry.getValue());
+        entry -> !ownedGems.containsKey(entry.getKey()) ||
+                 ownedGems.get(entry.getKey()) < entry.getValue());
   }
 
   private Hand getHand(Collection<Player> players, String username) {
