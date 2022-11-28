@@ -1,0 +1,10 @@
+hexanome.fourteen.server
+hexanome.fourteen.server.control
+hexanome.fourteen.server.model
+hexanome.fourteen.server.model.board
+hexanome.fourteen.server.model.board.card
+hexanome.fourteen.server.model.board.expansion
+hexanome.fourteen.server.model.board.gem
+hexanome.fourteen.server.model.board.player
+hexanome.fourteen.server.model.clientmapper
+hexanome.fourteen.server.model.sent
