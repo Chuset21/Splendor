@@ -8,10 +8,10 @@ import org.junit.jupiter.api.TestInstance;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 @TestInstance(PER_CLASS)
-class LaunchGameFormTest {
+public class LaunchGameFormTest {
 
   @Test
-  void noArgsConstructor() {
+  public void testNoArgsConstructor() {
     LaunchGameForm expectedGame = new LaunchGameForm();
 
     Assertions.assertNull(expectedGame.creator());
