@@ -103,9 +103,6 @@ class GameBoardTest {
   public void testExpansions() { assertEquals(expansions, gameBoard.expansions());}
 
   @Test
-  public void testLeadingPlayer() { assertEquals(player2, gameBoard.leadingPlayer());}
-
-  @Test
   public void testPlayers() { assertEquals(players, gameBoard.players());}
 
   @Test
@@ -121,7 +118,4 @@ class GameBoardTest {
     gameBoard.computeLeadingPlayer();
     assertEquals(player2, gameBoard.leadingPlayer());
   }
-
-
-
 }
