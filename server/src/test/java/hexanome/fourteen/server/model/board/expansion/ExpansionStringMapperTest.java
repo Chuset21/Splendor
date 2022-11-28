@@ -27,7 +27,7 @@ class ExpansionStringMapperTest {
   }
 
   @Test
-  public void map() {
+  public void testMap() {
     Assertions.assertEquals(Expansion.ORIENT.name(), expansionMapper.map(Expansion.ORIENT));
     Assertions.assertEquals(Expansion.STRONGHOLDS.name(),
         expansionMapper.map(Expansion.STRONGHOLDS));
