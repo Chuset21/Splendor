@@ -95,7 +95,12 @@ public class StandardCardTest {
   @Test
   public void testEqualsDifferentClass() {
     Object o = new Object();
-    boolean equals = standardCard.equals(o);
-    assertEquals(false, equals);
+    assertFalse(standardCard.equals(o));
+  }
+  @Test
+  public void testEqualsByValue() {
+    StandardCard cardWithEqualValues =
+            new StandardCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor);
+    assertTrue(standardCard.equals(cardWithEqualValues));
   }
 }
