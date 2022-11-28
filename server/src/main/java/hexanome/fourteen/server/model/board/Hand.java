@@ -5,6 +5,7 @@ import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -31,8 +32,7 @@ public final class Hand {
    * @param gemDiscounts   the gem discounts
    */
   public Hand(int prestigePoints, Gems gems, Set<Card> reservedCards, Set<Card> purchasedCards,
-              Noble visitedNoble,
-              Noble reservedNoble, Gems gemDiscounts) {
+              Noble visitedNoble, Noble reservedNoble, Gems gemDiscounts) {
     this.prestigePoints = prestigePoints;
     this.gems = gems;
     this.reservedCards = reservedCards;
@@ -199,5 +199,22 @@ public final class Hand {
    */
   public void decrementPrestigePoints(int prestigePoints) {
     this.prestigePoints -= prestigePoints;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Hand hand = (Hand) o;
+    return prestigePoints == hand.prestigePoints && Objects.equals(gems, hand.gems)
+           && Objects.equals(reservedCards, hand.reservedCards)
+           && Objects.equals(purchasedCards, hand.purchasedCards)
+           && Objects.equals(visitedNoble, hand.visitedNoble)
+           && Objects.equals(reservedNoble, hand.reservedNoble)
+           && Objects.equals(gemDiscounts, hand.gemDiscounts);
   }
 }
