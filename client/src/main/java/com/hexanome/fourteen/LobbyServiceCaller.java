@@ -65,4 +65,16 @@ public class LobbyServiceCaller {
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=").asString()
         .getBody(), SessionForm.class);
   }
+
+  /**
+   * Launch a session.
+   *
+   * @param sessionid The session ID
+   * @return true if successful, false otherwise
+   */
+  public static boolean launchSession(String sessionid) {
+    return Unirest.post("%sapi/sessions/%s".formatted(Main.lsLocation, sessionid))
+               .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=").asEmpty()
+               .getStatus() == 200;
+  }
 }
