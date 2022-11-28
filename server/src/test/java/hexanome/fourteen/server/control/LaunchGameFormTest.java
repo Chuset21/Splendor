@@ -1,24 +1,22 @@
 package hexanome.fourteen.server.control;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.TestInstance;
 
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
+
+@TestInstance(PER_CLASS)
 class LaunchGameFormTest {
 
-    @Test
-    void creator() {
-    }
+  @Test
+  void noArgsConstructor() {
+    LaunchGameForm expectedGame = new LaunchGameForm();
 
-    @Test
-    void gameType() {
-    }
-
-    @Test
-    void players() {
-    }
-
-    @Test
-    void saveGame() {
-    }
+    Assertions.assertNull(expectedGame.creator());
+    Assertions.assertNull(expectedGame.gameType());
+    Assertions.assertNull(expectedGame.players());
+    Assertions.assertNull(expectedGame.saveGame());
+  }
 }
