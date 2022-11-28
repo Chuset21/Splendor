@@ -242,9 +242,10 @@ public class LobbyController implements Initializable {
 
   @FXML
   private void handleAddLobby(){
-    if(defaultLobby != null){
-      DisplayLobby lobby = new DisplayLobby("cat.jpg","new lobby", 3,4, Expansions.ORIENT);
-      lobbyVBox.getChildren().add(lobby);
-    }
+    DisplayLobby lobby = null;
+
+    lobby = new DisplayLobby(/*"cat.jpg","new lobby", 3,4, Expansions.ORIENT*/);
+
+    lobbyVBox.getChildren().add(lobby);
   }
 }
