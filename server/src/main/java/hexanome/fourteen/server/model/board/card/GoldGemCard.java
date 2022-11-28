@@ -7,6 +7,7 @@ import hexanome.fourteen.server.model.board.gem.Gems;
  * Gold Gem Card.
  */
 public final class GoldGemCard extends Card {
+
   /**
    * Constructor.
    *
@@ -15,9 +16,25 @@ public final class GoldGemCard extends Card {
    * @param level          the level of the card
    * @param expansion      the expansion to which the card belongs to
    */
-  public GoldGemCard(int prestigePoints, Gems cost,
-                     CardLevel level,
-                     Expansion expansion) {
+  public GoldGemCard(int prestigePoints, Gems cost, CardLevel level, Expansion expansion) {
     super(prestigePoints, cost, level, expansion);
+  }
+
+  @Override
+  public int hashCode() {
+    return super.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+    GoldGemCard card = (GoldGemCard) obj;
+    return super.prestigePoints == card.prestigePoints && super.cost.equals(card.cost)
+           && super.level == card.level && super.expansion == card.expansion;
   }
 }

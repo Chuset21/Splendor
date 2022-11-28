@@ -49,6 +49,7 @@ public final class WaterfallCard extends Card {
     return discountColor;
   }
 
+
   /**
    * A Getter for the Free Card Level of a WaterfallCard.
    *
@@ -56,5 +57,20 @@ public final class WaterfallCard extends Card {
    */
   public CardLevel freeCardLevel() {
     return freeCardLevel;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+    WaterfallCard card = (WaterfallCard) obj;
+    return super.prestigePoints == card.prestigePoints && super.cost.equals(card.cost)
+           && super.level == card.level && super.expansion == card.expansion
+           && gemDiscount == card.gemDiscount && discountColor == card.discountColor
+           && freeCardLevel == card.freeCardLevel;
   }
 }

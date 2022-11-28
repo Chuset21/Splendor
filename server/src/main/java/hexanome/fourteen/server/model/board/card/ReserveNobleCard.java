@@ -46,4 +46,18 @@ public final class ReserveNobleCard extends Card {
   public GemColor discountColor() {
     return discountColor;
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+    ReserveNobleCard card = (ReserveNobleCard) obj;
+    return super.prestigePoints == card.prestigePoints && super.cost.equals(card.cost)
+           && super.level == card.level && super.expansion == card.expansion
+           && gemDiscount == card.gemDiscount && discountColor == card.discountColor;
+  }
 }

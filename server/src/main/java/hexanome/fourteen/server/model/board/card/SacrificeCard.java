@@ -59,4 +59,19 @@ public final class SacrificeCard extends Card {
   public GemColor sacrificeColor() {
     return sacrificeColor;
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+    SacrificeCard card = (SacrificeCard) obj;
+    return super.prestigePoints == card.prestigePoints && super.cost.equals(card.cost)
+           && super.level == card.level && super.expansion == card.expansion
+           && gemDiscount == card.gemDiscount && discountColor == card.discountColor
+           && sacrificeColor == card.sacrificeColor;
+  }
 }

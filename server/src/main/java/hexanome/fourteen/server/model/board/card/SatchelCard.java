@@ -33,4 +33,18 @@ public final class SatchelCard extends Card {
   public GemColor gemColor() {
     return gemColor;
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null || getClass() != obj.getClass()) {
+      return false;
+    }
+    SatchelCard card = (SatchelCard) obj;
+    return super.prestigePoints == card.prestigePoints && super.cost.equals(card.cost)
+           && super.level == card.level && super.expansion == card.expansion
+           && gemColor == card.gemColor;
+  }
 }

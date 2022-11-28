@@ -7,10 +7,10 @@ import hexanome.fourteen.server.model.board.gem.Gems;
  * Card.
  */
 public abstract class Card {
-  private final int prestigePoints;
-  private final Gems cost;
-  private final CardLevel level;
-  private final Expansion expansion;
+  final int prestigePoints;
+  final Gems cost;
+  final CardLevel level;
+  final Expansion expansion;
 
   /**
    * Constructor.
