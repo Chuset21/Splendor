@@ -9,6 +9,7 @@ module com.hexanome.fourteen {
   opens com.hexanome.fourteen.lobbyui to javafx.fxml;
   opens com.hexanome.fourteen.login to javafx.fxml, com.google.gson;
   opens com.hexanome.fourteen.form.lobbyservice to com.google.gson;
+  opens com.hexanome.fourteen.form.server to com.google.gson;
   opens com.hexanome.fourteen to com.google.gson;
 
   exports com.hexanome.fourteen;
