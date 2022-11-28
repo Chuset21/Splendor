@@ -13,7 +13,6 @@ public class UserPlayerMapper implements Mapper<User, Player> {
    * Constructor.
    */
   public UserPlayerMapper() {
-
   }
 
   @Override
