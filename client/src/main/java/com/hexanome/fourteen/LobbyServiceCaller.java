@@ -55,7 +55,7 @@ public class LobbyServiceCaller {
   }
 
   /**
-   * Get session details.
+   * Synchronously get session details.
    *
    * @param sessionid The session ID
    * @return the details on a specific session
