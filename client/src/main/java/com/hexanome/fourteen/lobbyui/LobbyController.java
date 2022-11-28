@@ -1,5 +1,6 @@
 package com.hexanome.fourteen.lobbyui;
 
+import com.hexanome.fourteen.login.LoginScreen;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,10 +21,10 @@ import java.util.*;
 public class LobbyController implements Initializable {
   private static Stage aPrimaryStage;
   private static Stack<Scene> scenePath = new Stack<>();
-  private String username;
+  private static String username;
 
   // To replace <username> with username, use .replaceAll()
-  private final String welcomeTextTemplate = "Weclome back <username>!";
+  private static final String welcomeTextTemplate = "Welcome back <username>!";
 
 
   @FXML
@@ -90,9 +91,9 @@ public class LobbyController implements Initializable {
   private final ToggleGroup expansionSetting = new ToggleGroup();
 
 
-  public void goToChoiceSelect(Stage pStage, String pUsername) throws IOException {
+  public void goToChoiceSelect(Stage pStage, String username) throws IOException {
     aPrimaryStage = pStage;
-    this.username = pUsername;
+    LobbyController.username = username;
 
     // Import root from fxml file
     Parent root = FXMLLoader.load(
@@ -112,8 +113,10 @@ public class LobbyController implements Initializable {
   }
 
   private void init() {
-    // Initialize welcome message with username
-    //welcomeText.setText(welcomeTextTemplate.replaceAll("<username>", this.username));
+    if(welcomeText != null){
+      // Initialize welcome message with username
+      welcomeText.setText(welcomeTextTemplate.replaceAll("<username>", username));
+    }
   }
 
   @Override

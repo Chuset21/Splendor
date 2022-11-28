@@ -21,7 +21,6 @@ import java.util.ResourceBundle;
 public final class LoginScreen implements Initializable {
 
   private static Stage aPrimaryStage;
-
   private static final ArrayList<String[]> CREDENTIALS = new ArrayList<>();
 
   @FXML
@@ -98,5 +97,4 @@ public final class LoginScreen implements Initializable {
       ex.printStackTrace();
     }
   }
-
 }
