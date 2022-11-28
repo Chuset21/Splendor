@@ -98,4 +98,10 @@ public class StandardCardTest {
     boolean equals = standardCard.equals(o);
     assertEquals(false, equals);
   }
+  @Test
+  public void testEqualsByValue() {
+    StandardCard cardWithEqualValues =
+            new StandardCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor);
+    assertTrue(standardCard.equals(cardWithEqualValues));
+  }
 }
