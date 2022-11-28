@@ -75,4 +75,22 @@ public class ServerServiceTest {
 
     assertTrue((Boolean) ReflectionTestUtils.invokeMethod(serverService, "refreshToken"));
   }
+
+  @Test
+  public void testRegisterGameServices() {
+    Mockito.when(lobbyService.getGameServices()).thenReturn(null);
+
+    assertFalse((Boolean) ReflectionTestUtils.invokeMethod(serverService, "registerGameServices"));
+
+    ReflectionTestUtils.setField(serverService, "gameServiceNames", new String[]{});
+    Mockito.when(lobbyService.getGameServices()).thenReturn("xyz");
+
+    assertTrue((Boolean) ReflectionTestUtils.invokeMethod(serverService, "registerGameServices"));
+
+    ReflectionTestUtils.setField(serverService, "gameServiceNames", new String[]{"x", "t"});
+    Mockito.when(lobbyService.registerGameService("x", null)).thenReturn(true);
+    Mockito.when(lobbyService.registerGameService("t", null)).thenReturn(false);
+
+    assertFalse((Boolean) ReflectionTestUtils.invokeMethod(serverService, "registerGameServices"));
+  }
 }
