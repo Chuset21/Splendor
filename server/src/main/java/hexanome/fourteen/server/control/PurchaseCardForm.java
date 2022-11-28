@@ -30,14 +30,29 @@ public final class PurchaseCardForm {
   public PurchaseCardForm() {
   }
 
+  /**
+   * A Getter for Card.
+   *
+   * @return Card
+   */
   public Card card() {
     return card;
   }
 
+  /**
+   * A Getter for Gems a Player has decided to pay with.
+   *
+   * @return Chosen Gems
+   */
   public Gems gemsToPayWith() {
     return chosenGems;
   }
 
+  /**
+   * A Getter for Gems that will be substituted for Gold Gems.
+   *
+   * @return Chosen Gems
+   */
   public Gems substitutedGems() {
     return substitutedGems;
   }
