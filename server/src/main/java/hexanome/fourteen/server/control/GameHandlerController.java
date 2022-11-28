@@ -3,12 +3,18 @@ package hexanome.fourteen.server.control;
 import hexanome.fourteen.server.Mapper;
 import hexanome.fourteen.server.model.User;
 import hexanome.fourteen.server.model.board.GameBoard;
+import hexanome.fourteen.server.model.board.Hand;
 import hexanome.fourteen.server.model.board.Noble;
+import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.expansion.Expansion;
+import hexanome.fourteen.server.model.board.gem.GemColor;
+import hexanome.fourteen.server.model.board.gem.Gems;
 import hexanome.fourteen.server.model.board.player.Player;
 import hexanome.fourteen.server.model.sent.SentGameBoard;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -128,6 +135,11 @@ public class GameHandlerController {
     return null;
   }
 
+  private String getUsername(String accessToken) {
+    return Unirest.post("%soauth/username".formatted(lsLocation))
+        .queryString("access_token", accessToken).asString().getBody();
+  }
+
   /**
    * Get a game board.
    *
@@ -151,10 +163,119 @@ public class GameHandlerController {
     }
   }
 
-  private String getUsername(String accessToken) {
-    return Unirest.post("%soauth/username".formatted(lsLocation))
-        .queryString("access_token", accessToken).asString().getBody();
+  /**
+   * Purchase a given card.
+   *
+   * @param accessToken      The access token belonging to the player trying to purchase the card.
+   * @param purchaseCardForm The purchase card form.
+   * @return The response.
+   */
+  @PostMapping(value = "card", consumes = "application/json; charset=utf-8")
+  public ResponseEntity<String> purchaseCard(@RequestParam("access_token") String accessToken,
+                                             @RequestBody PurchaseCardForm purchaseCardForm) {
+    final String username = getUsername(accessToken);
+    if (username == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
+    }
+
+    final GameBoard gameBoard = getGame(username);
+    if (gameBoard == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
+    }
+
+    final Hand hand = getHand(gameBoard.players(), username);
+    if (hand == null) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+
+    final Card card = purchaseCardForm.card();
+    final Set<List<Card>> decks = gameBoard.cards();
+    if (!cardIsFaceUpOnBoard(decks, card)) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("card chosen for purchase is not valid");
+    }
+
+    final Gems substitutedGems = purchaseCardForm.substitutedGems();
+    if (substitutedGems.containsKey(GemColor.GOLD)) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("cannot substitute gold gems for gold gems");
+    }
+
+    final Gems gemsToPayWith = purchaseCardForm.gemsToPayWith();
+    if (countGemAmount(substitutedGems) != gemsToPayWith.get(GemColor.GOLD)) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("substituting amount not equal to gold gems");
+    }
+
+    final Gems ownedGems = hand.gems();
+    if (!hasEnoughGems(ownedGems, gemsToPayWith)) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("not enough gems");
+    }
+
+    // verify that the amount of gems is enough to buy the card
+    final Gems equivalentPayment = getPaymentWithoutGoldGems(substitutedGems, gemsToPayWith);
+    if (!card.cost().equals(equivalentPayment)) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("card cost does not match payment");
+    }
+
+    // Actually buy the card now
+    hand.purchasedCards().add(card);
+    // Remove the card from the game board
+    if (!removeCardFromDeck(decks, card)) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+
+    return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
+  private boolean removeCardFromDeck(Set<List<Card>> decks, Card card) {
+    for (List<Card> cards : decks) {
+      if (!cards.isEmpty()) {
+        final Card firstCard = cards.get(0);
+        if (firstCard.level() == card.level() && firstCard.expansion() == card.expansion()) {
+          return cards.remove(card);
+        }
+      }
+    }
+    return false;
+  }
 
+  private Gems getPaymentWithoutGoldGems(Gems substitutedGems, Gems gemsToPayWith) {
+    final Gems result = new Gems(gemsToPayWith);
+    result.remove(GemColor.GOLD);
+
+    substitutedGems.forEach(
+        (key, value) -> result.compute(key, (k, v) -> v == null ? value : v + value));
+
+    return result;
+  }
+
+  private boolean cardIsFaceUpOnBoard(Set<List<Card>> decks, Card card) {
+    for (List<Card> cards : decks) {
+      if (!cards.isEmpty()) {
+        final Card firstCard = cards.get(0);
+        if (firstCard.level() == card.level() && firstCard.expansion() == card.expansion()) {
+          final int limit =
+              Integer.min(cards.size(), firstCard.expansion() == Expansion.STANDARD ? 4 : 2);
+          return cards.subList(0, limit).stream().anyMatch(cardToCheck -> cardToCheck.equals(card));
+        }
+      }
+    }
+    return false;
+  }
+
+  private int countGemAmount(Gems gems) {
+    return gems.values().stream().mapToInt(value -> value).sum();
+  }
+
+  private boolean hasEnoughGems(Gems ownedGems, Gems gemsToPayWith) {
+    return gemsToPayWith.entrySet().stream().noneMatch(
+        entry -> !ownedGems.containsKey(entry.getKey())
+                 || ownedGems.get(entry.getKey()) < entry.getValue());
+  }
+
+  private Hand getHand(Collection<Player> players, String username) {
+    return players.stream().filter(p -> p.uid().equals(username)).findFirst().map(Player::hand)
+        .orElse(null);
+  }
 }

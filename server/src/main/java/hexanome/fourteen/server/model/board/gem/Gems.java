@@ -14,4 +14,13 @@ public final class Gems extends HashMap<GemColor, Integer> {
   public Gems() {
 
   }
+
+  /**
+   * Produces a shallow copy with the same gem counts.
+   *
+   * @param gems gems
+   */
+  public Gems(Gems gems) {
+    super(gems);
+  }
 }
