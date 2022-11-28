@@ -1,5 +1,6 @@
 package com.hexanome.fourteen;
 
+import com.hexanome.fourteen.lobbyui.SessionForm;
 import com.hexanome.fourteen.lobbyui.SessionsForm;
 import kong.unirest.Unirest;
 
@@ -20,8 +21,8 @@ public class LobbyServiceCaller {
    */
   public static SessionsForm getSessions() {
     return Main.GSON.fromJson(Unirest.get("%sapi/sessions".formatted(Main.lsLocation))
-            .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=").toString(),
-        SessionsForm.class);
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=").asString()
+        .getBody(), SessionsForm.class);
   }
 
   /**
@@ -51,5 +52,17 @@ public class LobbyServiceCaller {
         Unirest.delete("%sapi/sessions/%s/players/%s".formatted(Main.lsLocation, sessionid, player))
             .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
             .queryString("access_token", authtoken).asEmpty().getStatus() == 200;
+  }
+
+  /**
+   * Get session details.
+   *
+   * @param sessionid The session ID
+   * @return the details on a specific session
+   */
+  public static SessionForm getSessionDetails(String sessionid) {
+    return Main.GSON.fromJson(Unirest.get("%sapi/sessions/%s".formatted(Main.lsLocation, sessionid))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=").asString()
+        .getBody(), SessionForm.class);
   }
 }
