@@ -173,6 +173,7 @@ public class GameHandlerController {
   @PostMapping(value = "card", consumes = "application/json; charset=utf-8")
   public ResponseEntity<String> purchaseCard(@RequestParam("access_token") String accessToken,
                                              @RequestBody PurchaseCardForm purchaseCardForm) {
+    // TODO check what type of card it is and add the prestige points, gem discounts, etc
     final String username = getUsername(accessToken);
     if (username == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
@@ -213,7 +214,8 @@ public class GameHandlerController {
     }
 
     // verify that the amount of gems is enough to buy the card
-    if (!card.cost().equals(getPaymentWithoutGoldGems(substitutedGems, gemsToPayWith))) {
+    final Gems discountedCost = getDiscountedCost(card.cost(), hand.gemDiscounts());
+    if (!discountedCost.equals(getPaymentWithoutGoldGems(substitutedGems, gemsToPayWith))) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("card cost does not match payment");
     }
 
@@ -230,6 +232,15 @@ public class GameHandlerController {
     addGems(gameBoard.availableGems(), gemsToPayWith);
 
     return ResponseEntity.status(HttpStatus.OK).body(null);
+  }
+
+  private Gems getDiscountedCost(Gems originalCost, Gems gemDiscounts) {
+    final Gems result = new Gems(originalCost);
+
+    // Remove the gem discounts from the cost of the card to get the cost for this specific player
+    removeGems(result, gemDiscounts);
+
+    return result;
   }
 
   private void addGems(Gems gemsToAddTo, Gems gemsToAdd) {

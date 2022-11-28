@@ -8,9 +8,9 @@ import hexanome.fourteen.server.model.board.gem.Gems;
  * Sacrifice Card.
  */
 public final class SacrificeCard extends Card {
-  private final int gemDiscount;
-  private final GemColor discountColor;
-  private final GemColor sacrificeColor;
+  private int gemDiscount;
+  private GemColor discountColor;
+  private GemColor sacrificeColor;
 
   /**
    * Constructor.
@@ -31,6 +31,13 @@ public final class SacrificeCard extends Card {
     this.gemDiscount = gemDiscount;
     this.discountColor = discountColor;
     this.sacrificeColor = sacrificeColor;
+  }
+
+  /**
+   * No args constructor.
+   */
+  public SacrificeCard() {
+    super();
   }
 
   /**

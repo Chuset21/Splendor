@@ -1,24 +1,55 @@
 package hexanome.fourteen.server.control;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
 
+import org.junit.jupiter.api.TestInstance;
+
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
+
+import org.junit.jupiter.api.BeforeAll;
+
+@TestInstance(PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class AccountCreationFormTest {
 
-    @Test
-    void getName() {
-    }
+  AccountCreationForm dummyAccount;
 
-    @Test
-    void getPassword() {
-    }
+  @BeforeAll
+  void setUpDummyAccount() {
+    dummyAccount = new AccountCreationForm("Hex 14 Backend", "1234");
+  }
 
-    @Test
-    void getPreferredColour() {
-    }
+  @Test
+  void getName() {
+    Assertions.assertEquals("Hex 14 Backend", dummyAccount.getName());
+  }
 
-    @Test
-    void getRole() {
-    }
+  @Test
+  void getPassword() {
+    Assertions.assertEquals("1234", dummyAccount.getPassword());
+  }
+
+  @Test
+  void getPreferredColour() {
+    Assertions.assertEquals("01FFFF", dummyAccount.getPreferredColour());
+  }
+
+  @Test
+  void getRole() {
+    Assertions.assertEquals("ROLE_SERVICE", dummyAccount.getRole());
+  }
+
+  @Test
+  void noArgsConstructor() {
+    AccountCreationForm expectedAccount = new AccountCreationForm();
+
+    Assertions.assertNull(expectedAccount.getName());
+    Assertions.assertNull(expectedAccount.getRole());
+    Assertions.assertNull(expectedAccount.getPassword());
+    Assertions.assertNull(expectedAccount.getPreferredColour());
+  }
 }

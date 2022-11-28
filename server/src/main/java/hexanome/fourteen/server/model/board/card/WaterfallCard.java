@@ -8,9 +8,9 @@ import hexanome.fourteen.server.model.board.gem.Gems;
  * Waterfall Card.
  */
 public final class WaterfallCard extends Card {
-  private final int gemDiscount;
-  private final GemColor discountColor;
-  private final CardLevel freeCardLevel;
+  private int gemDiscount;
+  private GemColor discountColor;
+  private CardLevel freeCardLevel;
 
   /**
    * Constructor.
@@ -29,6 +29,13 @@ public final class WaterfallCard extends Card {
     this.gemDiscount = gemDiscount;
     this.discountColor = discountColor;
     this.freeCardLevel = freeCardLevel;
+  }
+
+  /**
+   * No args constructor.
+   */
+  public WaterfallCard() {
+    super();
   }
 
   /**

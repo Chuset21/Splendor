@@ -8,7 +8,7 @@ import hexanome.fourteen.server.model.board.gem.Gems;
  * Satchel Card.
  */
 public final class SatchelCard extends Card {
-  private final GemColor gemColor;
+  private GemColor gemColor;
 
   /**
    * Constructor.
@@ -23,6 +23,13 @@ public final class SatchelCard extends Card {
                      GemColor gemColor) {
     super(prestigePoints, cost, level, expansion);
     this.gemColor = gemColor;
+  }
+
+  /**
+   * No args constructor.
+   */
+  public SatchelCard() {
+    super();
   }
 
   /**
