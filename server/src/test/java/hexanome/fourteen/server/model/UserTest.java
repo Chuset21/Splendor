@@ -7,16 +7,14 @@ import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
-import org.junit.jupiter.api.BeforeAll;
-
 @TestInstance(PER_CLASS)
 public class UserTest {
 
   @Test
-  public void name() {
-  }
+  public void testNoArgsConstructor() {
+    User expectedUser = new User();
 
-  @Test
-  public void preferredColour() {
+    Assertions.assertNull(expectedUser.name());
+    Assertions.assertNull(expectedUser.preferredColour());
   }
 }
