@@ -12,7 +12,7 @@ public final class Gems extends HashMap<GemColor, Integer> {
    * Constructor.
    */
   public Gems() {
-
+    super();
   }
 
   /**
