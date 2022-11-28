@@ -1,12 +1,10 @@
 package com.hexanome.fourteen.lobbyui;
 
 import com.hexanome.fourteen.boards.Expansions;
-import com.hexanome.fourteen.login.LoginScreen;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -22,7 +20,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import javafx.util.converter.ByteStringConverter;
 
 public class LobbyController implements Initializable {
   private static Stage aPrimaryStage;
@@ -250,9 +247,13 @@ public class LobbyController implements Initializable {
 
   @FXML
   private void handleAddLobby(){
-    DisplayLobby lobby = null;
+    Lobby lobby = null;
 
-    lobby = new DisplayLobby(/*"cat.jpg","new lobby", 3,4, Expansions.ORIENT*/);
+    try{
+      lobby = new Lobby("cat.jpg", 3, Expansions.ORIENT, username);
+    } catch(IOException ioe){
+      ioe.printStackTrace();
+    }
 
     lobbyVBox.getChildren().add(lobby);
   }
