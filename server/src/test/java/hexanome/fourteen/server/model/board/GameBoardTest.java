@@ -117,5 +117,14 @@ class GameBoardTest {
     hand.setPrestigePoints(2);
     gameBoard.computeLeadingPlayer();
     assertEquals(player2, gameBoard.leadingPlayer());
+
+    for (Player player :gameBoard.players()) {
+      player.hand().setPrestigePoints(0);
+    }
+    gameBoard.computeLeadingPlayer();
+
+    Player leadingPlayerWithCards = (player1.hand().purchasedCards().size() >= player2.hand().purchasedCards().size()) ? player1 : player2;
+    assertEquals(leadingPlayerWithCards, gameBoard.leadingPlayer());
+
   }
 }
