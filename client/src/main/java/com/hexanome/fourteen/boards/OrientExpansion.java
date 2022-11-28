@@ -170,12 +170,12 @@ public class OrientExpansion implements Initializable {
     }
 
     gameDecks = new ArrayList<>();
-    gameDecks.add(level3Cards = new Deck(3, Expansions.BASEGAME, level3CardViewsBase));
-    gameDecks.add(level2Cards = new Deck(2, Expansions.BASEGAME, level2CardViewsBase));
-    gameDecks.add(level1Cards = new Deck(1, Expansions.BASEGAME, level1CardViewsBase));
-    gameDecks.add(level3CardsOrient = new Deck(3, Expansions.ORIENT, level3CardViewsOrient));
-    gameDecks.add(level2CardsOrient = new Deck(2, Expansions.ORIENT, level2CardViewsOrient));
-    gameDecks.add(level1CardsOrient = new Deck(1, Expansions.ORIENT, level1CardViewsOrient));
+    gameDecks.add(level3Cards = new Deck(3, Expansion.STANDARD, level3CardViewsBase));
+    gameDecks.add(level2Cards = new Deck(2, Expansion.STANDARD, level2CardViewsBase));
+    gameDecks.add(level1Cards = new Deck(1, Expansion.STANDARD, level1CardViewsBase));
+    gameDecks.add(level3CardsOrient = new Deck(3, Expansion.ORIENT, level3CardViewsOrient));
+    gameDecks.add(level2CardsOrient = new Deck(2, Expansion.ORIENT, level2CardViewsOrient));
+    gameDecks.add(level1CardsOrient = new Deck(1, Expansion.ORIENT, level1CardViewsOrient));
 
     for (Card c : gameCards) {
       for (Deck d : gameDecks) {

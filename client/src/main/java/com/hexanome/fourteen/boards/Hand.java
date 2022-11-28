@@ -84,7 +84,7 @@ public class Hand {
   }
 
 
-  private int enumToIndex(GemColors gcolor) {
+  private int enumToIndex(GemColor gcolor) {
     switch (gcolor) {
       case GREEN:
         return 0;

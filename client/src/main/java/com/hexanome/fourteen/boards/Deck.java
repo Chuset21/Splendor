@@ -11,7 +11,7 @@ import javafx.scene.image.ImageView;
 public class Deck extends Stack<Card> {
 
   private final int level;
-  private final Expansions expansions;
+  private final Expansion expansions;
   private final ArrayList<ImageView> faceUpCardSlots;
 
   /**
@@ -21,7 +21,7 @@ public class Deck extends Stack<Card> {
    * @param expansions      The Expansions being played
    * @param faceUpCardSlots The Cards that will be face up on the GameBoard
    */
-  public Deck(int level, Expansions expansions, ArrayList<ImageView> faceUpCardSlots) {
+  public Deck(int level, Expansion expansions, ArrayList<ImageView> faceUpCardSlots) {
     if (level < 0 || level > 3) {
       throw new InvalidParameterException("Card level must be within (0,3)");
     }
@@ -38,7 +38,7 @@ public class Deck extends Stack<Card> {
     return level;
   }
 
-  public Expansions getExpansions() {
+  public Expansion getExpansions() {
     return expansions;
   }
 

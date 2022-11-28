@@ -16,9 +16,9 @@ public class Card extends Image {
 
   // Cost = { CostGreen, CostWhite, CostBlue, CostBlack, CostRed, CostYellow }
   private final int[] cost;
-  private final GemColors discountColor;
+  private final GemColor discountColor;
   private final int discountAmt;
-  private final Expansions expansions;
+  private final Expansion expansions;
   private final int level;
   private final int prestigePoints;
 
@@ -34,8 +34,8 @@ public class Card extends Image {
    * @param prestigePoints = number of victory points card has
    * @param fileString     = full path of the image file
    */
-  public Card(int[] cost, GemColors discountColor, int discountAmt,
-              Expansions expansions, int level, int prestigePoints, String fileString) {
+  public Card(int[] cost, GemColor discountColor, int discountAmt,
+              Expansion expansions, int level, int prestigePoints, String fileString) {
     super(fileString);
 
     this.cost = cost;
@@ -84,8 +84,8 @@ public class Card extends Image {
         // Create card
         Card c = new Card(new int[] {Integer.valueOf(cardData[0]), Integer.valueOf(cardData[1]),
             Integer.valueOf(cardData[2]), Integer.valueOf(cardData[3]),
-            Integer.valueOf(cardData[4])}, GemColors.valueOf(cardData[5]),
-            Integer.valueOf(cardData[6]), Expansions.valueOf(cardData[7]),
+            Integer.valueOf(cardData[4])}, GemColor.valueOf(cardData[5]),
+            Integer.valueOf(cardData[6]), Expansion.valueOf(cardData[7]),
             Integer.valueOf(cardData[8]), Integer.valueOf(cardData[9]),
             Card.class.getResource("images/tempcards/" + cardData[10]).toString());
 
@@ -101,7 +101,7 @@ public class Card extends Image {
     return level;
   }
 
-  public Expansions getExpansions() {
+  public Expansion getExpansions() {
     return expansions;
   }
 
@@ -109,7 +109,7 @@ public class Card extends Image {
     return cost;
   }
 
-  public GemColors getDiscountColor() {
+  public GemColor getDiscountColor() {
     return discountColor;
   }
 
