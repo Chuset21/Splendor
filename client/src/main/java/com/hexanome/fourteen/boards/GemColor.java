@@ -3,7 +3,7 @@ package com.hexanome.fourteen.boards;
 /**
  * An Enumerator that holds all our Gem Colors.
  */
-public enum GemColors {
+public enum GemColor {
   GREEN,
   WHITE,
   BLUE,
