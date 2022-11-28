@@ -5,9 +5,12 @@ import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
+@TestInstance(PER_CLASS)
 public class StandardCardTest {
 
   // Testing Object
@@ -55,24 +58,44 @@ public class StandardCardTest {
   }
 
   @Test
-  public void level() {
+  public void testLevel() {
     assertEquals(cardLevel, standardCard.level());
   }
 
   @Test
-  public void expansion() {
+  public void testExpansion() {
     assertEquals(expansion, standardCard.expansion());
   }
 
   @Test
-  public void gemDiscount() {
+  public void testGemDiscount() {
     assertEquals(gemDiscount, standardCard.gemDiscount());
   }
 
   @Test
-  public void discountColor() {
+  public void testDiscountColor() {
     assertEquals(discountColor, standardCard.discountColor());
   }
 
+  @Test
+  public void testEqualsByReference() {
+    StandardCard duplicate = standardCard;
+    boolean equals = standardCard.equals(duplicate);
+    assertEquals(true, equals);
+  }
 
+  @Test
+  public void testEqualsNullCard() {
+    StandardCard nullCard = new StandardCard();
+    nullCard = null;
+    boolean equals = standardCard.equals(nullCard);
+    assertEquals(false, equals);
+  }
+
+  @Test
+  public void testEqualsDifferentClass() {
+    Object o = new Object();
+    boolean equals = standardCard.equals(o);
+    assertEquals(false, equals);
+  }
 }
