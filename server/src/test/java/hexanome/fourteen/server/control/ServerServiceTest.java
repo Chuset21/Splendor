@@ -93,4 +93,16 @@ public class ServerServiceTest {
 
     assertFalse((Boolean) ReflectionTestUtils.invokeMethod(serverService, "registerGameServices"));
   }
+
+  @Test
+  public void testCreateUser() {
+    HttpResponse response = mock(HttpResponse.class);
+    Mockito.when(lobbyService.login("maex", password)).thenReturn(response);
+    final LoginForm x = new LoginForm();
+    ReflectionTestUtils.setField(x, "accessToken", "test");
+    ReflectionTestUtils.setField(x, "refreshToken", "test");
+    Mockito.when(response.getBody()).thenReturn(gsonInstance.gson.toJson(x, LoginForm.class));
+    Mockito.when(response.getStatus()).thenReturn(200);
+    ReflectionTestUtils.invokeMethod(serverService, "createUser");
+  }
 }
