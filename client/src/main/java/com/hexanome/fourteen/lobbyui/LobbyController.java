@@ -5,16 +5,20 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.io.IOException;
@@ -110,6 +114,10 @@ public class LobbyController implements Initializable {
   private final GridPane playerGrid = new GridPane();
   private final Button readyButton = new Button("Ready");
   private ArrayList<String> users = new ArrayList<>();
+  private Text playerOne = new Text();
+  private Text playerTwo = new Text();
+  private Text playerThree = new Text();
+  private Text playerFour = new Text();
 
 
   public void goToChoiceSelect(Stage pStage, String username) throws IOException {
@@ -229,6 +237,8 @@ public class LobbyController implements Initializable {
       //Initialize the lobby selector and it's grid
       initInnerLobby();
 
+      BorderPane container = new BorderPane();
+
       //Create, style, and display scene
       Scene scene = new Scene(innerLobby);
       aPrimaryStage.setScene(scene);
@@ -240,12 +250,21 @@ public class LobbyController implements Initializable {
   }
   private void initInnerLobby() {
 
-    playerGrid.add(new Text("0, 0"), 0, 0);
-    playerGrid.add(new Text("0, 1"), 0, 1);
-    playerGrid.add(new Text("1, 0"), 1, 0);
-    playerGrid.add(new Text("1, 1"), 1, 1);
+    playerOne = new Text("Waiting for player...");
+    playerOne.setFont(Font.font ("Satoshi", 20));
+
+    playerTwo = new Text("Waiting for player...");
+    playerTwo.setFont(Font.font ("Satoshi", 20));
+
+    playerGrid.add(playerOne, 0, 0);
+    playerGrid.add(playerTwo, 1, 0);
+
     innerLobby.getChildren().add(playerGrid);
-    innerLobby.setPrefSize(1200, 700);
+    playerGrid.setPrefSize(1200, 700);
+    playerGrid.setPadding(new Insets(80, 20, 20, 20));
+    playerGrid.setHgap(20);
+    playerGrid.setVgap(20);
+
   }
 
   public String getJavaFXControlName(String toStringResult) {
