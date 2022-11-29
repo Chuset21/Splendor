@@ -106,12 +106,19 @@ public class LobbyController implements Initializable {
   private HBox defaultPlayer;
 
 
+  private final AnchorPane innerLobby = new AnchorPane();
+  private final GridPane playerGrid = new GridPane();
+  private final Button readyButton = new Button("Ready");
+  private ArrayList<String> users = new ArrayList<>();
+
+
   public void goToChoiceSelect(Stage pStage, String username) throws IOException {
     aPrimaryStage = pStage;
     LobbyController.username = username;
 
     // Create loader class
-    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(LobbyController.class.getResource("choiceSelect.fxml")));
+    FXMLLoader loader = new FXMLLoader(
+        Objects.requireNonNull(LobbyController.class.getResource("choiceSelect.fxml")));
     // Import root from fxml file
     Parent root = loader.load();
     // Set up root on stage (window)
@@ -129,7 +136,7 @@ public class LobbyController implements Initializable {
   }
 
   private void init() {
-    if(welcomeText != null){
+    if (welcomeText != null) {
       // Initialize welcome message with username
       welcomeText.setText(welcomeTextTemplate.replaceAll("<username>", username));
     }
@@ -141,8 +148,7 @@ public class LobbyController implements Initializable {
 
     //Initialize ToggleGroup and Toggles for selecting max players in the create game menu
     ArrayList<ToggleButton> maxPlayersToggles = new ArrayList<ToggleButton>(
-        Arrays.asList(maxPlayerToggleTwo, maxPlayerToggleThree,
-            maxPlayerToggleFour));
+        Arrays.asList(maxPlayerToggleTwo, maxPlayerToggleThree, maxPlayerToggleFour));
     for (Toggle toggle : maxPlayersToggles) {
       toggle.setToggleGroup(maxPlayersSetting);
     }
@@ -208,14 +214,38 @@ public class LobbyController implements Initializable {
     System.exit(0);
   }
 
-  @FXML
   public void handleJoinLobbyButton() {
+//    try {
+//      Parent root = FXMLLoader.load(getClass().getResource("lobby.fxml"));
+//      loadScene(root);
+//    } catch (Exception e) {
+//      e.printStackTrace();
+//    }
+
     try {
-      Parent root = FXMLLoader.load(getClass().getResource("lobby.fxml"));
-      loadScene(root);
+      //Push the current scene to the scene stack
+      scenePath.push(aPrimaryStage.getScene());
+
+      //Initialize the lobby selector and it's grid
+      initInnerLobby();
+
+      //Create, style, and display scene
+      Scene scene = new Scene(innerLobby);
+      aPrimaryStage.setScene(scene);
+      aPrimaryStage.show();
+
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+  private void initInnerLobby() {
+
+    playerGrid.add(new Text("0, 0"), 0, 0);
+    playerGrid.add(new Text("0, 1"), 0, 1);
+    playerGrid.add(new Text("1, 0"), 1, 0);
+    playerGrid.add(new Text("1, 1"), 1, 1);
+    innerLobby.getChildren().add(playerGrid);
+    innerLobby.setPrefSize(1200, 700);
   }
 
   public String getJavaFXControlName(String toStringResult) {
@@ -246,12 +276,12 @@ public class LobbyController implements Initializable {
   }
 
   @FXML
-  private void handleAddLobby(){
+  private void handleAddLobby() {
     Lobby lobby = null;
 
-    try{
+    try {
       lobby = new Lobby("cat.jpg", 3, Expansions.ORIENT, username);
-    } catch(IOException ioe){
+    } catch (IOException ioe) {
       ioe.printStackTrace();
     }
 
