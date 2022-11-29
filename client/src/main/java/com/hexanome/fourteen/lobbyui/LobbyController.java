@@ -285,6 +285,8 @@ public class LobbyController implements Initializable {
       ioe.printStackTrace();
     }
 
-    lobbyVBox.getChildren().add(lobby);
+    if(lobby != null){
+      lobbyVBox.getChildren().add(lobby);
+    }
   }
 }

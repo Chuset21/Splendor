@@ -23,7 +23,6 @@ public class Lobby extends Pane implements Initializable {
 
   private int numPlayers;
   private String[] players;
-  private String fileString;
   private com.hexanome.fourteen.boards.Expansions expansion;
 
 
@@ -41,7 +40,7 @@ public class Lobby extends Pane implements Initializable {
     loader.load();
 
     // Initialize object vars
-    this.fileString = fileString;
+    image.setImage(new Image(Lobby.class.getResource("images/"+fileString).toString()));
 
     // Set player list
     this.numPlayers = 1;
@@ -49,15 +48,15 @@ public class Lobby extends Pane implements Initializable {
     players[0] = host;
 
     this.expansion = expansion;
-  }
-
-  @Override
-  public void initialize(URL url, ResourceBundle resourceBundle) {
-    image = new ImageView(new Image(this.getClass().getResource("images/"+fileString).toString()));
 
     name.setText(players[0] + "'s Lobby");
 
     capacityText.setText(numPlayers +"/"+ players.length);
     expansionText.setText(expansion.toString());
+  }
+
+  @Override
+  public void initialize(URL url, ResourceBundle resourceBundle) {
+
   }
 }
