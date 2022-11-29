@@ -116,13 +116,13 @@ class GameBoardTest {
 
     player2.hand().setPrestigePoints(2);
     gameBoard.computeLeadingPlayer();
-    assertEquals(player2, gameBoard.leadingPlayer());
+    assertEquals(player2.uid(), gameBoard.leadingPlayer().uid());
 
     for (Player player :gameBoard.players()) {
       player.hand().setPrestigePoints(0);
     }
     gameBoard.computeLeadingPlayer();
-    assertEquals(player1, gameBoard.leadingPlayer());
+    assertEquals(player1.uid(), gameBoard.leadingPlayer().uid());
 
 
   }
