@@ -241,6 +241,16 @@ public class LobbyController implements Initializable {
       //Initialize the lobby selector and it's grid
       initInnerLobby();
 
+      for (int i = 0; i < 4; i++) {
+        Text curr = (Text) playerGrid.getChildren().get(i);
+        Text currUser = new Text(username);
+        currUser.setFont(Font.font ("Satoshi", 25));
+
+        if (curr.getText() == "Waiting for player...") {
+          playerGrid.getChildren().set(i, currUser);
+          break;
+        }
+      }
 
       //Create, style, and display scene
       Scene scene = new Scene(container);
@@ -265,7 +275,7 @@ public class LobbyController implements Initializable {
     innerLobby.getChildren().add(playerGrid);
     playerGrid.setPrefSize(1100, 600);
     playerGrid.setPadding(new Insets(80, 20, 20, 20));
-    playerGrid.setHgap(20);
+    playerGrid.setHgap(50);
     playerGrid.setVgap(20);
 
     readyButton.setFont(Font.font ("Satoshi", 20));
@@ -276,6 +286,13 @@ public class LobbyController implements Initializable {
     container.setBottom(new HBox(30, readyButton, launchButton));
     container.setPadding(new Insets(30, 30, 30, 30));
 
+    readyButton.setOnAction(evt -> {
+
+    });
+
+    launchButton.setOnAction(evt -> {
+
+    });
   }
 
   public String getJavaFXControlName(String toStringResult) {
