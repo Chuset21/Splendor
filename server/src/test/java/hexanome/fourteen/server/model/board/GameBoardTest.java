@@ -110,13 +110,16 @@ class GameBoardTest {
 
   @Test
   public void testCreator() { assertEquals(creator, gameBoard.creator());}
-
   @Test
   public void testComputeLeadingPlayer() {
 
-    player2.hand().setPrestigePoints(2);
+    player1.hand().setPrestigePoints(10);
     gameBoard.computeLeadingPlayer();
-    assertEquals(player2.uid(), gameBoard.leadingPlayer().uid());
+    assertEquals(player1.uid(), gameBoard.leadingPlayer().uid());
+  }
+
+  @Test
+  public void testComputeLeadingPlayerOnEqual() {
 
     for (Player player :gameBoard.players()) {
       player.hand().setPrestigePoints(0);
@@ -127,6 +130,8 @@ class GameBoardTest {
     } else {
       assertEquals(player2.uid(), gameBoard.leadingPlayer().uid());
     }
+
+
 
 
 
