@@ -136,6 +136,9 @@ public final class LoginScreen implements Initializable {
     System.exit(0);
   }
 
+  /**
+   * Creates new lobby instance and routes the player through it
+   */
   private void launchGame() {
     // Create new instance of a Splendor game
     //OrientExpansion game = new OrientExpansion();
@@ -143,11 +146,10 @@ public final class LoginScreen implements Initializable {
 
     // Try launching the game
     try {
-      game.goToChoiceSelect(aPrimaryStage);
+      game.goToChoiceSelect(aPrimaryStage,userid);
       //game.goToGame(aPrimaryStage);
     } catch (Exception ex) {
       ex.printStackTrace();
     }
   }
-
 }

@@ -1,13 +1,17 @@
 package hexanome.fourteen.server.control;
 
+import kong.unirest.HttpResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.api.TestInstance;
 
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
+import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.mockito.Mockito;
+import org.springframework.test.util.ReflectionTestUtils;
 
 @TestInstance(PER_CLASS)
 public class LobbyServiceTest {
@@ -18,6 +22,7 @@ public class LobbyServiceTest {
   @BeforeAll
   public static void setUp() {
     gsonInstance = new GsonInstance();
+    ReflectionTestUtils.invokeMethod(gsonInstance, "initGson");
     lobbyService = new LobbyService(gsonInstance, "dummy location", "4243",
         "dummy address");
   }
@@ -28,6 +33,8 @@ public class LobbyServiceTest {
 
   @Test
   public void createUser() {
+    HttpResponse response = mock(HttpResponse.class);
+    //lobbyService.createUser("user", "password", "token");
   }
 
   @Test

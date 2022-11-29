@@ -15,9 +15,9 @@ public class Card extends Image {
 
   // Cost = { CostGreen, CostWhite, CostBlue, CostBlack, CostRed }
   private final int[] aCost;
-  private final GemColors aDiscountColor;
+  private final GemColor aDiscountColor;
   private final int aDiscountAmt;
-  private final Expansions aExpansion;
+  private final Expansion aExpansion;
   private final int aLevel;
   private final int aVictoryPoints;
 
@@ -33,8 +33,8 @@ public class Card extends Image {
    * @param pVictoryPoints = number of victory points card has
    * @param pFileString = full path of the image file
    */
-  public Card(int[] pCost, GemColors pDiscountColor, int pDiscountAmt,
-              Expansions pExpansion, int pLevel, int pVictoryPoints, String pFileString) {
+  public Card(int[] pCost, GemColor pDiscountColor, int pDiscountAmt,
+              Expansion pExpansion, int pLevel, int pVictoryPoints, String pFileString) {
     super(pFileString);
 
     aCost = pCost;
@@ -79,8 +79,8 @@ public class Card extends Image {
       // Create card
       Card c = new Card(new int[]{Integer.valueOf(cardData[0]), Integer.valueOf(cardData[1]),
               Integer.valueOf(cardData[2]), Integer.valueOf(cardData[3]),
-              Integer.valueOf(cardData[4])}, GemColors.valueOf(cardData[5]),
-              Integer.valueOf(cardData[6]), Expansions.valueOf(cardData[7]),
+              Integer.valueOf(cardData[4])}, GemColor.valueOf(cardData[5]),
+              Integer.valueOf(cardData[6]), Expansion.valueOf(cardData[7]),
               Integer.valueOf(cardData[8]), Integer.valueOf(cardData[9]),
               Card.class.getResource("images/tempcards/" + cardData[10]).toString());
 
@@ -96,14 +96,14 @@ public class Card extends Image {
     return aLevel;
   }
 
-  public Expansions getExpansion() {
+  public Expansion getExpansion() {
     return aExpansion;
   }
 
   public int[] getCost() {
     return aCost;
   }
-  public GemColors getDiscountColor() {
+  public GemColor getDiscountColor() {
     return aDiscountColor;
   }
   public int getDiscountAmount() {
