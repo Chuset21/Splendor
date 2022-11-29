@@ -179,7 +179,7 @@ public class OrientExpansion implements Initializable {
 
     for (Card c : gameCards) {
       for (Deck d : gameDecks) {
-        if (d.getLevel() == c.getLevel() && d.getExpansions() == c.getExpansions()) {
+        if (d.getLevel() == c.getLevel() && d.getExpansions() == c.getExpansion()) {
           d.push(c);
         }
       }
