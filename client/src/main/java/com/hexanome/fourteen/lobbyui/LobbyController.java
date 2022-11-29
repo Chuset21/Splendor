@@ -26,8 +26,7 @@ public class LobbyController implements Initializable {
   private static String username;
 
   // To replace <username> with username, use .replaceAll()
-  private static final String welcomeTextTemplate = "Welcome back <username>!";
-
+  private static final String[] lobbyImgs = {"cat.jpg","dog.jpg","squirrel.jpg","chameleon.jpg"};
 
   @FXML
   private AnchorPane anchorPane;
@@ -281,7 +280,7 @@ public class LobbyController implements Initializable {
     Lobby lobby = null;
 
     try {
-      lobby = new Lobby("cat.jpg", 3, com.hexanome.fourteen.boards.Expansion.ORIENT, username);
+      lobby = new Lobby("cat.jpg", 3, com.hexanome.fourteen.boards.Expansion.ORIENT, username, this);
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
