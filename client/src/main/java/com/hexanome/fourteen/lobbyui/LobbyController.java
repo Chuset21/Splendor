@@ -1,39 +1,39 @@
 package com.hexanome.fourteen.lobbyui;
 
-import com.hexanome.fourteen.login.LoginScreen;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.ResourceBundle;
-import java.util.Stack;
+import com.hexanome.fourteen.boards.Expansions;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import java.io.IOException;
+import java.net.URL;
+import java.util.*;
 
 public class LobbyController implements Initializable {
   private static Stage aPrimaryStage;
   private static Stack<Scene> scenePath = new Stack<>();
+  private static String username;
+
+  // To replace <username> with username, use .replaceAll()
+  private static final String welcomeTextTemplate = "Welcome back <username>!";
+
 
   @FXML
-  private Text displayUsername;
-  @FXML
   private AnchorPane anchorPane;
+  @FXML
+  private Text welcomeText;
   @FXML
   private Button newGameButton;
   @FXML
@@ -52,8 +52,6 @@ public class LobbyController implements Initializable {
   private ToggleButton selectOrientToggle = new ToggleButton();
   @FXML
   private ToggleButton selectExtraToggle = new ToggleButton();
-  @FXML
-  private ToggleButton maxPlayerToggleOne = new ToggleButton();
   @FXML
   private ToggleButton maxPlayerToggleTwo = new ToggleButton();
   @FXML
@@ -94,17 +92,38 @@ public class LobbyController implements Initializable {
   private final ToggleGroup maxPlayersSetting = new ToggleGroup();
   @FXML
   private final ToggleGroup expansionSetting = new ToggleGroup();
+  @FXML
+  private ScrollPane lobbyScrollView;
+  @FXML
+  private VBox lobbyVBox;
+  @FXML
+  private Pane defaultLobby;
+  @FXML
+  private Button addLobby;
+  @FXML
+  private GridPane lobbyGrid;
+  @FXML
+  private HBox defaultPlayer;
 
 
-  public void goToChoiceSelect(Stage pStage) throws IOException {
+  private final AnchorPane innerLobby = new AnchorPane();
+  private final GridPane playerGrid = new GridPane();
+  private final Button readyButton = new Button("Ready");
+  private ArrayList<String> users = new ArrayList<>();
+
+
+  public void goToChoiceSelect(Stage pStage, String username) throws IOException {
     aPrimaryStage = pStage;
+    LobbyController.username = username;
 
-    // Import root from fxml file
-    Parent root = FXMLLoader.load(
+    // Create loader class
+    FXMLLoader loader = new FXMLLoader(
         Objects.requireNonNull(LobbyController.class.getResource("choiceSelect.fxml")));
+    // Import root from fxml file
+    Parent root = loader.load();
     // Set up root on stage (window)
     Scene aScene = new Scene(root);
-    aScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("lobbyStyling.css")).toExternalForm());
+    aScene.getStylesheets().add(getClass().getResource("lobbyStyling.css").toExternalForm());
 
 
     // Initialize stage settings
@@ -117,7 +136,10 @@ public class LobbyController implements Initializable {
   }
 
   private void init() {
-    displayUsername.setText(LoginScreen.userid);
+    if (welcomeText != null) {
+      // Initialize welcome message with username
+      welcomeText.setText(welcomeTextTemplate.replaceAll("<username>", username));
+    }
   }
 
   @Override
@@ -126,8 +148,7 @@ public class LobbyController implements Initializable {
 
     //Initialize ToggleGroup and Toggles for selecting max players in the create game menu
     ArrayList<ToggleButton> maxPlayersToggles = new ArrayList<ToggleButton>(
-        Arrays.asList(maxPlayerToggleOne, maxPlayerToggleTwo, maxPlayerToggleThree,
-            maxPlayerToggleFour));
+        Arrays.asList(maxPlayerToggleTwo, maxPlayerToggleThree, maxPlayerToggleFour));
     for (Toggle toggle : maxPlayersToggles) {
       toggle.setToggleGroup(maxPlayersSetting);
     }
@@ -194,12 +215,37 @@ public class LobbyController implements Initializable {
   }
 
   public void handleJoinLobbyButton() {
+//    try {
+//      Parent root = FXMLLoader.load(getClass().getResource("lobby.fxml"));
+//      loadScene(root);
+//    } catch (Exception e) {
+//      e.printStackTrace();
+//    }
+
     try {
-      Parent root = FXMLLoader.load(getClass().getResource("lobby.fxml"));
-      loadScene(root);
+      //Push the current scene to the scene stack
+      scenePath.push(aPrimaryStage.getScene());
+
+      //Initialize the lobby selector and it's grid
+      initInnerLobby();
+
+      //Create, style, and display scene
+      Scene scene = new Scene(innerLobby);
+      aPrimaryStage.setScene(scene);
+      aPrimaryStage.show();
+
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+  private void initInnerLobby() {
+
+    playerGrid.add(new Text("0, 0"), 0, 0);
+    playerGrid.add(new Text("0, 1"), 0, 1);
+    playerGrid.add(new Text("1, 0"), 1, 0);
+    playerGrid.add(new Text("1, 1"), 1, 1);
+    innerLobby.getChildren().add(playerGrid);
+    innerLobby.setPrefSize(1200, 700);
   }
 
   public String getJavaFXControlName(String toStringResult) {
@@ -227,5 +273,20 @@ public class LobbyController implements Initializable {
   public void handleGameSaveToggle(MouseEvent event) {
     SavedGame selectedSave = new SavedGame(event.getSource());
     System.out.println(selectedSave.getGameName());
+  }
+
+  @FXML
+  private void handleAddLobby() {
+    Lobby lobby = null;
+
+    try {
+      lobby = new Lobby("cat.jpg", 3, Expansions.ORIENT, username);
+    } catch (IOException ioe) {
+      ioe.printStackTrace();
+    }
+
+    if(lobby != null){
+      lobbyVBox.getChildren().add(lobby);
+    }
   }
 }
