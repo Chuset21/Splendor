@@ -13,7 +13,10 @@ import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.mock;
@@ -51,7 +54,8 @@ public class ServerServiceTest {
     assertFalse((Boolean) ReflectionTestUtils.invokeMethod(serverService, "login"));
 
     Mockito.when(lobbyService.login(username, password)).thenReturn(response);
-    Mockito.when(response.getBody()).thenReturn(gsonInstance.gson.toJson(new AccountCreationForm(username, password)));
+    Mockito.when(response.getBody())
+        .thenReturn(gsonInstance.gson.toJson(new AccountCreationForm(username, password)));
     Mockito.when(response.getStatus()).thenReturn(200);
 
     assertTrue((Boolean) ReflectionTestUtils.invokeMethod(serverService, "login"));
@@ -82,12 +86,12 @@ public class ServerServiceTest {
 
     assertFalse((Boolean) ReflectionTestUtils.invokeMethod(serverService, "registerGameServices"));
 
-    ReflectionTestUtils.setField(serverService, "gameServiceNames", new String[]{});
+    ReflectionTestUtils.setField(serverService, "gameServiceNames", new String[] {});
     Mockito.when(lobbyService.getGameServices()).thenReturn("xyz");
 
     assertTrue((Boolean) ReflectionTestUtils.invokeMethod(serverService, "registerGameServices"));
 
-    ReflectionTestUtils.setField(serverService, "gameServiceNames", new String[]{"x", "t"});
+    ReflectionTestUtils.setField(serverService, "gameServiceNames", new String[] {"x", "t"});
     Mockito.when(lobbyService.registerGameService("x", null)).thenReturn(true);
     Mockito.when(lobbyService.registerGameService("t", null)).thenReturn(false);
 
@@ -104,5 +108,39 @@ public class ServerServiceTest {
     Mockito.when(response.getBody()).thenReturn(gsonInstance.gson.toJson(x, LoginForm.class));
     Mockito.when(response.getStatus()).thenReturn(200);
     ReflectionTestUtils.invokeMethod(serverService, "createUser");
+  }
+
+  @Test
+  public void testLoginAndRegister() {
+    HttpResponse response = mock(HttpResponse.class);
+    Mockito.when(response.getBody()).thenReturn(null);
+    Mockito.when(response.getStatus()).thenReturn(401);
+    Mockito.when(lobbyService.login(username, password)).thenReturn(response);
+
+    HttpResponse response2 = mock(HttpResponse.class);
+    Mockito.when(lobbyService.login("maex", password)).thenReturn(response2);
+    final LoginForm x = new LoginForm();
+    ReflectionTestUtils.setField(x, "accessToken", "test");
+    ReflectionTestUtils.setField(x, "refreshToken", "test");
+    Mockito.when(response2.getBody()).thenReturn(gsonInstance.gson.toJson(x, LoginForm.class));
+    Mockito.when(response2.getStatus()).thenReturn(200);
+
+    try {
+      ReflectionTestUtils.invokeMethod(serverService, "loginAndRegister");
+    } catch (Exception e) {
+      assertInstanceOf(RuntimeException.class, e);
+      assertEquals("Was not able to login", e.getMessage());
+    }
+
+    Mockito.when(response.getBody()).thenReturn(gsonInstance.gson.toJson(x, LoginForm.class));
+    Mockito.when(response.getStatus()).thenReturn(200);
+    Mockito.when(lobbyService.getGameServices()).thenReturn(null);
+
+    try {
+      ReflectionTestUtils.invokeMethod(serverService, "loginAndRegister");
+    } catch (Exception e) {
+      assertInstanceOf(RuntimeException.class, e);
+      assertEquals("Was not able to register the game services", e.getMessage());
+    }
   }
 }
