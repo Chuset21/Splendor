@@ -45,8 +45,8 @@ class GameBoardTest {
   String gameid;
   String creator;
 
-  @BeforeAll
-  void setup() {
+  @BeforeEach
+  public void setup() {
     //gameBoard = new GameBoard();
     Gems nobleCost = new Gems();
     nobleCost.put(GemColor.GREEN, 1);
@@ -113,18 +113,17 @@ class GameBoardTest {
 
   @Test
   public void testComputeLeadingPlayer() {
-    Hand hand = new Hand();
-    hand.setPrestigePoints(2);
+
+    player2.hand().setPrestigePoints(2);
     gameBoard.computeLeadingPlayer();
-    assertEquals(player2, gameBoard.leadingPlayer());
+    assertEquals(player2.uid(), gameBoard.leadingPlayer().uid());
 
     for (Player player :gameBoard.players()) {
       player.hand().setPrestigePoints(0);
     }
     gameBoard.computeLeadingPlayer();
+    assertEquals(player1.uid(), gameBoard.leadingPlayer().uid());
 
-    Player leadingPlayerWithCards = (player1.hand().purchasedCards().size() >= player2.hand().purchasedCards().size()) ? player1 : player2;
-    assertEquals(leadingPlayerWithCards, gameBoard.leadingPlayer());
 
   }
 }
