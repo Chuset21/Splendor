@@ -201,7 +201,7 @@ public class GameHandlerController {
     }
 
     final Gems gemsToPayWith = purchaseCardForm.gemsToPayWith();
-    if (countGemAmount(substitutedGems) != gemsToPayWith.get(GemColor.GOLD)) {
+    if (countGemAmount(substitutedGems) != gemsToPayWith.getOrDefault(GemColor.GOLD, 0)) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body("substituting amount not equal to gold gems");
     }

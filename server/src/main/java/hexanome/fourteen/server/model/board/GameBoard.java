@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
-import java.util.stream.Stream;
 
 /**
  * Game Board.
@@ -125,11 +124,26 @@ public final class GameBoard {
 
         // Get the Cost
         Gems cost = new Gems();
-        cost.put(GemColor.GREEN, Integer.valueOf(cardData[0]));
-        cost.put(GemColor.WHITE, Integer.valueOf(cardData[1]));
-        cost.put(GemColor.BLUE, Integer.valueOf(cardData[2]));
-        cost.put(GemColor.BLACK, Integer.valueOf(cardData[3]));
-        cost.put(GemColor.RED, Integer.valueOf(cardData[4]));
+        final int greenCost = Integer.parseInt(cardData[0]);
+        if (greenCost > 0) {
+          cost.put(GemColor.GREEN, greenCost);
+        }
+        final int whiteCost = Integer.parseInt(cardData[1]);
+        if (whiteCost > 0) {
+          cost.put(GemColor.WHITE, whiteCost);
+        }
+        final int blueCost = Integer.parseInt(cardData[2]);
+        if (blueCost > 0) {
+          cost.put(GemColor.BLUE, blueCost);
+        }
+        final int blackCost = Integer.parseInt(cardData[3]);
+        if (blackCost > 0) {
+          cost.put(GemColor.BLACK, blackCost);
+        }
+        final int redCost = Integer.parseInt(cardData[4]);
+        if (redCost > 0) {
+          cost.put(GemColor.RED, redCost);
+        }
 
         // Get the level and expansion
         CardLevel level = CardLevel.valueOf(cardData[8]);
