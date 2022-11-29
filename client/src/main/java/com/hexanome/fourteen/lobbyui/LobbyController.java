@@ -31,8 +31,9 @@ public class LobbyController implements Initializable {
   private static Stack<Scene> scenePath = new Stack<>();
   private static String username;
 
-  // To replace <username> with username, use .replaceAll()
+  // Temp items to use for making lobbies
   private static final String[] lobbyImgs = {"cat.jpg","dog.jpg","squirrel.jpg","chameleon.jpg"};
+  private static final String[] lobbyHosts = {"Billy Bob", "John Smith", "Gerald", "Betsy", "Brenda"};
 
   @FXML
   private AnchorPane anchorPane;
@@ -336,7 +337,7 @@ public class LobbyController implements Initializable {
     Lobby lobby = null;
 
     try {
-      lobby = new Lobby("cat.jpg", 3, com.hexanome.fourteen.boards.Expansion.ORIENT, username, this);
+      lobby = new Lobby(lobbyImgs[new Random().nextInt(4)], 3, com.hexanome.fourteen.boards.Expansion.ORIENT, lobbyHosts[new Random().nextInt(5)], this);
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
