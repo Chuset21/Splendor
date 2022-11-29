@@ -18,6 +18,4 @@ module com.hexanome.fourteen {
   exports com.hexanome.fourteen.login;
   exports com.hexanome.fourteen.lobbyui;
   exports com.hexanome.fourteen.form.lobbyservice;
-  exports com.hexanome.fourteen.form.server;
-  exports com.hexanome.fourteen.form.server.cardform;
 }
