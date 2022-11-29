@@ -4,16 +4,22 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.io.IOException;
@@ -109,7 +115,15 @@ public class LobbyController implements Initializable {
   private final AnchorPane innerLobby = new AnchorPane();
   private final GridPane playerGrid = new GridPane();
   private final Button readyButton = new Button("Ready");
+  private final Button launchButton = new Button("Launch");
+
   private ArrayList<String> users = new ArrayList<>();
+  private Text playerOne = new Text();
+  private Text playerTwo = new Text();
+  private boolean isPlayerOneReady = false;
+  private boolean isPlayerTwoReady = false;
+  private BorderPane container = new BorderPane();
+  private boolean dupliCheck = false;
 
 
   public void goToChoiceSelect(Stage pStage, String username) throws IOException {
@@ -229,8 +243,19 @@ public class LobbyController implements Initializable {
       //Initialize the lobby selector and it's grid
       initInnerLobby();
 
+      for (int i = 0; i < 4; i++) {
+        Text curr = (Text) playerGrid.getChildren().get(i);
+        Text name = new Text(username);
+        name.setFont(Font.font("Satoshi", 25));
+
+        if (curr.getText() == "Waiting for player...") {
+          playerGrid.getChildren().set(i, name);
+          break;
+        }
+      }
+
       //Create, style, and display scene
-      Scene scene = new Scene(innerLobby);
+      Scene scene = new Scene(container);
       aPrimaryStage.setScene(scene);
       aPrimaryStage.show();
 
@@ -238,14 +263,45 @@ public class LobbyController implements Initializable {
       e.printStackTrace();
     }
   }
+
   private void initInnerLobby() {
 
-    playerGrid.add(new Text("0, 0"), 0, 0);
-    playerGrid.add(new Text("0, 1"), 0, 1);
-    playerGrid.add(new Text("1, 0"), 1, 0);
-    playerGrid.add(new Text("1, 1"), 1, 1);
+    playerOne = new Text("Waiting for player...");
+    playerOne.setFont(Font.font("Satoshi", 20));
+
+
+    playerTwo = new Text("Waiting for player...");
+    playerTwo.setFont(Font.font("Satoshi", 20));
+
+//    Text notReadyText = new Text("NOT Ready");
+//    notReadyText.setFont(Font.font ("Satoshi", 20));
+//    notReadyText.setFill(Color.RED);
+
+
+    playerGrid.add(playerOne, 0, 0);
+    playerGrid.add(playerTwo, 1, 0);
+
     innerLobby.getChildren().add(playerGrid);
-    innerLobby.setPrefSize(1200, 700);
+    playerGrid.setPrefSize(1100, 600);
+    playerGrid.setPadding(new Insets(80, 20, 20, 20));
+    playerGrid.setHgap(50);
+    playerGrid.setVgap(20);
+
+    readyButton.setFont(Font.font("Satoshi", 20));
+    launchButton.setFont(Font.font("Satoshi", 20));
+
+    container.setCenter(innerLobby);
+    container.setTop(backButton);
+    container.setBottom(new HBox(30, readyButton, launchButton));
+    container.setPadding(new Insets(30, 30, 30, 30));
+
+    readyButton.setOnAction(evt -> {
+
+    });
+
+    launchButton.setOnAction(evt -> {
+
+    });
   }
 
   public String getJavaFXControlName(String toStringResult) {
@@ -285,7 +341,7 @@ public class LobbyController implements Initializable {
       ioe.printStackTrace();
     }
 
-    if(lobby != null){
+    if (lobby != null) {
       lobbyVBox.getChildren().add(lobby);
     }
   }
