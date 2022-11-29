@@ -113,11 +113,15 @@ public class LobbyController implements Initializable {
   private final AnchorPane innerLobby = new AnchorPane();
   private final GridPane playerGrid = new GridPane();
   private final Button readyButton = new Button("Ready");
+  private final Button launchButton = new Button("Launch");
+
   private ArrayList<String> users = new ArrayList<>();
   private Text playerOne = new Text();
   private Text playerTwo = new Text();
   private Text playerThree = new Text();
   private Text playerFour = new Text();
+  private BorderPane container = new BorderPane();
+  private boolean dupliCheck = false;
 
 
   public void goToChoiceSelect(Stage pStage, String username) throws IOException {
@@ -237,10 +241,9 @@ public class LobbyController implements Initializable {
       //Initialize the lobby selector and it's grid
       initInnerLobby();
 
-      BorderPane container = new BorderPane();
 
       //Create, style, and display scene
-      Scene scene = new Scene(innerLobby);
+      Scene scene = new Scene(container);
       aPrimaryStage.setScene(scene);
       aPrimaryStage.show();
 
@@ -260,10 +263,18 @@ public class LobbyController implements Initializable {
     playerGrid.add(playerTwo, 1, 0);
 
     innerLobby.getChildren().add(playerGrid);
-    playerGrid.setPrefSize(1200, 700);
+    playerGrid.setPrefSize(1100, 600);
     playerGrid.setPadding(new Insets(80, 20, 20, 20));
     playerGrid.setHgap(20);
     playerGrid.setVgap(20);
+
+    readyButton.setFont(Font.font ("Satoshi", 20));
+    launchButton.setFont(Font.font ("Satoshi", 20));
+
+    container.setCenter(innerLobby);
+    container.setTop(backButton);
+    container.setBottom(new HBox(30, readyButton, launchButton));
+    container.setPadding(new Insets(30, 30, 30, 30));
 
   }
 
