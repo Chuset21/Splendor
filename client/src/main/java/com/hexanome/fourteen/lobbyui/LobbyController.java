@@ -1,5 +1,9 @@
 package com.hexanome.fourteen.lobbyui;
 
+import com.hexanome.fourteen.LobbyServiceCaller;
+import com.hexanome.fourteen.form.lobbyservice.GameParametersForm;
+import com.hexanome.fourteen.form.lobbyservice.SessionForm;
+import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -97,6 +101,8 @@ public class LobbyController implements Initializable {
   private final ToggleGroup maxPlayersSetting = new ToggleGroup();
   @FXML
   private final ToggleGroup expansionSetting = new ToggleGroup();
+  @FXML
+  private final ToggleGroup loadSetting = new ToggleGroup();
   @FXML
   private ScrollPane lobbyScrollView;
   @FXML
@@ -199,11 +205,15 @@ public class LobbyController implements Initializable {
     try {
       Parent root = FXMLLoader.load(getClass().getResource("createGame.fxml"));
       loadScene(root);
+      aPrimaryStage.hide();
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
+  /**
+   * Goes to the lobby selection screen
+   */
   public void handleJoinGameButton() {
     //Switch scene to join game details (lobby selection)
     try {
@@ -212,6 +222,31 @@ public class LobbyController implements Initializable {
     } catch (Exception e) {
       e.printStackTrace();
     }
+
+
+    SessionsForm lobbyform = LobbyServiceCaller.getSessions();
+    Map<String, SessionForm> lobbies = lobbyform.sessions();
+
+    for(Map.Entry<String, SessionForm> entry : lobbies.entrySet()){
+      Lobby l = null;
+      SessionForm s = entry.getValue();
+      GameParametersForm g = s.gameParameters();
+
+      try{
+        // Creates new lobby with the LobbyService's passed values for the following:
+        //  - Max players
+        //  - Host
+        l = new Lobby(lobbyImgs[new Random().nextInt(4)], g.maxSessionPlayers(), com.hexanome.fourteen.boards.Expansion.ORIENT, s.creator(), this);
+      } catch(IOException ioe){
+        ioe.printStackTrace();
+      }
+
+      if (l != null) {
+        lobbyVBox.getChildren().add(l);
+      }
+    }
+
+    aPrimaryStage.show();
   }
 
   public void handleLoadGameButton() {
@@ -221,6 +256,13 @@ public class LobbyController implements Initializable {
       loadScene(root);
     } catch (Exception e) {
       e.printStackTrace();
+    }
+
+    //Initialize ToggleGroup and Toggles for selecting a save game in the load game menu
+    ArrayList<ToggleButton> loadToggles =
+        new ArrayList<>(Arrays.asList(saveGameOneToggle, saveGameTwoToggle));
+    for (Toggle toggle : loadToggles) {
+      toggle.setToggleGroup(loadSetting);
     }
   }
 
