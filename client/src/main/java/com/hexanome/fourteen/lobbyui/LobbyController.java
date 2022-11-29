@@ -163,9 +163,55 @@ public class LobbyController implements Initializable {
     }
   }
 
+  public void initLobbySelect(){
+    SessionsForm lobbyform = LobbyServiceCaller.getSessions();
+    Map<String, SessionForm> lobbies = lobbyform.sessions();
+
+    for(Map.Entry<String, SessionForm> entry : lobbies.entrySet()){
+      Lobby l = null;
+      SessionForm s = entry.getValue();
+      GameParametersForm g = s.gameParameters();
+
+      try{
+        // Creates new lobby with the LobbyService's passed values for the following:
+        //  - Max players
+        //  - Host
+        l = new Lobby(lobbyImgs[new Random().nextInt(4)], g.maxSessionPlayers(), com.hexanome.fourteen.boards.Expansion.ORIENT, s.creator(), this);
+      } catch(IOException ioe){
+        ioe.printStackTrace();
+      }
+
+      if (l != null) {
+        lobbyVBox.getChildren().add(l);
+      }
+    }
+
+    // TESTING ONLY
+    /*GameParametersForm g = new GameParametersForm("place",4,2,"bruh");
+    SessionForm s = new SessionForm(username,g,false, new ArrayList<String>(Arrays.asList(username)),"gameid");
+
+    Lobby l = null;
+    try{
+      // Creates new lobby with the LobbyService's passed values for the following:
+      //  - Max players
+      //  - Host
+      l = new Lobby(lobbyImgs[new Random().nextInt(4)], g.maxSessionPlayers(), com.hexanome.fourteen.boards.Expansion.ORIENT, s.creator(), this);
+    } catch(IOException ioe){
+      ioe.printStackTrace();
+    }
+
+    if (l != null) {
+      lobbyVBox.getChildren().add(l);
+    }*/
+  }
+
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
     init();
+
+    if(lobbyVBox != null){
+      initLobbySelect();
+    }
 
     //Initialize ToggleGroup and Toggles for selecting max players in the create game menu
     ArrayList<ToggleButton> maxPlayersToggles = new ArrayList<>(
@@ -180,6 +226,7 @@ public class LobbyController implements Initializable {
     for (Toggle toggle : expansionToggles) {
       toggle.setToggleGroup(expansionSetting);
     }
+    System.out.println("init");
   }
 
   public void loadScene(Parent root) {
@@ -222,31 +269,6 @@ public class LobbyController implements Initializable {
     } catch (Exception e) {
       e.printStackTrace();
     }
-
-
-    SessionsForm lobbyform = LobbyServiceCaller.getSessions();
-    Map<String, SessionForm> lobbies = lobbyform.sessions();
-
-    for(Map.Entry<String, SessionForm> entry : lobbies.entrySet()){
-      Lobby l = null;
-      SessionForm s = entry.getValue();
-      GameParametersForm g = s.gameParameters();
-
-      try{
-        // Creates new lobby with the LobbyService's passed values for the following:
-        //  - Max players
-        //  - Host
-        l = new Lobby(lobbyImgs[new Random().nextInt(4)], g.maxSessionPlayers(), com.hexanome.fourteen.boards.Expansion.ORIENT, s.creator(), this);
-      } catch(IOException ioe){
-        ioe.printStackTrace();
-      }
-
-      if (l != null) {
-        lobbyVBox.getChildren().add(l);
-      }
-    }
-
-    aPrimaryStage.show();
   }
 
   public void handleLoadGameButton() {
