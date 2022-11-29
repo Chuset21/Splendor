@@ -1,6 +1,5 @@
 package com.hexanome.fourteen.lobbyui;
 
-import com.hexanome.fourteen.boards.Expansions;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -147,7 +146,7 @@ public class LobbyController implements Initializable {
     init();
 
     //Initialize ToggleGroup and Toggles for selecting max players in the create game menu
-    ArrayList<ToggleButton> maxPlayersToggles = new ArrayList<ToggleButton>(
+    ArrayList<ToggleButton> maxPlayersToggles = new ArrayList<>(
         Arrays.asList(maxPlayerToggleTwo, maxPlayerToggleThree, maxPlayerToggleFour));
     for (Toggle toggle : maxPlayersToggles) {
       toggle.setToggleGroup(maxPlayersSetting);
@@ -155,7 +154,7 @@ public class LobbyController implements Initializable {
 
     //Initialize ToggleGroup and Toggles for selecting an expansion in the create game menu
     ArrayList<ToggleButton> expansionToggles =
-        new ArrayList<ToggleButton>(Arrays.asList(selectExtraToggle, selectOrientToggle));
+        new ArrayList<>(Arrays.asList(selectExtraToggle, selectOrientToggle));
     for (Toggle toggle : expansionToggles) {
       toggle.setToggleGroup(expansionSetting);
     }
@@ -280,7 +279,7 @@ public class LobbyController implements Initializable {
     Lobby lobby = null;
 
     try {
-      lobby = new Lobby("cat.jpg", 3, Expansions.ORIENT, username);
+      lobby = new Lobby("cat.jpg", 3, com.hexanome.fourteen.boards.Expansion.ORIENT, username);
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }

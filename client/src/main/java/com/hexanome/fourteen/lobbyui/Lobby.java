@@ -23,10 +23,10 @@ public class Lobby extends Pane implements Initializable {
 
   private int numPlayers;
   private String[] players;
-  private com.hexanome.fourteen.boards.Expansions expansion;
+  private com.hexanome.fourteen.boards.Expansion expansion;
 
 
-  public Lobby(String fileString, int capacity, com.hexanome.fourteen.boards.Expansions expansion, String host)
+  public Lobby(String fileString, int capacity, com.hexanome.fourteen.boards.Expansion expansion, String host)
       throws IOException {
 
     // Load basic lobby UI
@@ -40,7 +40,7 @@ public class Lobby extends Pane implements Initializable {
     loader.load();
 
     // Initialize object vars
-    image.setImage(new Image(Lobby.class.getResource("images/"+fileString).toString()));
+    image.setImage(new Image(Objects.requireNonNull(Lobby.class.getResource("images/"+fileString).toString())));
 
     // Set player list
     this.numPlayers = 1;
