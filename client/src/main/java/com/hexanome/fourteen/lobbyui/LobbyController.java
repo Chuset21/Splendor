@@ -18,6 +18,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -118,8 +120,8 @@ public class LobbyController implements Initializable {
   private ArrayList<String> users = new ArrayList<>();
   private Text playerOne = new Text();
   private Text playerTwo = new Text();
-  private Text playerThree = new Text();
-  private Text playerFour = new Text();
+  private boolean isPlayerOneReady = false;
+  private boolean isPlayerTwoReady = false;
   private BorderPane container = new BorderPane();
   private boolean dupliCheck = false;
 
@@ -243,11 +245,11 @@ public class LobbyController implements Initializable {
 
       for (int i = 0; i < 4; i++) {
         Text curr = (Text) playerGrid.getChildren().get(i);
-        Text currUser = new Text(username);
-        currUser.setFont(Font.font ("Satoshi", 25));
+        Text name = new Text(username);
+        name.setFont(Font.font("Satoshi", 25));
 
         if (curr.getText() == "Waiting for player...") {
-          playerGrid.getChildren().set(i, currUser);
+          playerGrid.getChildren().set(i, name);
           break;
         }
       }
@@ -261,13 +263,20 @@ public class LobbyController implements Initializable {
       e.printStackTrace();
     }
   }
+
   private void initInnerLobby() {
 
     playerOne = new Text("Waiting for player...");
-    playerOne.setFont(Font.font ("Satoshi", 20));
+    playerOne.setFont(Font.font("Satoshi", 20));
+
 
     playerTwo = new Text("Waiting for player...");
-    playerTwo.setFont(Font.font ("Satoshi", 20));
+    playerTwo.setFont(Font.font("Satoshi", 20));
+
+//    Text notReadyText = new Text("NOT Ready");
+//    notReadyText.setFont(Font.font ("Satoshi", 20));
+//    notReadyText.setFill(Color.RED);
+
 
     playerGrid.add(playerOne, 0, 0);
     playerGrid.add(playerTwo, 1, 0);
@@ -278,8 +287,8 @@ public class LobbyController implements Initializable {
     playerGrid.setHgap(50);
     playerGrid.setVgap(20);
 
-    readyButton.setFont(Font.font ("Satoshi", 20));
-    launchButton.setFont(Font.font ("Satoshi", 20));
+    readyButton.setFont(Font.font("Satoshi", 20));
+    launchButton.setFont(Font.font("Satoshi", 20));
 
     container.setCenter(innerLobby);
     container.setTop(backButton);
@@ -332,7 +341,7 @@ public class LobbyController implements Initializable {
       ioe.printStackTrace();
     }
 
-    if(lobby != null){
+    if (lobby != null) {
       lobbyVBox.getChildren().add(lobby);
     }
   }
