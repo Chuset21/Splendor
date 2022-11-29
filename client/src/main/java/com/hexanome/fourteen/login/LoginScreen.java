@@ -124,7 +124,7 @@ public final class LoginScreen implements Initializable {
 
     if (login(username, password)) {
       userid = username;
-      launchGame();
+      launchGame(userid);
     } else {
       failedLogin();
     }
@@ -139,15 +139,13 @@ public final class LoginScreen implements Initializable {
   /**
    * Creates new lobby instance and routes the player through it
    */
-  private void launchGame() {
+  private void launchGame(String username) {
     // Create new instance of a Splendor game
-    //OrientExpansion game = new OrientExpansion();
     LobbyController game = new LobbyController();
 
     // Try launching the game
     try {
-      game.goToChoiceSelect(aPrimaryStage,userid);
-      //game.goToGame(aPrimaryStage);
+      game.goToChoiceSelect(aPrimaryStage,username);
     } catch (Exception ex) {
       ex.printStackTrace();
     }

@@ -103,6 +103,8 @@ public class LobbyController implements Initializable {
   private GridPane lobbyGrid;
   @FXML
   private HBox defaultPlayer;
+  @FXML
+  private Text displayUsername;
 
 
   private final AnchorPane innerLobby = new AnchorPane();
@@ -135,9 +137,9 @@ public class LobbyController implements Initializable {
   }
 
   private void init() {
-    if (welcomeText != null) {
-      // Initialize welcome message with username
-      welcomeText.setText(welcomeTextTemplate.replaceAll("<username>", username));
+    // Initialize welcome message with the current player's username
+    if(displayUsername != null) {
+      displayUsername.setText(username);
     }
   }
 
