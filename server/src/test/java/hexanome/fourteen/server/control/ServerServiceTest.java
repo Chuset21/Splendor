@@ -143,4 +143,15 @@ public class ServerServiceTest {
       assertEquals("Was not able to register the game services", e.getMessage());
     }
   }
+
+  @Test
+  public void testUnregisterGameServices() {
+    HttpResponse response = mock(HttpResponse.class);
+    Mockito.when(response.getBody()).thenReturn(null);
+    Mockito.when(response.getStatus()).thenReturn(401);
+    Mockito.when(lobbyService.refreshToken(null)).thenReturn(response);
+
+    ReflectionTestUtils.setField(serverService, "gameServiceNames", new String[] {"x", "t"});
+    ReflectionTestUtils.invokeMethod(serverService, "unregisterGameServices");
+  }
 }
