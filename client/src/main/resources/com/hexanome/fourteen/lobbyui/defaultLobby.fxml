@@ -8,12 +8,12 @@
 
 <fx:root prefHeight="112.0" prefWidth="991.0" type="Pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ImageView fx:id="imageDisplay" fitHeight="90.0" fitWidth="90.0" layoutX="16.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="image" fitHeight="90.0" fitWidth="90.0" layoutX="16.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@images/dog.jpg" />
          </image>
       </ImageView>
-      <Text fx:id="nameText" layoutX="122.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Billy Bob's Lobby">
+      <Text fx:id="name" layoutX="122.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Billy Bob's Lobby">
          <font>
             <Font name="Satoshi Regular" size="20.0" />
          </font>
