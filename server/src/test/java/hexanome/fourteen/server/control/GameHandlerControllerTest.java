@@ -6,10 +6,16 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.mock;
 
 import hexanome.fourteen.server.model.User;
+import hexanome.fourteen.server.model.board.GameBoard;
 import hexanome.fourteen.server.model.board.expansion.Expansion;
 import hexanome.fourteen.server.model.board.expansion.StringExpansionMapper;
+import hexanome.fourteen.server.model.board.player.Player;
 import hexanome.fourteen.server.model.board.player.UserPlayerMapper;
 import hexanome.fourteen.server.model.clientmapper.ServerToClientBoardGameMapper;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,6 +65,19 @@ public class GameHandlerControllerTest {
         gameHandlerController.launchGame("gameid", launchGameForm);
 
     assertNull(response.getBody());
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
+
+  @Test
+  public void testDeleteGame() {
+    final Map<Set<String>, GameBoard> gameManager = new HashMap<>();
+    gameManager.put(null, new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(new Player("test")), "x", null));
+    ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
+
+    ResponseEntity<String> response = gameHandlerController.deleteGame("gameid");
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+    response = gameHandlerController.deleteGame("x");
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 }
