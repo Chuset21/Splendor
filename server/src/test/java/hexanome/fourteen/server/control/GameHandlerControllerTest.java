@@ -20,6 +20,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -71,7 +72,8 @@ public class GameHandlerControllerTest {
   @Test
   public void testDeleteGame() {
     final Map<Set<String>, GameBoard> gameManager = new HashMap<>();
-    gameManager.put(null, new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(new Player("test")), "x", null));
+    gameManager.put(null,
+        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(new Player("test")), "x", null));
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
 
     ResponseEntity<String> response = gameHandlerController.deleteGame("gameid");
@@ -79,5 +81,29 @@ public class GameHandlerControllerTest {
 
     response = gameHandlerController.deleteGame("x");
     assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
+
+  @Test
+  public void testRetrieveGame() {
+    final Map<Set<String>, GameBoard> gameManager = new HashMap<>();
+    final GameBoard board =
+        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(new Player("test")), "x", null);
+    gameManager.put(Set.of("test"), board);
+    ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
+
+    ResponseEntity<String> response = gameHandlerController.retrieveGame("token");
+    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+
+    Mockito.when(lobbyService.getUsername("token")).thenReturn("x");
+
+    response = gameHandlerController.retrieveGame("token");
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+    Mockito.when(lobbyService.getUsername("token")).thenReturn("test");
+
+    response = gameHandlerController.retrieveGame("token");
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(gsonInstance.gson.toJson(new ServerToClientBoardGameMapper().map(board)),
+        response.getBody());
   }
 }
