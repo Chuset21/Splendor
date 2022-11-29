@@ -122,7 +122,12 @@ class GameBoardTest {
       player.hand().setPrestigePoints(0);
     }
     gameBoard.computeLeadingPlayer();
-    assertEquals(player1.uid(), gameBoard.leadingPlayer().uid());
+    if (gameBoard.leadingPlayer().uid().equals("player1")) {
+      assertEquals(player1.uid(), gameBoard.leadingPlayer().uid());
+    } else {
+      assertEquals(player2.uid(), gameBoard.leadingPlayer().uid());
+    }
+
 
 
   }
