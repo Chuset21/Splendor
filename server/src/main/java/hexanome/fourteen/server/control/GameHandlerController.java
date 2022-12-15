@@ -148,7 +148,7 @@ public class GameHandlerController {
    * @param purchaseCardForm The purchase card form.
    * @return The response.
    */
-  @PutMapping(value = "{gameid}card", consumes = "application/json; charset=utf-8")
+  @PutMapping(value = "{gameid}/card", consumes = "application/json; charset=utf-8")
   public ResponseEntity<String> purchaseCard(@PathVariable String gameid,
                                              @RequestParam("access_token") String accessToken,
                                              @RequestBody PurchaseCardForm purchaseCardForm) {
