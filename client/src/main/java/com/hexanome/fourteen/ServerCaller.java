@@ -20,10 +20,9 @@ public final class ServerCaller {
    *
    * @return The game board form if successful, null otherwise.
    */
-  public static GameBoardForm getGameBoard(String serverLocation, String accessToken) {
-    HttpResponse<String> response = Unirest.get("%s/api/games/board".formatted(serverLocation))
-        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-        .queryString("access_token", accessToken).asString();
+  public static GameBoardForm getGameBoard(String serverLocation, String gameid) {
+    HttpResponse<String> response = Unirest.get("%s/api/games/%s".formatted(serverLocation, gameid))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=").asString();
 
     if (response.getStatus() != 200) {
       return null;
@@ -35,11 +34,12 @@ public final class ServerCaller {
   /**
    * Purchase a card.
    *
-   * @return The game board form if successful, null otherwise.
+   * @return The response.
    */
-  public static HttpResponse<String> purchaseCard(String serverLocation, String accessToken,
+  public static HttpResponse<String> purchaseCard(String serverLocation, String gameid,
+                                                  String accessToken,
                                                   PurchaseCardForm purchaseCardForm) {
-    return Unirest.post("%s/api/games/board".formatted(serverLocation))
+    return Unirest.put("%s/api/games/%s/card".formatted(serverLocation, gameid))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("access_token", accessToken).body(Main.GSON.toJson(purchaseCardForm))
         .asString();
