@@ -24,7 +24,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class GameHandlerController {
 
   private final LobbyServiceCaller lobbyService;
-  private final Map<Set<String>, GameBoard> gameManager;
+  private final Map<String, GameBoard> gameManager;
   private final Mapper<User, Player> userPlayerMapper;
   private final Mapper<String, Expansion> stringExpansionMapper;
   private final Mapper<GameBoard, SentGameBoard> gameBoardMapper;
@@ -77,9 +76,7 @@ public class GameHandlerController {
   @PutMapping(value = "{gameid}", consumes = "application/json; charset=utf-8")
   public ResponseEntity<String> launchGame(@PathVariable String gameid,
                                            @RequestBody LaunchGameForm launchGameForm) {
-    gameManager.put(
-        Arrays.stream(launchGameForm.players()).map(User::name).collect(Collectors.toSet()),
-        createGame(gameid, launchGameForm)); // TODO add checks
+    gameManager.put(gameid, createGame(gameid, launchGameForm)); // TODO add checks
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
@@ -115,22 +112,11 @@ public class GameHandlerController {
    * @return true if the game was successfully removed, false otherwise.
    */
   private boolean removeGame(String gameid) {
-    for (Map.Entry<Set<String>, GameBoard> entry : gameManager.entrySet()) {
-      if (entry.getValue().gameid().equals(gameid)) {
-        gameManager.remove(entry.getKey());
-        return true;
-      }
-    }
-    return false;
+    return gameManager.remove(gameid) != null;
   }
 
-  private GameBoard getGame(String username) {
-    for (Map.Entry<Set<String>, GameBoard> entry : gameManager.entrySet()) {
-      if (entry.getKey().contains(username)) {
-        return entry.getValue();
-      }
-    }
-    return null;
+  private GameBoard getGame(String gameid) {
+    return gameManager.get(gameid);
   }
 
   private String getUsername(String accessToken) {
@@ -140,17 +126,12 @@ public class GameHandlerController {
   /**
    * Get a game board.
    *
-   * @param accessToken The user's access token who is sending the request
+   * @param gameid The game id corresponding to the game.
    * @return The full response
    */
-  @GetMapping(value = "board", produces = "application/json; charset=utf-8")
-  public ResponseEntity<String> retrieveGame(@RequestParam("access_token") String accessToken) {
-    final String username = getUsername(accessToken);
-    if (username == null) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
-    }
-
-    final GameBoard gameBoard = getGame(username);
+  @GetMapping(value = "{gameid}", produces = "application/json; charset=utf-8")
+  public ResponseEntity<String> retrieveGame(@PathVariable String gameid) {
+    final GameBoard gameBoard = getGame(gameid);
     if (gameBoard == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
     } else {
@@ -167,8 +148,9 @@ public class GameHandlerController {
    * @param purchaseCardForm The purchase card form.
    * @return The response.
    */
-  @PostMapping(value = "card", consumes = "application/json; charset=utf-8")
-  public ResponseEntity<String> purchaseCard(@RequestParam("access_token") String accessToken,
+  @PutMapping(value = "{gameid}card", consumes = "application/json; charset=utf-8")
+  public ResponseEntity<String> purchaseCard(@PathVariable String gameid,
+                                             @RequestParam("access_token") String accessToken,
                                              @RequestBody PurchaseCardForm purchaseCardForm) {
     // TODO check what type of card it is and perform the relevant action,
     //  e.g. adding the gem discounts
@@ -177,14 +159,14 @@ public class GameHandlerController {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
     }
 
-    final GameBoard gameBoard = getGame(username);
+    final GameBoard gameBoard = getGame(gameid);
     if (gameBoard == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
     }
 
     final Hand hand = getHand(gameBoard.players(), username);
     if (hand == null) {
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
     }
 
     final Card card = purchaseCardForm.card();

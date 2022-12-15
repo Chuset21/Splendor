@@ -75,12 +75,12 @@ public class GameHandlerControllerTest {
 
   @Test
   public void testDeleteGame() {
-    final Map<Set<String>, GameBoard> gameManager = new HashMap<>();
-    gameManager.put(null,
+    final Map<String, GameBoard> gameManager = new HashMap<>();
+    gameManager.put("x",
         new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(new Player("test")), "x", null));
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
 
-    ResponseEntity<String> response = gameHandlerController.deleteGame("gameid");
+    ResponseEntity<String> response = gameHandlerController.deleteGame("???");
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
     response = gameHandlerController.deleteGame("x");
@@ -89,23 +89,18 @@ public class GameHandlerControllerTest {
 
   @Test
   public void testRetrieveGame() {
-    final Map<Set<String>, GameBoard> gameManager = new HashMap<>();
+    final Map<String, GameBoard> gameManager = new HashMap<>();
     final GameBoard board =
         new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(new Player("test")), "x", null);
-    gameManager.put(Set.of("test"), board);
+    gameManager.put("test", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
 
-    ResponseEntity<String> response = gameHandlerController.retrieveGame("token");
-    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-
-    Mockito.when(lobbyService.getUsername("token")).thenReturn("x");
-
-    response = gameHandlerController.retrieveGame("token");
+    ResponseEntity<String> response =  gameHandlerController.retrieveGame("");
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
     Mockito.when(lobbyService.getUsername("token")).thenReturn("test");
 
-    response = gameHandlerController.retrieveGame("token");
+    response = gameHandlerController.retrieveGame("test");
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(gsonInstance.gson.toJson(new ServerToClientBoardGameMapper().map(board)),
         response.getBody());
@@ -113,26 +108,31 @@ public class GameHandlerControllerTest {
 
   @Test
   public void testPurchaseCard() {
-    final Map<Set<String>, GameBoard> gameManager = new HashMap<>();
+    final Map<String, GameBoard> gameManager = new HashMap<>();
     final GameBoard board =
         new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(new Player("test")), "x", null);
-    gameManager.put(Set.of("test"), board);
+    gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
 
-    ResponseEntity<String> response = gameHandlerController.purchaseCard("token", null);
+    ResponseEntity<String> response = gameHandlerController.purchaseCard("", "token", null);
     assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    assertEquals("invalid access token", response.getBody());
 
     Mockito.when(lobbyService.getUsername("token")).thenReturn("x");
 
-    response = gameHandlerController.purchaseCard("token", null);
+    response = gameHandlerController.purchaseCard("x", "token", null);
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+    response = gameHandlerController.purchaseCard("", "token", null);
+    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    assertEquals("player is not part of this game", response.getBody());
 
     Mockito.when(lobbyService.getUsername("token")).thenReturn("test");
 
     Card card =
         new StandardCard(0, new Gems(), CardLevel.ONE, Expansion.STANDARD, 1, GemColor.BLACK);
     PurchaseCardForm purchaseCardForm = new PurchaseCardForm(card, new Gems(), new Gems());
-    response = gameHandlerController.purchaseCard("token", purchaseCardForm);
+    response = gameHandlerController.purchaseCard("", "token", purchaseCardForm);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("card chosen for purchase is not valid",
         response.getBody());
@@ -145,7 +145,7 @@ public class GameHandlerControllerTest {
     card =
         new StandardCard(0, cardCost, CardLevel.ONE, Expansion.STANDARD, 1, GemColor.BLACK);
     purchaseCardForm = new PurchaseCardForm(card, new Gems(), substitutedGems);
-    response = gameHandlerController.purchaseCard("token", purchaseCardForm);
+    response = gameHandlerController.purchaseCard("", "token", purchaseCardForm);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("cannot substitute gold gems for gold gems",
         response.getBody());
@@ -153,7 +153,7 @@ public class GameHandlerControllerTest {
     substitutedGems = new Gems();
     substitutedGems.put(GemColor.BLUE, 2);
     purchaseCardForm = new PurchaseCardForm(card, new Gems(), substitutedGems);
-    response = gameHandlerController.purchaseCard("token", purchaseCardForm);
+    response = gameHandlerController.purchaseCard("", "token", purchaseCardForm);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("substituting amount not equal to gold gems",
         response.getBody());
@@ -161,7 +161,7 @@ public class GameHandlerControllerTest {
     Gems paymentGems = new Gems();
     paymentGems.put(GemColor.BLACK, 4);
     purchaseCardForm = new PurchaseCardForm(card, paymentGems, new Gems());
-    response = gameHandlerController.purchaseCard("token", purchaseCardForm);
+    response = gameHandlerController.purchaseCard("", "token", purchaseCardForm);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("not enough gems",
         response.getBody());
@@ -170,7 +170,7 @@ public class GameHandlerControllerTest {
     paymentGems.put(GemColor.BLUE, 3);
     paymentGems.put(GemColor.WHITE, 1);
     purchaseCardForm = new PurchaseCardForm(card, paymentGems, new Gems());
-    response = gameHandlerController.purchaseCard("token", purchaseCardForm);
+    response = gameHandlerController.purchaseCard("", "token", purchaseCardForm);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("card cost does not match payment",
         response.getBody());
@@ -182,7 +182,7 @@ public class GameHandlerControllerTest {
     substitutedGems.put(GemColor.WHITE, 1);
     substitutedGems.put(GemColor.GREEN, 2);
     purchaseCardForm = new PurchaseCardForm(card, paymentGems, substitutedGems);
-    response = gameHandlerController.purchaseCard("token", purchaseCardForm);
+    response = gameHandlerController.purchaseCard("", "token", purchaseCardForm);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNull(response.getBody());
   }
