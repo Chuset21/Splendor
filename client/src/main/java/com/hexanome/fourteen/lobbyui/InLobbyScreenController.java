@@ -81,14 +81,21 @@ public class InLobbyScreenController implements ScreenController{
     }
 
     if (player != null) {
-      System.out.println(addPlayer(player));
+      addPlayer(player);
     }
   }
 
+  /**
+   * Adds a player to the players list and displays them in the lobby
+   *
+   * @param player player to be added
+   * @return true if player was added successfully, false if no room was left in lobby
+   */
   private boolean addPlayer(Player player){
     for(int i = 0;i<4;i++){
       if(players[i] == null){
-        lobbyGrid.getChildren().add(player);
+        players[i] = player;
+        lobbyGrid.add(player,i/2,i%2);
         return true;
       }
     }

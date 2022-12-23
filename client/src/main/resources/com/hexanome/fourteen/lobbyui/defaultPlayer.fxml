@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<fx:root fx:id="defaultPlayer" alignment="CENTER" prefHeight="100.0" prefWidth="227.0" type="HBox" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root fx:id="defaultPlayer" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="227.0" type="HBox" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <ImageView fx:id="playerAvatar" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
          <image>

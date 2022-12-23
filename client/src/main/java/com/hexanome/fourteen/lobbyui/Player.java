@@ -1,16 +1,19 @@
 package com.hexanome.fourteen.lobbyui;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Objects;
+import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
-public class Player extends HBox {
+public class Player extends HBox implements Initializable {
 
   @FXML private ImageView playerAvatar;
   @FXML private Text playerName;
@@ -21,7 +24,7 @@ public class Player extends HBox {
       throws IOException {
 
     // Load basic lobby UI
-    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(Lobby.class.getResource("defaultLobby.fxml")));
+    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(Lobby.class.getResource("defaultPlayer.fxml")));
 
     // Apply the UI to this class (set this object as the root)
     loader.setRoot(this);
@@ -39,4 +42,8 @@ public class Player extends HBox {
     this.controller = controller;
   }
 
+  @Override
+  public void initialize(URL url, ResourceBundle resourceBundle) {
+
+  }
 }
