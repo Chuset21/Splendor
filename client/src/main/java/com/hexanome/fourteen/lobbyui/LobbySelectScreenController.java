@@ -1,27 +1,18 @@
 package com.hexanome.fourteen.lobbyui;
 
-import com.hexanome.fourteen.LobbyServiceCaller;
-import com.hexanome.fourteen.form.lobbyservice.GameParametersForm;
-import com.hexanome.fourteen.form.lobbyservice.SessionForm;
-import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class LobbySelectScreenController implements ScreenController{
@@ -46,7 +37,7 @@ public class LobbySelectScreenController implements ScreenController{
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
-        Objects.requireNonNull(MenuGod.class.getResource("joinGame.fxml")));
+        Objects.requireNonNull(MenuOrganizer.class.getResource("joinGame.fxml")));
     // Import root from fxml file
     Parent root = loader.load();
     // Set up root on stage (window)
@@ -108,7 +99,7 @@ public class LobbySelectScreenController implements ScreenController{
   @FXML
   private void handleBackButton(){
     try {
-      MenuGod.goToWelcomeScreen();
+      MenuOrganizer.goBack();
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
@@ -121,7 +112,7 @@ public class LobbySelectScreenController implements ScreenController{
    */
   public void handleJoinLobbyButton(){
     try {
-      MenuGod.goToInLobbyScreen();
+      MenuOrganizer.goToInLobbyScreen();
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }

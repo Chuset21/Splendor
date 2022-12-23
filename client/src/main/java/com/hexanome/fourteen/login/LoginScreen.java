@@ -1,7 +1,7 @@
 package com.hexanome.fourteen.login;
 
 import com.hexanome.fourteen.Main;
-import com.hexanome.fourteen.lobbyui.MenuGod;
+import com.hexanome.fourteen.lobbyui.MenuOrganizer;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
@@ -143,7 +143,7 @@ public final class LoginScreen implements Initializable {
 
     // Try launching the game
     try {
-      MenuGod.successfulLogin(username, aPrimaryStage);
+      MenuOrganizer.successfulLogin(username, aPrimaryStage);
     } catch (Exception ex) {
       ex.printStackTrace();
     }

@@ -2,8 +2,6 @@ package com.hexanome.fourteen.lobbyui;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
@@ -12,9 +10,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -41,7 +36,7 @@ public class WelcomeScreenController implements ScreenController{
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
-        Objects.requireNonNull(MenuGod.class.getResource("choiceSelect.fxml")));
+        Objects.requireNonNull(MenuOrganizer.class.getResource("choiceSelect.fxml")));
     // Import root from fxml file
     Parent root = loader.load();
     // Set up root on stage (window)
@@ -61,7 +56,7 @@ public class WelcomeScreenController implements ScreenController{
   public void initialize(URL url, ResourceBundle resourceBundle) {
 
     // Displays the current user's username
-    displayUsername.setText(MenuGod.getUsername());
+    displayUsername.setText(MenuOrganizer.getUsername());
   }
 
   @FXML
@@ -74,7 +69,7 @@ public class WelcomeScreenController implements ScreenController{
   public void handleCreateGameButton() {
     //Switch scene to create game screen (game rule selection)
     try {
-      MenuGod.goToCreateGameScreen();
+      MenuOrganizer.goToCreateGameScreen();
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
@@ -87,7 +82,7 @@ public class WelcomeScreenController implements ScreenController{
   public void handleJoinGameButton() {
     //Switch scene to join game details (lobby selection)
     try {
-      MenuGod.goToLobbySelectScreen();
+      MenuOrganizer.goToLobbySelectScreen();
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
@@ -97,7 +92,7 @@ public class WelcomeScreenController implements ScreenController{
   public void handleLoadGameButton() {
     //Switch scene to load game details (chose game save)
     try {
-      MenuGod.goToLoadGameScreen();
+      MenuOrganizer.goToLoadGameScreen();
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }

@@ -14,7 +14,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
@@ -38,7 +37,7 @@ public class LoadGameScreenController implements ScreenController{
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
-        Objects.requireNonNull(MenuGod.class.getResource("loadGame.fxml")));
+        Objects.requireNonNull(MenuOrganizer.class.getResource("loadGame.fxml")));
     // Import root from fxml file
     Parent root = loader.load();
     // Set up root on stage (window)
@@ -68,7 +67,7 @@ public class LoadGameScreenController implements ScreenController{
   public void handleCreateLobbyButton() {
     try {
       System.out.println("Loaded game: "+loadSetting.getSelectedToggle().toString());
-      MenuGod.goToInLobbyScreen();
+      MenuOrganizer.goToInLobbyScreen();
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -86,7 +85,7 @@ public class LoadGameScreenController implements ScreenController{
   @FXML
   private void handleBackButton(){
     try {
-      MenuGod.goToWelcomeScreen();
+      MenuOrganizer.goBack();
     } catch (Exception e) {
       e.printStackTrace();
     }

@@ -48,7 +48,7 @@ public class CreateGameScreenController implements ScreenController{
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
-        Objects.requireNonNull(MenuGod.class.getResource("createGame.fxml")));
+        Objects.requireNonNull(MenuOrganizer.class.getResource("createGame.fxml")));
     // Import root from fxml file
     Parent root = loader.load();
     // Set up root on stage (window)
@@ -86,7 +86,7 @@ public class CreateGameScreenController implements ScreenController{
     try {
       System.out.println("Expansion toggle: "+expansionSetting.getSelectedToggle().toString()
           +"\nPlayer count toggle: "+maxPlayersSetting.getSelectedToggle().toString());
-      MenuGod.goToInLobbyScreen();
+      MenuOrganizer.goToInLobbyScreen();
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -104,7 +104,7 @@ public class CreateGameScreenController implements ScreenController{
   @FXML
   private void handleBackButton(){
     try {
-      MenuGod.goToWelcomeScreen();
+      MenuOrganizer.goBack();
     } catch (Exception e) {
       e.printStackTrace();
     }

@@ -29,7 +29,7 @@ public class InLobbyScreenController implements ScreenController{
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
-        Objects.requireNonNull(MenuGod.class.getResource("lobby.fxml")));
+        Objects.requireNonNull(MenuOrganizer.class.getResource("lobby.fxml")));
     // Import root from fxml file
     Parent root = loader.load();
     // Set up root on stage (window)
@@ -48,7 +48,7 @@ public class InLobbyScreenController implements ScreenController{
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
     try {
-      Player player = new Player(playerImgs[new Random().nextInt(4)], MenuGod.getUsername(), this);
+      Player player = new Player(playerImgs[new Random().nextInt(4)], MenuOrganizer.getUsername(), this);
 
       addPlayer(player);
     } catch (IOException ioe) {
@@ -64,7 +64,7 @@ public class InLobbyScreenController implements ScreenController{
   @FXML
   private void handleLeaveButton(){
     try{
-      MenuGod.goToLobbySelectScreen();
+      MenuOrganizer.goBack();
     } catch (IOException ioe){
       ioe.printStackTrace();
     }
