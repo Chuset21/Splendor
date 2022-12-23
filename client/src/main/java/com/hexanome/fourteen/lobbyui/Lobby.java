@@ -25,9 +25,9 @@ public class Lobby extends Pane implements Initializable {
   private int numPlayers;
   private String[] players;
   private com.hexanome.fourteen.boards.Expansion expansion;
-  private LobbyController controller;
+  private LobbySelectScreenController controller;
 
-  public Lobby(String fileString, int capacity, com.hexanome.fourteen.boards.Expansion expansion, String host, LobbyController controller)
+  public Lobby(String fileString, int capacity, com.hexanome.fourteen.boards.Expansion expansion, String host, LobbySelectScreenController controller)
       throws IOException {
 
     // Load basic lobby UI

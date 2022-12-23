@@ -1,7 +1,7 @@
 package com.hexanome.fourteen.login;
 
 import com.hexanome.fourteen.Main;
-import com.hexanome.fourteen.lobbyui.LobbyController;
+import com.hexanome.fourteen.lobbyui.MenuGod;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
@@ -140,12 +140,10 @@ public final class LoginScreen implements Initializable {
    * Creates new lobby instance and routes the player through it
    */
   private void launchGame(String username) {
-    // Create new instance of a Splendor game
-    LobbyController game = new LobbyController();
 
     // Try launching the game
     try {
-      game.goToChoiceSelect(aPrimaryStage,username);
+      MenuGod.successfulLogin(username, aPrimaryStage);
     } catch (Exception ex) {
       ex.printStackTrace();
     }

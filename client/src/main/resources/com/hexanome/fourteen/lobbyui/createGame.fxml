@@ -12,9 +12,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.LobbyController">
+<AnchorPane fx:id="anchorPane" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.CreateGameScreenController">
    <children>
-      <Button fx:id="backButton" layoutX="20.0" layoutY="21.0" mnemonicParsing="false" onMouseClicked="#unloadScene" text="Back">
+      <Button fx:id="backButton" layoutX="20.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleBackButton" text="Back">
          <font>
             <Font name="Satoshi Bold" size="24.0" />
          </font></Button>
@@ -73,7 +73,7 @@
             <Font name="Satoshi Regular" size="24.0" />
          </font>
       </ToggleButton>
-      <Button fx:id="createLobbyButton" layoutX="497.0" layoutY="596.0" mnemonicParsing="false" onMouseClicked="#handleCreateLobbyButton" text="Create Lobby">
+      <Button fx:id="createLobbyButton" layoutX="497.0" layoutY="596.0" mnemonicParsing="false" onAction="#handleCreateLobbyButton" text="Create Lobby">
          <font>
             <Font name="Satoshi Bold" size="26.0" />
          </font>

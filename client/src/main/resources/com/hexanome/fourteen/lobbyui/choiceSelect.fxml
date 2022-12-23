@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.LobbyController">
+<AnchorPane fx:id="anchorPane" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.WelcomeScreenController">
    <children>
-      <Button fx:id="createGameButton" layoutX="753.0" layoutY="434.0" mnemonicParsing="false" onMouseClicked="#handleLoadGameButton" prefHeight="78.0" prefWidth="230.0" text="Load" textAlignment="CENTER">
+      <Button fx:id="createGameButton" layoutX="753.0" layoutY="434.0" mnemonicParsing="false" onAction="#handleLoadGameButton" prefHeight="78.0" prefWidth="230.0" text="Load" textAlignment="CENTER">
          <font>
             <Font name="Satoshi Bold" size="24.0" />
          </font>
       </Button>
-      <Button fx:id="newGameButton" layoutX="220.0" layoutY="432.0" mnemonicParsing="false" onMouseClicked="#handleCreateGameButton" prefHeight="78.0" prefWidth="230.0" text="New" textAlignment="CENTER">
+      <Button fx:id="newGameButton" layoutX="220.0" layoutY="432.0" mnemonicParsing="false" onAction="#handleCreateGameButton" prefHeight="78.0" prefWidth="230.0" text="New" textAlignment="CENTER">
          <font>
             <Font name="Satoshi Bold" size="24.0" />
          </font>
       </Button>
-      <Button fx:id="joinGameButton" layoutX="486.0" layoutY="433.0" mnemonicParsing="false" onMouseClicked="#handleJoinGameButton" prefHeight="78.0" prefWidth="230.0" text="Join" textAlignment="CENTER">
+      <Button fx:id="joinGameButton" layoutX="486.0" layoutY="433.0" mnemonicParsing="false" onAction="#handleJoinGameButton" prefHeight="78.0" prefWidth="230.0" text="Join" textAlignment="CENTER">
          <font>
             <Font name="Satoshi Bold" size="24.0" />
          </font>
       </Button>
-      <Button fx:id="quitButton" layoutX="1078.0" layoutY="42.0" mnemonicParsing="false" onMouseClicked="#handleQuitButton" text="Quit">
+      <Button fx:id="quitButton" layoutX="1078.0" layoutY="42.0" mnemonicParsing="false" onAction="#handleQuitButton" text="Quit">
          <font>
             <Font name="Satoshi Bold" size="24.0" />
          </font>

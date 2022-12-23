@@ -19,8 +19,6 @@ public class LobbyPlayerController implements Initializable {
   private VBox info;
   @FXML
   private Text user;
-  @FXML
-  private Text readyStatus;
 
 
   @Override
