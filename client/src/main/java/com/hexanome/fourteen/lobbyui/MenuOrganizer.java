@@ -12,24 +12,24 @@ public class MenuOrganizer {
   private static ScreenController currentScreen = null;
   private static String username;
 
-  public static void setUsername(String username){
+  public static void setUsername(String username) {
     MenuOrganizer.username = username;
   }
 
-  public static void setStage(Stage stage){
+  public static void setStage(Stage stage) {
     MenuOrganizer.stage = stage;
   }
 
-  public static String getUsername(){
-    return ""+username;
+  public static String getUsername() {
+    return "" + username;
   }
 
-  public static Stage getStage(){
+  public static Stage getStage() {
     return stage;
   }
 
-  public static void successfulLogin(String username, Stage stage) throws IOException{
-    if(username == null || stage == null){
+  public static void successfulLogin(String username, Stage stage) throws IOException {
+    if (username == null || stage == null) {
       throw new InvalidParameterException("Neither parameter can be null.");
     }
 
@@ -47,14 +47,14 @@ public class MenuOrganizer {
     screen.goTo(stage);
   }
 
-  public static void goBack() throws IOException{
+  public static void goBack() throws IOException {
     // Get last screen
     ScreenController screen = previousScreens.pop();
 
     currentScreen = screen;
 
     // Clear screen stack since you cannot go back after going to welcome screen
-    if(screen instanceof WelcomeScreenController){
+    if (screen instanceof WelcomeScreenController) {
       previousScreens.clear();
     }
 

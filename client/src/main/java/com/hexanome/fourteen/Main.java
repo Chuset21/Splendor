@@ -3,7 +3,8 @@ package com.hexanome.fourteen;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.hexanome.fourteen.login.LoginScreen;
+import com.hexanome.fourteen.lobbyui.ScreenController;
+import com.hexanome.fourteen.login.LoginScreenController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -32,9 +33,13 @@ public class Main extends Application {
     Application.launch(Main.class, args);
   }
 
+  /**
+   * Run on startup of application. Sends user to login screen
+   * @param stage active stage passed by application
+   */
   @Override
   public void start(Stage stage) throws Exception {
-    LoginScreen ls = new LoginScreen();
-    ls.goToLogin(stage);
+    ScreenController loginScreen = new LoginScreenController();
+    loginScreen.goTo(stage);
   }
 }

@@ -1,7 +1,10 @@
 package com.hexanome.fourteen.login;
 
+import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.Main;
+import com.hexanome.fourteen.lobbyui.Lobby;
 import com.hexanome.fourteen.lobbyui.MenuOrganizer;
+import com.hexanome.fourteen.lobbyui.ScreenController;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
@@ -21,12 +24,9 @@ import kong.unirest.Unirest;
 /**
  * Class that shows the LoginScreen for users.
  */
-public final class LoginScreen implements Initializable {
+public final class LoginScreenController implements ScreenController {
 
   private static Stage aPrimaryStage;
-  public static String accessToken = "";
-  public static String refreshToken = "";
-  public static String userid = "";
 
   @FXML
   private TextField usernameField;
@@ -41,13 +41,13 @@ public final class LoginScreen implements Initializable {
    * @param stage The Stage that will be used
    * @throws IOException Is thrown when invalid input is found
    */
-  public void goToLogin(Stage stage) throws IOException {
-
+  @Override
+  public void goTo(Stage stage) throws IOException {
     aPrimaryStage = stage;
 
     // Import root from fxml file
     Parent root =
-        FXMLLoader.load(Objects.requireNonNull(LoginScreen.class.getResource("LoginScreen.fxml")));
+        FXMLLoader.load(Objects.requireNonNull(LoginScreenController.class.getResource("LoginScreen.fxml")));
 
     // Set up root on stage (window)
     Scene scene = new Scene(root);
@@ -65,53 +65,6 @@ public final class LoginScreen implements Initializable {
   public void initialize(URL url, ResourceBundle resourceBundle) {
   }
 
-  /**
-   * Update the access token.
-   */
-  public boolean updateAccessToken() {
-    HttpResponse<String> response = Unirest.post("%soauth/token".formatted(Main.lsLocation))
-        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-        .queryString("grant_type", "refresh_token")
-        .queryString("refresh_token", refreshToken)
-        .body("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true")
-        .asString();
-    return getTokens(response);
-  }
-
-
-  /**
-   * Login a user.
-   *
-   * @param username username
-   * @param password password
-   * @return true if successful, false otherwise.
-   */
-  public boolean login(String username, String password) {
-    HttpResponse<String> response = Unirest.post("%soauth/token".formatted(Main.lsLocation))
-        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-        .queryString("grant_type", "password")
-        .queryString("username", username)
-        .queryString("password", password)
-        .body("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true")
-        .asString();
-    return getTokens(response);
-  }
-
-  private boolean getTokens(HttpResponse<String> response) {
-    if (response.getStatus() != 200) {
-      return false;
-    }
-
-    final LoginResponse loginResponse =
-        Main.GSON.fromJson(response.getBody(), LoginResponse.class);
-    accessToken = loginResponse.accessToken();
-    refreshToken = loginResponse.refreshToken();
-    return true;
-  }
-
-  private void failedLogin() {
-    loginButton.setText("Failed login\nTry again");
-  }
 
   @FXML
   private void handleLogin() {
@@ -122,12 +75,16 @@ public final class LoginScreen implements Initializable {
       return;
     }
 
-    if (login(username, password)) {
-      userid = username;
-      launchGame(userid);
+    if (LobbyServiceCaller.login(username, password)) {
+      LobbyServiceCaller.setUserID(username);
+      launchGame(LobbyServiceCaller.getUserID());
     } else {
       failedLogin();
     }
+  }
+
+  private void failedLogin() {
+    loginButton.setText("Failed login, try again");
   }
 
   @FXML

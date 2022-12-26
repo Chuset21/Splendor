@@ -91,6 +91,7 @@ public class CreateGameScreenController implements ScreenController{
       e.printStackTrace();
     }
 
+
     // TODO: Implement putting player in correct lobby once created
     /*String selectedExpansion =
         getJavaFXControlName(expansionSetting.getSelectedToggle().toString());

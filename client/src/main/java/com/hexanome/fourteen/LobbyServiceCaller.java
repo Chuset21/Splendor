@@ -3,6 +3,7 @@ package com.hexanome.fourteen;
 import com.hexanome.fourteen.form.lobbyservice.CreateSessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
+import com.hexanome.fourteen.login.LoginResponse;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 
@@ -10,10 +11,82 @@ import kong.unirest.Unirest;
  * Class containing calls to lobby service involving sessions.
  */
 public final class LobbyServiceCaller {
+
+  private static String accessToken = "";
+  private static String refreshToken = "";
+  private static String userid = "";
+
   /**
    * Private constructor to stop instantiation.
    */
   private LobbyServiceCaller() {
+  }
+
+  /**
+   * Update the access token.
+   */
+  public static boolean updateAccessToken() {
+    HttpResponse<String> response = Unirest.post("%soauth/token".formatted(Main.lsLocation))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("grant_type", "refresh_token")
+        .queryString("refresh_token", refreshToken)
+        .body("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true")
+        .asString();
+    return getTokens(response);
+  }
+
+  /**
+   * Login a user.
+   *
+   * @param username username
+   * @param password password
+   * @return true if successful, false otherwise.
+   */
+  public static boolean login(String username, String password) {
+    HttpResponse<String> response = Unirest.post("%soauth/token".formatted(Main.lsLocation))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("grant_type", "password")
+        .queryString("username", username)
+        .queryString("password", password)
+        .body("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true")
+        .asString();
+    return getTokens(response);
+  }
+
+  private static boolean getTokens(HttpResponse<String> response) {
+    if (response.getStatus() != 200) {
+      return false;
+    }
+
+    final LoginResponse loginResponse =
+        Main.GSON.fromJson(response.getBody(), LoginResponse.class);
+    accessToken = loginResponse.accessToken();
+    refreshToken = loginResponse.refreshToken();
+    return true;
+  }
+
+  public static String getAccessToken() {
+    return accessToken;
+  }
+
+  public static String getRefreshToken() {
+    return refreshToken;
+  }
+
+  public static String getUserID() {
+    return userid;
+  }
+
+  public static void setAccessToken(String accessToken) {
+    LobbyServiceCaller.accessToken = accessToken;
+  }
+
+  public static void setRefreshToken(String refreshToken) {
+    LobbyServiceCaller.refreshToken = refreshToken;
+  }
+
+  public static void setUserID(String userid) {
+    LobbyServiceCaller.userid = userid;
   }
 
   /**
