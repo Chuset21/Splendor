@@ -1,5 +1,8 @@
 package com.hexanome.fourteen.lobbyui;
 
+import com.hexanome.fourteen.LobbyServiceCaller;
+import com.hexanome.fourteen.boards.Expansion;
+import com.hexanome.fourteen.form.lobbyservice.CreateSessionForm;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -79,14 +82,22 @@ public class CreateGameScreenController implements ScreenController{
     for (Toggle toggle : expansionToggles) {
       toggle.setToggleGroup(expansionSetting);
     }
+
+    // Set toggle values to their respective enums
+    selectOrientToggle.setUserData(Expansion.ORIENT);
+    selectExtraToggle.setUserData(Expansion.STANDARD);
   }
 
   @FXML
   public void handleCreateLobbyButton() {
+    // Create template for session with current user's ID and the
+    CreateSessionForm session = new CreateSessionForm(LobbyServiceCaller.getUserID(),(expansionSetting.getSelectedToggle().getUserData()).toString());
+    System.out.println(LobbyServiceCaller.createSession(LobbyServiceCaller.getAccessToken(),session));
+
     try {
-      System.out.println("Expansion toggle: "+expansionSetting.getSelectedToggle().toString()
+      System.out.println("Expansion toggle: "+(expansionSetting.getSelectedToggle().getUserData()).toString()
           +"\nPlayer count toggle: "+maxPlayersSetting.getSelectedToggle().toString());
-      MenuOrganizer.goToInLobbyScreen();
+      MenuOrganizer.goToLobbySelectScreen();
     } catch (Exception e) {
       e.printStackTrace();
     }

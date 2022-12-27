@@ -14,6 +14,8 @@ import javafx.stage.Stage;
 
 public class InLobbyScreenController implements ScreenController{
 
+  //TODO: Add "Waiting for player" text in empty player spots
+
   @FXML
   private GridPane lobbyGrid;
 

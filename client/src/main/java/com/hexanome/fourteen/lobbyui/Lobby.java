@@ -69,10 +69,6 @@ public class Lobby extends Pane implements Initializable {
         controller.handleJoinLobbyButton();
       }
     });
-
-    for(Node n : this.getChildren()){
-      System.out.println(n);
-    }
   }
 
   @Override

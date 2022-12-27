@@ -1,7 +1,12 @@
 package com.hexanome.fourteen.lobbyui;
 
+import com.hexanome.fourteen.LobbyServiceCaller;
+import com.hexanome.fourteen.form.lobbyservice.GameParametersForm;
+import com.hexanome.fourteen.form.lobbyservice.SessionForm;
+import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -55,27 +60,7 @@ public class LobbySelectScreenController implements ScreenController{
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
-    /*SessionsForm lobbyform = LobbyServiceCaller.getSessions();
-    Map<String, SessionForm> lobbies = lobbyform.sessions();
-
-    for(Map.Entry<String, SessionForm> entry : lobbies.entrySet()){
-      Lobby l = null;
-      SessionForm s = entry.getValue();
-      GameParametersForm g = s.gameParameters();
-
-      try{
-        // Creates new lobby with the LobbyService's passed values for the following:
-        //  - Max players
-        //  - Host
-        l = new Lobby(lobbyImgs[new Random().nextInt(4)], g.maxSessionPlayers(), com.hexanome.fourteen.boards.Expansion.ORIENT, s.creator(), this);
-      } catch(IOException ioe){
-        ioe.printStackTrace();
-      }
-
-      if (l != null) {
-        lobbyVBox.getChildren().add(l);
-      }
-    }*/
+    updateLobbies();
 
     // TESTING ONLY
     /*GameParametersForm g = new GameParametersForm("place",4,2,"bruh");
@@ -94,6 +79,36 @@ public class LobbySelectScreenController implements ScreenController{
     if (l != null) {
       lobbyVBox.getChildren().add(l);
     }*/
+  }
+
+  private void updateLobbies(){
+    // Resets displayed lobbies
+    lobbyVBox.getChildren().clear();
+
+    SessionsForm lobbyForm = LobbyServiceCaller.getSessions();
+    Map<String, SessionForm> lobbies = lobbyForm.sessions();
+
+    // Iterates through all active sessions
+    for(Map.Entry<String, SessionForm> entry : lobbies.entrySet()){
+      Lobby lobby = null;
+
+      // Get settings for session
+      SessionForm session = LobbyServiceCaller.getSessionDetails(entry.getKey());
+      GameParametersForm gameSettings = session.gameParameters();
+
+      try{
+        // Creates new lobby with the LobbyService's passed values for the following:
+        //  - Max players
+        //  - Host
+        lobby = new Lobby(lobbyImgs[new Random().nextInt(4)], gameSettings.maxSessionPlayers(), com.hexanome.fourteen.boards.Expansion.ORIENT, session.creator(), this);
+      } catch(IOException ioe){
+        ioe.printStackTrace();
+      }
+
+      if (lobby != null) {
+        lobbyVBox.getChildren().add(lobby);
+      }
+    }
   }
 
   @FXML
@@ -117,86 +132,6 @@ public class LobbySelectScreenController implements ScreenController{
       ioe.printStackTrace();
     }
   }
-
-  /**
-   * Fernando's code to init the lobby
-   */
-  /*public void handleJoinLobbyButton() {
-//    try {
-//      Parent root = FXMLLoader.load(getClass().getResource("lobby.fxml"));
-//      loadScene(root);
-//    } catch (Exception e) {
-//      e.printStackTrace();
-//    }
-
-    try {
-      //Push the current scene to the scene stack
-      scenePath.push(stage.getScene());
-
-      //Initialize the lobby selector and it's grid
-      initInnerLobby();
-
-      for (int i = 0; i < 4; i++) {
-        Text curr = (Text) playerGrid.getChildren().get(i);
-        Text name = new Text(username);
-        name.setFont(Font.font("Satoshi", 25));
-
-        if (curr.getText() == "Waiting for player...") {
-          playerGrid.getChildren().set(i, name);
-          break;
-        }
-      }
-
-      //Create, style, and display scene
-      Scene scene = new Scene(container);
-      stage.setScene(scene);
-      stage.show();
-
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }*/
-
-  /*
-  private void initInnerLobby() {
-
-    playerOne = new Text("Waiting for player...");
-    playerOne.setFont(Font.font("Satoshi", 20));
-
-
-    playerTwo = new Text("Waiting for player...");
-    playerTwo.setFont(Font.font("Satoshi", 20));
-
-//    Text notReadyText = new Text("NOT Ready");
-//    notReadyText.setFont(Font.font ("Satoshi", 20));
-//    notReadyText.setFill(Color.RED);
-
-
-    playerGrid.add(playerOne, 0, 0);
-    playerGrid.add(playerTwo, 1, 0);
-
-    innerLobby.getChildren().add(playerGrid);
-    playerGrid.setPrefSize(1100, 600);
-    playerGrid.setPadding(new Insets(80, 20, 20, 20));
-    playerGrid.setHgap(50);
-    playerGrid.setVgap(20);
-
-    readyButton.setFont(Font.font("Satoshi", 20));
-    launchButton.setFont(Font.font("Satoshi", 20));
-
-    container.setCenter(innerLobby);
-    container.setTop(backButton);
-    container.setBottom(new HBox(30, readyButton, launchButton));
-    container.setPadding(new Insets(30, 30, 30, 30));
-
-    readyButton.setOnAction(evt -> {
-
-    });
-
-    launchButton.setOnAction(evt -> {
-
-    });
-  }*/
 
   @FXML
   private void handleAddLobby() {
