@@ -24,12 +24,12 @@
             <font>
                 <Font name="Satoshi Bold" size="24.0" />
             </font></Button>
-          <Text layoutX="76.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Billy Bob's Lobby">
+          <Text fx:id="lobbyName" layoutX="76.0" layoutY="72.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Billy Bob's Lobby">
               <font>
                   <Font name="Satoshi Bold" size="26.0" />
               </font>
           </Text>
-      <Text layoutX="76.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4/4 Players">
+      <Text fx:id="playerCounter" layoutX="76.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4/4 Players">
          <font>
             <Font name="Satoshi Bold" size="18.0" />
          </font>
@@ -57,11 +57,6 @@
             <Font name="Satoshi Bold" size="36.0" />
          </font>
       </Button>
-      <Text layoutX="279.0" layoutY="622.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4/4 Players Ready">
-         <font>
-            <Font name="Satoshi Bold" size="18.0" />
-         </font>
-      </Text>
       <Button fx:id="addPlayerButton" layoutX="615.0" layoutY="576.0" mnemonicParsing="false" onAction="#handleAddPlayerButton" text="Add player">
          <font>
             <Font name="Satoshi Bold" size="36.0" />

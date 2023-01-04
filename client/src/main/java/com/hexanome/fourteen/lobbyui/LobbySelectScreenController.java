@@ -100,7 +100,7 @@ public class LobbySelectScreenController implements ScreenController{
         // Creates new lobby with the LobbyService's passed values for the following:
         //  - Max players
         //  - Host
-        lobby = new Lobby(lobbyImgs[new Random().nextInt(4)], gameSettings.maxSessionPlayers(), com.hexanome.fourteen.boards.Expansion.ORIENT, session.creator(), this);
+        lobby = new Lobby(lobbyImgs[new Random().nextInt(4)], gameSettings.location(), gameSettings.maxSessionPlayers(), com.hexanome.fourteen.boards.Expansion.ORIENT, session.creator(), this);
       } catch(IOException ioe){
         ioe.printStackTrace();
       }
@@ -125,9 +125,9 @@ public class LobbySelectScreenController implements ScreenController{
    * This function is only used when called by the Lobby object,
    * never directly from FXML.
    */
-  public void handleJoinLobbyButton(){
+  public void handleJoinLobbyButton(Lobby lobby){
     try {
-      MenuOrganizer.goToInLobbyScreen();
+      MenuOrganizer.goToInLobbyScreen(lobby);
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
@@ -138,7 +138,7 @@ public class LobbySelectScreenController implements ScreenController{
     Lobby lobby = null;
 
     try {
-      lobby = new Lobby(lobbyImgs[new Random().nextInt(4)], 3, com.hexanome.fourteen.boards.Expansion.ORIENT, lobbyHosts[new Random().nextInt(5)], this);
+      lobby = new Lobby(lobbyImgs[new Random().nextInt(4)],"location", 3, com.hexanome.fourteen.boards.Expansion.ORIENT, lobbyHosts[new Random().nextInt(5)], this);
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }

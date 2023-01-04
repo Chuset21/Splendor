@@ -9,7 +9,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class InLobbyScreenController implements ScreenController{
@@ -18,6 +20,14 @@ public class InLobbyScreenController implements ScreenController{
 
   @FXML
   private GridPane lobbyGrid;
+  @FXML
+  private Button leaveLobbyButton;
+  @FXML
+  private Text lobbyNameText;
+  @FXML
+  private Text playerCounterText;
+
+  private Lobby lobby;
 
   // List of current players
   private Player[] players = new Player[4];
@@ -25,6 +35,10 @@ public class InLobbyScreenController implements ScreenController{
   // Temp items to use for making lobbies
   private static final String[] playerImgs = {"cat.jpg","dog.jpg","squirrel.jpg","chameleon.jpg"};
   private static final String[] playerNames = {"Billy Bob", "John Smith", "Gerald", "Betsy", "Brenda"};
+
+  // Template for lobby text
+  private static final String lobbyNameTemp = "[ownerName]'s Lobby";
+  private static final String playerCounterTemp = "[curPlayers]/[maxPlayers] Players";
 
   @Override
   public void goTo(Stage stage) throws IOException {
@@ -102,6 +116,24 @@ public class InLobbyScreenController implements ScreenController{
       }
     }
     return false;
+  }
+
+  /**
+   * Displays the passed owner name as the lobby owner
+   * @param ownerName name to display as owner
+   */
+  private void updateLobbyName(String ownerName){
+    lobbyNameText.setText(lobbyNameTemp.replaceAll("[ownerName]",ownerName));
+  }
+
+  /**
+   * Displays the passed player amounts on the lobby screen
+   * @param curPlayers players currently in the lobby
+   * @param maxPlayers maximum players in the lobby
+   */
+  private void updatePlayerCounter(int curPlayers,int maxPlayers){
+    String temp = playerCounterTemp.replaceAll("[curPlayers]",""+curPlayers);
+    playerCounterText.setText(temp.replaceAll("[maxPlayers]",""+maxPlayers));
   }
 
 }

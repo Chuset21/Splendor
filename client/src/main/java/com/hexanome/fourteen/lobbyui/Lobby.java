@@ -22,12 +22,13 @@ public class Lobby extends Pane implements Initializable {
   @FXML private Text expansionText;
   @FXML private Button joinLobbyButton;
 
+  private String location;
   private int numPlayers;
   private String[] players;
   private com.hexanome.fourteen.boards.Expansion expansion;
   private LobbySelectScreenController controller;
 
-  public Lobby(String fileString, int capacity, com.hexanome.fourteen.boards.Expansion expansion, String host, LobbySelectScreenController controller)
+  public Lobby(String fileString, String location, int capacity, com.hexanome.fourteen.boards.Expansion expansion, String host, LobbySelectScreenController controller)
       throws IOException {
 
     // Load basic lobby UI
@@ -66,7 +67,7 @@ public class Lobby extends Pane implements Initializable {
      */
     joinLobbyButton.setOnAction(e -> {
       if(numPlayers < players.length){
-        controller.handleJoinLobbyButton();
+        controller.handleJoinLobbyButton(this);
       }
     });
   }

@@ -46,6 +46,12 @@ public class CreateGameScreenController implements ScreenController{
   @FXML
   private Button createLobbyButton;
 
+  /**
+   * Initializes the screen
+   *
+   * @param stage where the screen will be displayed
+   * @throws IOException thrown when FXML loader fails to load screen's .fxml file
+   */
   @Override
   public void goTo(Stage stage) throws IOException {
 
@@ -67,6 +73,12 @@ public class CreateGameScreenController implements ScreenController{
     stage.show();
   }
 
+  /**
+   * Sets up toggles, allowing user to select lobby settings.
+   *
+   * @param url unused
+   * @param resourceBundle unused
+   */
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
     //Initialize ToggleGroup and Toggles for selecting max players in the create game menu
@@ -88,31 +100,31 @@ public class CreateGameScreenController implements ScreenController{
     selectExtraToggle.setUserData(Expansion.STANDARD);
   }
 
+  /**
+   * Sends request to create lobby to lobbyservice. Requested lobby has parameters designated by
+   * the user.
+   */
   @FXML
   public void handleCreateLobbyButton() {
-    // Create template for session with current user's ID and the
+    // Create template for session with current user's ID and the selected expansion
     CreateSessionForm session = new CreateSessionForm(LobbyServiceCaller.getUserID(),(expansionSetting.getSelectedToggle().getUserData()).toString());
     System.out.println(LobbyServiceCaller.createSession(LobbyServiceCaller.getAccessToken(),session));
 
     try {
       System.out.println("Expansion toggle: "+(expansionSetting.getSelectedToggle().getUserData()).toString()
           +"\nPlayer count toggle: "+maxPlayersSetting.getSelectedToggle().toString());
+
       MenuOrganizer.goToLobbySelectScreen();
     } catch (Exception e) {
       e.printStackTrace();
     }
 
-
     // TODO: Implement putting player in correct lobby once created
-    /*String selectedExpansion =
-        getJavaFXControlName(expansionSetting.getSelectedToggle().toString());
-    String selectedMaxPlayers =
-        getJavaFXControlName(maxPlayersSetting.getSelectedToggle().toString());
-
-    String[] lobbyData = new String[] {selectedExpansion, selectedMaxPlayers};
-    System.out.println(Arrays.toString(lobbyData));*/
   }
 
+  /**
+   * Sends user to the previous screen
+   */
   @FXML
   private void handleBackButton(){
     try {

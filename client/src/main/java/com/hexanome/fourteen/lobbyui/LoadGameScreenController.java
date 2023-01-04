@@ -67,7 +67,7 @@ public class LoadGameScreenController implements ScreenController{
   public void handleCreateLobbyButton() {
     try {
       System.out.println("Loaded game: "+loadSetting.getSelectedToggle().toString());
-      MenuOrganizer.goToInLobbyScreen();
+      MenuOrganizer.goToInLobbyScreen(null);
     } catch (Exception e) {
       e.printStackTrace();
     }
