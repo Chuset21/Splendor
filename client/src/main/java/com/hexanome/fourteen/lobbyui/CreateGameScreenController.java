@@ -110,6 +110,7 @@ public class CreateGameScreenController implements ScreenController{
     CreateSessionForm session = new CreateSessionForm(LobbyServiceCaller.getUserID(),(expansionSetting.getSelectedToggle().getUserData()).toString());
     System.out.println(LobbyServiceCaller.createSession(LobbyServiceCaller.getAccessToken(),session));
 
+
     try {
       System.out.println("Expansion toggle: "+(expansionSetting.getSelectedToggle().getUserData()).toString()
           +"\nPlayer count toggle: "+maxPlayersSetting.getSelectedToggle().toString());

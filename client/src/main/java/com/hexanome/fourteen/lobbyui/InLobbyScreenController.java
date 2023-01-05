@@ -27,6 +27,8 @@ public class InLobbyScreenController implements ScreenController{
   @FXML
   private Text playerCounterText;
 
+
+  // Holds data of current lobby (primarily the lobby location)
   private Lobby lobby;
 
   // List of current players
@@ -39,6 +41,10 @@ public class InLobbyScreenController implements ScreenController{
   // Template for lobby text
   private static final String lobbyNameTemp = "[ownerName]'s Lobby";
   private static final String playerCounterTemp = "[curPlayers]/[maxPlayers] Players";
+
+  public InLobbyScreenController(Lobby lobby){
+    this.lobby = lobby;
+  }
 
   @Override
   public void goTo(Stage stage) throws IOException {

@@ -106,7 +106,7 @@ public class MenuOrganizer {
   public static void goToInLobbyScreen(Lobby lobby) throws IOException {
     // Adds current screen to previous screens stack
     previousScreens.push(currentScreen);
-    ScreenController screen = new InLobbyScreenController();
+    ScreenController screen = new InLobbyScreenController(lobby);
 
     // Sets this screen as current screen
     currentScreen = screen;
