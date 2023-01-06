@@ -10,6 +10,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -19,9 +20,15 @@ public class InLobbyScreenController implements ScreenController{
   //TODO: Add "Waiting for player" text in empty player spots
 
   @FXML
+  private AnchorPane anchorPane;
+  @FXML
   private GridPane lobbyGrid;
   @FXML
   private Button leaveLobbyButton;
+  @FXML
+  private Button launchButton;
+  @FXML
+  private Button addPlayerButton;
   @FXML
   private Text lobbyNameText;
   @FXML
@@ -69,13 +76,13 @@ public class InLobbyScreenController implements ScreenController{
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
-    try {
+    /*try {
       Player player = new Player(playerImgs[new Random().nextInt(4)], MenuOrganizer.getUsername(), this);
 
       addPlayer(player);
     } catch (IOException ioe) {
       ioe.printStackTrace();
-    }
+    }*/
   }
 
   @FXML

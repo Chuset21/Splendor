@@ -3,6 +3,7 @@ package com.hexanome.fourteen.lobbyui;
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.boards.Expansion;
 import com.hexanome.fourteen.form.lobbyservice.CreateSessionForm;
+import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
@@ -110,14 +112,16 @@ public class CreateGameScreenController implements ScreenController{
     CreateSessionForm session = new CreateSessionForm(LobbyServiceCaller.getUserID(),(expansionSetting.getSelectedToggle().getUserData()).toString());
     System.out.println(LobbyServiceCaller.createSession(LobbyServiceCaller.getAccessToken(),session));
 
+    String sessionid = SessionsForm.getSessionWithHost(MenuOrganizer.getUsername());
+    System.out.println("SessionID: "+sessionid);
 
     try {
       System.out.println("Expansion toggle: "+(expansionSetting.getSelectedToggle().getUserData()).toString()
           +"\nPlayer count toggle: "+maxPlayersSetting.getSelectedToggle().toString());
 
-      MenuOrganizer.goToLobbySelectScreen();
-    } catch (Exception e) {
-      e.printStackTrace();
+      MenuOrganizer.goToInLobbyScreen(new Lobby(sessionid));
+    } catch (Exception ioe) {
+      ioe.printStackTrace();
     }
 
     // TODO: Implement putting player in correct lobby once created

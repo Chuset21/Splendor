@@ -33,9 +33,6 @@ public class LobbySelectScreenController implements ScreenController{
   @FXML
   private Button addLobby;
 
-  // Temp items to use for making lobbies
-  private static final String[] lobbyImgs = {"cat.jpg","dog.jpg","squirrel.jpg","chameleon.jpg"};
-  private static final String[] lobbyHosts = {"Billy Bob", "John Smith", "Gerald", "Betsy", "Brenda"};
 
   @Override
   public void goTo(Stage stage) throws IOException {
@@ -90,23 +87,20 @@ public class LobbySelectScreenController implements ScreenController{
 
     // Iterates through all active sessions
     for(Map.Entry<String, SessionForm> entry : lobbies.entrySet()){
-      Lobby lobby = null;
-
-      // Get settings for session
-      SessionForm session = LobbyServiceCaller.getSessionDetails(entry.getKey());
-      GameParametersForm gameSettings = session.gameParameters();
+      // Creates new lobby based on session data from lobby service
+      Lobby lobby = new Lobby(entry.getKey());
+      DisplayLobby displayLobby = null;
 
       try{
-        // Creates new lobby with the LobbyService's passed values for the following:
-        //  - Max players
-        //  - Host
-        lobby = new Lobby(lobbyImgs[new Random().nextInt(4)], gameSettings.location(), gameSettings.maxSessionPlayers(), com.hexanome.fourteen.boards.Expansion.ORIENT, session.creator(), this);
+        // Creates new display lobby based on data received from lobby service
+
+        displayLobby = new DisplayLobby(lobby, this);
       } catch(IOException ioe){
         ioe.printStackTrace();
       }
 
       if (lobby != null) {
-        lobbyVBox.getChildren().add(lobby);
+        lobbyVBox.getChildren().add(displayLobby);
       }
     }
   }
@@ -135,16 +129,16 @@ public class LobbySelectScreenController implements ScreenController{
 
   @FXML
   private void handleAddLobby() {
-    Lobby lobby = null;
-
-    try {
-      lobby = new Lobby(lobbyImgs[new Random().nextInt(4)],"location", 3, com.hexanome.fourteen.boards.Expansion.ORIENT, lobbyHosts[new Random().nextInt(5)], this);
-    } catch (IOException ioe) {
-      ioe.printStackTrace();
-    }
-
-    if (lobby != null) {
-      lobbyVBox.getChildren().add(lobby);
-    }
+//    Lobby lobby = null;
+//
+//    try {
+//      lobby = new Lobby(lobbyImgs[new Random().nextInt(4)],"location", 3, com.hexanome.fourteen.boards.Expansion.ORIENT, lobbyHosts[new Random().nextInt(5)], this);
+//    } catch (IOException ioe) {
+//      ioe.printStackTrace();
+//    }
+//
+//    if (lobby != null) {
+//      lobbyVBox.getChildren().add(lobby);
+//    }
   }
 }

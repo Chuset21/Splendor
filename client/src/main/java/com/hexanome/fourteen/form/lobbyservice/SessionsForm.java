@@ -51,7 +51,7 @@ public final class SessionsForm {
       }
     }
 
-    // Or retuns null
+    // Or returns null
     return null;
   }
 }

@@ -1,5 +1,10 @@
 package com.hexanome.fourteen.lobbyui;
 
+import com.hexanome.fourteen.LobbyServiceCaller;
+import com.hexanome.fourteen.boards.Expansion;
+import com.hexanome.fourteen.form.lobbyservice.GameParametersForm;
+import com.hexanome.fourteen.form.lobbyservice.SessionForm;
+import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
@@ -14,67 +19,42 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
-public class Lobby extends Pane implements Initializable {
+public class Lobby {
 
-  @FXML private ImageView image;
-  @FXML private Text name;
-  @FXML private Text capacityText;
-  @FXML private Text expansionText;
-  @FXML private Button joinLobbyButton;
-
-  private String location;
+  private String sessionid;
   private int numPlayers;
   private String[] players;
   private com.hexanome.fourteen.boards.Expansion expansion;
-  private LobbySelectScreenController controller;
 
-  public Lobby(String fileString, String location, int capacity, com.hexanome.fourteen.boards.Expansion expansion, String host, LobbySelectScreenController controller)
-      throws IOException {
+  public Lobby(String sessionid) {
 
-    // Load basic lobby UI
-    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(Lobby.class.getResource("defaultLobby.fxml")));
-
-    // Apply the UI to this class (set this object as the root)
-    loader.setRoot(this);
-
-    // THIS IS IMPORTANT, you can't set this object as the root unless the FXML file HAS NO CONTROLLER SET & it has fx:root="Pane"
-    loader.setController(this);
-    loader.load();
+    // Get settings for session
+    SessionForm session = LobbyServiceCaller.getSessionDetails(sessionid);
+    GameParametersForm gameParameters = session.gameParameters();
 
     // Initialize object vars
-    image.setImage(new Image(Objects.requireNonNull(Lobby.class.getResource("images/"+fileString).toString())));
+    this.sessionid = sessionid;
 
     // Set player list
     this.numPlayers = 1;
-    this.players = new String[capacity];
-    players[0] = host;
+    this.players = new String[gameParameters.maxSessionPlayers()];
+    players[0] = MenuOrganizer.getUsername();
 
+    // TODO: Make this actually set expansion session's expansion
     // Set expansion
-    this.expansion = expansion;
-
-    // Set lobby name
-    name.setText(players[0] + "'s Lobby");
-
-    // Set text describing lobby
-    capacityText.setText(numPlayers +"/"+ players.length);
-    expansionText.setText(expansion.toString());
-
-    // Set instance of LobbyController this was created by
-    this.controller = controller;
-
-    /**
-     * Calls handleJoinLobbyButton() from lobby controller class on button click
-     */
-    joinLobbyButton.setOnAction(e -> {
-      if(numPlayers < players.length){
-        controller.handleJoinLobbyButton(this);
-      }
-    });
+    this.expansion = Expansion.ORIENT;
   }
 
-  @Override
-  public void initialize(URL url, ResourceBundle resourceBundle) {
+  public String[] getPlayers(){
+    return players;
+  }
 
+  public int getNumPlayers(){
+    return numPlayers;
+  }
+
+  public Expansion getExpansion(){
+    return expansion;
   }
 
 }

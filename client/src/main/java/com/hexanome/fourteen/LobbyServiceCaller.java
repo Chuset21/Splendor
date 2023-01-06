@@ -176,7 +176,8 @@ public final class LobbyServiceCaller {
     HttpResponse<String> response = Unirest.post("%sapi/sessions".formatted(Main.lsLocation))
         .header("Content-Type", "application/json")
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-        .queryString("access_token", authtoken).body(Main.GSON.toJson(createSessionForm))
+        .queryString("access_token", authtoken)
+        .body(Main.GSON.toJson(createSessionForm))
         .asString();
 
     if (response.getStatus() != 200) {
@@ -184,5 +185,19 @@ public final class LobbyServiceCaller {
     }
 
     return response.getBody();
+  }
+
+  /**
+   * Deletes a session, requires host's token
+   * @param authtoken token of session host
+   * @param sessionid ID of host's session
+   * @return body of HTTP response
+   */
+  public static boolean deleteSession(String authtoken, String sessionid){
+    return Unirest.delete("%sapi/sessions/%s".formatted(Main.lsLocation, sessionid))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", authtoken)
+        .asEmpty()
+        .getStatus() == 200;
   }
 }
