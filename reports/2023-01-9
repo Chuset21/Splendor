@@ -1,0 +1,112 @@
+# Weekly Report, COMP361
+
+## Meta Information
+
+### Group
+
+- Hexanome-14
+- java
+
+### Team Members
+
+- Miguel Arrieta Torrecilla
+- Krishi Madipelly
+- Eamonn Lye
+- Fernando Borrell Alvarez
+- Matan Atlas
+- Kai Turanski
+
+## Status
+
+### 3 most outstanding tasks scheduled until the next report, per team member
+
+- Miguel Arrieta Torrecilla
+  - Start studying design patterns for the final
+  - Start studying models for the final
+  - Prepare for demo for M5
+- Eamonn Lye
+  - Begin studying for class final (midterm)
+  - Present M5 on Tuesday
+  - Finish all screencasts
+- Krishi Madipelly
+  - Prepare for M5 demonstration
+  - Review code base
+  - Prepare for Fall 2022 Final
+- Fernando Borrell Alvarez
+  - Review more REST
+  - Complete lobby functionality for M5
+  - Review Springboot
+- Matan Atlas
+  - Work on integrating client and server functionality
+  - Learn more about REST and spring as it pertains to Splendor
+  - Rehearse M5 presentation
+- Kai Turanski
+  - Add card data to game
+  - Add checks to card price
+  - Work on prepping demo for M5
+
+### Tasks achieved, scheduled for this report, per team member
+
+- Miguel Arrieta Torrecilla
+  - Meet with group to discuss current and future work for M5
+  - Start thinking about demo for M5
+- Krishi Madipelly
+  - Working on M5
+  - Reviewing code base
+  - Met up with group
+- Matan Atlas
+  - Working on M5
+  - Reviewed sample projects to help with M5
+  - Read LS documentation thuroughly
+- Eamonn Lye
+  - Finished up M5 API model
+  - Extensively completed unit tests on Server side
+  - Implemented additional features required for M5.
+- Kai Turanski
+  - Create card class
+  - Implement card data
+  - Review REST exercises for M5
+- Fernando Borrell Alvarez
+  - Reviewed REST exercises
+  - Progressed on M5
+
+### Tasks missed, scheduled for this report
+
+- Miguel Arrieta Torrecilla
+  - Start studying for the final
+- Krishi Madipelly
+  - Most recent slides review
+- Eamonn Lye
+  - Review this week's lectures
+- Kai Turanski
+- Fernando Borrell Alvarez
+  - Review Maven in more detail
+- Matan Atlas
+  - REST design exercises
+
+### Top 3 unexpected challenges encountered since last report
+
+- Being able to link card data with card images accurately
+- Difficulty splitting up small tasks that all affect each other.
+- Busy schedules making it difficult to coordinate work and meetings
+
+### Top 3 lessons learned since last report
+
+- Meeting in-person makes it much easier to coordinate plans
+- Developing models gets easier as you have more models.
+- Having a UI designed prior (M1) makes the front-end development easier.
+
+### 3 most critical bugs in current functionality (optional)
+
+### Contribution statement
+
+- Miguel Arrieta contributed 20% of the work effectuated since last week.
+- Eamonn Lye contributed 14% of the work effectuated since last week.
+- Krishi Madipelly contributed 16% of the work effectuated since last week.
+- Fernando Borrell Alvarez contributed 18% of the work effectuated since last week.
+- Matan Atlas contributed 15% of the work effectuated since last week.
+- Kai Turanski contributed 15% of the work effectuated since last week.
+
+### Team mood
+
+- Approaching finals, and we're **_still_** optimistic about making our game!\*
