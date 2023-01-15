@@ -58,7 +58,7 @@ public class InLobbyScreenController implements ScreenController{
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
-        Objects.requireNonNull(MenuOrganizer.class.getResource("lobby.fxml")));
+        Objects.requireNonNull(MenuOrganizer.class.getResource("InLobbyScreen.fxml")));
     // Import root from fxml file
     Parent root = loader.load();
     // Set up root on stage (window)

@@ -62,6 +62,8 @@ public class MenuOrganizer {
     screen.goTo(stage);
   }
 
+  // TODO: Make all go to functions take location param & overload for inlobbyscreen
+
   public static void goToWelcomeScreen() throws IOException {
     ScreenController screen = new WelcomeScreenController();
 
