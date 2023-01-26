@@ -75,6 +75,7 @@ public class GameHandlerController {
    */
   @PutMapping(value = "{gameid}", consumes = "application/json; charset=utf-8")
   public ResponseEntity<String> launchGame(@PathVariable String gameid,
+                                           // TODO add authToken
                                            @RequestBody LaunchGameForm launchGameForm) {
     gameManager.put(gameid, createGame(gameid, launchGameForm)); // TODO add checks
     return ResponseEntity.status(HttpStatus.OK).body(null);
@@ -98,7 +99,7 @@ public class GameHandlerController {
    * @return The full response
    */
   @DeleteMapping("{gameid}")
-  public ResponseEntity<String> deleteGame(@PathVariable String gameid) {
+  public ResponseEntity<String> deleteGame(@PathVariable String gameid) { // TODO add authToken
     if (!removeGame(gameid)) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
     }
@@ -130,7 +131,7 @@ public class GameHandlerController {
    * @return The full response
    */
   @GetMapping(value = "{gameid}", produces = "application/json; charset=utf-8")
-  public ResponseEntity<String> retrieveGame(@PathVariable String gameid) {
+  public ResponseEntity<String> retrieveGame(@PathVariable String gameid) {  // TODO add authToken
     final GameBoard gameBoard = getGame(gameid);
     if (gameBoard == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
