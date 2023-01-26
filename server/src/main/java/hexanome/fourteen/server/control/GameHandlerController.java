@@ -77,7 +77,7 @@ public class GameHandlerController {
   public ResponseEntity<String> launchGame(@PathVariable String gameid,
                                            // TODO add authToken
                                            @RequestBody LaunchGameForm launchGameForm) {
-    gameManager.put(gameid, createGame(gameid, launchGameForm)); // TODO add checks
+    gameManager.put(gameid, createGame(gameid, launchGameForm)); // TODO add checks + use creator
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
