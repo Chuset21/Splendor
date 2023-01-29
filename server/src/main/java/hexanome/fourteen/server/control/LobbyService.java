@@ -1,5 +1,6 @@
 package hexanome.fourteen.server.control;
 
+import java.util.Locale;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,5 +97,13 @@ public class LobbyService implements LobbyServiceCaller {
   public String getUsername(String accessToken) {
     return Unirest.post("%soauth/username".formatted(lsLocation))
         .queryString("access_token", accessToken).asString().getBody();
+  }
+
+  @Override
+  public boolean isAdmin(String accessToken) {
+    return Unirest.get("%soauth/role".formatted(lsLocation))
+        .queryString("access_token", accessToken).asString()
+        .mapBody(b -> b != null && b.toLowerCase(
+            Locale.ROOT).contains("admin"));
   }
 }

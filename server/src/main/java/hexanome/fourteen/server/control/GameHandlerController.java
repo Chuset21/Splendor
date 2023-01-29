@@ -97,6 +97,7 @@ public class GameHandlerController {
 
   /**
    * Remove a game with a matching game ID.
+   * Only admins can delete a game.
    *
    * @param gameid game ID to remove
    * @return The full response
@@ -106,6 +107,8 @@ public class GameHandlerController {
                                            @RequestParam("access_token") String accessToken) {
     if (getUsername(accessToken) == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
+    } else if (!lobbyService.isAdmin(accessToken)) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("must be admin to delete a game");
     }
 
     if (!removeGame(gameid)) {
