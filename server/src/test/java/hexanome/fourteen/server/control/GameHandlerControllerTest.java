@@ -36,16 +36,29 @@ public class GameHandlerControllerTest {
   private static GsonInstance gsonInstance;
   private LobbyServiceCaller lobbyService;
   private GameHandlerController gameHandlerController;
+  private static User user1;
+  private static User user2;
 
   @BeforeAll
   public static void setUp() {
     gsonInstance = new GsonInstance();
     ReflectionTestUtils.invokeMethod(gsonInstance, "initGson");
+
+    user1 = new User();
+    user2 = new User();
+    ReflectionTestUtils.setField(user1, "name", "user1");
+    ReflectionTestUtils.setField(user2, "name", "user2");
+    ReflectionTestUtils.setField(user1, "preferredColour", "test");
+    ReflectionTestUtils.setField(user2, "preferredColour", "test");
   }
 
   @BeforeEach
   public void init() {
     lobbyService = mock(LobbyServiceCaller.class);
+
+    Mockito.when(lobbyService.getUsername("user1")).thenReturn(null);
+    Mockito.when(lobbyService.getUsername("user2")).thenReturn("x");
+
     gameHandlerController =
         new GameHandlerController(lobbyService, new UserPlayerMapper(), new StringExpansionMapper(),
             new ServerToClientBoardGameMapper(), gsonInstance);
@@ -54,20 +67,18 @@ public class GameHandlerControllerTest {
   @Test
   public void testLaunchGame() {
     final LaunchGameForm launchGameForm = new LaunchGameForm();
-    final User user1 = new User();
-    final User user2 = new User();
-
-    ReflectionTestUtils.setField(user1, "name", "user1");
-    ReflectionTestUtils.setField(user2, "name", "user2");
-    ReflectionTestUtils.setField(user1, "preferredColour", "test");
-    ReflectionTestUtils.setField(user2, "preferredColour", "test");
 
     ReflectionTestUtils.setField(launchGameForm, "creator", "test");
     ReflectionTestUtils.setField(launchGameForm, "gameType", Expansion.STANDARD.name());
     ReflectionTestUtils.setField(launchGameForm, "players", new User[] {user1, user2});
     ReflectionTestUtils.setField(launchGameForm, "saveGame", "test");
 
-    ResponseEntity<String> response = gameHandlerController.launchGame("gameid", launchGameForm);
+    ResponseEntity<String> response = gameHandlerController.launchGame("gameid", "user1", launchGameForm);
+
+    assertEquals("invalid access token", response.getBody());
+    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+
+    response = gameHandlerController.launchGame("gameid", "user2", launchGameForm);
 
     assertNull(response.getBody());
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -80,10 +91,13 @@ public class GameHandlerControllerTest {
         new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(new Player("test")), "x", null));
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
 
-    ResponseEntity<String> response = gameHandlerController.deleteGame("???");
+    ResponseEntity<String> response = gameHandlerController.deleteGame("???", "user1");
+    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+
+    response = gameHandlerController.deleteGame("???", "user2");
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
-    response = gameHandlerController.deleteGame("x");
+    response = gameHandlerController.deleteGame("x", "user2");
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 
@@ -95,12 +109,13 @@ public class GameHandlerControllerTest {
     gameManager.put("test", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
 
-    ResponseEntity<String> response =  gameHandlerController.retrieveGame("");
+    ResponseEntity<String> response =  gameHandlerController.retrieveGame("", "user1");
+    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+
+    response =  gameHandlerController.retrieveGame("", "user2");
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
-    Mockito.when(lobbyService.getUsername("token")).thenReturn("test");
-
-    response = gameHandlerController.retrieveGame("test");
+    response = gameHandlerController.retrieveGame("test", "user2");
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(gsonInstance.gson.toJson(new ServerToClientBoardGameMapper().map(board)),
         response.getBody());

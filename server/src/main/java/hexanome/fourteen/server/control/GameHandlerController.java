@@ -75,9 +75,12 @@ public class GameHandlerController {
    */
   @PutMapping(value = "{gameid}", consumes = "application/json; charset=utf-8")
   public ResponseEntity<String> launchGame(@PathVariable String gameid,
-                                           // TODO add authToken
+                                           @RequestParam("access_token") String accessToken,
                                            @RequestBody LaunchGameForm launchGameForm) {
-    gameManager.put(gameid, createGame(gameid, launchGameForm)); // TODO add checks + use creator
+    if (getUsername(accessToken) == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
+    }
+    gameManager.put(gameid, createGame(gameid, launchGameForm)); // TODO add checks
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
@@ -99,7 +102,12 @@ public class GameHandlerController {
    * @return The full response
    */
   @DeleteMapping("{gameid}")
-  public ResponseEntity<String> deleteGame(@PathVariable String gameid) { // TODO add authToken
+  public ResponseEntity<String> deleteGame(@PathVariable String gameid,
+                                           @RequestParam("access_token") String accessToken) {
+    if (getUsername(accessToken) == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
+    }
+
     if (!removeGame(gameid)) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
     }
@@ -131,7 +139,12 @@ public class GameHandlerController {
    * @return The full response
    */
   @GetMapping(value = "{gameid}", produces = "application/json; charset=utf-8")
-  public ResponseEntity<String> retrieveGame(@PathVariable String gameid) {  // TODO add authToken
+  public ResponseEntity<String> retrieveGame(@PathVariable String gameid,
+                                             @RequestParam("access_token") String accessToken) {
+    if (getUsername(accessToken) == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
+    }
+
     final GameBoard gameBoard = getGame(gameid);
     if (gameBoard == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
