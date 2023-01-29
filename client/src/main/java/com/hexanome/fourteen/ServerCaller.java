@@ -20,9 +20,11 @@ public final class ServerCaller {
    *
    * @return The game board form if successful, null otherwise.
    */
-  public static GameBoardForm getGameBoard(String serverLocation, String gameid) {
+  public static GameBoardForm getGameBoard(String serverLocation, String gameid,
+                                           String accessToken) {
     HttpResponse<String> response = Unirest.get("%s/api/games/%s".formatted(serverLocation, gameid))
-        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=").asString();
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", accessToken).asString();
 
     if (response.getStatus() != 200) {
       return null;
