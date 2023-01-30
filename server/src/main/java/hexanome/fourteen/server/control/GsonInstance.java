@@ -26,6 +26,6 @@ public class GsonInstance {
   @PostConstruct
   private void initGson() {
     gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-        .create();
+        .serializeNulls().create();
   }
 }
