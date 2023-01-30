@@ -4,6 +4,7 @@ import hexanome.fourteen.server.Mapper;
 import hexanome.fourteen.server.control.form.LaunchGameForm;
 import hexanome.fourteen.server.control.form.PurchaseCardForm;
 import hexanome.fourteen.server.control.form.ReserveCardForm;
+import hexanome.fourteen.server.control.form.TakeGemsForm;
 import hexanome.fourteen.server.model.User;
 import hexanome.fourteen.server.model.board.GameBoard;
 import hexanome.fourteen.server.model.board.Hand;
@@ -185,19 +186,24 @@ public class GameHandlerController {
     }
 
     final Card card = purchaseCardForm.card();
+    if (card == null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("card cannot be null");
+    }
     final Set<List<Card>> decks = gameBoard.cards();
     if (!cardIsFaceUpOnBoard(decks, card)) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body("card chosen for purchase is not valid");
     }
 
-    final Gems substitutedGems = purchaseCardForm.substitutedGems();
+    final Gems substitutedGems = purchaseCardForm.substitutedGems() == null ? new Gems() :
+        purchaseCardForm.substitutedGems();
     if (substitutedGems.containsKey(GemColor.GOLD)) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body("cannot substitute gold gems for gold gems");
     }
 
-    final Gems gemsToPayWith = purchaseCardForm.gemsToPayWith();
+    final Gems gemsToPayWith =
+        purchaseCardForm.gemsToPayWith() == null ? new Gems() : purchaseCardForm.gemsToPayWith();
     if (countGemAmount(substitutedGems) != gemsToPayWith.getOrDefault(GemColor.GOLD, 0)) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body("substituting amount not equal to gold gems");
@@ -265,9 +271,12 @@ public class GameHandlerController {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("cannot reserve more than 3 cards");
     }
 
-    final Card card = reserveCardForm.card();
+    Card card = reserveCardForm.card();
+    if (card == null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("card cannot be null");
+    }
     final Set<List<Card>> decks = gameBoard.cards();
-    if (!cardIsFaceUpOnBoard(decks, card)) {
+    if (!reserveCardForm.isTakingFaceDown() && !cardIsFaceUpOnBoard(decks, card)) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body("card chosen for reservation is not valid");
     }
@@ -288,7 +297,13 @@ public class GameHandlerController {
     }
 
     // Remove the card from the game board and add it to the player's reserved stack
-    if (!removeCardFromDeck(decks, card)) {
+    if (reserveCardForm.isTakingFaceDown()) {
+      card = getFaceDownCard(decks, card);
+      if (card == null) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("not enough cards in the deck to reserve a face down card");
+      }
+    } else if (!removeCardFromDeck(decks, card)) {
       // This should never happen
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
@@ -310,6 +325,115 @@ public class GameHandlerController {
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
+  /**
+   * Take gems.
+   *
+   * @param gameid       The game id corresponding to the game.
+   * @param accessToken  The access token belonging to the player trying to take gems.
+   * @param takeGemsForm The take gems form.
+   * @return The response.
+   */
+  @PutMapping(value = "{gameid}/gems", consumes = "application/json; charset=utf-8")
+  public ResponseEntity<String> takeGems(@PathVariable String gameid,
+                                         @RequestParam("access_token") String accessToken,
+                                         @RequestBody TakeGemsForm takeGemsForm) {
+    final String username = getUsername(accessToken);
+    if (username == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
+    }
+
+    final GameBoard gameBoard = getGame(gameid);
+    if (gameBoard == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
+    }
+
+    final Hand hand = getHand(gameBoard.players(), username);
+    if (hand == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
+    }
+
+    final Gems gemsToTake = takeGemsForm.gemsToTake();
+    if (gemsToTake == null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("gems to take cannot be null");
+    } else if (gemsToTake.get(GemColor.GOLD) != null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("cannot take gold tokens");
+    }
+
+    final Gems gemsToRemove = takeGemsForm.gemsToRemove();
+    final int amountOfGemsToTake = countGemAmount(gemsToTake);
+    final int amountOfGemsInHand = countGemAmount(hand.gems());
+    if (amountOfGemsToTake > 3) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("cannot take more than 3 gems");
+    } else if (!hasEnoughGems(gameBoard.availableGems(), gemsToTake)) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("not enough gems in the bank");
+    } else {
+      final int total = amountOfGemsToTake + amountOfGemsInHand;
+      if (total > 10 && (gemsToRemove == null || (total - countGemAmount(gemsToRemove) > 10))) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("can only have a maximum of 10 gems");
+      } else if (total <= 10 && gemsToRemove != null) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("cannot remove gems if not necessary");
+      } else if (total > 10 && total - countGemAmount(gemsToRemove) < 10) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("cannot remove gems and be left with less than 10");
+      }
+    }
+
+    if (gemsToTake.size() == 1) {
+      final Map.Entry<GemColor, Integer> entryToTake = gemsToTake.entrySet().iterator().next();
+      final int amountOfGemsAvailable = gameBoard.availableGems().get(entryToTake.getKey());
+      if (amountOfGemsToTake > 2) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("cannot take 3 gems of one color");
+      } else if (amountOfGemsAvailable < 4 && amountOfGemsToTake == 2) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            "cannot take 2 same color gems, there are less than 4 gems of that color in the bank");
+      } else if (gameBoard.availableGems().keySet().size() > 1 && amountOfGemsToTake == 1) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("cannot take 1 gem if it is possible to take more");
+      } else if (amountOfGemsAvailable >= 4 && amountOfGemsToTake == 1) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("cannot take 1 gem if it is possible to take more");
+      }
+      // Only possible scenarios now
+      // amountOfGemsAvailable >= 4 && amountOfGemsToTake == 2
+      // amountOfGemsAvailable < 4 && amountOfGemsToTake == 1 && only 1 gem color available
+    } else if (gemsToTake.values().stream().anyMatch(v -> v > 1)) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("cannot take more than one gem of each gem");
+    } else if (gemsToTake.size() == 2 && gameBoard.availableGems().size() != 2) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+          "cannot take 1 gem of each for 2 gem colors if it is possible to take from 3 colors");
+    }
+
+    // Take gems from the bank and add them to the player
+    removeGems(gameBoard.availableGems(), gemsToTake);
+    addGems(hand.gems(), gemsToTake);
+
+    // If necessary, take excess gems from the player and add the to the bank
+    if (gemsToRemove != null) {
+      removeGems(hand.gems(), gemsToRemove);
+      addGems(gameBoard.availableGems(), gemsToRemove);
+    }
+
+    gameBoard.nextTurn();
+    return ResponseEntity.status(HttpStatus.OK).body(null);
+  }
+
+  private Card getFaceDownCard(Set<List<Card>> decks, Card card) {
+    for (List<Card> deck : decks) {
+      if (!deck.isEmpty()) {
+        final Card firstCard = deck.get(0);
+        if (firstCard.level() == card.level() && firstCard.expansion() == firstCard.expansion()) {
+          final int cardIndex = firstCard.expansion() == Expansion.STANDARD ? 4 : 2;
+          return deck.size() <= cardIndex ? null : deck.get(cardIndex);
+        }
+      }
+    }
+    return null;
+  }
+
   private Gems getDiscountedCost(Gems originalCost, Gems gemDiscounts) {
     final Gems result = new Gems(originalCost);
 
@@ -325,15 +449,8 @@ public class GameHandlerController {
   }
 
   private void removeGems(Gems gemsToRemoveFrom, Gems gemsToRemove) {
-    gemsToRemove.forEach((key, amountToRemove) -> {
-      final int amount = gemsToRemoveFrom.get(key);
-      final int newValue = amount - amountToRemove;
-      if (newValue == 0) {
-        gemsToRemoveFrom.remove(key);
-      } else {
-        gemsToRemoveFrom.put(key, newValue);
-      }
-    });
+    gemsToRemove.forEach((key, amountToRemove) -> gemsToRemoveFrom.computeIfPresent(key,
+        (k, v) -> v.equals(amountToRemove) ? null : v - amountToRemove));
   }
 
   private boolean removeCardFromDeck(Set<List<Card>> decks, Card card) {
@@ -377,9 +494,8 @@ public class GameHandlerController {
   }
 
   private boolean hasEnoughGems(Gems ownedGems, Gems gemsToPayWith) {
-    return gemsToPayWith.entrySet().stream().noneMatch(
-        entry -> !ownedGems.containsKey(entry.getKey())
-                 || ownedGems.get(entry.getKey()) < entry.getValue());
+    return gemsToPayWith.entrySet().stream()
+        .noneMatch(entry -> ownedGems.getOrDefault(entry.getKey(), 0) < entry.getValue());
   }
 
   private Hand getHand(Collection<Player> players, String username) {
