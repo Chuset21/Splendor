@@ -17,7 +17,7 @@ public class Main extends Application {
 
   public static final Gson GSON =
       new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-          .create();
+          .serializeNulls().create();
   private static final String HTTP_STRING = "http://%s:%s/";
   private static final String LOBBY_SERVICE_PORT = "4242";
   private static final String DEFAULT_IP = "127.0.0.1";
