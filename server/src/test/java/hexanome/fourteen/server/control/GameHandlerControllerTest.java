@@ -127,8 +127,9 @@ public class GameHandlerControllerTest {
   @Test
   public void testPurchaseCard() {
     final Map<String, GameBoard> gameManager = new HashMap<>();
+    final Player player = new Player("test");
     final GameBoard board =
-        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(new Player("test")), "x", null);
+        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player), "x", null);
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
 
@@ -194,9 +195,14 @@ public class GameHandlerControllerTest {
     substitutedGems.put(GemColor.WHITE, 1);
     substitutedGems.put(GemColor.GREEN, 2);
     purchaseCardForm = new PurchaseCardForm(card, paymentGems, substitutedGems);
+    final Gems previousPlayersGems = new Gems(player.hand().gems());
     response = gameHandlerController.purchaseCard("", "token", purchaseCardForm);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNull(response.getBody());
+    assertEquals(previousPlayersGems.get(GemColor.GOLD) - paymentGems.get(GemColor.GOLD),
+        player.hand().gems().getOrDefault(GemColor.GOLD, 0));
+    assertEquals(previousPlayersGems.get(GemColor.WHITE) - paymentGems.get(GemColor.WHITE),
+        player.hand().gems().getOrDefault(GemColor.WHITE, 0));
   }
 
   @Test
