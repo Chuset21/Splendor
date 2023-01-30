@@ -71,12 +71,4 @@ public interface LobbyServiceCaller {
    * @return The Username
    */
   String getUsername(String accessToken);
-
-  /**
-   * Returns whether the user is an admin.
-   *
-   * @param accessToken The Access Token
-   * @return true if the user is an admin, false otherwise
-   */
-  boolean isAdmin(String accessToken);
 }

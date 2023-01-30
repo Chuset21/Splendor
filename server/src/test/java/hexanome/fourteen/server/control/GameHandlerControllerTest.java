@@ -73,12 +73,7 @@ public class GameHandlerControllerTest {
     ReflectionTestUtils.setField(launchGameForm, "players", new User[] {user1, user2});
     ReflectionTestUtils.setField(launchGameForm, "saveGame", "test");
 
-    ResponseEntity<String> response = gameHandlerController.launchGame("gameid", "user1", launchGameForm);
-
-    assertEquals("invalid access token", response.getBody());
-    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-
-    response = gameHandlerController.launchGame("gameid", "user2", launchGameForm);
+    ResponseEntity<String> response = gameHandlerController.launchGame("gameid", launchGameForm);
 
     assertNull(response.getBody());
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -91,20 +86,10 @@ public class GameHandlerControllerTest {
         new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(new Player("test")), "x", null));
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
 
-    ResponseEntity<String> response = gameHandlerController.deleteGame("???", "user1");
-    assertEquals("invalid access token", response.getBody());
-    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-
-    Mockito.when(lobbyService.isAdmin("user2")).thenReturn(false);
-    response = gameHandlerController.deleteGame("???", "user2");
-    assertEquals("must be admin to delete a game", response.getBody());
-    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-
-    Mockito.when(lobbyService.isAdmin("user2")).thenReturn(true);
-    response = gameHandlerController.deleteGame("???", "user2");
+    ResponseEntity<String> response = gameHandlerController.deleteGame("???");
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
-    response = gameHandlerController.deleteGame("x", "user2");
+    response = gameHandlerController.deleteGame("x");
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 

@@ -75,11 +75,7 @@ public class GameHandlerController {
    */
   @PutMapping(value = "{gameid}", consumes = "application/json; charset=utf-8")
   public ResponseEntity<String> launchGame(@PathVariable String gameid,
-                                           @RequestParam("access_token") String accessToken,
                                            @RequestBody LaunchGameForm launchGameForm) {
-    if (getUsername(accessToken) == null) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
-    }
     gameManager.put(gameid, createGame(gameid, launchGameForm)); // TODO add checks
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
@@ -103,14 +99,7 @@ public class GameHandlerController {
    * @return The full response
    */
   @DeleteMapping("{gameid}")
-  public ResponseEntity<String> deleteGame(@PathVariable String gameid,
-                                           @RequestParam("access_token") String accessToken) {
-    if (getUsername(accessToken) == null) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
-    } else if (!lobbyService.isAdmin(accessToken)) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("must be admin to delete a game");
-    }
-
+  public ResponseEntity<String> deleteGame(@PathVariable String gameid) {
     if (!removeGame(gameid)) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
     }
@@ -138,7 +127,8 @@ public class GameHandlerController {
   /**
    * Get a game board.
    *
-   * @param gameid The game id corresponding to the game.
+   * @param gameid      The game id corresponding to the game.
+   * @param accessToken The access token belonging to the player getting the game.
    * @return The full response
    */
   @GetMapping(value = "{gameid}", produces = "application/json; charset=utf-8")
