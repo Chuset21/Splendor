@@ -134,13 +134,16 @@ public class GameHandlerController {
   @GetMapping(value = "{gameid}", produces = "application/json; charset=utf-8")
   public ResponseEntity<String> retrieveGame(@PathVariable String gameid,
                                              @RequestParam("access_token") String accessToken) {
-    if (getUsername(accessToken) == null) {
+    final String username = getUsername(accessToken);
+    if (username == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
     }
 
     final GameBoard gameBoard = getGame(gameid);
     if (gameBoard == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
+    } else if (getHand(gameBoard.players(), username) == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
     } else {
       final SentGameBoard sentGameBoard = gameBoardMapper.map(gameBoard);
       return ResponseEntity.status(HttpStatus.OK)

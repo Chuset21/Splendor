@@ -97,16 +97,22 @@ public class GameHandlerControllerTest {
   public void testRetrieveGame() {
     final Map<String, GameBoard> gameManager = new HashMap<>();
     final GameBoard board =
-        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(new Player("test")), "x", null);
+        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(new Player("player2")), "x", null);
     gameManager.put("test", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
 
-    ResponseEntity<String> response =  gameHandlerController.retrieveGame("", "user1");
+    ResponseEntity<String> response = gameHandlerController.retrieveGame("", "user1");
+    assertEquals("invalid access token", response.getBody());
     assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
 
-    response =  gameHandlerController.retrieveGame("", "user2");
+    response = gameHandlerController.retrieveGame("", "user2");
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
+    response = gameHandlerController.retrieveGame("test", "user2");
+    assertEquals("player is not part of this game", response.getBody());
+    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+
+    Mockito.when(lobbyService.getUsername("user2")).thenReturn("player2");
     response = gameHandlerController.retrieveGame("test", "user2");
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(gsonInstance.gson.toJson(new ServerToClientBoardGameMapper().map(board)),
