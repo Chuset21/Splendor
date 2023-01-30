@@ -1,4 +1,4 @@
-package hexanome.fourteen.server.control;
+package hexanome.fourteen.server.control.form;
 
 import com.google.gson.annotations.SerializedName;
 import hexanome.fourteen.server.model.User;

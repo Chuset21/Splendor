@@ -41,7 +41,7 @@ public final class ServerCaller {
   public static HttpResponse<String> purchaseCard(String serverLocation, String gameid,
                                                   String accessToken,
                                                   PurchaseCardForm purchaseCardForm) {
-    return Unirest.put("%s/api/games/%s/card".formatted(serverLocation, gameid))
+    return Unirest.put("%s/api/games/%s/card/purchase".formatted(serverLocation, gameid))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("access_token", accessToken).body(Main.GSON.toJson(purchaseCardForm))
         .asString();

@@ -3,10 +3,10 @@ package hexanome.fourteen.server.model.board;
 import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * A player's hand.
@@ -14,8 +14,8 @@ import java.util.Set;
 public final class Hand {
   private int prestigePoints;
   private Gems gems;
-  private Set<Card> reservedCards;
-  private Set<Card> purchasedCards;
+  private List<Card> reservedCards;
+  private List<Card> purchasedCards;
   private Noble visitedNoble;
   private Noble reservedNoble;
   private Gems gemDiscounts;
@@ -31,7 +31,7 @@ public final class Hand {
    * @param reservedNoble  the reserved noble
    * @param gemDiscounts   the gem discounts
    */
-  public Hand(int prestigePoints, Gems gems, Set<Card> reservedCards, Set<Card> purchasedCards,
+  public Hand(int prestigePoints, Gems gems, List<Card> reservedCards, List<Card> purchasedCards,
               Noble visitedNoble, Noble reservedNoble, Gems gemDiscounts) {
     this.prestigePoints = prestigePoints;
     this.gems = gems;
@@ -50,8 +50,8 @@ public final class Hand {
     prestigePoints = 0;
     gems = new Gems();
     Arrays.stream(GemColor.values()).forEach(e -> gems.put(e, 3));
-    reservedCards = new HashSet<>();
-    purchasedCards = new HashSet<>();
+    reservedCards = new ArrayList<>();
+    purchasedCards = new ArrayList<>();
     visitedNoble = null;
     reservedNoble = null;
     gemDiscounts = new Gems();
@@ -80,7 +80,7 @@ public final class Hand {
    *
    * @return Cards reserved.
    */
-  public Set<Card> reservedCards() {
+  public List<Card> reservedCards() {
     return reservedCards;
   }
 
@@ -89,7 +89,7 @@ public final class Hand {
    *
    * @return Cards purchased.
    */
-  public Set<Card> purchasedCards() {
+  public List<Card> purchasedCards() {
     return purchasedCards;
   }
 
@@ -143,7 +143,7 @@ public final class Hand {
    *
    * @param reservedCards Cards that have been reserved to set
    */
-  public void setReservedCards(Set<Card> reservedCards) {
+  public void setReservedCards(List<Card> reservedCards) {
     this.reservedCards = reservedCards;
   }
 
@@ -152,7 +152,7 @@ public final class Hand {
    *
    * @param purchasedCards Cards that have been purchased to set
    */
-  public void setPurchasedCards(Set<Card> purchasedCards) {
+  public void setPurchasedCards(List<Card> purchasedCards) {
     this.purchasedCards = purchasedCards;
   }
 

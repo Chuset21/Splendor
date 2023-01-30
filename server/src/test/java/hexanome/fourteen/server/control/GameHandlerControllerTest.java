@@ -1,10 +1,15 @@
 package hexanome.fourteen.server.control;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.mock;
 
+import hexanome.fourteen.server.control.form.LaunchGameForm;
+import hexanome.fourteen.server.control.form.PurchaseCardForm;
+import hexanome.fourteen.server.control.form.ReserveCardForm;
 import hexanome.fourteen.server.model.User;
 import hexanome.fourteen.server.model.board.GameBoard;
 import hexanome.fourteen.server.model.board.card.Card;
@@ -147,37 +152,32 @@ public class GameHandlerControllerTest {
     PurchaseCardForm purchaseCardForm = new PurchaseCardForm(card, new Gems(), new Gems());
     response = gameHandlerController.purchaseCard("", "token", purchaseCardForm);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    assertEquals("card chosen for purchase is not valid",
-        response.getBody());
+    assertEquals("card chosen for purchase is not valid", response.getBody());
 
     Gems cardCost = new Gems();
     cardCost.put(GemColor.GREEN, 2);
     cardCost.put(GemColor.WHITE, 2);
     Gems substitutedGems = new Gems();
     substitutedGems.put(GemColor.GOLD, 2);
-    card =
-        new StandardCard(0, cardCost, CardLevel.ONE, Expansion.STANDARD, 1, GemColor.BLACK);
+    card = new StandardCard(0, cardCost, CardLevel.ONE, Expansion.STANDARD, 1, GemColor.BLACK);
     purchaseCardForm = new PurchaseCardForm(card, new Gems(), substitutedGems);
     response = gameHandlerController.purchaseCard("", "token", purchaseCardForm);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    assertEquals("cannot substitute gold gems for gold gems",
-        response.getBody());
+    assertEquals("cannot substitute gold gems for gold gems", response.getBody());
 
     substitutedGems = new Gems();
     substitutedGems.put(GemColor.BLUE, 2);
     purchaseCardForm = new PurchaseCardForm(card, new Gems(), substitutedGems);
     response = gameHandlerController.purchaseCard("", "token", purchaseCardForm);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    assertEquals("substituting amount not equal to gold gems",
-        response.getBody());
+    assertEquals("substituting amount not equal to gold gems", response.getBody());
 
     Gems paymentGems = new Gems();
     paymentGems.put(GemColor.BLACK, 4);
     purchaseCardForm = new PurchaseCardForm(card, paymentGems, new Gems());
     response = gameHandlerController.purchaseCard("", "token", purchaseCardForm);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    assertEquals("not enough gems",
-        response.getBody());
+    assertEquals("not enough gems", response.getBody());
 
     paymentGems = new Gems();
     paymentGems.put(GemColor.BLUE, 3);
@@ -185,8 +185,7 @@ public class GameHandlerControllerTest {
     purchaseCardForm = new PurchaseCardForm(card, paymentGems, new Gems());
     response = gameHandlerController.purchaseCard("", "token", purchaseCardForm);
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    assertEquals("card cost does not match payment",
-        response.getBody());
+    assertEquals("card cost does not match payment", response.getBody());
 
     paymentGems = new Gems();
     paymentGems.put(GemColor.GOLD, 3);
@@ -198,5 +197,110 @@ public class GameHandlerControllerTest {
     response = gameHandlerController.purchaseCard("", "token", purchaseCardForm);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNull(response.getBody());
+  }
+
+  @Test
+  public void testReserveCard() {
+    final Map<String, GameBoard> gameManager = new HashMap<>();
+    final Player player = new Player("test");
+    GameBoard board = new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player), "x", null);
+    gameManager.put("", board);
+    ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
+
+    ResponseEntity<String> response = gameHandlerController.reserveCard("", "token", null);
+    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    assertEquals("invalid access token", response.getBody());
+
+    Mockito.when(lobbyService.getUsername("token")).thenReturn("x");
+
+    response = gameHandlerController.reserveCard("x", "token", null);
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+    response = gameHandlerController.reserveCard("", "token", null);
+    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    assertEquals("player is not part of this game", response.getBody());
+
+    Mockito.when(lobbyService.getUsername("token")).thenReturn("test");
+
+    Gems cardCost = new Gems();
+    cardCost.put(GemColor.GREEN, 2);
+    cardCost.put(GemColor.WHITE, 2);
+    Card card = new StandardCard(0, cardCost, CardLevel.ONE, Expansion.STANDARD, 1, GemColor.BLACK);
+    ReserveCardForm reserveCardForm = new ReserveCardForm(card, GemColor.WHITE);
+
+    player.hand().gems().clear();
+
+    response = gameHandlerController.reserveCard("", "token", reserveCardForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("cannot get rid of a gem if you have less than 10 gems", response.getBody());
+
+    player.hand().gems().put(GemColor.BLUE, 10);
+
+    response = gameHandlerController.reserveCard("", "token", reserveCardForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("cannot get rid of a gem that you do not have", response.getBody());
+
+    player.hand().gems().put(GemColor.WHITE, 1);
+    player.hand().gems().put(GemColor.BLUE, 9);
+    board.availableGems().clear();
+
+    response = gameHandlerController.reserveCard("", "token", reserveCardForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("cannot get rid of a gem if there are no gold gems in the bank",
+        response.getBody());
+
+    board.availableGems().put(GemColor.GOLD, 1);
+    player.hand().reservedCards().add(null);
+    player.hand().reservedCards().add(null);
+    player.hand().reservedCards().add(null);
+    // 3 reserved cards
+
+    response = gameHandlerController.reserveCard("", "token", null);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("cannot reserve more than 3 cards", response.getBody());
+
+    player.hand().reservedCards().add(null);
+    // 4 reserved cards
+
+    response = gameHandlerController.reserveCard("", "token", null);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("cannot reserve more than 3 cards", response.getBody());
+
+    player.hand().reservedCards().remove(null);
+    player.hand().reservedCards().remove(null);
+    // 2 reserved cards
+
+    card = new StandardCard(0, new Gems(), CardLevel.ONE, Expansion.STANDARD, 1, GemColor.BLACK);
+    reserveCardForm = new ReserveCardForm(card, GemColor.WHITE);
+
+    response = gameHandlerController.reserveCard("", "token", reserveCardForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("card chosen for reservation is not valid", response.getBody());
+
+    card = new StandardCard(0, cardCost, CardLevel.ONE, Expansion.STANDARD, 1, GemColor.BLACK);
+    reserveCardForm = new ReserveCardForm(card, GemColor.WHITE);
+
+    response = gameHandlerController.reserveCard("", "token", reserveCardForm);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(1, player.hand().gems().get(GemColor.GOLD));
+    assertFalse(board.availableGems().containsKey(GemColor.GOLD));
+    assertFalse(player.hand().gems().containsKey(GemColor.WHITE));
+    assertEquals(1, board.availableGems().get(GemColor.WHITE));
+    assertTrue(player.hand().reservedCards().remove(card));
+
+    board = new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player), "x", null);
+    gameManager.put("", board);
+    board.availableGems().clear();
+    board.availableGems().put(GemColor.GOLD, 2);
+    player.hand().gems().clear();
+    player.hand().gems().put(GemColor.GOLD, 1);
+    player.hand().gems().put(GemColor.BLUE, 8);
+    reserveCardForm = new ReserveCardForm(card, null);
+
+    response = gameHandlerController.reserveCard("", "token", reserveCardForm);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(2, player.hand().gems().get(GemColor.GOLD));
+    assertEquals(1, board.availableGems().get(GemColor.GOLD));
+    assertTrue(player.hand().reservedCards().remove(card));
   }
 }

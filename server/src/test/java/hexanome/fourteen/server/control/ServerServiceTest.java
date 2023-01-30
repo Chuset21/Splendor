@@ -1,5 +1,6 @@
 package hexanome.fourteen.server.control;
 
+import hexanome.fourteen.server.control.form.LoginForm;
 import hexanome.fourteen.server.model.board.expansion.ExpansionStringMapper;
 import kong.unirest.HttpResponse;
 import org.junit.jupiter.api.BeforeAll;

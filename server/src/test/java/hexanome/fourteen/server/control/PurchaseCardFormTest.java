@@ -1,5 +1,6 @@
 package hexanome.fourteen.server.control;
 
+import hexanome.fourteen.server.control.form.PurchaseCardForm;
 import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.card.CardLevel;
 import hexanome.fourteen.server.model.board.expansion.Expansion;

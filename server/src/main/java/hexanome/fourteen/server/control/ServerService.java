@@ -1,6 +1,7 @@
 package hexanome.fourteen.server.control;
 
 import hexanome.fourteen.server.Mapper;
+import hexanome.fourteen.server.control.form.LoginForm;
 import hexanome.fourteen.server.model.board.expansion.Expansion;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
