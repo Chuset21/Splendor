@@ -2,6 +2,7 @@ package com.hexanome.fourteen;
 
 import com.hexanome.fourteen.form.server.GameBoardForm;
 import com.hexanome.fourteen.form.server.PurchaseCardForm;
+import com.hexanome.fourteen.form.server.ReserveCardForm;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 
@@ -44,6 +45,20 @@ public final class ServerCaller {
     return Unirest.put("%s/api/games/%s/card/purchase".formatted(serverLocation, gameid))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("access_token", accessToken).body(Main.GSON.toJson(purchaseCardForm))
+        .asString();
+  }
+
+  /**
+   * Reserve a card.
+   *
+   * @return The response.
+   */
+  public static HttpResponse<String> reserveCard(String serverLocation, String gameid,
+                                                  String accessToken,
+                                                  ReserveCardForm reserveCardForm) {
+    return Unirest.put("%s/api/games/%s/card/reserve".formatted(serverLocation, gameid))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", accessToken).body(Main.GSON.toJson(reserveCardForm))
         .asString();
   }
 }
