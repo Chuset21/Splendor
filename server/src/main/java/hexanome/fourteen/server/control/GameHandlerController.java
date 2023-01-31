@@ -427,7 +427,8 @@ public class GameHandlerController {
         final Card firstCard = deck.get(0);
         if (firstCard.level() == card.level() && firstCard.expansion() == firstCard.expansion()) {
           final int cardIndex = firstCard.expansion() == Expansion.STANDARD ? 4 : 2;
-          return deck.size() <= cardIndex ? null : deck.get(cardIndex);
+          return deck.size() <= cardIndex ? null : deck.remove(cardIndex);
+
         }
       }
     }
