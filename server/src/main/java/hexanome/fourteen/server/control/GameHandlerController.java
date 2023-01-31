@@ -411,7 +411,7 @@ public class GameHandlerController {
     removeGems(gameBoard.availableGems(), gemsToTake);
     addGems(hand.gems(), gemsToTake);
 
-    // If necessary, take excess gems from the player and add the to the bank
+    // If necessary, take excess gems from the player and add them to the bank
     if (gemsToRemove != null) {
       removeGems(hand.gems(), gemsToRemove);
       addGems(gameBoard.availableGems(), gemsToRemove);
