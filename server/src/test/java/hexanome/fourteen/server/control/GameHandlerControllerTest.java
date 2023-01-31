@@ -205,7 +205,7 @@ public class GameHandlerControllerTest {
         player.hand().gems().getOrDefault(GemColor.WHITE, 0));
   }
 
-  @Test // TODO add testing for reserving a face down card
+  @Test
   public void testReserveCard() {
     final Map<String, GameBoard> gameManager = new HashMap<>();
     final Player player = new Player("test");
@@ -308,6 +308,49 @@ public class GameHandlerControllerTest {
     assertEquals(2, player.hand().gems().get(GemColor.GOLD));
     assertEquals(1, board.availableGems().get(GemColor.GOLD));
     assertTrue(player.hand().reservedCards().remove(card));
+
+    board = new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player), "x", null);
+    gameManager.put("", board);
+    board.availableGems().clear();
+    board.availableGems().put(GemColor.GOLD, 2);
+    player.hand().gems().clear();
+    player.hand().gems().put(GemColor.GOLD, 1);
+    player.hand().gems().put(GemColor.BLUE, 8);
+    reserveCardForm = new ReserveCardForm(null, null, false);
+
+    response = gameHandlerController.reserveCard("", "token", reserveCardForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("card cannot be null", response.getBody());
+
+    board = new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player), "x", null);
+
+    ReflectionTestUtils.setField(board, "cards", new HashSet<>());
+    gameManager.put("", board);
+    board.availableGems().clear();
+    board.availableGems().put(GemColor.GOLD, 2);
+    player.hand().gems().clear();
+    player.hand().gems().put(GemColor.GOLD, 1);
+    player.hand().gems().put(GemColor.BLUE, 8);
+    reserveCardForm = new ReserveCardForm(card, null, true);
+
+    response = gameHandlerController.reserveCard("", "token", reserveCardForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("not enough cards in the deck to reserve a face down card", response.getBody());
+
+    board = new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player), "x", null);
+    gameManager.put("", board);
+    board.availableGems().clear();
+    board.availableGems().put(GemColor.GOLD, 2);
+    player.hand().gems().clear();
+    player.hand().gems().put(GemColor.GOLD, 1);
+    player.hand().gems().put(GemColor.BLUE, 8);
+    reserveCardForm = new ReserveCardForm(card, null, true);
+
+    response = gameHandlerController.reserveCard("", "token", reserveCardForm);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(2, player.hand().gems().get(GemColor.GOLD));
+    assertEquals(1, board.availableGems().get(GemColor.GOLD));
+    assertFalse(player.hand().reservedCards().remove(card));
   }
 
   @Test // TODO implement
