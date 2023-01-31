@@ -367,7 +367,7 @@ public class GameHandlerController {
     } else if (!hasEnoughGems(gameBoard.availableGems(), gemsToTake)) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("not enough gems in the bank");
     } else {
-      final Gems gemsAfterTaking = (Gems) hand.gems().clone();
+      final Gems gemsAfterTaking = new Gems(hand.gems());
       addGems(gemsAfterTaking, gemsToTake);
       if (gemsToRemove != null && !hasEnoughGems(gemsAfterTaking, gemsToRemove)) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -387,7 +387,8 @@ public class GameHandlerController {
     }
 
     final long sizeOfBankWithoutGoldGems =
-        ((Gems) gameBoard.availableGems().clone()).keySet().stream().filter(e -> e != GemColor.GOLD)
+        new Gems(gameBoard.availableGems()).keySet().stream()
+            .filter(e -> e != GemColor.GOLD)
             .count();
     if (gemsToTake.size() == 1) {
       final GemColor gemColorToTake = gemsToTake.entrySet().iterator().next().getKey();

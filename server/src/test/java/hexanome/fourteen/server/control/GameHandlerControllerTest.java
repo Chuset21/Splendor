@@ -504,8 +504,8 @@ public class GameHandlerControllerTest {
     // 1 gem of each for two different colors, when there are only 2 colors available
     gemsToTake.put(GemColor.BLUE, 1);
     board.availableGems().remove(GemColor.BLACK);
-    Gems previousOwnedGems = (Gems) player.hand().gems().clone();
-    Gems previousBank = (Gems) board.availableGems().clone();
+    Gems previousOwnedGems = new Gems(player.hand().gems());
+    Gems previousBank = new Gems(board.availableGems());
 
     response = gameHandlerController.takeGems("", "token", takeGemsForm);
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -524,8 +524,8 @@ public class GameHandlerControllerTest {
     board.availableGems().clear();
     gemsToTake.put(GemColor.WHITE, 2);
     board.availableGems().put(GemColor.WHITE, 4);
-    previousOwnedGems = (Gems) player.hand().gems().clone();
-    previousBank = (Gems) board.availableGems().clone();
+    previousOwnedGems = new Gems(player.hand().gems());
+    previousBank = new Gems(board.availableGems());
 
     response = gameHandlerController.takeGems("", "token", takeGemsForm);
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -540,8 +540,8 @@ public class GameHandlerControllerTest {
     board.availableGems().clear();
     gemsToTake.put(GemColor.WHITE, 1);
     board.availableGems().put(GemColor.WHITE, 3);
-    previousOwnedGems = (Gems) player.hand().gems().clone();
-    previousBank = (Gems) board.availableGems().clone();
+    previousOwnedGems = new Gems(player.hand().gems());
+    previousBank = new Gems(board.availableGems());
 
     response = gameHandlerController.takeGems("", "token", takeGemsForm);
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -560,8 +560,8 @@ public class GameHandlerControllerTest {
     board.availableGems().put(GemColor.WHITE, 1);
     board.availableGems().put(GemColor.BLUE, 2);
     board.availableGems().put(GemColor.BLACK, 3);
-    previousOwnedGems = (Gems) player.hand().gems().clone();
-    previousBank = (Gems) board.availableGems().clone();
+    previousOwnedGems = new Gems(player.hand().gems());
+    previousBank = new Gems(board.availableGems());
 
     response = gameHandlerController.takeGems("", "token", takeGemsForm);
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -587,8 +587,8 @@ public class GameHandlerControllerTest {
     player.hand().gems().put(GemColor.BLACK, 10);
     board.availableGems().put(GemColor.WHITE, 4);
     gemsToRemove.put(GemColor.WHITE, 2);
-    previousOwnedGems = (Gems) player.hand().gems().clone();
-    previousBank = (Gems) board.availableGems().clone();
+    previousOwnedGems = new Gems(player.hand().gems());
+    previousBank = new Gems(board.availableGems());
     takeGemsForm = new TakeGemsForm(gemsToTake, gemsToRemove);
 
     response = gameHandlerController.takeGems("", "token", takeGemsForm);
@@ -613,8 +613,8 @@ public class GameHandlerControllerTest {
     board.availableGems().put(GemColor.GREEN, 1);
     gemsToRemove.put(GemColor.BLACK, 1);
     gemsToRemove.put(GemColor.GOLD, 1);
-    previousOwnedGems = (Gems) player.hand().gems().clone();
-    previousBank = (Gems) board.availableGems().clone();
+    previousOwnedGems = new Gems(player.hand().gems());
+    previousBank = new Gems(board.availableGems());
 
     response = gameHandlerController.takeGems("", "token", takeGemsForm);
     assertEquals(HttpStatus.OK, response.getStatusCode());
