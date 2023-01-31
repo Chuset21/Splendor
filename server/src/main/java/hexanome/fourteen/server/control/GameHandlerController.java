@@ -356,7 +356,7 @@ public class GameHandlerController {
     if (gemsToTake == null) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("gems to take cannot be null");
     } else if (gemsToTake.get(GemColor.GOLD) != null) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("cannot take gold tokens");
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("cannot take gold gems");
     }
 
     final Gems gemsToRemove = takeGemsForm.gemsToRemove();
@@ -367,6 +367,12 @@ public class GameHandlerController {
     } else if (!hasEnoughGems(gameBoard.availableGems(), gemsToTake)) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("not enough gems in the bank");
     } else {
+      final Gems gemsAfterTaking = (Gems) hand.gems().clone();
+      addGems(gemsAfterTaking, gemsToTake);
+      if (gemsToRemove != null && !hasEnoughGems(gemsAfterTaking, gemsToRemove)) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("cannot remove gems that you do not own");
+      }
       final int total = amountOfGemsToTake + amountOfGemsInHand;
       if (total > 10 && (gemsToRemove == null || (total - countGemAmount(gemsToRemove) > 10))) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -380,19 +386,20 @@ public class GameHandlerController {
       }
     }
 
+    final long sizeOfBankWithoutGoldGems =
+        ((Gems) gameBoard.availableGems().clone()).keySet().stream().filter(e -> e != GemColor.GOLD)
+            .count();
     if (gemsToTake.size() == 1) {
-      final Map.Entry<GemColor, Integer> entryToTake = gemsToTake.entrySet().iterator().next();
-      final int amountOfGemsAvailable = gameBoard.availableGems().get(entryToTake.getKey());
+      final GemColor gemColorToTake = gemsToTake.entrySet().iterator().next().getKey();
+      final int amountOfGemsAvailable = gameBoard.availableGems().get(gemColorToTake);
       if (amountOfGemsToTake > 2) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("cannot take 3 gems of one color");
       } else if (amountOfGemsAvailable < 4 && amountOfGemsToTake == 2) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
             "cannot take 2 same color gems, there are less than 4 gems of that color in the bank");
-      } else if (gameBoard.availableGems().keySet().size() > 1 && amountOfGemsToTake == 1) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body("cannot take 1 gem if it is possible to take more");
-      } else if (amountOfGemsAvailable >= 4 && amountOfGemsToTake == 1) {
+      } else if (amountOfGemsToTake == 1
+                 && (sizeOfBankWithoutGoldGems > 1 || amountOfGemsAvailable >= 4)) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("cannot take 1 gem if it is possible to take more");
       }
@@ -402,7 +409,7 @@ public class GameHandlerController {
     } else if (gemsToTake.values().stream().anyMatch(v -> v > 1)) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body("cannot take more than one gem of each gem");
-    } else if (gemsToTake.size() == 2 && gameBoard.availableGems().size() != 2) {
+    } else if (gemsToTake.size() == 2 && sizeOfBankWithoutGoldGems != 2) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
           "cannot take 1 gem of each for 2 gem colors if it is possible to take from 3 colors");
     }

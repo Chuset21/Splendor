@@ -10,6 +10,7 @@ import static org.mockito.Mockito.mock;
 import hexanome.fourteen.server.control.form.LaunchGameForm;
 import hexanome.fourteen.server.control.form.PurchaseCardForm;
 import hexanome.fourteen.server.control.form.ReserveCardForm;
+import hexanome.fourteen.server.control.form.TakeGemsForm;
 import hexanome.fourteen.server.model.User;
 import hexanome.fourteen.server.model.board.GameBoard;
 import hexanome.fourteen.server.model.board.card.Card;
@@ -361,8 +362,281 @@ public class GameHandlerControllerTest {
     assertEquals(1, player.hand().reservedCards().size());
   }
 
-  @Test // TODO implement
+  @Test
   public void testTakeGems() {
+    final Map<String, GameBoard> gameManager = new HashMap<>();
+    final Player player = new Player("test");
+    GameBoard board =
+        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player, new Player("test2")), "x",
+            null);
+    gameManager.put("", board);
+    ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
 
+    ResponseEntity<String> response = gameHandlerController.takeGems("", "token", null);
+    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    assertEquals("invalid access token", response.getBody());
+
+    Mockito.when(lobbyService.getUsername("token")).thenReturn("x");
+
+    response = gameHandlerController.takeGems("x", "token", null);
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+    response = gameHandlerController.takeGems("", "token", null);
+    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    assertEquals("player is not part of this game", response.getBody());
+
+    Mockito.when(lobbyService.getUsername("token")).thenReturn("test");
+
+    TakeGemsForm takeGemsForm = new TakeGemsForm(null, null);
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("gems to take cannot be null", response.getBody());
+
+    final Gems gemsToTake = new Gems();
+    gemsToTake.put(GemColor.GOLD, 1);
+    takeGemsForm = new TakeGemsForm(gemsToTake, null);
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("cannot take gold gems", response.getBody());
+
+    gemsToTake.clear();
+    gemsToTake.put(GemColor.WHITE, 4);
+    final Gems gemsToRemove = new Gems();
+    takeGemsForm = new TakeGemsForm(gemsToTake, gemsToRemove);
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("cannot take more than 3 gems", response.getBody());
+
+    gemsToTake.put(GemColor.WHITE, 2);
+    board.availableGems().clear();
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("not enough gems in the bank", response.getBody());
+
+    gemsToTake.put(GemColor.WHITE, 2);
+    board.availableGems().put(GemColor.WHITE, 5);
+    player.hand().gems().clear();
+    player.hand().gems().put(GemColor.GOLD, 10);
+    gemsToRemove.put(GemColor.BLUE, 1);
+    takeGemsForm = new TakeGemsForm(gemsToTake, gemsToRemove);
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("cannot remove gems that you do not own", response.getBody());
+
+    takeGemsForm = new TakeGemsForm(gemsToTake, null);
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("can only have a maximum of 10 gems", response.getBody());
+
+    gemsToRemove.clear();
+    gemsToRemove.put(GemColor.WHITE, 1);
+    takeGemsForm = new TakeGemsForm(gemsToTake, gemsToRemove);
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("can only have a maximum of 10 gems", response.getBody());
+
+    player.hand().gems().put(GemColor.GOLD, 6);
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("cannot remove gems if not necessary", response.getBody());
+
+    gemsToRemove.put(GemColor.GOLD, 2);
+    player.hand().gems().put(GemColor.GOLD, 10);
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("cannot remove gems and be left with less than 10", response.getBody());
+
+    player.hand().gems().put(GemColor.GOLD, 7);
+    gemsToTake.put(GemColor.WHITE, 3);
+    takeGemsForm = new TakeGemsForm(gemsToTake, null);
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("cannot take 3 gems of one color", response.getBody());
+
+    gemsToTake.put(GemColor.WHITE, 2);
+    board.availableGems().put(GemColor.WHITE, 3);
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals(
+        "cannot take 2 same color gems, there are less than 4 gems of that color in the bank",
+        response.getBody());
+
+    gemsToTake.put(GemColor.WHITE, 1);
+    board.availableGems().put(GemColor.WHITE, 4);
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("cannot take 1 gem if it is possible to take more", response.getBody());
+
+    board.availableGems().put(GemColor.WHITE, 3);
+    board.availableGems().put(GemColor.BLUE, 3);
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("cannot take 1 gem if it is possible to take more", response.getBody());
+
+    gemsToTake.put(GemColor.BLUE, 2);
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("cannot take more than one gem of each gem", response.getBody());
+
+    gemsToTake.put(GemColor.BLUE, 1);
+    board.availableGems().put(GemColor.BLACK, 3);
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals(
+        "cannot take 1 gem of each for 2 gem colors if it is possible to take from 3 colors",
+        response.getBody());
+
+    // 1 gem of each for two different colors, when there are only 2 colors available
+    gemsToTake.put(GemColor.BLUE, 1);
+    board.availableGems().remove(GemColor.BLACK);
+    Gems previousOwnedGems = (Gems) player.hand().gems().clone();
+    Gems previousBank = (Gems) board.availableGems().clone();
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(previousOwnedGems.getOrDefault(GemColor.BLUE, 0) + 1,
+        player.hand().gems().get(GemColor.BLUE));
+    assertEquals(previousOwnedGems.getOrDefault(GemColor.WHITE, 0) + 1,
+        player.hand().gems().get(GemColor.WHITE));
+    assertEquals(previousBank.get(GemColor.BLUE) - 1,
+        board.availableGems().getOrDefault(GemColor.BLUE, 0));
+    assertEquals(previousBank.get(GemColor.WHITE) - 1,
+        board.availableGems().getOrDefault(GemColor.WHITE, 0));
+
+    // 2 gems of one color, when there are 4 or more of that given color available
+    gemsToTake.clear();
+    player.hand().gems().clear();
+    board.availableGems().clear();
+    gemsToTake.put(GemColor.WHITE, 2);
+    board.availableGems().put(GemColor.WHITE, 4);
+    previousOwnedGems = (Gems) player.hand().gems().clone();
+    previousBank = (Gems) board.availableGems().clone();
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(previousOwnedGems.getOrDefault(GemColor.WHITE, 0) + 2,
+        player.hand().gems().get(GemColor.WHITE));
+    assertEquals(previousBank.get(GemColor.WHITE) - 2,
+        board.availableGems().getOrDefault(GemColor.WHITE, 0));
+
+    // 1 gem of one color, when there are less than 4 of the given gem color and this is the only color available
+    gemsToTake.clear();
+    player.hand().gems().clear();
+    board.availableGems().clear();
+    gemsToTake.put(GemColor.WHITE, 1);
+    board.availableGems().put(GemColor.WHITE, 3);
+    previousOwnedGems = (Gems) player.hand().gems().clone();
+    previousBank = (Gems) board.availableGems().clone();
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(previousOwnedGems.getOrDefault(GemColor.WHITE, 0) + 1,
+        player.hand().gems().get(GemColor.WHITE));
+    assertEquals(previousBank.get(GemColor.WHITE) - 1,
+        board.availableGems().getOrDefault(GemColor.WHITE, 0));
+
+    // 3 gems of different color, when there are 3 different colors available
+    gemsToTake.clear();
+    player.hand().gems().clear();
+    board.availableGems().clear();
+    gemsToTake.put(GemColor.WHITE, 1);
+    gemsToTake.put(GemColor.BLUE, 1);
+    gemsToTake.put(GemColor.BLACK, 1);
+    board.availableGems().put(GemColor.WHITE, 1);
+    board.availableGems().put(GemColor.BLUE, 2);
+    board.availableGems().put(GemColor.BLACK, 3);
+    previousOwnedGems = (Gems) player.hand().gems().clone();
+    previousBank = (Gems) board.availableGems().clone();
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(previousOwnedGems.getOrDefault(GemColor.WHITE, 0) + 1,
+        player.hand().gems().get(GemColor.WHITE));
+    assertEquals(previousBank.get(GemColor.WHITE) - 1,
+        board.availableGems().getOrDefault(GemColor.WHITE, 0));
+    assertEquals(previousOwnedGems.getOrDefault(GemColor.BLUE, 0) + 1,
+        player.hand().gems().get(GemColor.BLUE));
+    assertEquals(previousBank.get(GemColor.BLUE) - 1,
+        board.availableGems().getOrDefault(GemColor.BLUE, 0));
+    assertEquals(previousOwnedGems.getOrDefault(GemColor.BLACK, 0) + 1,
+        player.hand().gems().get(GemColor.BLACK));
+    assertEquals(previousBank.get(GemColor.BLACK) - 1,
+        board.availableGems().getOrDefault(GemColor.BLACK, 0));
+
+    // The player is left with more than 10 gems at the end of the turn and removes the gems that they took (stupid)
+    gemsToTake.clear();
+    player.hand().gems().clear();
+    board.availableGems().clear();
+    gemsToRemove.clear();
+    gemsToTake.put(GemColor.WHITE, 2);
+    player.hand().gems().put(GemColor.BLACK, 10);
+    board.availableGems().put(GemColor.WHITE, 4);
+    gemsToRemove.put(GemColor.WHITE, 2);
+    previousOwnedGems = (Gems) player.hand().gems().clone();
+    previousBank = (Gems) board.availableGems().clone();
+    takeGemsForm = new TakeGemsForm(gemsToTake, gemsToRemove);
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(previousOwnedGems.getOrDefault(GemColor.WHITE, 0),
+        player.hand().gems().getOrDefault(GemColor.WHITE, 0));
+    assertEquals(previousBank.get(GemColor.WHITE),
+        board.availableGems().getOrDefault(GemColor.WHITE, 0));
+
+    // The player is left with more than 10 gems and gets rid of previously owned gems
+    gemsToTake.clear();
+    player.hand().gems().clear();
+    board.availableGems().clear();
+    gemsToRemove.clear();
+    gemsToTake.put(GemColor.WHITE, 1);
+    gemsToTake.put(GemColor.RED, 1);
+    gemsToTake.put(GemColor.GREEN, 1);
+    player.hand().gems().put(GemColor.BLACK, 7);
+    player.hand().gems().put(GemColor.GOLD, 2);
+    board.availableGems().put(GemColor.WHITE, 4);
+    board.availableGems().put(GemColor.RED, 1);
+    board.availableGems().put(GemColor.GREEN, 1);
+    gemsToRemove.put(GemColor.BLACK, 1);
+    gemsToRemove.put(GemColor.GOLD, 1);
+    previousOwnedGems = (Gems) player.hand().gems().clone();
+    previousBank = (Gems) board.availableGems().clone();
+
+    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(previousOwnedGems.getOrDefault(GemColor.WHITE, 0) + 1,
+        player.hand().gems().get(GemColor.WHITE));
+    assertEquals(previousBank.get(GemColor.WHITE) - 1,
+        board.availableGems().getOrDefault(GemColor.WHITE, 0));
+    assertEquals(previousOwnedGems.getOrDefault(GemColor.RED, 0) + 1,
+        player.hand().gems().get(GemColor.RED));
+    assertEquals(previousBank.get(GemColor.RED) - 1,
+        board.availableGems().getOrDefault(GemColor.RED, 0));
+    assertEquals(previousOwnedGems.getOrDefault(GemColor.GREEN, 0) + 1,
+        player.hand().gems().get(GemColor.GREEN));
+    assertEquals(previousBank.get(GemColor.GREEN) - 1,
+        board.availableGems().getOrDefault(GemColor.GREEN, 0));
+    assertEquals(previousOwnedGems.get(GemColor.BLACK) - 1,
+        player.hand().gems().getOrDefault(GemColor.BLACK, 0));
+    assertEquals(previousBank.getOrDefault(GemColor.BLACK, 0) + 1,
+        board.availableGems().get(GemColor.BLACK));
+    assertEquals(previousOwnedGems.get(GemColor.GOLD) - 1,
+        player.hand().gems().getOrDefault(GemColor.GOLD, 0));
+    assertEquals(previousBank.getOrDefault(GemColor.GOLD, 0) + 1,
+        board.availableGems().get(GemColor.GOLD));
   }
 }
