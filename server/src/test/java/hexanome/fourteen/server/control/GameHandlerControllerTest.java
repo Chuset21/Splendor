@@ -292,7 +292,13 @@ public class GameHandlerControllerTest {
     assertFalse(board.availableGems().containsKey(GemColor.GOLD));
     assertFalse(player.hand().gems().containsKey(GemColor.WHITE));
     assertEquals(1, board.availableGems().get(GemColor.WHITE));
+    assertEquals(3, player.hand().reservedCards().size());
     assertTrue(player.hand().reservedCards().remove(card));
+    assertEquals(2, player.hand().reservedCards().size());
+
+    player.hand().reservedCards().remove(null);
+    player.hand().reservedCards().remove(null);
+    // 0 reserved cards
 
     board = new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player), "x", null);
     gameManager.put("", board);
@@ -307,7 +313,9 @@ public class GameHandlerControllerTest {
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(2, player.hand().gems().get(GemColor.GOLD));
     assertEquals(1, board.availableGems().get(GemColor.GOLD));
+    assertEquals(1, player.hand().reservedCards().size());
     assertTrue(player.hand().reservedCards().remove(card));
+    assertTrue(player.hand().reservedCards().isEmpty());
 
     board = new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player), "x", null);
     gameManager.put("", board);
@@ -323,7 +331,6 @@ public class GameHandlerControllerTest {
     assertEquals("card cannot be null", response.getBody());
 
     board = new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player), "x", null);
-
     ReflectionTestUtils.setField(board, "cards", new HashSet<>());
     gameManager.put("", board);
     board.availableGems().clear();
@@ -351,6 +358,7 @@ public class GameHandlerControllerTest {
     assertEquals(2, player.hand().gems().get(GemColor.GOLD));
     assertEquals(1, board.availableGems().get(GemColor.GOLD));
     assertFalse(player.hand().reservedCards().remove(card));
+    assertEquals(1, player.hand().reservedCards().size());
   }
 
   @Test // TODO implement
