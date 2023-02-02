@@ -5,8 +5,10 @@ import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * A player's hand.
@@ -16,7 +18,7 @@ public final class Hand {
   private Gems gems;
   private final List<Card> reservedCards;
   private final List<Card> purchasedCards;
-  private final List<Noble> visitedNobles;
+  private final Set<Noble> visitedNobles;
   private Noble reservedNoble;
   private Gems gemDiscounts;
 
@@ -32,7 +34,7 @@ public final class Hand {
    * @param gemDiscounts   the gem discounts
    */
   public Hand(int prestigePoints, Gems gems, List<Card> reservedCards, List<Card> purchasedCards,
-              List<Noble> visitedNobles, Noble reservedNoble, Gems gemDiscounts) {
+              Set<Noble> visitedNobles, Noble reservedNoble, Gems gemDiscounts) {
     this.prestigePoints = prestigePoints;
     this.gems = gems;
     this.reservedCards = reservedCards;
@@ -52,7 +54,7 @@ public final class Hand {
     Arrays.stream(GemColor.values()).forEach(e -> gems.put(e, 3));
     reservedCards = new ArrayList<>();
     purchasedCards = new ArrayList<>();
-    visitedNobles = new ArrayList<>();
+    visitedNobles = new HashSet<>();
     reservedNoble = null;
     gemDiscounts = new Gems();
   }
@@ -98,7 +100,7 @@ public final class Hand {
    *
    * @return The Nobles that are visiting.
    */
-  public List<Noble> visitedNobles() {
+  public Set<Noble> visitedNobles() {
     return visitedNobles;
   }
 

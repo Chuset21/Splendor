@@ -9,9 +9,9 @@ import java.util.Set;
  */
 public final class HandForm {
   private GemsForm gems;
-  private Set<CardForm> reservedCards;
-  private Set<CardForm> purchasedCards;
-  private List<NobleForm> visitedNobles;
+  private List<CardForm> reservedCards;
+  private List<CardForm> purchasedCards;
+  private Set<NobleForm> visitedNobles;
   private NobleForm reservedNoble;
   private GemsForm gemDiscounts;
 
@@ -21,12 +21,12 @@ public final class HandForm {
    * @param gems           the amount of gems the owned
    * @param reservedCards  the reserved cards
    * @param purchasedCards the purchased cards
-   * @param visitedNobles   the owned nobles
+   * @param visitedNobles  the owned nobles
    * @param reservedNoble  the reserved noble
    * @param gemDiscounts   the gem discounts
    */
-  public HandForm(GemsForm gems, Set<CardForm> reservedCards, Set<CardForm> purchasedCards,
-                  List<NobleForm> visitedNobles, NobleForm reservedNoble, GemsForm gemDiscounts) {
+  public HandForm(GemsForm gems, List<CardForm> reservedCards, List<CardForm> purchasedCards,
+                  Set<NobleForm> visitedNobles, NobleForm reservedNoble, GemsForm gemDiscounts) {
     this.gems = gems;
     this.reservedCards = reservedCards;
     this.purchasedCards = purchasedCards;
@@ -55,7 +55,7 @@ public final class HandForm {
    *
    * @return Cards reserved.
    */
-  public Set<CardForm> reservedCards() {
+  public List<CardForm> reservedCards() {
     return reservedCards;
   }
 
@@ -64,7 +64,7 @@ public final class HandForm {
    *
    * @return Cards purchased.
    */
-  public Set<CardForm> purchasedCards() {
+  public List<CardForm> purchasedCards() {
     return purchasedCards;
   }
 
@@ -73,7 +73,7 @@ public final class HandForm {
    *
    * @return The Nobles that are visiting.
    */
-  public List<NobleForm> visitedNobles() {
+  public Set<NobleForm> visitedNobles() {
     return visitedNobles;
   }
 
