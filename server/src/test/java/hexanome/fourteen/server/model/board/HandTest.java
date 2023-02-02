@@ -4,9 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HandTest {
   Hand hand;
@@ -23,7 +22,7 @@ public class HandTest {
     assertNull(handToTest.gems());
     assertNull(handToTest.reservedCards());
     assertNull(handToTest.purchasedCards());
-    assertNull(handToTest.visitedNoble());
+    assertNull(handToTest.visitedNobles());
     assertNull(handToTest.reservedNoble());
     assertNull(handToTest.gemDiscounts());
   }
@@ -38,24 +37,6 @@ public class HandTest {
   public void testSetGems() {
     hand.setGems(null);
     assertNull(hand.gems());
-  }
-
-  @Test
-  public void testSetReservedCards() {
-    hand.setReservedCards(null);
-    assertNull(hand.reservedCards());
-  }
-
-  @Test
-  public void testSetPurchasedCards() {
-    hand.setPurchasedCards(null);
-    assertNull(hand.purchasedCards());
-  }
-
-  @Test
-  public void testSetVisitedNoble() {
-    hand.setVisitedNoble(null);
-    assertNull(hand.visitedNoble());
   }
 
   @Test
@@ -90,10 +71,10 @@ public class HandTest {
   public void testEquals() {
     Hand handToTest = new Hand(0, null, null, null, null, null, null);
     Hand equalHand = new Hand(0, null, null, null, null, null, null);
-    assertFalse(handToTest.equals(null));
-    assertFalse(handToTest.equals(new Object()));
-    assertFalse(handToTest.equals(new Object()));
-    assertTrue(handToTest.equals(handToTest));
-    assertTrue(handToTest.equals(equalHand));
+    assertNotEquals(null, handToTest);
+    assertNotEquals(handToTest, new Object());
+    assertNotEquals(handToTest, new Object());
+    assertEquals(handToTest, handToTest);
+    assertEquals(handToTest, equalHand);
   }
 }

@@ -1,6 +1,7 @@
 package com.hexanome.fourteen.form.server;
 
 import com.hexanome.fourteen.form.server.cardform.CardForm;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -10,7 +11,7 @@ public final class HandForm {
   private GemsForm gems;
   private Set<CardForm> reservedCards;
   private Set<CardForm> purchasedCards;
-  private NobleForm visitedNoble;
+  private List<NobleForm> visitedNobles;
   private NobleForm reservedNoble;
   private GemsForm gemDiscounts;
 
@@ -20,16 +21,16 @@ public final class HandForm {
    * @param gems           the amount of gems the owned
    * @param reservedCards  the reserved cards
    * @param purchasedCards the purchased cards
-   * @param visitedNoble   the owned noble
+   * @param visitedNobles   the owned nobles
    * @param reservedNoble  the reserved noble
    * @param gemDiscounts   the gem discounts
    */
   public HandForm(GemsForm gems, Set<CardForm> reservedCards, Set<CardForm> purchasedCards,
-                  NobleForm visitedNoble, NobleForm reservedNoble, GemsForm gemDiscounts) {
+                  List<NobleForm> visitedNobles, NobleForm reservedNoble, GemsForm gemDiscounts) {
     this.gems = gems;
     this.reservedCards = reservedCards;
     this.purchasedCards = purchasedCards;
-    this.visitedNoble = visitedNoble;
+    this.visitedNobles = visitedNobles;
     this.reservedNoble = reservedNoble;
     this.gemDiscounts = gemDiscounts;
   }
@@ -68,12 +69,12 @@ public final class HandForm {
   }
 
   /**
-   * A Getter for the Noble that is visiting.
+   * A Getter for the Nobles that are visiting.
    *
-   * @return The Noble that is visiting.
+   * @return The Nobles that are visiting.
    */
-  public NobleForm visitedNoble() {
-    return visitedNoble;
+  public List<NobleForm> visitedNobles() {
+    return visitedNobles;
   }
 
   /**
