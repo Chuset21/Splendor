@@ -674,7 +674,7 @@ public class GameHandlerControllerTest {
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("noble to claim cannot be null", response.getBody());
 
-    final Noble nobleToClaim = new Noble(2, new Gems());
+    Noble nobleToClaim = new Noble(2, new Gems());
     claimNobleForm = new ClaimNobleForm(nobleToClaim);
 
     response = gameHandlerController.claimNoble("", "token", claimNobleForm);
@@ -683,20 +683,29 @@ public class GameHandlerControllerTest {
 
     player.hand().setReservedNoble(nobleToClaim);
     assertNotNull(player.hand().reservedNoble());
+    int prevPrestigePoints = player.hand().prestigePoints();
 
     response = gameHandlerController.claimNoble("", "token", claimNobleForm);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNull(player.hand().reservedNoble());
     assertEquals(Set.of(nobleToClaim), player.hand().visitedNobles());
+    assertEquals(prevPrestigePoints + nobleToClaim.prestigePoints(),
+        player.hand().prestigePoints());
 
     player.hand().visitedNobles().remove(nobleToClaim);
     assertTrue(player.hand().visitedNobles().isEmpty());
+
+    nobleToClaim = new Noble(3, new Gems());
+    claimNobleForm = new ClaimNobleForm(nobleToClaim);
     board.availableNobles().add(nobleToClaim);
+    prevPrestigePoints = player.hand().prestigePoints();
 
     response = gameHandlerController.claimNoble("", "token", claimNobleForm);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertFalse(board.availableNobles().contains(nobleToClaim));
     assertEquals(Set.of(nobleToClaim), player.hand().visitedNobles());
+    assertEquals(prevPrestigePoints + nobleToClaim.prestigePoints(),
+        player.hand().prestigePoints());
 
     player.hand().visitedNobles().remove(nobleToClaim);
     assertTrue(player.hand().visitedNobles().isEmpty());

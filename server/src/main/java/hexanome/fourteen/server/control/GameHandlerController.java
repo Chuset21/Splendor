@@ -472,6 +472,7 @@ public class GameHandlerController {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("noble to claim is not available");
     }
     hand.visitedNobles().add(nobleToClaim);
+    hand.incrementPrestigePoints(nobleToClaim.prestigePoints());
 
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
