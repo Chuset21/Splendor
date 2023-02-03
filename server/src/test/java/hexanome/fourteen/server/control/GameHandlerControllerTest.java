@@ -2,17 +2,20 @@ package hexanome.fourteen.server.control;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.mock;
 
+import hexanome.fourteen.server.control.form.ClaimNobleForm;
 import hexanome.fourteen.server.control.form.LaunchGameForm;
 import hexanome.fourteen.server.control.form.PurchaseCardForm;
 import hexanome.fourteen.server.control.form.ReserveCardForm;
 import hexanome.fourteen.server.control.form.TakeGemsForm;
 import hexanome.fourteen.server.model.User;
 import hexanome.fourteen.server.model.board.GameBoard;
+import hexanome.fourteen.server.model.board.Noble;
 import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.card.CardLevel;
 import hexanome.fourteen.server.model.board.card.StandardCard;
@@ -638,5 +641,64 @@ public class GameHandlerControllerTest {
         player.hand().gems().getOrDefault(GemColor.GOLD, 0));
     assertEquals(previousBank.getOrDefault(GemColor.GOLD, 0) + 1,
         board.availableGems().get(GemColor.GOLD));
+  }
+
+  @Test
+  public void testClaimNoble() {
+    final Map<String, GameBoard> gameManager = new HashMap<>();
+    final Player player = new Player("test");
+    GameBoard board =
+        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player, new Player("test2")), "x",
+            null);
+    gameManager.put("", board);
+    ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
+
+    ResponseEntity<String> response = gameHandlerController.claimNoble("", "token", null);
+    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    assertEquals("invalid access token", response.getBody());
+
+    Mockito.when(lobbyService.getUsername("token")).thenReturn("x");
+
+    response = gameHandlerController.claimNoble("x", "token", null);
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+    response = gameHandlerController.claimNoble("", "token", null);
+    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    assertEquals("player is not part of this game", response.getBody());
+
+    Mockito.when(lobbyService.getUsername("token")).thenReturn("test");
+
+    ClaimNobleForm claimNobleForm = new ClaimNobleForm(null);
+
+    response = gameHandlerController.claimNoble("", "token", claimNobleForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("noble to claim cannot be null", response.getBody());
+
+    final Noble nobleToClaim = new Noble(2, new Gems());
+    claimNobleForm = new ClaimNobleForm(nobleToClaim);
+
+    response = gameHandlerController.claimNoble("", "token", claimNobleForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("noble to claim is not available", response.getBody());
+
+    player.hand().setReservedNoble(nobleToClaim);
+    assertNotNull(player.hand().reservedNoble());
+
+    response = gameHandlerController.claimNoble("", "token", claimNobleForm);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNull(player.hand().reservedNoble());
+    assertEquals(Set.of(nobleToClaim), player.hand().visitedNobles());
+
+    player.hand().visitedNobles().remove(nobleToClaim);
+    assertTrue(player.hand().visitedNobles().isEmpty());
+    board.availableNobles().add(nobleToClaim);
+
+    response = gameHandlerController.claimNoble("", "token", claimNobleForm);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertFalse(board.availableNobles().contains(nobleToClaim));
+    assertEquals(Set.of(nobleToClaim), player.hand().visitedNobles());
+
+    player.hand().visitedNobles().remove(nobleToClaim);
+    assertTrue(player.hand().visitedNobles().isEmpty());
   }
 }

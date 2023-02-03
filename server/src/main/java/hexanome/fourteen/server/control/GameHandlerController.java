@@ -1,6 +1,7 @@
 package hexanome.fourteen.server.control;
 
 import hexanome.fourteen.server.Mapper;
+import hexanome.fourteen.server.control.form.ClaimNobleForm;
 import hexanome.fourteen.server.control.form.LaunchGameForm;
 import hexanome.fourteen.server.control.form.PurchaseCardForm;
 import hexanome.fourteen.server.control.form.ReserveCardForm;
@@ -426,6 +427,52 @@ public class GameHandlerController {
     }
 
     gameBoard.nextTurn();
+    return ResponseEntity.status(HttpStatus.OK).body(null);
+  }
+
+  /**
+   * Reserve a given card.
+   *
+   * @param gameid         The game id corresponding to the game.
+   * @param accessToken    The access token belonging to the player trying to reserve the card.
+   * @param claimNobleForm The claim noble form.
+   * @return The response.
+   */
+  @PutMapping(value = "{gameid}/noble", consumes = "application/json; charset=utf-8")
+  public ResponseEntity<String> claimNoble(@PathVariable String gameid,
+                                           @RequestParam("access_token") String accessToken,
+                                           @RequestBody ClaimNobleForm claimNobleForm) {
+    final String username = getUsername(accessToken);
+    if (username == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
+    }
+
+    final GameBoard gameBoard = getGame(gameid);
+    if (gameBoard == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
+    }
+
+    final Hand hand = getHand(gameBoard.players(), username);
+    if (hand == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
+    }
+
+    final Noble nobleToClaim = claimNobleForm.nobleToClaim();
+    if (nobleToClaim == null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("noble to claim cannot be null");
+    }
+
+    // TODO check if they can actually claim said noble, assume the frontend is doing that for now
+
+    if (gameBoard.availableNobles().contains(nobleToClaim)) {
+      gameBoard.availableNobles().remove(nobleToClaim);
+    } else if (nobleToClaim.equals(hand.reservedNoble())) {
+      hand.setReservedNoble(null);
+    } else {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("noble to claim is not available");
+    }
+    hand.visitedNobles().add(nobleToClaim);
+
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
