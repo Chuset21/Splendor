@@ -1,5 +1,6 @@
 package com.hexanome.fourteen;
 
+import com.hexanome.fourteen.form.server.ClaimNobleForm;
 import com.hexanome.fourteen.form.server.GameBoardForm;
 import com.hexanome.fourteen.form.server.PurchaseCardForm;
 import com.hexanome.fourteen.form.server.ReserveCardForm;
@@ -74,6 +75,20 @@ public final class ServerCaller {
     return Unirest.put("%s/api/games/%s/gems".formatted(serverLocation, gameid))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("access_token", accessToken).body(Main.GSON.toJson(takeGemsForm))
+        .asString();
+  }
+
+  /**
+   * Claim noble.
+   *
+   * @return The response.
+   */
+  public static HttpResponse<String> claimNoble(String serverLocation, String gameid,
+                                              String accessToken,
+                                              ClaimNobleForm claimNobleForm) {
+    return Unirest.put("%s/api/games/%s/noble".formatted(serverLocation, gameid))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", accessToken).body(Main.GSON.toJson(claimNobleForm))
         .asString();
   }
 }
