@@ -79,7 +79,7 @@ public final class ServerCaller {
   }
 
   /**
-   * Claim noble.
+   * Claim a noble.
    *
    * @return The response.
    */
