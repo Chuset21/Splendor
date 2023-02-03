@@ -477,6 +477,9 @@ public class GameHandlerController {
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
+  /**
+   * Has a side effect of removing the face down card from the deck if successful.
+   */
   private Card getFaceDownCard(Set<List<Card>> decks, Card card) {
     for (List<Card> deck : decks) {
       if (!deck.isEmpty()) {
