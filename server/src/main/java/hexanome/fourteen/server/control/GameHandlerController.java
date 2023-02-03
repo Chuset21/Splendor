@@ -431,7 +431,7 @@ public class GameHandlerController {
   }
 
   /**
-   * Reserve a given card.
+   * Claim a noble.
    *
    * @param gameid         The game id corresponding to the game.
    * @param accessToken    The access token belonging to the player trying to reserve the card.
