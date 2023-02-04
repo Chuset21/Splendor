@@ -7,12 +7,14 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import hexanome.fourteen.server.model.board.GameBoard;
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
@@ -29,6 +31,7 @@ public class SaveGameManager implements SavedGamesService {
   private final String dbName;
   private final String collectionName;
   private final Gson gson;
+  private MongoClient mongoClient;
   private MongoCollection<GameBoard> savedGames;
   private MongoCollection<Document> savedDocuments;
 
@@ -52,14 +55,17 @@ public class SaveGameManager implements SavedGamesService {
   private void initialiseDatabase() {
     final CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(),
         fromProviders(PojoCodecProvider.builder().automatic(true).build()));
-    final MongoDatabase db;
-    try (MongoClient mongoClient = new MongoClient(new ServerAddress("localhost", port))) {
-      db = mongoClient.getDatabase(dbName).withCodecRegistry(pojoCodecRegistry);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-    savedGames = db.getCollection(collectionName, GameBoard.class);
+    mongoClient = new MongoClient(new ServerAddress("localhost", port),
+        new MongoClientOptions.Builder().maxConnectionIdleTime(600000).connectionsPerHost(2)
+            .cursorFinalizerEnabled(false).build());
+    System.out.println("Created mongoClient");
+    final MongoDatabase db = mongoClient.getDatabase(dbName);
+    System.out.println("Got database");
     savedDocuments = db.getCollection(collectionName);
+    System.out.println("Got first collection");
+    savedGames =
+        db.getCollection(collectionName, GameBoard.class).withCodecRegistry(pojoCodecRegistry);
+    System.out.println("Got second collection");
   }
 
   @Override
@@ -72,5 +78,10 @@ public class SaveGameManager implements SavedGamesService {
     final Document doc = Document.parse(gson.toJson(gameBoard));
     savedDocuments.insertOne(doc);
     return doc.getObjectId("_id").toString();
+  }
+
+  @PreDestroy
+  private void closeMongo() {
+    mongoClient.close();
   }
 }

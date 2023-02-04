@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+import org.bson.types.ObjectId;
 
 /**
  * Game Board.
@@ -27,6 +28,8 @@ import java.util.Set;
  * If so this might be true for more than just this class.
  */
 public final class GameBoard {
+
+  private ObjectId objectId;
   /**
    * The current player's turn.
    */
@@ -296,5 +299,13 @@ public final class GameBoard {
    */
   public void nextTurn() {
     playerTurn = (playerTurn + 1) % players.size();
+  }
+
+  public ObjectId getObjectId() {
+    return objectId;
+  }
+
+  public void setObjectId(ObjectId objectId) {
+    this.objectId = objectId;
   }
 }
