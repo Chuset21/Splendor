@@ -1,0 +1,3 @@
+FROM mongo:6.0.4-jammy
+EXPOSE 27017
+CMD mongod --port 27017
