@@ -54,7 +54,7 @@ public final class GameBoard {
    */
   private Player leadingPlayer;
   private final Set<Player> players;
-  private final String gameid;
+  private String gameid;
   private final String creator;
 
   /**
@@ -261,6 +261,10 @@ public final class GameBoard {
    */
   public String gameid() {
     return gameid;
+  }
+
+  public void setGameid(String gameid) {
+    this.gameid = gameid;
   }
 
   /**

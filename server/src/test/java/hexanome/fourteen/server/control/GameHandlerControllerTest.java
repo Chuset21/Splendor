@@ -44,6 +44,7 @@ public class GameHandlerControllerTest {
 
   private static GsonInstance gsonInstance;
   private LobbyServiceCaller lobbyService;
+  private SavedGamesService saveGameManager;
   private GameHandlerController gameHandlerController;
   private static User user1;
   private static User user2;
@@ -64,13 +65,14 @@ public class GameHandlerControllerTest {
   @BeforeEach
   public void init() {
     lobbyService = mock(LobbyServiceCaller.class);
+    saveGameManager = mock(SavedGamesService.class);
 
     Mockito.when(lobbyService.getUsername("user1")).thenReturn(null);
     Mockito.when(lobbyService.getUsername("user2")).thenReturn("x");
 
     gameHandlerController =
         new GameHandlerController(lobbyService, new UserPlayerMapper(), new StringExpansionMapper(),
-            new ServerToClientBoardGameMapper(), gsonInstance);
+            new ServerToClientBoardGameMapper(), gsonInstance, saveGameManager);
   }
 
   @Test
@@ -80,9 +82,17 @@ public class GameHandlerControllerTest {
     ReflectionTestUtils.setField(launchGameForm, "creator", "test");
     ReflectionTestUtils.setField(launchGameForm, "gameType", Expansion.STANDARD.name());
     ReflectionTestUtils.setField(launchGameForm, "players", new User[] {user1, user2});
-    ReflectionTestUtils.setField(launchGameForm, "saveGame", "test");
-
+    ReflectionTestUtils.setField(launchGameForm, "saveGame", "XYZ45");
     ResponseEntity<String> response = gameHandlerController.launchGame("gameid", launchGameForm);
+
+    assertNull(response.getBody());
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+
+    final String saveGame = "XYZ45";
+    Mockito.when(saveGameManager.getGame(saveGame)).thenReturn(
+        new GameBoard(null, Set.of(Expansion.STANDARD), Set.of(new Player("user1")), "gameid", ""));
+
+    response = gameHandlerController.launchGame("gameid", launchGameForm);
 
     assertNull(response.getBody());
     assertEquals(HttpStatus.OK, response.getStatusCode());

@@ -48,6 +48,7 @@ public class GameHandlerController {
   private final Mapper<String, Expansion> stringExpansionMapper;
   private final Mapper<GameBoard, SentGameBoard> gameBoardMapper;
   private final GsonInstance gsonInstance;
+  private final SavedGamesService saveGameManager;
 
   /**
    * Constructor.
@@ -62,12 +63,14 @@ public class GameHandlerController {
                                @Autowired Mapper<User, Player> userPlayerMapper,
                                @Autowired Mapper<String, Expansion> stringExpansionMapper,
                                @Autowired Mapper<GameBoard, SentGameBoard> gameBoardMapper,
-                               @Autowired GsonInstance gsonInstance) {
+                               @Autowired GsonInstance gsonInstance,
+                               @Autowired SavedGamesService saveGameManager) {
     this.lobbyService = lobbyService;
     this.userPlayerMapper = userPlayerMapper;
     this.stringExpansionMapper = stringExpansionMapper;
     this.gameBoardMapper = gameBoardMapper;
     this.gsonInstance = gsonInstance;
+    this.saveGameManager = saveGameManager;
     gameManager = new HashMap<>();
   }
 
@@ -81,7 +84,16 @@ public class GameHandlerController {
   @PutMapping(value = "{gameid}", consumes = "application/json; charset=utf-8")
   public ResponseEntity<String> launchGame(@PathVariable String gameid,
                                            @RequestBody LaunchGameForm launchGameForm) {
-    gameManager.put(gameid, createGame(gameid, launchGameForm)); // TODO add checks
+    GameBoard game = null;
+    if (launchGameForm.saveGame() != null && !launchGameForm.saveGame().isBlank()) {
+      game = saveGameManager.getGame(launchGameForm.saveGame());
+    }
+    if (game == null) {
+      game = createGame(gameid, launchGameForm);
+    } else {
+      game.setGameid(gameid);
+    }
+    gameManager.put(gameid, game);
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
