@@ -1,7 +1,8 @@
 package hexanome.fourteen.server.control;
 
 import hexanome.fourteen.server.control.form.LoginForm;
-import hexanome.fourteen.server.model.board.expansion.ExpansionStringMapper;
+import java.util.HashSet;
+import java.util.Set;
 import kong.unirest.HttpResponse;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +38,7 @@ public class ServerServiceTest {
   public void init() {
     lobbyService = mock(LobbyServiceCaller.class);
     serverService =
-        new ServerService(gsonInstance, new ExpansionStringMapper(), lobbyService, username,
+        new ServerService(gsonInstance, lobbyService, username,
             password);
   }
 
@@ -83,12 +84,12 @@ public class ServerServiceTest {
 
     assertFalse((Boolean) ReflectionTestUtils.invokeMethod(serverService, "registerGameServices"));
 
-    ReflectionTestUtils.setField(serverService, "gameServiceNames", new String[] {});
+    ReflectionTestUtils.setField(serverService, "gameServiceNames", new HashSet<>());
     Mockito.when(lobbyService.getGameServices()).thenReturn("xyz");
 
     assertTrue((Boolean) ReflectionTestUtils.invokeMethod(serverService, "registerGameServices"));
 
-    ReflectionTestUtils.setField(serverService, "gameServiceNames", new String[] {"x", "t"});
+    ReflectionTestUtils.setField(serverService, "gameServiceNames", Set.of("x", "t"));
     Mockito.when(lobbyService.registerGameService("x", null)).thenReturn(true);
     Mockito.when(lobbyService.registerGameService("t", null)).thenReturn(false);
 
@@ -148,7 +149,7 @@ public class ServerServiceTest {
     Mockito.when(response.getStatus()).thenReturn(401);
     Mockito.when(lobbyService.refreshToken(null)).thenReturn(response);
 
-    ReflectionTestUtils.setField(serverService, "gameServiceNames", new String[] {"x", "t"});
+    ReflectionTestUtils.setField(serverService, "gameServiceNames", Set.of("x", "t"));
     ReflectionTestUtils.invokeMethod(serverService, "unregisterGameServices");
   }
 }

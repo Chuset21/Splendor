@@ -1,5 +1,6 @@
 package hexanome.fourteen.server.control;
 
+import hexanome.fourteen.server.control.form.SaveGameForm;
 import kong.unirest.HttpResponse;
 
 /**
@@ -19,8 +20,8 @@ public interface LobbyServiceCaller {
   /**
    * Creates a User.
    *
-   * @param username The Name of the User
-   * @param password The Password of the User
+   * @param username    The Name of the User
+   * @param password    The Password of the User
    * @param accessToken The Access Token
    */
   void createUser(String username, String password, String accessToken);
@@ -43,7 +44,7 @@ public interface LobbyServiceCaller {
    * Registers a Game Service to LobbyService.
    *
    * @param gameServiceName The Name of the Game Service
-   * @param accessToken The Access Token
+   * @param accessToken     The Access Token
    * @return True/False for registration being confirmed
    */
   boolean registerGameService(String gameServiceName, String accessToken);
@@ -60,7 +61,7 @@ public interface LobbyServiceCaller {
    * Unregisters a Game Service from LobbyService.
    *
    * @param gameServiceName The Name of the GameService
-   * @param accessToken The Access Token
+   * @param accessToken     The Access Token
    */
   void unregisterGameService(String gameServiceName, String accessToken);
 
@@ -71,4 +72,12 @@ public interface LobbyServiceCaller {
    * @return The Username
    */
   String getUsername(String accessToken);
+
+  /**
+   * Save a game.
+   *
+   * @param accessToken  The Access Token.
+   * @param saveGameForm The save game form.
+   */
+  void saveGame(String accessToken, SaveGameForm saveGameForm);
 }

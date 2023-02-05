@@ -20,7 +20,6 @@ import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.card.CardLevel;
 import hexanome.fourteen.server.model.board.card.StandardCard;
 import hexanome.fourteen.server.model.board.expansion.Expansion;
-import hexanome.fourteen.server.model.board.expansion.StringExpansionMapper;
 import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import hexanome.fourteen.server.model.board.player.Player;
@@ -71,8 +70,9 @@ public class GameHandlerControllerTest {
     Mockito.when(lobbyService.getUsername("user2")).thenReturn("x");
 
     gameHandlerController =
-        new GameHandlerController(lobbyService, new UserPlayerMapper(), new StringExpansionMapper(),
-            new ServerToClientBoardGameMapper(), gsonInstance, saveGameManager);
+        new GameHandlerController(lobbyService, new UserPlayerMapper(),
+            new ServerToClientBoardGameMapper(), gsonInstance, saveGameManager,
+            new ServerService(gsonInstance, lobbyService, "", ""));
   }
 
   @Test
@@ -80,7 +80,7 @@ public class GameHandlerControllerTest {
     final LaunchGameForm launchGameForm = new LaunchGameForm();
 
     ReflectionTestUtils.setField(launchGameForm, "creator", "test");
-    ReflectionTestUtils.setField(launchGameForm, "gameType", Expansion.STANDARD.name());
+    ReflectionTestUtils.setField(launchGameForm, "gameType", GameServiceName.BASE.name());
     ReflectionTestUtils.setField(launchGameForm, "players", new User[] {user1, user2});
     ReflectionTestUtils.setField(launchGameForm, "saveGame", "XYZ45");
     ResponseEntity<String> response = gameHandlerController.launchGame("gameid", launchGameForm);

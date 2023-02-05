@@ -5,6 +5,7 @@ import hexanome.fourteen.server.control.form.ClaimNobleForm;
 import hexanome.fourteen.server.control.form.LaunchGameForm;
 import hexanome.fourteen.server.control.form.PurchaseCardForm;
 import hexanome.fourteen.server.control.form.ReserveCardForm;
+import hexanome.fourteen.server.control.form.SaveGameForm;
 import hexanome.fourteen.server.control.form.TakeGemsForm;
 import hexanome.fourteen.server.model.User;
 import hexanome.fourteen.server.model.board.GameBoard;
@@ -29,6 +30,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,32 +47,31 @@ public class GameHandlerController {
   private final LobbyServiceCaller lobbyService;
   private final Map<String, GameBoard> gameManager;
   private final Mapper<User, Player> userPlayerMapper;
-  private final Mapper<String, Expansion> stringExpansionMapper;
   private final Mapper<GameBoard, SentGameBoard> gameBoardMapper;
   private final GsonInstance gsonInstance;
   private final SavedGamesService saveGameManager;
+  private final ServerService serverService;
 
   /**
    * Constructor.
    *
-   * @param lobbyService          Lobby service
-   * @param userPlayerMapper      The User to Player Mapper
-   * @param stringExpansionMapper The String to Expansion Mapper
-   * @param gameBoardMapper       The GameBard Mapper
-   * @param gsonInstance          The GSON we will be using
+   * @param lobbyService     Lobby service
+   * @param userPlayerMapper The User to Player Mapper
+   * @param gameBoardMapper  The GameBard Mapper
+   * @param gsonInstance     The GSON we will be using
    */
   public GameHandlerController(@Autowired LobbyServiceCaller lobbyService,
                                @Autowired Mapper<User, Player> userPlayerMapper,
-                               @Autowired Mapper<String, Expansion> stringExpansionMapper,
                                @Autowired Mapper<GameBoard, SentGameBoard> gameBoardMapper,
                                @Autowired GsonInstance gsonInstance,
-                               @Autowired SavedGamesService saveGameManager) {
+                               @Autowired SavedGamesService saveGameManager,
+                               @Autowired ServerService serverService) {
     this.lobbyService = lobbyService;
     this.userPlayerMapper = userPlayerMapper;
-    this.stringExpansionMapper = stringExpansionMapper;
     this.gameBoardMapper = gameBoardMapper;
     this.gsonInstance = gsonInstance;
     this.saveGameManager = saveGameManager;
+    this.serverService = serverService;
     gameManager = new HashMap<>();
   }
 
@@ -100,7 +101,8 @@ public class GameHandlerController {
   private GameBoard createGame(String gameid, LaunchGameForm launchGameForm) {
     Set<Noble> nobles = null; // TODO
 
-    Set<Expansion> expansions = Set.of(stringExpansionMapper.map(launchGameForm.gameType()));
+    Set<Expansion> expansions =
+        GameServiceName.getExpansions(GameServiceName.valueOf(launchGameForm.gameType()));
     Set<Player> players = Arrays.stream(launchGameForm.players()).map(userPlayerMapper::map)
         .collect(Collectors.toSet());
     String creator = launchGameForm.creator();
@@ -165,6 +167,39 @@ public class GameHandlerController {
       final SentGameBoard sentGameBoard = gameBoardMapper.map(gameBoard);
       return ResponseEntity.status(HttpStatus.OK)
           .body(gsonInstance.gson.toJson(sentGameBoard, SentGameBoard.class));
+    }
+  }
+
+  /**
+   * Save a game.
+   *
+   * @param gameid      The game id corresponding to the game.
+   * @param accessToken The access token belonging to the player getting the game.
+   * @return The response.
+   */
+  @PostMapping(value = "{gameid}", produces = "application/json; charset=utf-8")
+  public ResponseEntity<String> saveGame(@PathVariable String gameid,
+                                         @RequestParam("access_token") String accessToken) {
+    final String username = getUsername(accessToken);
+    if (username == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
+    }
+
+    final GameBoard gameBoard = getGame(gameid);
+    if (gameBoard == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
+    } else if (getHand(gameBoard.players(), username) == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
+    } else {
+      if (!serverService.refreshToken()) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body("token could not be refreshed");
+      }
+      String saveGameid = saveGameManager.putGame(gameBoard);
+      lobbyService.saveGame(serverService.accessToken,
+          new SaveGameForm(GameServiceName.getGameServiceName(gameBoard.expansions()).name(),
+              gameBoard.players().stream().map(Player::uid).toList(), saveGameid));
+      return ResponseEntity.status(HttpStatus.OK).body(null);
     }
   }
 
@@ -322,8 +357,8 @@ public class GameHandlerController {
     }
     hand.reservedCards().add(card);
 
-    if (availableGems.containsKey(GemColor.GOLD)
-        && ((gemAmount == 10 && gemColor != null) || gemAmount < 10)) {
+    if (availableGems.containsKey(GemColor.GOLD) &&
+        ((gemAmount == 10 && gemColor != null) || gemAmount < 10)) {
       hand.gems().compute(GemColor.GOLD, (k, v) -> v == null ? 1 : v + 1);
       // Remove the GOLD mapping if it reaches 0
       availableGems.computeIfPresent(GemColor.GOLD, (k, v) -> v == 1 ? null : v - 1);
@@ -400,8 +435,7 @@ public class GameHandlerController {
     }
 
     final long sizeOfBankWithoutGoldGems =
-        new Gems(gameBoard.availableGems()).keySet().stream()
-            .filter(e -> e != GemColor.GOLD)
+        new Gems(gameBoard.availableGems()).keySet().stream().filter(e -> e != GemColor.GOLD)
             .count();
     if (gemsToTake.size() == 1) {
       final GemColor gemColorToTake = gemsToTake.entrySet().iterator().next().getKey();
@@ -412,8 +446,8 @@ public class GameHandlerController {
       } else if (amountOfGemsAvailable < 4 && amountOfGemsToTake == 2) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
             "cannot take 2 same color gems, there are less than 4 gems of that color in the bank");
-      } else if (amountOfGemsToTake == 1
-                 && (sizeOfBankWithoutGoldGems > 1 || amountOfGemsAvailable >= 4)) {
+      } else if (amountOfGemsToTake == 1 &&
+                 (sizeOfBankWithoutGoldGems > 1 || amountOfGemsAvailable >= 4)) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("cannot take 1 gem if it is possible to take more");
       }

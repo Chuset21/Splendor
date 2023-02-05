@@ -56,8 +56,8 @@ public final class ServerCaller {
    * @return The response.
    */
   public static HttpResponse<String> reserveCard(String serverLocation, String gameid,
-                                                  String accessToken,
-                                                  ReserveCardForm reserveCardForm) {
+                                                 String accessToken,
+                                                 ReserveCardForm reserveCardForm) {
     return Unirest.put("%s/api/games/%s/card/reserve".formatted(serverLocation, gameid))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("access_token", accessToken).body(Main.GSON.toJson(reserveCardForm))
@@ -70,12 +70,10 @@ public final class ServerCaller {
    * @return The response.
    */
   public static HttpResponse<String> takeGems(String serverLocation, String gameid,
-                                                 String accessToken,
-                                                 TakeGemsForm takeGemsForm) {
+                                              String accessToken, TakeGemsForm takeGemsForm) {
     return Unirest.put("%s/api/games/%s/gems".formatted(serverLocation, gameid))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-        .queryString("access_token", accessToken).body(Main.GSON.toJson(takeGemsForm))
-        .asString();
+        .queryString("access_token", accessToken).body(Main.GSON.toJson(takeGemsForm)).asString();
   }
 
   /**
@@ -84,11 +82,21 @@ public final class ServerCaller {
    * @return The response.
    */
   public static HttpResponse<String> claimNoble(String serverLocation, String gameid,
-                                              String accessToken,
-                                              ClaimNobleForm claimNobleForm) {
+                                                String accessToken, ClaimNobleForm claimNobleForm) {
     return Unirest.put("%s/api/games/%s/noble".formatted(serverLocation, gameid))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-        .queryString("access_token", accessToken).body(Main.GSON.toJson(claimNobleForm))
-        .asString();
+        .queryString("access_token", accessToken).body(Main.GSON.toJson(claimNobleForm)).asString();
+  }
+
+  /**
+   * Save a game.
+   *
+   * @return The response.
+   */
+  public static HttpResponse<String> saveGame(String serverLocation, String gameid,
+                                              String accessToken) {
+    return Unirest.post("%s/api/games/%s".formatted(serverLocation, gameid))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", accessToken).asString();
   }
 }

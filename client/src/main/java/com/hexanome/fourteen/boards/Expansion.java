@@ -5,5 +5,7 @@ package com.hexanome.fourteen.boards;
  */
 public enum Expansion {
   STANDARD,
-  ORIENT
+  ORIENT,
+  TRADING_POSTS,
+  CITIES
 }
