@@ -27,6 +27,7 @@ import java.util.Set;
  * If so this might be true for more than just this class.
  */
 public final class GameBoard {
+
   /**
    * The current player's turn.
    */
