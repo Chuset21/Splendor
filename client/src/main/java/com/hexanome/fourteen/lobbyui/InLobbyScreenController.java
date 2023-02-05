@@ -58,7 +58,7 @@ public class InLobbyScreenController implements ScreenController{
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
-        Objects.requireNonNull(MenuOrganizer.class.getResource("InLobbyScreen.fxml")));
+        Objects.requireNonNull(MenuController.class.getResource("InLobbyScreen.fxml")));
     // Import root from fxml file
     Parent root = loader.load();
     // Set up root on stage (window)
@@ -93,7 +93,7 @@ public class InLobbyScreenController implements ScreenController{
   @FXML
   private void handleLeaveButton(){
     try{
-      MenuOrganizer.goBack();
+      MenuController.goBack();
     } catch (IOException ioe){
       ioe.printStackTrace();
     }

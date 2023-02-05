@@ -1,9 +1,7 @@
 package com.hexanome.fourteen.login;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
-import com.hexanome.fourteen.Main;
-import com.hexanome.fourteen.lobbyui.Lobby;
-import com.hexanome.fourteen.lobbyui.MenuOrganizer;
+import com.hexanome.fourteen.lobbyui.MenuController;
 import com.hexanome.fourteen.lobbyui.ScreenController;
 import java.io.IOException;
 import java.net.URL;
@@ -12,14 +10,11 @@ import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import kong.unirest.HttpResponse;
-import kong.unirest.Unirest;
 
 /**
  * Class that shows the LoginScreen for users.
@@ -100,7 +95,7 @@ public final class LoginScreenController implements ScreenController {
 
     // Try launching the game
     try {
-      MenuOrganizer.successfulLogin(username, aPrimaryStage);
+      MenuController.successfulLogin(username, aPrimaryStage);
     } catch (Exception ex) {
       ex.printStackTrace();
     }

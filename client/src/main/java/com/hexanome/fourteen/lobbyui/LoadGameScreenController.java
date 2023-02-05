@@ -37,7 +37,7 @@ public class LoadGameScreenController implements ScreenController{
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
-        Objects.requireNonNull(MenuOrganizer.class.getResource("loadGame.fxml")));
+        Objects.requireNonNull(MenuController.class.getResource("loadGame.fxml")));
     // Import root from fxml file
     Parent root = loader.load();
     // Set up root on stage (window)
@@ -67,7 +67,7 @@ public class LoadGameScreenController implements ScreenController{
   public void handleCreateLobbyButton() {
     try {
       System.out.println("Loaded game: "+loadSetting.getSelectedToggle().toString());
-      MenuOrganizer.goToInLobbyScreen(null);
+      MenuController.goToInLobbyScreen(null);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -85,7 +85,7 @@ public class LoadGameScreenController implements ScreenController{
   @FXML
   private void handleBackButton(){
     try {
-      MenuOrganizer.goBack();
+      MenuController.goBack();
     } catch (Exception e) {
       e.printStackTrace();
     }

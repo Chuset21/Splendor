@@ -36,7 +36,7 @@ public class WelcomeScreenController implements ScreenController{
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
-        Objects.requireNonNull(MenuOrganizer.class.getResource("choiceSelect.fxml")));
+        Objects.requireNonNull(MenuController.class.getResource("choiceSelect.fxml")));
     // Import root from fxml file
     Parent root = loader.load();
     // Set up root on stage (window)
@@ -56,7 +56,7 @@ public class WelcomeScreenController implements ScreenController{
   public void initialize(URL url, ResourceBundle resourceBundle) {
 
     // Displays the current user's username
-    displayUsername.setText(MenuOrganizer.getUsername());
+    displayUsername.setText(MenuController.getUsername());
   }
 
   @FXML
@@ -69,7 +69,7 @@ public class WelcomeScreenController implements ScreenController{
   public void handleCreateGameButton() {
     //Switch scene to create game screen (game rule selection)
     try {
-      MenuOrganizer.goToCreateGameScreen();
+      MenuController.goToCreateGameScreen();
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
@@ -82,7 +82,7 @@ public class WelcomeScreenController implements ScreenController{
   public void handleJoinGameButton() {
     //Switch scene to join game details (lobby selection)
     try {
-      MenuOrganizer.goToLobbySelectScreen();
+      MenuController.goToLobbySelectScreen();
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
@@ -92,7 +92,7 @@ public class WelcomeScreenController implements ScreenController{
   public void handleLoadGameButton() {
     //Switch scene to load game details (chose game save)
     try {
-      MenuOrganizer.goToLoadGameScreen();
+      MenuController.goToLoadGameScreen();
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }

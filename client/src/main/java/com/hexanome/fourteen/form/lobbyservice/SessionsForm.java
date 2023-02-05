@@ -1,11 +1,9 @@
 package com.hexanome.fourteen.form.lobbyservice;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
-import com.hexanome.fourteen.lobbyui.MenuOrganizer;
+import com.hexanome.fourteen.lobbyui.MenuController;
 
-import java.util.Collection;
 import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -46,7 +44,7 @@ public final class SessionsForm {
 
     // Iterate until a desired session is found
     for(Map.Entry<String, SessionForm> entry : sessionMap.entrySet()){
-      if(entry.getValue().creator().equals(MenuOrganizer.getUsername())){
+      if(entry.getValue().creator().equals(MenuController.getUsername())){
         return entry.getKey();
       }
     }

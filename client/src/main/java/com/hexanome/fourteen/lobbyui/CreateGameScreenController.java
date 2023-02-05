@@ -15,7 +15,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
@@ -59,7 +58,7 @@ public class CreateGameScreenController implements ScreenController{
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
-        Objects.requireNonNull(MenuOrganizer.class.getResource("createGame.fxml")));
+        Objects.requireNonNull(MenuController.class.getResource("createGame.fxml")));
     // Import root from fxml file
     Parent root = loader.load();
     // Set up root on stage (window)
@@ -112,14 +111,14 @@ public class CreateGameScreenController implements ScreenController{
     CreateSessionForm session = new CreateSessionForm(LobbyServiceCaller.getUserID(),(expansionSetting.getSelectedToggle().getUserData()).toString());
     System.out.println(LobbyServiceCaller.createSession(LobbyServiceCaller.getAccessToken(),session));
 
-    String sessionid = SessionsForm.getSessionWithHost(MenuOrganizer.getUsername());
+    String sessionid = SessionsForm.getSessionWithHost(MenuController.getUsername());
     System.out.println("SessionID: "+sessionid);
 
     try {
       System.out.println("Expansion toggle: "+(expansionSetting.getSelectedToggle().getUserData()).toString()
           +"\nPlayer count toggle: "+maxPlayersSetting.getSelectedToggle().toString());
 
-      MenuOrganizer.goToInLobbyScreen(new Lobby(sessionid));
+      MenuController.goToInLobbyScreen(new Lobby(sessionid));
     } catch (Exception ioe) {
       ioe.printStackTrace();
     }
@@ -133,7 +132,7 @@ public class CreateGameScreenController implements ScreenController{
   @FXML
   private void handleBackButton(){
     try {
-      MenuOrganizer.goBack();
+      MenuController.goBack();
     } catch (Exception e) {
       e.printStackTrace();
     }

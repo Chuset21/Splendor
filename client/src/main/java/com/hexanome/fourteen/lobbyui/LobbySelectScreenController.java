@@ -1,14 +1,12 @@
 package com.hexanome.fourteen.lobbyui;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
-import com.hexanome.fourteen.form.lobbyservice.GameParametersForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -39,7 +37,7 @@ public class LobbySelectScreenController implements ScreenController{
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
-        Objects.requireNonNull(MenuOrganizer.class.getResource("joinGame.fxml")));
+        Objects.requireNonNull(MenuController.class.getResource("joinGame.fxml")));
     // Import root from fxml file
     Parent root = loader.load();
     // Set up root on stage (window)
@@ -108,7 +106,7 @@ public class LobbySelectScreenController implements ScreenController{
   @FXML
   private void handleBackButton(){
     try {
-      MenuOrganizer.goBack();
+      MenuController.goBack();
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
@@ -121,7 +119,7 @@ public class LobbySelectScreenController implements ScreenController{
    */
   public void handleJoinLobbyButton(Lobby lobby){
     try {
-      MenuOrganizer.goToInLobbyScreen(lobby);
+      MenuController.goToInLobbyScreen(lobby);
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }

@@ -6,18 +6,18 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
-public class MenuOrganizer {
+public class MenuController {
   private static Stage stage;
   private static Stack<ScreenController> previousScreens = new Stack<>();
   private static ScreenController currentScreen = null;
   private static String username;
 
   public static void setUsername(String username) {
-    MenuOrganizer.username = username;
+    MenuController.username = username;
   }
 
   public static void setStage(Stage stage) {
-    MenuOrganizer.stage = stage;
+    MenuController.stage = stage;
   }
 
   public static String getUsername() {
@@ -34,8 +34,8 @@ public class MenuOrganizer {
     }
 
     // Initializes user settings into menu system
-    MenuOrganizer.username = username;
-    MenuOrganizer.stage = stage;
+    MenuController.username = username;
+    MenuController.stage = stage;
 
     ScreenController screen = new WelcomeScreenController();
 
