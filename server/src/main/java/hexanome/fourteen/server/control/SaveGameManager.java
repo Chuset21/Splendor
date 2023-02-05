@@ -1,11 +1,5 @@
 package hexanome.fourteen.server.control;
 
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
-import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
-
-import com.google.gson.FieldNamingPolicy;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
 import com.mongodb.ServerAddress;
@@ -16,8 +10,8 @@ import hexanome.fourteen.server.model.board.GameBoard;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import org.bson.Document;
-import org.bson.codecs.configuration.CodecRegistry;
-import org.bson.codecs.pojo.PojoCodecProvider;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -30,9 +24,8 @@ public class SaveGameManager implements SavedGamesService {
   private final int port;
   private final String dbName;
   private final String collectionName;
-  private final Gson gson;
+  private final GsonInstance gsonInstance;
   private MongoClient mongoClient;
-  private MongoCollection<GameBoard> savedGames;
   private MongoCollection<Document> savedDocuments;
 
   /**
@@ -43,41 +36,33 @@ public class SaveGameManager implements SavedGamesService {
    * @param collectionName collection name
    */
   public SaveGameManager(@Value("${db.port}") int port, @Value("${db.name}") String dbName,
-                         @Value("${db.collection.name}") String collectionName) {
+                         @Value("${db.collection.name}") String collectionName,
+                         @Autowired GsonInstance gsonInstance) {
     this.port = port;
     this.dbName = dbName;
     this.collectionName = collectionName;
-    this.gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.IDENTITY).serializeNulls()
-        .create();
+    this.gsonInstance = gsonInstance;
   }
 
   @PostConstruct
   private void initialiseDatabase() {
-    final CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(),
-        fromProviders(PojoCodecProvider.builder().automatic(true).build()));
     mongoClient = new MongoClient(new ServerAddress("localhost", port),
-        new MongoClientOptions.Builder().maxConnectionIdleTime(600000).connectionsPerHost(2)
-            .cursorFinalizerEnabled(false).build());
-    System.out.println("Created mongoClient");
+        new MongoClientOptions.Builder().maxConnectionIdleTime(600000).build());
     final MongoDatabase db = mongoClient.getDatabase(dbName);
-    System.out.println("Got database");
     savedDocuments = db.getCollection(collectionName);
-    System.out.println("Got first collection");
-    savedGames =
-        db.getCollection(collectionName, GameBoard.class).withCodecRegistry(pojoCodecRegistry);
-    System.out.println("Got second collection");
   }
 
   @Override
   public GameBoard getGame(String saveGameid) {
-    return savedGames.find(Filters.eq(saveGameid)).first();
+    final Document doc = savedDocuments.find(Filters.eq(new ObjectId(saveGameid))).first();
+    return doc != null ? gsonInstance.gson.fromJson(doc.toJson(), GameBoard.class) : null;
   }
 
   @Override
   public String putGame(GameBoard gameBoard) {
-    final Document doc = Document.parse(gson.toJson(gameBoard));
+    final Document doc = Document.parse(gsonInstance.gson.toJson(gameBoard));
     savedDocuments.insertOne(doc);
-    return doc.getObjectId("_id").toString();
+    return doc.getObjectId("_id").toHexString();
   }
 
   @PreDestroy
