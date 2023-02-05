@@ -39,7 +39,7 @@ public class InLobbyScreenController implements ScreenController{
   private Lobby lobby;
 
   // List of current players
-  private Player[] players = new Player[4];
+  private DisplayPlayer[] displayPlayers = new DisplayPlayer[4];
 
   // Temp items to use for making lobbies
   private static final String[] playerImgs = {"cat.jpg","dog.jpg","squirrel.jpg","chameleon.jpg"};
@@ -101,30 +101,30 @@ public class InLobbyScreenController implements ScreenController{
 
   @FXML
   private void handleAddPlayerButton(){
-    Player player = null;
+    DisplayPlayer displayPlayer = null;
 
     try {
-      player = new Player(playerImgs[new Random().nextInt(4)], playerNames[new Random().nextInt(5)], this);
+      displayPlayer = new DisplayPlayer(playerImgs[new Random().nextInt(4)], playerNames[new Random().nextInt(5)], this);
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
 
-    if (player != null) {
-      addPlayer(player);
+    if (displayPlayer != null) {
+      addPlayer(displayPlayer);
     }
   }
 
   /**
    * Adds a player to the players list and displays them in the lobby
    *
-   * @param player player to be added
+   * @param displayPlayer player to be added
    * @return true if player was added successfully, false if no room was left in lobby
    */
-  private boolean addPlayer(Player player){
+  private boolean addPlayer(DisplayPlayer displayPlayer){
     for(int i = 0;i<4;i++){
-      if(players[i] == null){
-        players[i] = player;
-        lobbyGrid.add(player,i/2,i%2);
+      if(displayPlayers[i] == null){
+        displayPlayers[i] = displayPlayer;
+        lobbyGrid.add(displayPlayer,i/2,i%2);
         return true;
       }
     }

@@ -109,9 +109,9 @@ public class CreateGameScreenController implements ScreenController{
   public void handleCreateLobbyButton() {
     // Create template for session with current user's ID and the selected expansion
     CreateSessionForm session = new CreateSessionForm(LobbyServiceCaller.getUserID(),(expansionSetting.getSelectedToggle().getUserData()).toString());
-    System.out.println(LobbyServiceCaller.createSession(LobbyServiceCaller.getAccessToken(),session));
 
-    String sessionid = SessionsForm.getSessionWithHost(MenuController.getUsername());
+    // TODO: Check if this works
+    String sessionid = LobbyServiceCaller.createSession(LobbyServiceCaller.getAccessToken(),session);
     System.out.println("SessionID: "+sessionid);
 
     try {
