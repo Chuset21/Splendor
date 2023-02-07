@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <Pane layoutX="149.0" layoutY="173.0" prefHeight="392.0" prefWidth="874.0">
+      <Text fx:id="titleText" layoutX="77.0" layoutY="102.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bob's Lobby" wrappingWidth="400.0">
+         <font>
+            <Font size="35.0" />
+         </font>
+      </Text>
+      <Text fx:id="capacityText" layoutX="77.0" layoutY="142.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4/4 players" wrappingWidth="149.0">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Text>
+      <Pane layoutX="97.0" layoutY="176.0" prefHeight="392.0" prefWidth="874.0">
          <children>
             <Text layoutX="37.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Players">
                <font>
-                  <Font name="Satoshi Bold" size="20.0" />
+                  <Font size="25.0" />
                </font>
             </Text>
             <GridPane fx:id="lobbyGrid" layoutX="38.0" layoutY="115.0" prefHeight="258.0" prefWidth="797.0">
@@ -26,5 +36,20 @@
             </GridPane>
          </children>
       </Pane>
+      <Button fx:id="launchButton" layoutX="77.0" layoutY="594.0" mnemonicParsing="false" onAction="#handleLaunchButton" prefHeight="69.0" prefWidth="166.0" text="Launch">
+         <font>
+            <Font size="32.0" />
+         </font>
+      </Button>
+      <Button fx:id="leaveButton" layoutX="988.0" layoutY="53.0" mnemonicParsing="false" onAction="#handleLeaveButton" prefHeight="37.0" prefWidth="149.0" text="Leave">
+         <font>
+            <Font size="32.0" />
+         </font>
+      </Button>
+      <Button fx:id="addPlayerButton" layoutX="277.0" layoutY="594.0" mnemonicParsing="false" onAction="#handleAddPlayerButton" prefHeight="69.0" prefWidth="223.0" text="Add Player">
+         <font>
+            <Font size="32.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

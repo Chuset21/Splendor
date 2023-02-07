@@ -22,18 +22,17 @@ public class InLobbyScreenController implements ScreenController{
   @FXML
   private AnchorPane anchorPane;
   @FXML
-  private GridPane lobbyGrid;
+  private Text titleText;
   @FXML
-  private Button leaveLobbyButton;
+  private Text capacityText;
+  @FXML
+  private GridPane lobbyGrid;
   @FXML
   private Button launchButton;
   @FXML
+  private Button leaveButton;
+  @FXML
   private Button addPlayerButton;
-  @FXML
-  private Text lobbyNameText;
-  @FXML
-  private Text playerCounterText;
-
 
   // Holds data of current lobby (primarily the lobby location)
   private Lobby lobby;
@@ -46,8 +45,8 @@ public class InLobbyScreenController implements ScreenController{
   private static final String[] playerNames = {"Billy Bob", "John Smith", "Gerald", "Betsy", "Brenda"};
 
   // Template for lobby text
-  private static final String lobbyNameTemp = "[ownerName]'s Lobby";
-  private static final String playerCounterTemp = "[curPlayers]/[maxPlayers] Players";
+  private static final String LOBBY_NAME_TEMPLATE = "[ownerName]'s Lobby";
+  private static final String PLAYER_COUNT_TEMPLATE = "[curPlayers]/[maxPlayers] Players";
 
   public InLobbyScreenController(Lobby lobby){
     this.lobby = lobby;
@@ -56,11 +55,15 @@ public class InLobbyScreenController implements ScreenController{
   @Override
   public void goTo(Stage stage) throws IOException {
 
-    // Create loader class
-    FXMLLoader loader = new FXMLLoader(
-        Objects.requireNonNull(MenuController.class.getResource("InLobbyScreen.fxml")));
+    // Load basic lobby UI
+    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(Lobby.class.getResource("InLobbyScreen.fxml")));
+
+    // THIS IS IMPORTANT, you can't set this object as the root unless the FXML file HAS NO CONTROLLER SET & it has fx:root="Pane"
+    loader.setController(this);
+
     // Import root from fxml file
     Parent root = loader.load();
+
     // Set up root on stage (window)
     Scene aScene = new Scene(root);
     aScene.getStylesheets().add(getClass().getResource("lobbyStyling.css").toExternalForm());
@@ -136,7 +139,7 @@ public class InLobbyScreenController implements ScreenController{
    * @param ownerName name to display as owner
    */
   private void updateLobbyName(String ownerName){
-    lobbyNameText.setText(lobbyNameTemp.replaceAll("[ownerName]",ownerName));
+    titleText.setText(LOBBY_NAME_TEMPLATE.replaceAll("[ownerName]",ownerName));
   }
 
   /**
@@ -145,8 +148,8 @@ public class InLobbyScreenController implements ScreenController{
    * @param maxPlayers maximum players in the lobby
    */
   private void updatePlayerCounter(int curPlayers,int maxPlayers){
-    String temp = playerCounterTemp.replaceAll("[curPlayers]",""+curPlayers);
-    playerCounterText.setText(temp.replaceAll("[maxPlayers]",""+maxPlayers));
+    String temp = PLAYER_COUNT_TEMPLATE.replaceAll("[curPlayers]",""+curPlayers);
+    capacityText.setText(temp.replaceAll("[maxPlayers]",""+maxPlayers));
   }
 
 }
