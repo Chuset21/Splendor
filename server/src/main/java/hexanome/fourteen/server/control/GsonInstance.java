@@ -4,6 +4,9 @@ import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
+import hexanome.fourteen.server.control.form.payment.CardPayment;
+import hexanome.fourteen.server.control.form.payment.GemPayment;
+import hexanome.fourteen.server.control.form.payment.Payment;
 import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.card.GoldGemCard;
 import hexanome.fourteen.server.model.board.card.ReserveNobleCard;
@@ -39,6 +42,8 @@ public class GsonInstance {
             .registerSubtype(SatchelCard.class).registerSubtype(StandardCard.class)
             .registerSubtype(WaterfallCard.class);
     gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-        .registerTypeAdapterFactory(adapter).serializeNulls().create();
+        .registerTypeAdapterFactory(adapter).registerTypeAdapterFactory(
+            RuntimeTypeAdapterFactory.of(Payment.class).registerSubtype(CardPayment.class)
+                .registerSubtype(GemPayment.class)).serializeNulls().create();
   }
 }

@@ -1,4 +1,4 @@
-package hexanome.fourteen.server.model.board.payment;
+package hexanome.fourteen.server.control.form.payment;
 
 import hexanome.fourteen.server.model.board.gem.Gems;
 
@@ -24,6 +24,13 @@ public class GemPayment implements Payment {
     this.chosenGems = chosenGems;
     this.substitutedGems = substitutedGems;
     this.numGoldGemCards = numGoldGemCards;
+  }
+
+  /**
+   * No args constructor.
+   */
+  public GemPayment() {
+
   }
 
   /**

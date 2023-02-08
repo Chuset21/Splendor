@@ -11,6 +11,9 @@ import com.hexanome.fourteen.form.server.cardform.SacrificeCardForm;
 import com.hexanome.fourteen.form.server.cardform.SatchelCardForm;
 import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
 import com.hexanome.fourteen.form.server.cardform.WaterfallCardForm;
+import com.hexanome.fourteen.form.server.payment.CardPaymentForm;
+import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
+import com.hexanome.fourteen.form.server.payment.PaymentForm;
 import com.hexanome.fourteen.login.LoginScreen;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -30,6 +33,9 @@ public class Main extends Application {
                   .registerSubtype(ReserveNobleCardForm.class)
                   .registerSubtype(SacrificeCardForm.class).registerSubtype(SatchelCardForm.class)
                   .registerSubtype(StandardCardForm.class).registerSubtype(WaterfallCardForm.class))
+          .registerTypeAdapterFactory(
+              RuntimeTypeAdapterFactory.of(PaymentForm.class).registerSubtype(GemPaymentForm.class)
+                  .registerSubtype(CardPaymentForm.class))
           .serializeNulls().create();
   private static final String HTTP_STRING = "http://%s:%s/";
   private static final String LOBBY_SERVICE_PORT = "4242";
