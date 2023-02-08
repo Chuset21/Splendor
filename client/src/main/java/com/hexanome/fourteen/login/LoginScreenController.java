@@ -13,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -21,7 +22,7 @@ import javafx.stage.Stage;
  */
 public final class LoginScreenController implements ScreenController {
 
-  private static Stage aPrimaryStage;
+  private Stage aPrimaryStage;
 
   @FXML
   private TextField usernameField;
@@ -29,6 +30,10 @@ public final class LoginScreenController implements ScreenController {
   private TextField passwordField;
   @FXML
   private Button loginButton;
+  @FXML
+  private Label loginMessageLabel;
+
+
 
   /**
    * Actually displays the LoginScreen for the user to see and interact with.
@@ -39,6 +44,7 @@ public final class LoginScreenController implements ScreenController {
   @Override
   public void goTo(Stage stage) throws IOException {
     aPrimaryStage = stage;
+    MenuController.setStage(stage);
 
     // Import root from fxml file
     Parent root =
@@ -58,6 +64,8 @@ public final class LoginScreenController implements ScreenController {
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
+    // Initialize login message
+    loginMessageLabel.setText((String) MenuController.getStage().getUserData());
   }
 
 
@@ -95,7 +103,7 @@ public final class LoginScreenController implements ScreenController {
 
     // Try launching the game
     try {
-      MenuController.successfulLogin(username, aPrimaryStage);
+      MenuController.successfulLogin(username, MenuController.getStage());
     } catch (Exception ex) {
       ex.printStackTrace();
     }

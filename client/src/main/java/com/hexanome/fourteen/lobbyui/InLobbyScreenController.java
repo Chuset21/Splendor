@@ -36,6 +36,7 @@ public class InLobbyScreenController implements ScreenController{
 
   // Holds data of current lobby (primarily the lobby location)
   private Lobby lobby;
+  
 
   // List of current players
   private DisplayPlayer[] displayPlayers = new DisplayPlayer[4];
@@ -47,11 +48,6 @@ public class InLobbyScreenController implements ScreenController{
   // Template for lobby text
   private static final String LOBBY_NAME_TEMPLATE = "[ownerName]'s Lobby";
   private static final String PLAYER_COUNT_TEMPLATE = "[curPlayers]/[maxPlayers] Players";
-
-  public InLobbyScreenController(){ this.lobby = null; }
-  public InLobbyScreenController(Lobby lobby){
-    this.lobby = lobby;
-  }
 
   @Override
   public void goTo(Stage stage) throws IOException {
@@ -77,6 +73,10 @@ public class InLobbyScreenController implements ScreenController{
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
+    this.lobby = (Lobby) MenuController.getStage().getUserData();
+
+    updateLobbyInfo();
+
     /*try {
       Player player = new Player(playerImgs[new Random().nextInt(4)], MenuOrganizer.getUsername(), this);
 
@@ -132,12 +132,22 @@ public class InLobbyScreenController implements ScreenController{
     return false;
   }
 
+  private void updateLobbyInfo(){
+    updateLobbyName(lobby.getPlayers()[0]);
+    updatePlayerCounter(lobby.getNumPlayers(),lobby.getPlayers().length);
+    try{
+      addPlayer(new DisplayPlayer(playerImgs[new Random().nextInt(4)],lobby.getPlayers()[0],this));
+    } catch(IOException ioe){
+      ioe.printStackTrace();
+    }
+  }
+
   /**
    * Displays the passed owner name as the lobby owner
    * @param ownerName name to display as owner
    */
   private void updateLobbyName(String ownerName){
-    titleText.setText(LOBBY_NAME_TEMPLATE.replaceAll("[ownerName]",ownerName));
+    titleText.setText(LOBBY_NAME_TEMPLATE.replace("[ownerName]",ownerName));
   }
 
   /**
@@ -146,8 +156,8 @@ public class InLobbyScreenController implements ScreenController{
    * @param maxPlayers maximum players in the lobby
    */
   private void updatePlayerCounter(int curPlayers,int maxPlayers){
-    String temp = PLAYER_COUNT_TEMPLATE.replaceAll("[curPlayers]",""+curPlayers);
-    capacityText.setText(temp.replaceAll("[maxPlayers]",""+maxPlayers));
+    String temp = PLAYER_COUNT_TEMPLATE.replace("[curPlayers]",""+curPlayers);
+    capacityText.setText(temp.replace("[maxPlayers]",""+maxPlayers));
   }
 
 }

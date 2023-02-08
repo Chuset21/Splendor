@@ -1,6 +1,9 @@
 package com.hexanome.fourteen.lobbyui;
 
 import java.security.InvalidParameterException;
+
+import com.hexanome.fourteen.login.LoginScreenController;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
@@ -10,18 +13,9 @@ public class MenuController {
   private static Stage stage;
   private static Stack<ScreenController> previousScreens = new Stack<>();
   private static ScreenController currentScreen = null;
-  private static String username;
-
-  public static void setUsername(String username) {
-    MenuController.username = username;
-  }
 
   public static void setStage(Stage stage) {
     MenuController.stage = stage;
-  }
-
-  public static String getUsername() {
-    return "" + username;
   }
 
   public static Stage getStage() {
@@ -33,8 +27,7 @@ public class MenuController {
       throw new InvalidParameterException("Neither parameter can be null.");
     }
 
-    // Initializes user settings into menu system
-    MenuController.username = username;
+    // Initializes MenuController with a stage
     MenuController.stage = stage;
 
     ScreenController screen = new WelcomeScreenController();
@@ -44,6 +37,22 @@ public class MenuController {
 
     // Sets this screen as current screen
     currentScreen = screen;
+    screen.goTo(stage);
+  }
+
+  /**
+   * Go to login screen to input credentials again
+   *
+   * @param errorMessage message to be displayed to the user (e.g. "Session timed out, retry login")
+   * @throws IOException
+   */
+  public static void returnToLogin(String errorMessage) throws IOException{
+    ScreenController screen = new LoginScreenController();
+
+    // Send errorMessage
+    stage.setUserData(errorMessage);
+
+    // Go to login screen
     screen.goTo(stage);
   }
 
@@ -108,7 +117,10 @@ public class MenuController {
   public static void goToInLobbyScreen(Lobby lobby) throws IOException {
     // Adds current screen to previous screens stack
     previousScreens.push(currentScreen);
-    ScreenController screen = new InLobbyScreenController(lobby);
+    ScreenController screen = new InLobbyScreenController();
+
+    // Pass lobby data to lobby screen
+    stage.setUserData(lobby);
 
     // Sets this screen as current screen
     currentScreen = screen;

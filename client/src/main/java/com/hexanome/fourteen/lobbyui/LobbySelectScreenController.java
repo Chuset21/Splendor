@@ -1,6 +1,7 @@
 package com.hexanome.fourteen.lobbyui;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
+import com.hexanome.fourteen.TokenRefreshFailedException;
 import com.hexanome.fourteen.form.lobbyservice.SessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -31,9 +33,11 @@ public class LobbySelectScreenController implements ScreenController{
   @FXML
   private Button addLobby;
 
+  private Stage aPrimaryStage;
 
   @Override
   public void goTo(Stage stage) throws IOException {
+    aPrimaryStage = stage;
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
@@ -53,6 +57,7 @@ public class LobbySelectScreenController implements ScreenController{
     stage.show();
   }
 
+  // TODO: make this actually send you to login when it fails
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
     updateLobbies();
@@ -80,25 +85,40 @@ public class LobbySelectScreenController implements ScreenController{
     // Resets displayed lobbies
     lobbyVBox.getChildren().clear();
 
-    SessionsForm lobbyForm = LobbyServiceCaller.getSessions();
-    Map<String, SessionForm> lobbies = lobbyForm.sessions();
+    SessionsForm lobbyForm = null;
 
-    // Iterates through all active sessions
-    for(Map.Entry<String, SessionForm> entry : lobbies.entrySet()){
-      // Creates new lobby based on session data from lobby service
-      Lobby lobby = new Lobby(entry.getKey());
-      DisplayLobby displayLobby = null;
-
+    try{
+      lobbyForm = LobbyServiceCaller.getSessions();
+    } catch(TokenRefreshFailedException e){
       try{
-        // Creates new display lobby based on data received from lobby service
-
-        displayLobby = new DisplayLobby(lobby, this);
+        MenuController.returnToLogin("Session timed out, retry login");
       } catch(IOException ioe){
         ioe.printStackTrace();
       }
+      aPrimaryStage.close();
+      return;
+    }
 
-      if (lobby != null) {
-        lobbyVBox.getChildren().add(displayLobby);
+    if(lobbyForm != null){
+      Map<String, SessionForm> lobbies = lobbyForm.sessions();
+
+      // Iterates through all active sessions
+      for(Map.Entry<String, SessionForm> entry : lobbies.entrySet()){
+        // Creates new lobby based on session data from lobby service
+        Lobby lobby = new Lobby(entry.getKey());
+        DisplayLobby displayLobby = null;
+
+        try{
+          // Creates new display lobby based on data received from lobby service
+
+          displayLobby = new DisplayLobby(lobby, this);
+        } catch(IOException ioe){
+          ioe.printStackTrace();
+        }
+
+        if (lobby != null) {
+          lobbyVBox.getChildren().add(displayLobby);
+        }
       }
     }
   }

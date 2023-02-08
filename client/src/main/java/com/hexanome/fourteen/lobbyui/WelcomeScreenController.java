@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
+
+import com.hexanome.fourteen.LobbyServiceCaller;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -56,7 +58,7 @@ public class WelcomeScreenController implements ScreenController{
   public void initialize(URL url, ResourceBundle resourceBundle) {
 
     // Displays the current user's username
-    displayUsername.setText(MenuController.getUsername());
+    displayUsername.setText(LobbyServiceCaller.getUserID());
   }
 
   @FXML

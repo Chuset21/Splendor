@@ -1,6 +1,7 @@
 package com.hexanome.fourteen.lobbyui;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
+import com.hexanome.fourteen.TokenRefreshFailedException;
 import com.hexanome.fourteen.boards.Expansion;
 import com.hexanome.fourteen.form.lobbyservice.CreateSessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
@@ -110,19 +111,31 @@ public class CreateGameScreenController implements ScreenController{
     // Create template for session with current user's ID and the selected expansion
     CreateSessionForm session = new CreateSessionForm(LobbyServiceCaller.getUserID(),(expansionSetting.getSelectedToggle().getUserData()).toString());
 
-    // TODO: Check if this works
-    String sessionid = LobbyServiceCaller.createSession(LobbyServiceCaller.getAccessToken(),session);
-    System.out.println("SessionID: "+sessionid);
+    // Gets sessions
+    String sessionid = null;
 
-    try {
-      System.out.println("Expansion toggle: "+(expansionSetting.getSelectedToggle().getUserData()).toString()
-          +"\nPlayer count toggle: "+maxPlayersSetting.getSelectedToggle().toString());
-
-      MenuController.goToInLobbyScreen(new Lobby(sessionid));
-    } catch (Exception ioe) {
-      ioe.printStackTrace();
+    try{
+      sessionid = LobbyServiceCaller.createSession(session);
+    } catch(TokenRefreshFailedException e){
+      try{
+        MenuController.returnToLogin("Session timed out, retry login");
+      } catch(IOException ioe){
+        ioe.printStackTrace();
+      }
     }
 
+    System.out.println("SessionID: "+sessionid);
+
+    if(sessionid != null){
+      try {
+        System.out.println("Expansion toggle: "+(expansionSetting.getSelectedToggle().getUserData()).toString()
+                +"\nPlayer count toggle: "+maxPlayersSetting.getSelectedToggle().toString());
+
+        MenuController.goToInLobbyScreen(new Lobby(sessionid));
+      } catch (Exception ioe) {
+        ioe.printStackTrace();
+      }
+    }
     // TODO: Implement putting player in correct lobby once created
   }
 

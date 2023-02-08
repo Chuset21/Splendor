@@ -24,7 +24,7 @@ public class Lobby {
     // Set player list
     this.numPlayers = 1;
     this.players = new String[gameParameters.maxSessionPlayers()];
-    players[0] = MenuController.getUsername();
+    players[0] = LobbyServiceCaller.getUserID();
 
     // TODO: Make this actually set expansion session's expansion
     // Set expansion

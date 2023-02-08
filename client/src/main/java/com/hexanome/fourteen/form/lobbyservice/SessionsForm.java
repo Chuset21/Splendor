@@ -1,8 +1,11 @@
 package com.hexanome.fourteen.form.lobbyservice;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
+import com.hexanome.fourteen.TokenRefreshFailedException;
+import com.hexanome.fourteen.lobbyui.Lobby;
 import com.hexanome.fourteen.lobbyui.MenuController;
 
+import java.io.IOException;
 import java.util.Map;
 
 
@@ -39,13 +42,26 @@ public final class SessionsForm {
    */
   public static String getSessionWithHost(String hostName){
     // Get current list of sessions from LobbyService
-    SessionsForm sessions = LobbyServiceCaller.getSessions();
-    Map<String, SessionForm> sessionMap = sessions.sessions();
+    SessionsForm sessions = null;
 
-    // Iterate until a desired session is found
-    for(Map.Entry<String, SessionForm> entry : sessionMap.entrySet()){
-      if(entry.getValue().creator().equals(MenuController.getUsername())){
-        return entry.getKey();
+    try{
+      sessions = LobbyServiceCaller.getSessions();
+    } catch(TokenRefreshFailedException e){
+      try{
+        MenuController.returnToLogin("Session timed out, retry login");
+      } catch(IOException ioe){
+        ioe.printStackTrace();
+      }
+    }
+
+    if(sessions != null) {
+      Map<String, SessionForm> sessionMap = sessions.sessions();
+
+      // Iterate until a desired session is found
+      for (Map.Entry<String, SessionForm> entry : sessionMap.entrySet()) {
+        if (entry.getValue().creator().equals(LobbyServiceCaller.getUserID())) {
+          return entry.getKey();
+        }
       }
     }
 
