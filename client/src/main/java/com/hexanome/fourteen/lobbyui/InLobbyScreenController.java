@@ -28,9 +28,9 @@ public class InLobbyScreenController implements ScreenController{
   @FXML
   private GridPane lobbyGrid;
   @FXML
-  private Button launchButton;
+  private Button launchLobbyButton;
   @FXML
-  private Button leaveButton;
+  private Button leaveLobbyButton;
   @FXML
   private Button addPlayerButton;
 
@@ -48,6 +48,7 @@ public class InLobbyScreenController implements ScreenController{
   private static final String LOBBY_NAME_TEMPLATE = "[ownerName]'s Lobby";
   private static final String PLAYER_COUNT_TEMPLATE = "[curPlayers]/[maxPlayers] Players";
 
+  public InLobbyScreenController(){ this.lobby = null; }
   public InLobbyScreenController(Lobby lobby){
     this.lobby = lobby;
   }
@@ -57,9 +58,6 @@ public class InLobbyScreenController implements ScreenController{
 
     // Load basic lobby UI
     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(Lobby.class.getResource("InLobbyScreen.fxml")));
-
-    // THIS IS IMPORTANT, you can't set this object as the root unless the FXML file HAS NO CONTROLLER SET & it has fx:root="Pane"
-    loader.setController(this);
 
     // Import root from fxml file
     Parent root = loader.load();
