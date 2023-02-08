@@ -7,7 +7,6 @@ import com.hexanome.fourteen.form.lobbyservice.SessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
@@ -125,7 +124,8 @@ public final class LobbyServiceCaller {
    * @param authToken The player's token
    * @return The list of saved games
    */
-  public static List<SaveGameForm> getSavedGames(String authToken) { // Can then use this to filter and see where our player appears
+  public static List<SaveGameForm> getSavedGames(
+      String authToken) { // Can then use this to filter and see where our player appears
     final Type listType = new TypeToken<ArrayList<SaveGameForm>>() {
     }.getType();
     final List<SaveGameForm> saveGameForms = new ArrayList<>();
