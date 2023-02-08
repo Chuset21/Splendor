@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.Random;
 import java.util.ResourceBundle;
+
+import com.hexanome.fourteen.LobbyServiceCaller;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -93,6 +95,10 @@ public class InLobbyScreenController implements ScreenController{
 
   @FXML
   private void handleLeaveButton(){
+    if(LobbyServiceCaller.getUserID().equals(lobby.getHost())) {
+      LobbyServiceCaller.deleteSession(lobby.getSessionid());
+    }
+
     try{
       MenuController.goBack();
     } catch (IOException ioe){
