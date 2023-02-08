@@ -90,9 +90,9 @@ public class OrientExpansion implements Initializable {
 
   //GEM FIELDS
   @FXML
-  private List<Label> gemLabels;
+  private List<Label> pGemLabels;
   @FXML
-  private List<Label> bankGemLabels;
+  private List<Label> bGemLabels;
   @FXML
   private List<Label> actionGemLabels;
   @FXML
@@ -127,7 +127,7 @@ public class OrientExpansion implements Initializable {
   private void init() {
 
     // Set up bank
-    bank = new Bank(numPlayers, addGemButtons, removeGemButtons, gemLabels, bankGemLabels,
+    bank = new Bank(numPlayers, addGemButtons, removeGemButtons, pGemLabels, bGemLabels,
         takeBankButton);
 
     // Set up players
@@ -135,7 +135,7 @@ public class OrientExpansion implements Initializable {
 
     // Initialize the player's gems
     for (int idx : GEM_INDEX) {
-      gemLabels.get(idx).textProperty().set("" + player.getHand().gems[idx]);
+      pGemLabels.get(idx).textProperty().set("" + player.getHand().gems[idx]);
     }
 
     // Set up game screen
