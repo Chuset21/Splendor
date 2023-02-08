@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.ResourceBundle;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
+import com.hexanome.fourteen.boards.OrientExpansion;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -90,7 +91,15 @@ public class InLobbyScreenController implements ScreenController{
 
   @FXML
   private void handleLaunchButton(){
+    if(LobbyServiceCaller.getUserID().equals(lobby.getHost())){
+      OrientExpansion oe = new OrientExpansion();
 
+      try{
+        oe.goToGame(MenuController.getStage());
+      } catch(IOException ioe){
+        ioe.printStackTrace();
+      }
+    }
   }
 
   @FXML
