@@ -20,6 +20,7 @@ import hexanome.fourteen.server.model.sent.SentGameBoard;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -99,7 +100,7 @@ public class GameHandlerController {
   }
 
   private GameBoard createGame(String gameid, LaunchGameForm launchGameForm) {
-    Set<Noble> nobles = null; // TODO
+    Set<Noble> nobles = new HashSet<>(); // TODO
 
     Set<Expansion> expansions =
         GameServiceName.getExpansions(GameServiceName.valueOf(launchGameForm.gameType()));
@@ -284,8 +285,7 @@ public class GameHandlerController {
     // Compute the leading player
     gameBoard.computeLeadingPlayer();
 
-    gameBoard.nextTurn();
-    return ResponseEntity.status(HttpStatus.OK).body(null);
+    return getStringResponseEntity(gameBoard, hand);
   }
 
   /**
@@ -369,8 +369,17 @@ public class GameHandlerController {
       }
     }
 
-    gameBoard.nextTurn();
-    return ResponseEntity.status(HttpStatus.OK).body(null);
+    return getStringResponseEntity(gameBoard, hand);
+  }
+
+  private ResponseEntity<String> getStringResponseEntity(GameBoard gameBoard, Hand hand) {
+    final Set<Noble> nobles = gameBoard.computeClaimableNobles(hand);
+    if (!nobles.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.OK).body(gsonInstance.gson.toJson(nobles));
+    } else {
+      gameBoard.nextTurn();
+      return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
   }
 
   /**
@@ -472,8 +481,7 @@ public class GameHandlerController {
       addGems(gameBoard.availableGems(), gemsToRemove);
     }
 
-    gameBoard.nextTurn();
-    return ResponseEntity.status(HttpStatus.OK).body(null);
+    return getStringResponseEntity(gameBoard, hand);
   }
 
   /**
@@ -519,6 +527,10 @@ public class GameHandlerController {
     }
     hand.visitedNobles().add(nobleToClaim);
     hand.incrementPrestigePoints(nobleToClaim.prestigePoints());
+
+    gameBoard.nextTurn();
+    // Compute the leading player
+    gameBoard.computeLeadingPlayer();
 
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }

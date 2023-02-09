@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Game Board.
@@ -288,8 +289,9 @@ public final class GameBoard {
       final List<Player> playersWithEqualCount =
           players.stream().filter(p -> p.hand().prestigePoints() == leadingCount).toList();
       if (playersWithEqualCount.size() > 1) {
-        leadingPlayer = playersWithEqualCount.stream().min(
-            Comparator.comparingInt(p -> p.hand().purchasedCards().size())).orElse(leadingPlayer);
+        leadingPlayer = playersWithEqualCount.stream()
+            .min(Comparator.comparingInt(p -> p.hand().purchasedCards().size()))
+            .orElse(leadingPlayer);
       }
     } else {
       leadingPlayer = playersWithHigherCount.get(0);
@@ -301,5 +303,22 @@ public final class GameBoard {
    */
   public void nextTurn() {
     playerTurn = (playerTurn + 1) % players.size();
+  }
+
+  /**
+   * Compute the claimable nobles.
+   *
+   * @param hand the player's hand
+   * @return the set of claimable nobles by this player.
+   */
+  public Set<Noble> computeClaimableNobles(Hand hand) {
+    return availableNobles.stream()
+        .filter(n -> hasEnoughGems(hand.gemDiscounts(), n.cost()))
+        .collect(Collectors.toSet());
+  }
+
+  private boolean hasEnoughGems(Gems ownedGems, Gems gemsToPayWith) {
+    return gemsToPayWith.entrySet().stream()
+        .noneMatch(entry -> ownedGems.getOrDefault(entry.getKey(), 0) < entry.getValue());
   }
 }
