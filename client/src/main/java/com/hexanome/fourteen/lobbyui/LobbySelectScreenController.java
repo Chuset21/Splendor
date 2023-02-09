@@ -116,7 +116,7 @@ public class LobbySelectScreenController implements ScreenController{
           ioe.printStackTrace();
         }
 
-        if (lobby != null) {
+        if (displayLobby != null) {
           lobbyVBox.getChildren().add(displayLobby);
         }
       }

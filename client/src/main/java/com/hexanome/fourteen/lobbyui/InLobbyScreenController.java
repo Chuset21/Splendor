@@ -76,17 +76,10 @@ public class InLobbyScreenController implements ScreenController{
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
+    // Get data from MenuController
     this.lobby = (Lobby) MenuController.getStage().getUserData();
 
     updateLobbyInfo();
-
-    /*try {
-      Player player = new Player(playerImgs[new Random().nextInt(4)], MenuOrganizer.getUsername(), this);
-
-      addPlayer(player);
-    } catch (IOException ioe) {
-      ioe.printStackTrace();
-    }*/
   }
 
   @FXML
@@ -94,7 +87,12 @@ public class InLobbyScreenController implements ScreenController{
     if(LobbyServiceCaller.getUserID().equals(lobby.getHost())){
       OrientExpansion oe = new OrientExpansion();
 
+      // Send sessionid to game board
+      MenuController.getStage().setUserData(null);
+
       try{
+        LobbyServiceCaller.launchSession(lobby.getSessionid());
+
         oe.goToGame(MenuController.getStage());
       } catch(IOException ioe){
         ioe.printStackTrace();

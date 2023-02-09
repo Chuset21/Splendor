@@ -120,8 +120,7 @@ public final class LobbyServiceCaller {
       throw new TokenRefreshFailedException();
     }
 
-    return
-            Unirest.delete("%sapi/sessions/%s/players/%s".formatted(Main.lsLocation, sessionid, player))
+    return Unirest.delete("%sapi/sessions/%s/players/%s".formatted(Main.lsLocation, sessionid, player))
                     .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
                     .queryString("access_token", accessToken).asEmpty().getStatus() == 200;
   }
@@ -151,9 +150,14 @@ public final class LobbyServiceCaller {
    * @return true if successful, false otherwise
    */
   public static boolean launchSession(String sessionid) {
-    return Unirest.post("%sapi/sessions/%s".formatted(Main.lsLocation, sessionid))
-            .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=").asEmpty()
-            .getStatus() == 200;
+    // TODO: Make launchSession work
+    HttpResponse<String> response =
+            Unirest.post("%sapi/sessions/%s".formatted(Main.lsLocation, sessionid))
+            .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+                    .queryString("access_token", accessToken)
+                    .asEmpty();
+
+    return response.getStatus() == 200;
   }
 
   /**
