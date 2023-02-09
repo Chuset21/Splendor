@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import com.hexanome.fourteen.form.server.cardform.CardForm;
+import com.hexanome.fourteen.form.server.cardform.DoubleBonusCardForm;
 import com.hexanome.fourteen.form.server.cardform.GoldGemCardForm;
 import com.hexanome.fourteen.form.server.cardform.ReserveNobleCardForm;
 import com.hexanome.fourteen.form.server.cardform.SacrificeCardForm;
@@ -32,11 +33,10 @@ public class Main extends Application {
               RuntimeTypeAdapterFactory.of(CardForm.class).registerSubtype(GoldGemCardForm.class)
                   .registerSubtype(ReserveNobleCardForm.class)
                   .registerSubtype(SacrificeCardForm.class).registerSubtype(SatchelCardForm.class)
-                  .registerSubtype(StandardCardForm.class).registerSubtype(WaterfallCardForm.class))
-          .registerTypeAdapterFactory(
+                  .registerSubtype(StandardCardForm.class).registerSubtype(WaterfallCardForm.class)
+                  .registerSubtype(DoubleBonusCardForm.class)).registerTypeAdapterFactory(
               RuntimeTypeAdapterFactory.of(PaymentForm.class).registerSubtype(GemPaymentForm.class)
-                  .registerSubtype(CardPaymentForm.class))
-          .serializeNulls().create();
+                  .registerSubtype(CardPaymentForm.class)).serializeNulls().create();
   private static final String HTTP_STRING = "http://%s:%s/";
   private static final String LOBBY_SERVICE_PORT = "4242";
   private static final String DEFAULT_IP = "127.0.0.1";
