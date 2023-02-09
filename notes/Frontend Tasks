@@ -1,0 +1,35 @@
+- Check w Miguel how to make sessions with different expansions
+- Figure out how to do long polling
+
+Goals w/ priority (Easiest and most essential jobs first)
+
+1) LoadGameScreen
+	a) Have it fetch current savedgames (no long polling necessary)
+
+2) InLobbyScreen
+	a) Show which player you are [e.g. "Maex (You)"]
+	b) Implement long-polling to refresh players
+		i) Make updatePlayers() function
+		ii) Get long-polling to call that function when players change
+		iii) Make lobbyscreen boot players out if session closes
+	c) Don't display "Launch" button to non-hosts
+	d) Make player icons into colored circles (cuz that's all we get from the LobbyService)
+
+3) LobbySelectScreen
+	a) Implement long-polling to refresh sessions
+	b) Make join game button switch to full if session is full (i.e. make button green if available, greyed out if not)
+	c) Should display if the session is launched/running
+		i) Check if you are part of the launched session
+		ii) Indicate if you can join (if above condition holds) (i.e. make button green if available, greyed out if not)
+			I) If you can join an in-progress game, the join button should send you directly to the gameboard
+
+4) Gameboard
+	a) Add buttons to leave gameboard and return to lobby
+		i) "Save and end" -> Saves game and deletes session (only available to host)
+		ii) "Return to lobby" -> Returns to lobby screen without leaving session
+	b) Make player icons into colored circles (cuz that's all we get from the LobbyService)
+	c) be able to interpret gameboard sent from server [going to take a long time]
+		i) read data
+		ii) be able to display the data (in basegame)
+	d) be able to make any possible move on the gameboard
+		i) Take turns with gems & reserve cards -> Hook up with backend
