@@ -3,6 +3,7 @@ package com.hexanome.fourteen.lobbyui;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
+import java.util.Random;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,7 +20,10 @@ public class DisplayPlayer extends HBox implements Initializable {
 
   private InLobbyScreenController controller;
 
-  public DisplayPlayer(String avatarFile, String playerName, InLobbyScreenController controller)
+  // Temp items to use for making lobbies
+  private static final String[] playerImgs = {"cat.jpg","dog.jpg","squirrel.jpg","chameleon.jpg"};
+
+  public DisplayPlayer(Player player, InLobbyScreenController controller)
       throws IOException {
 
     // Load basic lobby UI
@@ -33,10 +37,10 @@ public class DisplayPlayer extends HBox implements Initializable {
     loader.load();
 
     // Initialize object vars
-    playerAvatar.setImage(new Image(Objects.requireNonNull(Lobby.class.getResource("images/"+avatarFile).toString())));
+    playerAvatar.setImage(new Image(Objects.requireNonNull(Lobby.class.getResource("images/"+playerImgs[new Random().nextInt(4)]).toString())));
 
     // Set lobby name
-    this.playerName.setText(playerName);
+    this.playerName.setText(player.getUsername());
 
     this.controller = controller;
   }

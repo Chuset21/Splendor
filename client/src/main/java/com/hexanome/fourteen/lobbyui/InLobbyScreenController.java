@@ -44,8 +44,7 @@ public class InLobbyScreenController implements ScreenController{
   // List of current players
   private DisplayPlayer[] displayPlayers = new DisplayPlayer[4];
 
-  // Temp items to use for making lobbies
-  private static final String[] playerImgs = {"cat.jpg","dog.jpg","squirrel.jpg","chameleon.jpg"};
+  // Temp names to use for players
   private static final String[] playerNames = {"Billy Bob", "John Smith", "Gerald", "Betsy", "Brenda"};
 
   // Template for lobby text
@@ -118,7 +117,7 @@ public class InLobbyScreenController implements ScreenController{
     DisplayPlayer displayPlayer = null;
 
     try {
-      displayPlayer = new DisplayPlayer(playerImgs[new Random().nextInt(4)], playerNames[new Random().nextInt(5)], this);
+      displayPlayer = new DisplayPlayer(new Player(playerNames[new Random().nextInt(5)], "Green"), this);
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
@@ -129,6 +128,7 @@ public class InLobbyScreenController implements ScreenController{
   }
 
   /**
+   * LEGACY
    * Adds a player to the players list and displays them in the lobby
    *
    * @param displayPlayer player to be added
@@ -148,10 +148,24 @@ public class InLobbyScreenController implements ScreenController{
   private void updateLobbyInfo(){
     updateLobbyName(lobby.getPlayers()[0]);
     updatePlayerCounter(lobby.getNumPlayers(),lobby.getPlayers().length);
-    try{
-      addPlayer(new DisplayPlayer(playerImgs[new Random().nextInt(4)],lobby.getPlayers()[0],this));
-    } catch(IOException ioe){
-      ioe.printStackTrace();
+    updateLobbyPlayers(lobby);
+  }
+
+  private void updateLobbyPlayers(Lobby aLobby){
+    lobbyGrid.getChildren().clear();
+
+    for(int i = 0;i<aLobby.getNumPlayers();i++){
+      DisplayPlayer player = null;
+
+      try{
+        player = new DisplayPlayer(new Player(aLobby.getPlayers()[i], "Green"), this);
+      } catch(IOException ioe){
+        ioe.printStackTrace();
+      }
+
+      if(player != null){
+        lobbyGrid.add(player,i/2,i%2);
+      }
     }
   }
 

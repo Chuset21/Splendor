@@ -1,5 +1,6 @@
 package com.hexanome.fourteen.lobbyui;
 
+import com.hexanome.fourteen.LobbyServiceCaller;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -15,8 +16,11 @@ public class Player {
   private String preferredColor;
 
   public Player(String username, String preferredColor){
-    this.username = ""+username;
-    this.preferredColor = ""+preferredColor;
+    if(username.equals(LobbyServiceCaller.getUserID())){
+      this.username = ""+username;
+    } else{
+      this.preferredColor = ""+preferredColor;
+    }
   }
 
   public String getUsername() {
