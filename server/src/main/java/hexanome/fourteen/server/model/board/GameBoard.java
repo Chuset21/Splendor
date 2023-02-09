@@ -312,7 +312,11 @@ public final class GameBoard {
    * @return the set of claimable nobles by this player.
    */
   public Set<Noble> computeClaimableNobles(Hand hand) {
-    return availableNobles.stream()
+    final Set<Noble> nobles = new HashSet<>(availableNobles);
+    if (hand.reservedNoble() != null) {
+      nobles.add(hand.reservedNoble());
+    }
+    return nobles.stream()
         .filter(n -> hasEnoughGems(hand.gemDiscounts(), n.cost()))
         .collect(Collectors.toSet());
   }

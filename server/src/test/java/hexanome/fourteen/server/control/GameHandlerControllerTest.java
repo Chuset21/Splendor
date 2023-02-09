@@ -684,7 +684,20 @@ public class GameHandlerControllerTest {
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("noble to claim cannot be null", response.getBody());
 
-    Noble nobleToClaim = new Noble(2, new Gems());
+    final Gems costOfNoble = new Gems();
+    costOfNoble.put(GemColor.RED, 2);
+    costOfNoble.put(GemColor.BLACK, 1);
+    Noble nobleToClaim = new Noble(2, costOfNoble);
+    player.hand().gemDiscounts().clear();
+    claimNobleForm = new ClaimNobleForm(nobleToClaim);
+
+    response = gameHandlerController.claimNoble("", "token", claimNobleForm);
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("do not have enough gem discounts to claim noble", response.getBody());
+
+    player.hand().gemDiscounts().put(GemColor.BLUE, 1);
+    player.hand().gemDiscounts().put(GemColor.BLACK, 1);
+    player.hand().gemDiscounts().put(GemColor.RED, 3);
     claimNobleForm = new ClaimNobleForm(nobleToClaim);
 
     response = gameHandlerController.claimNoble("", "token", claimNobleForm);
@@ -705,7 +718,7 @@ public class GameHandlerControllerTest {
     player.hand().visitedNobles().remove(nobleToClaim);
     assertTrue(player.hand().visitedNobles().isEmpty());
 
-    nobleToClaim = new Noble(3, new Gems());
+    nobleToClaim = new Noble(3, costOfNoble);
     claimNobleForm = new ClaimNobleForm(nobleToClaim);
     board.availableNobles().add(nobleToClaim);
     prevPrestigePoints = player.hand().prestigePoints();

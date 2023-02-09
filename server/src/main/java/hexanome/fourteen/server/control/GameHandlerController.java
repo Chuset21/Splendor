@@ -516,7 +516,10 @@ public class GameHandlerController {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("noble to claim cannot be null");
     }
 
-    // TODO check if they can actually claim said noble, assume the frontend is doing that for now
+    if (!hasEnoughGems(hand.gemDiscounts(), nobleToClaim.cost())) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("do not have enough gem discounts to claim noble");
+    }
 
     if (gameBoard.availableNobles().contains(nobleToClaim)) {
       gameBoard.availableNobles().remove(nobleToClaim);
@@ -528,9 +531,9 @@ public class GameHandlerController {
     hand.visitedNobles().add(nobleToClaim);
     hand.incrementPrestigePoints(nobleToClaim.prestigePoints());
 
-    gameBoard.nextTurn();
     // Compute the leading player
     gameBoard.computeLeadingPlayer();
+    gameBoard.nextTurn();
 
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
