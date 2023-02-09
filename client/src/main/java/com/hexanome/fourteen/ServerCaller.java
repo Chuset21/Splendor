@@ -38,6 +38,8 @@ public final class ServerCaller {
 
   /**
    * Purchase a card.
+   * Returns null as the string if successful,
+   * however if a noble can be reserved, it returns the list of nobles that can be reserved
    *
    * @return The response.
    */
