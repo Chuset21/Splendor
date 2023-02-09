@@ -357,8 +357,8 @@ public class GameHandlerController {
     }
     hand.reservedCards().add(card);
 
-    if (availableGems.containsKey(GemColor.GOLD) &&
-        ((gemAmount == 10 && gemColor != null) || gemAmount < 10)) {
+    if (availableGems.containsKey(GemColor.GOLD)
+        && ((gemAmount == 10 && gemColor != null) || gemAmount < 10)) {
       hand.gems().compute(GemColor.GOLD, (k, v) -> v == null ? 1 : v + 1);
       // Remove the GOLD mapping if it reaches 0
       availableGems.computeIfPresent(GemColor.GOLD, (k, v) -> v == 1 ? null : v - 1);
@@ -446,8 +446,8 @@ public class GameHandlerController {
       } else if (amountOfGemsAvailable < 4 && amountOfGemsToTake == 2) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
             "cannot take 2 same color gems, there are less than 4 gems of that color in the bank");
-      } else if (amountOfGemsToTake == 1 &&
-                 (sizeOfBankWithoutGoldGems > 1 || amountOfGemsAvailable >= 4)) {
+      } else if (amountOfGemsToTake == 1
+                 && (sizeOfBankWithoutGoldGems > 1 || amountOfGemsAvailable >= 4)) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("cannot take 1 gem if it is possible to take more");
       }
