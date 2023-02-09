@@ -130,7 +130,7 @@ public final class LobbyServiceCaller {
     }.getType();
     final List<SaveGameForm> saveGameForms = new ArrayList<>();
     for (GameServiceName e : GameServiceName.values()) {
-      HttpResponse<String> response =
+      final HttpResponse<String> response =
           Unirest.get("%sapi/gameservices/%s/savegames".formatted(Main.lsLocation, e))
               .header("Content-Type", "application/json")
               .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
