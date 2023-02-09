@@ -21,7 +21,6 @@ public class SatchelCardTest {
   static final int prestigePoints = 3;
   static final CardLevel cardLevel = CardLevel.THREE;
   static final Expansion expansion = Expansion.STANDARD;
-  static final GemColor gemColor = GemColor.BLUE;
 
   @BeforeAll
   public static void setUp() {
@@ -29,13 +28,13 @@ public class SatchelCardTest {
     cost.put(GemColor.GREEN, 1);
     cost.put(GemColor.BLUE, 2);
     cost.put(GemColor.WHITE, 3);
-    satchelCard = new SatchelCard(prestigePoints, cost, cardLevel, expansion, gemColor);
+    satchelCard = new SatchelCard(prestigePoints, cost, cardLevel, expansion);
   }
 
   @Test
   public void testPrestigePoints() {
     this.satchelCard =
-        new SatchelCard(prestigePoints, cost, cardLevel, expansion, gemColor);
+        new SatchelCard(prestigePoints, cost, cardLevel, expansion);
     assertEquals(prestigePoints, this.satchelCard.prestigePoints());
   }
 
@@ -46,7 +45,7 @@ public class SatchelCardTest {
     cost.put(GemColor.BLUE, 2);
     cost.put(GemColor.WHITE, 3);
     this.satchelCard =
-        new SatchelCard(prestigePoints, cost, cardLevel, expansion, gemColor);
+        new SatchelCard(prestigePoints, cost, cardLevel, expansion);
 
     Gems equCost = new Gems();
     equCost.put(GemColor.GREEN, 1);
@@ -63,11 +62,6 @@ public class SatchelCardTest {
   @Test
   public void testExpansion() {
     assertEquals(expansion, satchelCard.expansion());
-  }
-
-  @Test
-  public void testGemColor() {
-    assertEquals(gemColor, satchelCard.gemColor());
   }
 
   @Test
@@ -92,7 +86,7 @@ public class SatchelCardTest {
   @Test
   public void testEqualsByValue() {
     SatchelCard cardWithEqualValues =
-        new SatchelCard(prestigePoints, cost, cardLevel, expansion, gemColor);
+        new SatchelCard(prestigePoints, cost, cardLevel, expansion);
     assertTrue(satchelCard.equals(cardWithEqualValues));
   }
 
@@ -103,6 +97,6 @@ public class SatchelCardTest {
     assertNull(nullCard.expansion);
     assertNull(nullCard.level);
     assertEquals(nullCard.prestigePoints, 0);
-    assertNull(nullCard.gemColor());
+    assertNull(nullCard.cardToAttach());
   }
 }

@@ -3,6 +3,7 @@ package hexanome.fourteen.server.model.board.card;
 import hexanome.fourteen.server.model.board.expansion.Expansion;
 import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
+import java.util.Objects;
 
 /**
  * Standard Card.
@@ -63,7 +64,7 @@ public final class StandardCard extends Card {
       return false;
     }
     StandardCard card = (StandardCard) obj;
-    return super.prestigePoints == card.prestigePoints && super.cost.equals(card.cost)
+    return super.prestigePoints == card.prestigePoints && Objects.equals(super.cost, card.cost)
            && super.level == card.level && super.expansion == card.expansion
            && gemDiscount == card.gemDiscount && discountColor == card.discountColor;
   }

@@ -2,6 +2,7 @@ package com.hexanome.fourteen.form.server.cardform;
 
 import com.hexanome.fourteen.boards.Expansion;
 import com.hexanome.fourteen.form.server.GemsForm;
+import java.util.Objects;
 
 /**
  * Gold Gem Card form.
@@ -37,7 +38,7 @@ public final class GoldGemCardForm extends CardForm {
       return false;
     }
     GoldGemCardForm card = (GoldGemCardForm) obj;
-    return super.prestigePoints == card.prestigePoints && super.cost.equals(card.cost) &&
-           super.level == card.level && super.expansion == card.expansion;
+    return super.prestigePoints == card.prestigePoints && Objects.equals(super.cost, card.cost)
+           && super.level == card.level && super.expansion == card.expansion;
   }
 }

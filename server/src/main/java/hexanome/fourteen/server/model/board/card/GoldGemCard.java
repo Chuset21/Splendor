@@ -2,6 +2,7 @@ package hexanome.fourteen.server.model.board.card;
 
 import hexanome.fourteen.server.model.board.expansion.Expansion;
 import hexanome.fourteen.server.model.board.gem.Gems;
+import java.util.Objects;
 
 /**
  * Gold Gem Card.
@@ -36,7 +37,7 @@ public final class GoldGemCard extends Card {
       return false;
     }
     GoldGemCard card = (GoldGemCard) obj;
-    return super.prestigePoints == card.prestigePoints && super.cost.equals(card.cost)
+    return super.prestigePoints == card.prestigePoints && Objects.equals(super.cost, card.cost)
            && super.level == card.level && super.expansion == card.expansion;
   }
 }

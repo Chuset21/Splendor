@@ -3,6 +3,7 @@ package hexanome.fourteen.server.model.board.card;
 import hexanome.fourteen.server.model.board.expansion.Expansion;
 import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
+import java.util.Objects;
 
 /**
  * Sacrifice Card.
@@ -16,7 +17,7 @@ public final class SacrificeCard extends Card {
    * Constructor.
    *
    * @param prestigePoints the amount of prestige points associated with the card
-   * @param cost           the cost of the card
+   * @param cost           the cost of the card, this should be empty or null
    * @param level          the level of the card
    * @param expansion      the expansion to which the card belongs to
    * @param gemDiscount    the amount of gems to be discounted
@@ -76,7 +77,8 @@ public final class SacrificeCard extends Card {
       return false;
     }
     SacrificeCard card = (SacrificeCard) obj;
-    return super.prestigePoints == card.prestigePoints && super.cost.equals(card.cost)
+    return super.prestigePoints == card.prestigePoints
+           && Objects.equals(super.cost, card.cost)
            && super.level == card.level && super.expansion == card.expansion
            && gemDiscount == card.gemDiscount && discountColor == card.discountColor
            && sacrificeColor == card.sacrificeColor;

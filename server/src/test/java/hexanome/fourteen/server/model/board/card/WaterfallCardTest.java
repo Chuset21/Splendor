@@ -24,7 +24,6 @@ public class WaterfallCardTest {
   static final int gemDiscount = 1;
   static final GemColor discountColor = GemColor.RED;
   static final GemColor sacrificeColor = GemColor.BLUE;
-  static final CardLevel freeCardLevel = CardLevel.TWO;
 
   @BeforeAll
   public static void setUp() {
@@ -33,13 +32,13 @@ public class WaterfallCardTest {
     cost.put(GemColor.BLUE, 2);
     cost.put(GemColor.WHITE, 3);
     waterfallCard =
-        new WaterfallCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor, freeCardLevel);
+        new WaterfallCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor);
   }
 
   @Test
   public void testPrestigePoints() {
     this.waterfallCard =
-        new WaterfallCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor, freeCardLevel);
+        new WaterfallCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor);
     assertEquals(prestigePoints, this.waterfallCard.prestigePoints());
   }
 
@@ -50,7 +49,7 @@ public class WaterfallCardTest {
     cost.put(GemColor.BLUE, 2);
     cost.put(GemColor.WHITE, 3);
     this.waterfallCard =
-        new WaterfallCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor, freeCardLevel);
+        new WaterfallCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor);
 
     Gems equCost = new Gems();
     equCost.put(GemColor.GREEN, 1);
@@ -76,9 +75,6 @@ public class WaterfallCardTest {
   public void testDiscountColor() { assertEquals(discountColor, waterfallCard.discountColor()); }
 
   @Test
-  public void testFreeCardLevel() { assertEquals(freeCardLevel, waterfallCard.freeCardLevel()); }
-
-  @Test
   public void testEqualsByReference() {
     WaterfallCard duplicate = waterfallCard;
     assertTrue(waterfallCard.equals(duplicate));
@@ -100,7 +96,7 @@ public class WaterfallCardTest {
   @Test
   public void testEqualsByValue() {
     WaterfallCard cardWithEqualValues =
-        new WaterfallCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor, freeCardLevel);
+        new WaterfallCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor);
     assertTrue(waterfallCard.equals(cardWithEqualValues));
   }
 
@@ -113,6 +109,6 @@ public class WaterfallCardTest {
     assertEquals(nullCard.prestigePoints, 0);
     assertEquals(nullCard.gemDiscount(), 0);
     assertNull(nullCard.discountColor());
-    assertNull(nullCard.freeCardLevel());
+    assertNull(nullCard.cardToTake());
   }
 }

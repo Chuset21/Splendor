@@ -3,6 +3,7 @@ package com.hexanome.fourteen.form.server.cardform;
 import com.hexanome.fourteen.boards.Expansion;
 import com.hexanome.fourteen.boards.GemColor;
 import com.hexanome.fourteen.form.server.GemsForm;
+import java.util.Objects;
 
 /**
  * Sacrifice Card form.
@@ -16,7 +17,7 @@ public final class SacrificeCardForm extends CardForm {
    * Constructor.
    *
    * @param prestigePoints the amount of prestige points associated with the card
-   * @param cost           the cost of the card
+   * @param cost           the cost of the card, this should be empty or null
    * @param level          the level of the card
    * @param expansion      the expansion to which the card belongs to
    * @param gemDiscount    the amount of gems to be discounted
@@ -76,7 +77,8 @@ public final class SacrificeCardForm extends CardForm {
       return false;
     }
     SacrificeCardForm card = (SacrificeCardForm) obj;
-    return super.prestigePoints == card.prestigePoints && super.cost.equals(card.cost)
+    return super.prestigePoints == card.prestigePoints
+           && Objects.equals(super.cost, card.cost)
            && super.level == card.level && super.expansion == card.expansion
            && gemDiscount == card.gemDiscount && discountColor == card.discountColor
            && sacrificeColor == card.sacrificeColor;

@@ -3,6 +3,7 @@ package com.hexanome.fourteen.form.server.cardform;
 import com.hexanome.fourteen.boards.Expansion;
 import com.hexanome.fourteen.boards.GemColor;
 import com.hexanome.fourteen.form.server.GemsForm;
+import java.util.Objects;
 
 /**
  * Double bonus card form.
@@ -63,7 +64,7 @@ public final class DoubleBonusCardForm extends CardForm {
       return false;
     }
     DoubleBonusCardForm card = (DoubleBonusCardForm) obj;
-    return super.prestigePoints == card.prestigePoints && super.cost.equals(card.cost)
+    return super.prestigePoints == card.prestigePoints && Objects.equals(super.cost, card.cost)
            && super.level == card.level && super.expansion == card.expansion
            && gemDiscount == card.gemDiscount && discountColor == card.discountColor;
   }
