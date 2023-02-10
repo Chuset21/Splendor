@@ -9,6 +9,24 @@ import java.util.Objects;
  */
 public final class SatchelCard extends Card {
   private Card cardToAttach;
+  private Card freeCardToTake;
+
+  /**
+   * Constructor.
+   *
+   * @param prestigePoints the amount of prestige points associated with the card
+   * @param cost           the cost of the card
+   * @param level          the level of the card
+   * @param expansion      the expansion to which the card belongs to
+   * @param cardToAttach   the card to attach
+   * @param freeCardToTake the card to take for free, if this card is a level two card
+   */
+  public SatchelCard(int prestigePoints, Gems cost, CardLevel level, Expansion expansion,
+                     Card cardToAttach, Card freeCardToTake) {
+    super(prestigePoints, cost, level, expansion);
+    this.cardToAttach = cardToAttach;
+    this.freeCardToTake = freeCardToTake;
+  }
 
   /**
    * Constructor.
@@ -21,8 +39,7 @@ public final class SatchelCard extends Card {
    */
   public SatchelCard(int prestigePoints, Gems cost, CardLevel level, Expansion expansion,
                      Card cardToAttach) {
-    super(prestigePoints, cost, level, expansion);
-    this.cardToAttach = cardToAttach;
+    this(prestigePoints, cost, level, expansion, cardToAttach, null);
   }
 
 
@@ -49,6 +66,10 @@ public final class SatchelCard extends Card {
     return cardToAttach;
   }
 
+  public Card freeCardToTake() {
+    return freeCardToTake;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -60,6 +81,7 @@ public final class SatchelCard extends Card {
     SatchelCard card = (SatchelCard) obj;
     return super.prestigePoints == card.prestigePoints && Objects.equals(super.cost, card.cost)
            && super.level == card.level && super.expansion == card.expansion
-           && Objects.equals(cardToAttach, card.cardToAttach);
+           && Objects.equals(cardToAttach, card.cardToAttach)
+           && Objects.equals(freeCardToTake, card.freeCardToTake);
   }
 }
