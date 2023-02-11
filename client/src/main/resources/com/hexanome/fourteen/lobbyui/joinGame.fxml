@@ -42,7 +42,7 @@
             <VBox fx:id="lobbyVBox" prefWidth="1025.0" />
          </content>
       </ScrollPane>
-      <Button fx:id="addLobby" layoutX="523.0" layoutY="626.0" mnemonicParsing="false" onAction="#handleAddLobby" text="Add lobby">
+      <Button fx:id="refreshLobbiesButton" layoutX="541.0" layoutY="627.0" mnemonicParsing="false" onAction="#handleRefreshLobbiesButton" text="Refresh">
          <font>
             <Font name="Satoshi Bold" size="24.0" />
          </font>

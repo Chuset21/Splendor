@@ -27,7 +27,7 @@
             <Font size="32.0" />
          </font>
       </Button>
-      <Button fx:id="addPlayerButton" layoutX="277.0" layoutY="594.0" mnemonicParsing="false" onAction="#handleAddPlayerButton" prefHeight="69.0" prefWidth="223.0" text="Add Player">
+      <Button fx:id="refreshPlayersButton" layoutX="277.0" layoutY="594.0" mnemonicParsing="false" onAction="#handleRefreshPlayersButton" prefHeight="69.0" prefWidth="166.0" text="Refresh">
          <font>
             <Font size="32.0" />
          </font>

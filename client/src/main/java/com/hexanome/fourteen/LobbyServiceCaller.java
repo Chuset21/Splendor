@@ -115,19 +115,21 @@ public final class LobbyServiceCaller {
   /**
    * Leave a session.
    *
-   * @param player    The player requesting to leave
-   * @param sessionid The session ID
+   * @param user user to remove from their current session
    * @return true if successful, false otherwise
    */
-  public static boolean leaveSession(String player, String sessionid, User user) throws TokenRefreshFailedException {
+  public static boolean leaveSession(User user) throws TokenRefreshFailedException {
     // Try updating tokens, if fails: send user back to login to refresh tokens
     if (!updateAccessToken(user)) {
       throw new TokenRefreshFailedException();
     }
 
-    return Unirest.delete("%sapi/sessions/%s/players/%s".formatted(Main.lsLocation, sessionid, player))
-                    .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-                    .queryString("access_token", user.getAccessToken()).asEmpty().getStatus() == 200;
+    HttpResponse response = Unirest.delete("%sapi/sessions/%s/players/%s".formatted(Main.lsLocation, user.getCurrentLobby().getSessionid(), user.getUserid()))
+            .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+            .queryString("access_token", user.getAccessToken())
+            .asString();
+
+    return response.getStatus() == 200;
   }
 
   /**
@@ -206,11 +208,12 @@ public final class LobbyServiceCaller {
       throw new TokenRefreshFailedException();
     }
 
-    return Unirest.delete("%sapi/sessions/%s".formatted(Main.lsLocation, user.getCurrentLobby().getSessionid()))
+    HttpResponse response = Unirest.delete("%sapi/sessions/%s".formatted(Main.lsLocation, user.getCurrentLobby().getSessionid()))
             .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
             .queryString("access_token", user.getAccessToken())
-            .asEmpty()
-            .getStatus() == 200;
+            .asString();
+
+    return response.getStatus() == 200;
   }
 
 

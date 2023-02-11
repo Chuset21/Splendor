@@ -29,7 +29,7 @@ public class LobbySelectScreenController implements ScreenController{
   @FXML
   private Button backButton;
   @FXML
-  private Button addLobby;
+  private Button refreshLobbiesButton;
 
   private Stage stage;
 
@@ -102,17 +102,7 @@ public class LobbySelectScreenController implements ScreenController{
   }
 
   @FXML
-  private void handleAddLobby() {
-//    Lobby lobby = null;
-//
-//    try {
-//      lobby = new Lobby(lobbyImgs[new Random().nextInt(4)],"location", 3, com.hexanome.fourteen.boards.Expansion.ORIENT, lobbyHosts[new Random().nextInt(5)], this);
-//    } catch (IOException ioe) {
-//      ioe.printStackTrace();
-//    }
-//
-//    if (lobby != null) {
-//      lobbyVBox.getChildren().add(lobby);
-//    }
+  private void handleRefreshLobbiesButton() {
+    updateLobbies();
   }
 }

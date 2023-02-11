@@ -45,4 +45,10 @@ public class Lobby {
     return expansion;
   }
 
+  public void updateLobby(){
+    // Get settings for session
+    session = LobbyServiceCaller.getSessionDetails(sessionid);
+    GameParametersForm gameParameters = session.gameParameters();
+  }
+
 }

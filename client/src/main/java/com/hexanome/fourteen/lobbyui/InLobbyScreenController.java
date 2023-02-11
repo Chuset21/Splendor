@@ -37,7 +37,7 @@ public class InLobbyScreenController implements ScreenController{
   @FXML
   private Button leaveLobbyButton;
   @FXML
-  private Button addPlayerButton;
+  private Button refreshPlayersButton;
 
   // Holds data of current lobby (primarily the lobby location)
   private Lobby lobby;
@@ -92,6 +92,18 @@ public class InLobbyScreenController implements ScreenController{
           ioe.printStackTrace();
         }
       }
+    } else {
+      try{
+        LobbyServiceCaller.leaveSession(User.getUser(stage));
+      } catch (TokenRefreshFailedException e){
+        try{
+          MenuController.getMenuController(stage).returnToLogin("Session timed out, retry login");
+          stage.close();
+          return;
+        } catch(IOException ioe){
+          ioe.printStackTrace();
+        }
+      }
     }
 
     try{
@@ -104,18 +116,8 @@ public class InLobbyScreenController implements ScreenController{
   }
 
   @FXML
-  private void handleAddPlayerButton(){
-    DisplayPlayer displayPlayer = null;
-
-    try {
-      displayPlayer = new DisplayPlayer(new Player(playerNames[new Random().nextInt(5)], "Green"), this);
-    } catch (IOException ioe) {
-      ioe.printStackTrace();
-    }
-
-    if (displayPlayer != null) {
-      addPlayer(displayPlayer);
-    }
+  private void handleRefreshPlayersButton(){
+    updateLobbyInfo();
   }
 
   /**
@@ -137,6 +139,7 @@ public class InLobbyScreenController implements ScreenController{
   }
 
   private void updateLobbyInfo(){
+    lobby.updateLobby();
     updateLobbyName(lobby.getPlayers()[0]);
     updatePlayerCounter(lobby.getNumPlayers(),lobby.getPlayers().length);
     updateLobbyPlayers(lobby);
