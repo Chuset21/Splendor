@@ -16,11 +16,8 @@ public class Player {
   private String preferredColor;
 
   public Player(String username, String preferredColor){
-    if(username.equals(LobbyServiceCaller.getUserID())){
-      this.username = ""+username;
-    } else{
-      this.preferredColor = ""+preferredColor;
-    }
+    this.username = ""+username;
+    this.preferredColor = ""+preferredColor;
   }
 
   public String getUsername() {

@@ -1,7 +1,6 @@
 package com.hexanome.fourteen.lobbyui;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
-import com.hexanome.fourteen.TokenRefreshFailedException;
 import com.hexanome.fourteen.form.lobbyservice.SessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
 import java.io.IOException;
@@ -14,7 +13,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -33,11 +31,11 @@ public class LobbySelectScreenController implements ScreenController{
   @FXML
   private Button addLobby;
 
-  private Stage aPrimaryStage;
+  private Stage stage;
 
   @Override
   public void goTo(Stage stage) throws IOException {
-    aPrimaryStage = stage;
+    this.stage = stage;
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
@@ -54,30 +52,9 @@ public class LobbySelectScreenController implements ScreenController{
     stage.setResizable(false);
 
     stage.show();
-  }
 
-  // TODO: make this actually send you to login when it fails
-  @Override
-  public void initialize(URL url, ResourceBundle resourceBundle) {
+    // Post init
     updateLobbies();
-
-    // TESTING ONLY
-    /*GameParametersForm g = new GameParametersForm("place",4,2,"bruh");
-    SessionForm s = new SessionForm(username,g,false, new ArrayList<String>(Arrays.asList(username)),"gameid");
-
-    Lobby l = null;
-    try{
-      // Creates new lobby with the LobbyService's passed values for the following:
-      //  - Max players
-      //  - Host
-      l = new Lobby(lobbyImgs[new Random().nextInt(4)], g.maxSessionPlayers(), com.hexanome.fourteen.boards.Expansion.ORIENT, s.creator(), this);
-    } catch(IOException ioe){
-      ioe.printStackTrace();
-    }
-
-    if (l != null) {
-      lobbyVBox.getChildren().add(l);
-    }*/
   }
 
   private void updateLobbies(){
@@ -113,7 +90,7 @@ public class LobbySelectScreenController implements ScreenController{
   @FXML
   private void handleBackButton(){
     try {
-      MenuController.goBack();
+      MenuController.getMenuController(stage).goBack();
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
@@ -125,15 +102,15 @@ public class LobbySelectScreenController implements ScreenController{
    * never directly from FXML.
    */
   public void handleJoinLobbyButton(Lobby lobby){
-    if(!lobby.getHost().equals(LobbyServiceCaller.getUserID())){
+    if(!lobby.getHost().equals(User.getUserid(stage))){
       try{
-        if(LobbyServiceCaller.joinSession(lobby.getSessionid())) { MenuController.goToInLobbyScreen(lobby); }
+        if(LobbyServiceCaller.joinSession(lobby.getSessionid(),User.getUser(stage))) { MenuController.getMenuController(stage).goToInLobbyScreen(lobby); }
       } catch (Exception e) {
         e.printStackTrace();
       }
     } else{
       try{
-        MenuController.goToInLobbyScreen(lobby);
+        MenuController.getMenuController(stage).goToInLobbyScreen(lobby);
       } catch (IOException ioe){
         ioe.printStackTrace();
       }

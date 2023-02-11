@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.ResourceBundle;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
+import com.hexanome.fourteen.StagePayload;
 import com.hexanome.fourteen.TokenRefreshFailedException;
 import com.hexanome.fourteen.boards.OrientExpansion;
 import javafx.fxml.FXML;
@@ -52,8 +53,11 @@ public class InLobbyScreenController implements ScreenController{
   private static final String LOBBY_NAME_TEMPLATE = "[ownerName]'s Lobby";
   private static final String PLAYER_COUNT_TEMPLATE = "[curPlayers]/[maxPlayers] Players";
 
+  private Stage stage;
+
   @Override
   public void goTo(Stage stage) throws IOException {
+    this.stage = stage;
 
     // Load basic lobby UI
     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(Lobby.class.getResource("InLobbyScreen.fxml")));
@@ -71,41 +75,35 @@ public class InLobbyScreenController implements ScreenController{
     stage.setResizable(false);
 
     stage.show();
-  }
 
-  @Override
-  public void initialize(URL url, ResourceBundle resourceBundle) {
     // Get data from MenuController
-    this.lobby = (Lobby) MenuController.getStage().getUserData();
+    this.lobby = User.getCurrentLobby(stage);
 
     updateLobbyInfo();
   }
 
   @FXML
   private void handleLaunchButton(){
-    if(LobbyServiceCaller.getUserID().equals(lobby.getHost())){
+    if(((StagePayload) stage.getUserData()).equals(lobby.getHost())){
       OrientExpansion oe = new OrientExpansion();
 
-      // Send sessionid to game board
-      MenuController.getStage().setUserData(null);
-
       try{
-        if(LobbyServiceCaller.launchSession(lobby.getSessionid())){oe.goToGame(MenuController.getStage());}
-      } catch(IOException ioe){
-        ioe.printStackTrace();
+        if(LobbyServiceCaller.launchSession(User.getUser(stage))) {oe.goToGame(stage);}
+      } catch(Exception e){
+        e.printStackTrace();
       }
     }
   }
 
   @FXML
   private void handleLeaveButton(){
-    if(LobbyServiceCaller.getUserID().equals(lobby.getHost())) {
+    if(User.getUserid(stage).equals(lobby.getHost())) {
       try{
-        LobbyServiceCaller.deleteSession(lobby.getSessionid());
+        LobbyServiceCaller.deleteSession(User.getUser(stage));
       } catch(TokenRefreshFailedException e){
         try{
-          MenuController.returnToLogin("Session timed out, retry login");
-          MenuController.getStage().close();
+          MenuController.getMenuController(stage).returnToLogin("Session timed out, retry login");
+          stage.close();
           return;
         } catch(IOException ioe){
           ioe.printStackTrace();
@@ -114,7 +112,9 @@ public class InLobbyScreenController implements ScreenController{
     }
 
     try{
-      MenuController.goBack();
+      MenuController.getMenuController(stage).goBack();
+
+      User.getUser(stage).setCurrentLobby(null);
     } catch (IOException ioe){
       ioe.printStackTrace();
     }

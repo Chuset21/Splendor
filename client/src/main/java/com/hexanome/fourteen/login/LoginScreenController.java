@@ -1,12 +1,15 @@
 package com.hexanome.fourteen.login;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
+import com.hexanome.fourteen.StagePayload;
 import com.hexanome.fourteen.lobbyui.MenuController;
 import com.hexanome.fourteen.lobbyui.ScreenController;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
+
+import com.hexanome.fourteen.lobbyui.User;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,7 +25,7 @@ import javafx.stage.Stage;
  */
 public final class LoginScreenController implements ScreenController {
 
-  private Stage aPrimaryStage;
+  private Stage stage;
 
   @FXML
   private TextField usernameField;
@@ -34,7 +37,6 @@ public final class LoginScreenController implements ScreenController {
   private Label loginMessageLabel;
 
 
-
   /**
    * Actually displays the LoginScreen for the user to see and interact with.
    *
@@ -43,30 +45,17 @@ public final class LoginScreenController implements ScreenController {
    */
   @Override
   public void goTo(Stage stage) throws IOException {
-    aPrimaryStage = stage;
-    MenuController.setStage(stage);
+    this.stage = stage;
 
-    // Import root from fxml file
-    Parent root =
-        FXMLLoader.load(Objects.requireNonNull(LoginScreenController.class.getResource("LoginScreen.fxml")));
-
-    // Set up root on stage (window)
-    Scene scene = new Scene(root);
-
-    // Initialize stage settings
-    aPrimaryStage.setScene(scene);
-    aPrimaryStage.setTitle("Splendor");
-    aPrimaryStage.setResizable(false);
-
-    aPrimaryStage.show();
-  }
-
-  @Override
-  public void initialize(URL url, ResourceBundle resourceBundle) {
     // Initialize login message
-    loginMessageLabel.setText((String) MenuController.getStage().getUserData());
-  }
+    String message = ((String) ((StagePayload) stage.getUserData()).getPayload());
 
+    if(message != null){
+      loginMessageLabel.setText(message);
+    } else{
+      loginMessageLabel.setText("");
+    }
+  }
 
   @FXML
   private void handleLogin() {
@@ -77,9 +66,10 @@ public final class LoginScreenController implements ScreenController {
       return;
     }
 
-    if (LobbyServiceCaller.login(username, password)) {
-      LobbyServiceCaller.setUserID(username);
-      launchGame(LobbyServiceCaller.getUserID());
+    User user = new User(username);
+
+    if (LobbyServiceCaller.login(username, password, user)) {
+      launchGame(user);
     } else {
       failedLogin();
     }
@@ -98,11 +88,11 @@ public final class LoginScreenController implements ScreenController {
   /**
    * Creates new lobby instance and routes the player through it
    */
-  private void launchGame(String username) {
+  private void launchGame(User user) {
 
     // Try launching the game
     try {
-      MenuController.successfulLogin(username, MenuController.getStage());
+      MenuController.getMenuController(stage).successfulLogin(user);
     } catch (Exception ex) {
       ex.printStackTrace();
     }

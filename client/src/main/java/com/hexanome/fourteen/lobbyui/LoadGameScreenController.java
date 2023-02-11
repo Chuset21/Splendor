@@ -32,8 +32,11 @@ public class LoadGameScreenController implements ScreenController{
   @FXML
   private Button createLobbyButton;
 
+  private Stage stage;
+
   @Override
   public void goTo(Stage stage) throws IOException {
+    this.stage = stage;
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
@@ -50,13 +53,11 @@ public class LoadGameScreenController implements ScreenController{
     stage.setResizable(false);
 
     stage.show();
-  }
 
-  @Override
-  public void initialize(URL url, ResourceBundle resourceBundle) {
+    // Post init
     //Initialize ToggleGroup and Toggles for selecting a save game in the load game menu
     ArrayList<ToggleButton> loadToggles =
-        new ArrayList<>(Arrays.asList(saveGameOneToggle, saveGameTwoToggle));
+            new ArrayList<>(Arrays.asList(saveGameOneToggle, saveGameTwoToggle));
     for (Toggle toggle : loadToggles) {
       toggle.setToggleGroup(loadSetting);
     }
@@ -66,7 +67,7 @@ public class LoadGameScreenController implements ScreenController{
   public void handleCreateLobbyButton() {
     try {
       System.out.println("Loaded game: "+loadSetting.getSelectedToggle().toString());
-      MenuController.goToInLobbyScreen(null);
+      MenuController.getMenuController(stage).goToInLobbyScreen(null);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -84,7 +85,7 @@ public class LoadGameScreenController implements ScreenController{
   @FXML
   private void handleBackButton(){
     try {
-      MenuController.goBack();
+      MenuController.getMenuController(stage).goBack();
     } catch (Exception e) {
       e.printStackTrace();
     }

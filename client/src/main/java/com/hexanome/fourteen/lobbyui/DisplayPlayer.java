@@ -17,6 +17,7 @@ public class DisplayPlayer extends HBox implements Initializable {
 
   @FXML private ImageView playerAvatar;
   @FXML private Text playerName;
+  private Player player;
 
   private InLobbyScreenController controller;
 
@@ -25,6 +26,7 @@ public class DisplayPlayer extends HBox implements Initializable {
 
   public DisplayPlayer(Player player, InLobbyScreenController controller)
       throws IOException {
+    this.player = player;
 
     // Load basic lobby UI
     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(Lobby.class.getResource("defaultPlayer.fxml")));

@@ -2,7 +2,12 @@ package com.hexanome.fourteen.lobbyui;
 
 import java.security.InvalidParameterException;
 
+import com.hexanome.fourteen.StagePayload;
 import com.hexanome.fourteen.login.LoginScreenController;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Menu;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import java.io.IOException;
@@ -10,34 +15,41 @@ import java.net.URL;
 import java.util.*;
 
 public class MenuController {
-  private static Stage stage;
-  private static Stack<ScreenController> previousScreens = new Stack<>();
-  private static ScreenController currentScreen = null;
+  private Stage stage;
+  private Stack<ScreenController> previousScreens = new Stack<>();
+  private ScreenController currentScreen = null;
 
-  public static void setStage(Stage stage) {
-    MenuController.stage = stage;
+  /**
+   * Factory method to get current menu controller from the stage.
+   * Links Stage with MenuController
+   *
+   * @param stage Stage operating in the current window
+   * @return the controller of that stage
+   */
+  public static MenuController getMenuController(Stage stage){
+    if(stage.getUserData() == null || ((StagePayload)stage.getUserData()).getMenuController() == null){
+      stage.setUserData(new StagePayload(new MenuController(stage)));
+    }
+
+    return ((StagePayload) stage.getUserData()).getMenuController();
   }
 
-  public static Stage getStage() {
+  private MenuController(Stage stage){
+    this.stage = stage;
+  }
+
+  public Stage getStage() {
     return stage;
   }
 
-  public static void successfulLogin(String username, Stage stage) throws IOException {
-    if (username == null || stage == null) {
-      throw new InvalidParameterException("Neither parameter can be null.");
+  public void successfulLogin(User user) throws IOException {
+    if (user == null) {
+      throw new InvalidParameterException("User parameter cannot be null.");
     }
 
-    // Initializes MenuController with a stage
-    MenuController.stage = stage;
+    ((StagePayload) stage.getUserData()).setUser(user);
 
-    ScreenController screen = new WelcomeScreenController();
-
-    // Resets the screen stack since you just got to the welcome menu
-    previousScreens.clear();
-
-    // Sets this screen as current screen
-    currentScreen = screen;
-    screen.goTo(stage);
+    goToWelcomeScreen();
   }
 
   /**
@@ -46,17 +58,33 @@ public class MenuController {
    * @param errorMessage message to be displayed to the user (e.g. "Session timed out, retry login")
    * @throws IOException
    */
-  public static void returnToLogin(String errorMessage) throws IOException{
-    ScreenController screen = new LoginScreenController();
-
+  public void returnToLogin(String errorMessage) throws IOException{
     // Send errorMessage
-    stage.setUserData(errorMessage);
+    ((StagePayload) stage.getUserData()).setPayload(errorMessage);
+    ((StagePayload) stage.getUserData()).setUser(null);
 
-    // Go to login screen
-    screen.goTo(stage);
+    // Load login ui
+    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(Lobby.class.getResource("LoginScreen.fxml")));
+
+    // Import root from fxml file
+    Parent root = loader.load();
+
+    LoginScreenController controller = loader.getController();
+    controller.goTo(stage);
+
+    // Set up root on stage (window)
+    Scene scene = new Scene(root);
+
+    // Initialize stage settings
+    this.stage.setScene(scene);
+    this.stage.setTitle("Splendor");
+    this.stage.setResizable(false);
+
+    this.stage.show();
   }
 
-  public static void goBack() throws IOException {
+  // TODO: Make this change where you end up depending on which screen you are at
+  public void goBack() throws IOException {
     // Get last screen
     ScreenController screen = previousScreens.pop();
 
@@ -71,20 +99,36 @@ public class MenuController {
     screen.goTo(stage);
   }
 
-  // TODO: Make all go to functions take location param & overload for inlobbyscreen
-
-  public static void goToWelcomeScreen() throws IOException {
-    ScreenController screen = new WelcomeScreenController();
-
-    // Clear screen stack since you cannot go back after going to welcome screen
+  public void goToWelcomeScreen() throws IOException {
+    // Resets the screen stack since you just got to the welcome menu
     previousScreens.clear();
 
+    // Create loader class
+    FXMLLoader loader = new FXMLLoader(
+            Objects.requireNonNull(MenuController.class.getResource("choiceSelect.fxml")));
+    // Import root from fxml file
+    Parent root = loader.load();
+
+    // Go to screen
+    ScreenController controller = loader.getController();
+    controller.goTo(stage);
+
+    // Set up root on stage (window)
+    Scene aScene = new Scene(root);
+    aScene.getStylesheets().add(getClass().getResource("lobbyStyling.css").toExternalForm());
+
+    // Initialize stage settings
+    stage.setScene(aScene);
+    stage.setTitle("Splendor - Welcome");
+    stage.setResizable(false);
+
+    stage.show();
+
     // Sets this screen as current screen
-    currentScreen = screen;
-    screen.goTo(stage);
+    currentScreen = controller;
   }
 
-  public static void goToCreateGameScreen() throws IOException {
+  public void goToCreateGameScreen() throws IOException {
     // Adds current screen to previous screens stack
     previousScreens.push(currentScreen);
     ScreenController screen = new CreateGameScreenController();
@@ -94,7 +138,7 @@ public class MenuController {
     screen.goTo(stage);
   }
 
-  public static void goToLobbySelectScreen() throws IOException {
+  public void goToLobbySelectScreen() throws IOException {
     // Adds current screen to previous screens stack
     previousScreens.push(currentScreen);
     ScreenController screen = new LobbySelectScreenController();
@@ -104,7 +148,7 @@ public class MenuController {
     screen.goTo(stage);
   }
 
-  public static void goToLoadGameScreen() throws IOException {
+  public void goToLoadGameScreen() throws IOException {
     // Adds current screen to previous screens stack
     previousScreens.push(currentScreen);
     ScreenController screen = new LoadGameScreenController();
@@ -114,13 +158,13 @@ public class MenuController {
     screen.goTo(stage);
   }
 
-  public static void goToInLobbyScreen(Lobby lobby) throws IOException {
+  public void goToInLobbyScreen(Lobby lobby) throws IOException {
     // Adds current screen to previous screens stack
     previousScreens.push(currentScreen);
     ScreenController screen = new InLobbyScreenController();
 
-    // Pass lobby data to lobby screen
-    stage.setUserData(lobby);
+    // Set the current lobby the player is in
+    User.getUser(stage).setCurrentLobby(lobby);
 
     // Sets this screen as current screen
     currentScreen = screen;

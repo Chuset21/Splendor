@@ -27,6 +27,8 @@ import com.hexanome.fourteen.lobbyui.*;
  * A class to represent the game objects required to represent a OrientExpansion Splendor game.
  */
 public class OrientExpansion implements Initializable {
+
+  private Stage stage;
   Bank bank;
   public int numPlayers = 4;
 
@@ -107,10 +109,12 @@ public class OrientExpansion implements Initializable {
   /**
    * A call to this method displays the game on screen by initializing the scene with the gameboard.
    *
-   * @param primaryStage the stage currently being used to hold JavaFX UI items
+   * @param stage the stage currently being used to hold JavaFX UI items
    * @throws IOException throw an exception if an illegal UI action is executed
    */
-  public void goToGame(Stage primaryStage) throws IOException {
+  public void goToGame(Stage stage) throws IOException {
+    this.stage = stage;
+
     // Import root from fxml file
     Parent root = FXMLLoader.load(Objects.requireNonNull(
         OrientExpansion.class.getResource("OrientExpansionBoard1600x900.fxml")));
@@ -118,12 +122,12 @@ public class OrientExpansion implements Initializable {
     Scene scene = new Scene(root);
 
     // Initialize stage settings
-    primaryStage.setScene(scene);
-    primaryStage.setTitle("Splendor");
-    primaryStage.setResizable(false);
-    primaryStage.centerOnScreen();
+    stage.setScene(scene);
+    stage.setTitle("Splendor");
+    stage.setResizable(false);
+    stage.centerOnScreen();
 
-    primaryStage.show();
+    stage.show();
   }
 
   // Use this function if you want to initialize nodes and their properties.
@@ -374,11 +378,12 @@ public class OrientExpansion implements Initializable {
   @FXML
   private void handleClickMenuPopupQuitButton() {
     try{
-      LobbyServiceCaller.deleteSession(LobbyServiceCaller.getCurrentLobby().getSessionid());
+      LobbyServiceCaller.deleteSession(User.getUser(stage));
+      User.getUser(stage).setCurrentLobby(null);
     } catch(TokenRefreshFailedException e){
       try{
-        MenuController.returnToLogin("Session timed out, retry login");
-        MenuController.getStage().close();
+        MenuController.getMenuController(stage).returnToLogin("Session timed out, retry login");
+        stage.close();
       } catch(IOException ioe){
         ioe.printStackTrace();
       }

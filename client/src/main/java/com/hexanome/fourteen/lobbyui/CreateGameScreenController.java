@@ -49,6 +49,8 @@ public class CreateGameScreenController implements ScreenController{
   @FXML
   private Button createLobbyButton;
 
+  private Stage stage;
+
   /**
    * Initializes the screen
    *
@@ -57,6 +59,7 @@ public class CreateGameScreenController implements ScreenController{
    */
   @Override
   public void goTo(Stage stage) throws IOException {
+    this.stage = stage;
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
@@ -73,26 +76,18 @@ public class CreateGameScreenController implements ScreenController{
     stage.setResizable(false);
 
     stage.show();
-  }
 
-  /**
-   * Sets up toggles, allowing user to select lobby settings.
-   *
-   * @param url unused
-   * @param resourceBundle unused
-   */
-  @Override
-  public void initialize(URL url, ResourceBundle resourceBundle) {
+    // Post init
     //Initialize ToggleGroup and Toggles for selecting max players in the create game menu
     ArrayList<ToggleButton> maxPlayersToggles = new ArrayList<>(
-        Arrays.asList(maxPlayerToggleTwo, maxPlayerToggleThree, maxPlayerToggleFour));
+            Arrays.asList(maxPlayerToggleTwo, maxPlayerToggleThree, maxPlayerToggleFour));
     for (Toggle toggle : maxPlayersToggles) {
       toggle.setToggleGroup(maxPlayersSetting);
     }
 
     //Initialize ToggleGroup and Toggles for selecting an expansion in the create game menu
     ArrayList<ToggleButton> expansionToggles =
-        new ArrayList<>(Arrays.asList(selectExtraToggle, selectOrientToggle));
+            new ArrayList<>(Arrays.asList(selectExtraToggle, selectOrientToggle));
     for (Toggle toggle : expansionToggles) {
       toggle.setToggleGroup(expansionSetting);
     }
@@ -109,16 +104,16 @@ public class CreateGameScreenController implements ScreenController{
   @FXML
   public void handleCreateLobbyButton() {
     // Create template for session with current user's ID and the selected expansion
-    CreateSessionForm session = new CreateSessionForm(LobbyServiceCaller.getUserID(),(expansionSetting.getSelectedToggle().getUserData()).toString());
+    CreateSessionForm session = new CreateSessionForm(User.getUserid(stage),(expansionSetting.getSelectedToggle().getUserData()).toString());
 
     // Gets sessions
     String sessionid = null;
 
     try{
-      sessionid = LobbyServiceCaller.createSession(session);
+      sessionid = LobbyServiceCaller.createSession(session, User.getUser(stage));
     } catch(TokenRefreshFailedException e){
       try{
-        MenuController.returnToLogin("Session timed out, retry login");
+        MenuController.getMenuController(stage).returnToLogin("Session timed out, retry login");
       } catch(IOException ioe){
         ioe.printStackTrace();
       }
@@ -131,7 +126,7 @@ public class CreateGameScreenController implements ScreenController{
         System.out.println("Expansion toggle: "+(expansionSetting.getSelectedToggle().getUserData()).toString()
                 +"\nPlayer count toggle: "+maxPlayersSetting.getSelectedToggle().toString());
 
-        MenuController.goToInLobbyScreen(new Lobby(sessionid));
+        MenuController.getMenuController(stage).goToInLobbyScreen(new Lobby(sessionid));
       } catch (Exception ioe) {
         ioe.printStackTrace();
       }
@@ -145,7 +140,7 @@ public class CreateGameScreenController implements ScreenController{
   @FXML
   private void handleBackButton(){
     try {
-      MenuController.goBack();
+      MenuController.getMenuController(stage).goBack();
     } catch (Exception e) {
       e.printStackTrace();
     }
