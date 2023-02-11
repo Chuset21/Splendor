@@ -68,11 +68,10 @@ public class InLobbyScreenController implements ScreenController{
   @FXML
   private void handleLaunchButton(){
     if(User.getUserid(stage).equals(lobby.getHost())){
-      OrientExpansion oe = new OrientExpansion();
 
       try{
         //if(LobbyServiceCaller.launchSession(User.getUser(stage))) {
-          oe.goToGame(stage);
+          MenuController.getMenuController(stage).goToGameBoard();
         //}
       } catch(Exception e){
         e.printStackTrace();

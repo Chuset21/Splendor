@@ -26,7 +26,7 @@ import com.hexanome.fourteen.lobbyui.*;
 /**
  * A class to represent the game objects required to represent a OrientExpansion Splendor game.
  */
-public class OrientExpansion implements Initializable {
+public class OrientExpansion {
 
   private Stage stage;
   Bank bank;
@@ -115,28 +115,9 @@ public class OrientExpansion implements Initializable {
   public void goToGame(Stage stage) throws IOException {
     this.stage = stage;
 
-    // Import root from fxml file
-    Parent root = FXMLLoader.load(Objects.requireNonNull(
-        OrientExpansion.class.getResource("OrientExpansionBoard1600x900.fxml")));
-    // Set up root on stage (window)
-    Scene scene = new Scene(root);
-
-    // Initialize stage settings
-    stage.setScene(scene);
-    stage.setTitle("Splendor");
-    stage.setResizable(false);
-    stage.centerOnScreen();
-
-    stage.show();
-  }
-
-  // Use this function if you want to initialize nodes and their properties.
-  // E.G. Button text, Labels positions, etc. etc.
-  private void init() {
-
     // Set up bank
     bank = new Bank(numPlayers, addGemButtons, removeGemButtons, pGemLabels, bGemLabels,
-        takeBankButton);
+            takeBankButton);
 
     // Set up players
     player = new Player("0", "joebiden43");
@@ -151,12 +132,6 @@ public class OrientExpansion implements Initializable {
 
     // Set up cards
     setupCards("CardData.csv");
-
-  }
-
-  @Override
-  public void initialize(URL url, ResourceBundle resourceBundle) {
-    init();
   }
 
 

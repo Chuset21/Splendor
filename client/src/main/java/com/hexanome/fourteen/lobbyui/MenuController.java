@@ -3,6 +3,7 @@ package com.hexanome.fourteen.lobbyui;
 import java.security.InvalidParameterException;
 
 import com.hexanome.fourteen.StagePayload;
+import com.hexanome.fourteen.boards.OrientExpansion;
 import com.hexanome.fourteen.login.LoginScreenController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -243,5 +244,28 @@ public class MenuController {
 
     // Adds current screen to previous screens stack
     previousScreens.push(controller);
+  }
+
+  public void goToGameBoard() throws IOException {
+    // Load basic lobby UI
+    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
+            OrientExpansion.class.getResource("OrientExpansionBoard1600x900.fxml")));
+
+    // Import root from fxml file
+    Parent root = loader.load();
+
+    // Go to screen
+    OrientExpansion controller = loader.getController();
+    controller.goToGame(stage);
+
+    // Set up root on stage (window)
+    Scene scene = new Scene(root);
+
+    // Initialize stage settings
+    stage.setScene(scene);
+    stage.setTitle("Splendor");
+    stage.setResizable(false);
+
+    stage.show();
   }
 }
