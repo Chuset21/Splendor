@@ -61,22 +61,6 @@ public class CreateGameScreenController implements ScreenController{
   public void goTo(Stage stage) throws IOException {
     this.stage = stage;
 
-    // Create loader class
-    FXMLLoader loader = new FXMLLoader(
-        Objects.requireNonNull(MenuController.class.getResource("createGame.fxml")));
-    // Import root from fxml file
-    Parent root = loader.load();
-    // Set up root on stage (window)
-    Scene aScene = new Scene(root);
-    aScene.getStylesheets().add(getClass().getResource("lobbyStyling.css").toExternalForm());
-
-    // Initialize stage settings
-    stage.setScene(aScene);
-    stage.setTitle("Splendor - Create Game");
-    stage.setResizable(false);
-
-    stage.show();
-
     // Post init
     //Initialize ToggleGroup and Toggles for selecting max players in the create game menu
     ArrayList<ToggleButton> maxPlayersToggles = new ArrayList<>(

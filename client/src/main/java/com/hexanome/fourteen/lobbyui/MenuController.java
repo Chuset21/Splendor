@@ -17,7 +17,6 @@ import java.util.*;
 public class MenuController {
   private Stage stage;
   private Stack<ScreenController> previousScreens = new Stack<>();
-  private ScreenController currentScreen = null;
 
   /**
    * Factory method to get current menu controller from the stage.
@@ -87,12 +86,19 @@ public class MenuController {
   public void goBack() throws IOException {
     // Get last screen
     ScreenController screen = previousScreens.pop();
-
-    currentScreen = screen;
+    screen = previousScreens.pop();
 
     // Clear screen stack since you cannot go back after going to welcome screen
     if (screen instanceof WelcomeScreenController) {
-      previousScreens.clear();
+      goToWelcomeScreen();
+    } else if (screen instanceof CreateGameScreenController) {
+      goToCreateGameScreen();
+    } else if (screen instanceof LobbySelectScreenController) {
+      goToLobbySelectScreen();
+    } else if (screen instanceof LoadGameScreenController) {
+      goToLoadGameScreen();
+    } else if (screen instanceof InLobbyScreenController) {
+      goBack();
     }
 
     // Go to last screen
@@ -124,53 +130,118 @@ public class MenuController {
 
     stage.show();
 
-    // Sets this screen as current screen
-    currentScreen = controller;
+    // Adds current screen to previous screens stack
+    previousScreens.push(controller);
   }
 
   public void goToCreateGameScreen() throws IOException {
-    // Adds current screen to previous screens stack
-    previousScreens.push(currentScreen);
-    ScreenController screen = new CreateGameScreenController();
 
-    // Sets this screen as current screen
-    currentScreen = screen;
-    screen.goTo(stage);
+    // Create loader class
+    FXMLLoader loader = new FXMLLoader(
+            Objects.requireNonNull(MenuController.class.getResource("createGame.fxml")));
+    // Import root from fxml file
+    Parent root = loader.load();
+
+    // Go to screen
+    ScreenController controller = loader.getController();
+    controller.goTo(stage);
+
+    // Set up root on stage (window)
+    Scene aScene = new Scene(root);
+    aScene.getStylesheets().add(getClass().getResource("lobbyStyling.css").toExternalForm());
+
+    // Initialize stage settings
+    stage.setScene(aScene);
+    stage.setTitle("Splendor - Create Game");
+    stage.setResizable(false);
+
+    stage.show();
+
+    // Adds current screen to previous screens stack
+    previousScreens.push(controller);
   }
 
   public void goToLobbySelectScreen() throws IOException {
-    // Adds current screen to previous screens stack
-    previousScreens.push(currentScreen);
-    ScreenController screen = new LobbySelectScreenController();
 
-    // Sets this screen as current screen
-    currentScreen = screen;
-    screen.goTo(stage);
+    // Create loader class
+    FXMLLoader loader = new FXMLLoader(
+            Objects.requireNonNull(MenuController.class.getResource("joinGame.fxml")));
+    // Import root from fxml file
+    Parent root = loader.load();
+
+    // Go to screen
+    ScreenController controller = loader.getController();
+    controller.goTo(stage);
+
+    // Set up root on stage (window)
+    Scene aScene = new Scene(root);
+    aScene.getStylesheets().add(getClass().getResource("lobbyStyling.css").toExternalForm());
+
+    // Initialize stage settings
+    stage.setScene(aScene);
+    stage.setTitle("Splendor - Select Lobby");
+    stage.setResizable(false);
+
+    stage.show();
+
+    // Adds current screen to previous screens stack
+    previousScreens.push(controller);
   }
 
   public void goToLoadGameScreen() throws IOException {
-    // Adds current screen to previous screens stack
-    previousScreens.push(currentScreen);
-    ScreenController screen = new LoadGameScreenController();
 
-    // Sets this screen as current screen
-    currentScreen = screen;
-    screen.goTo(stage);
+    // Create loader class
+    FXMLLoader loader = new FXMLLoader(
+            Objects.requireNonNull(MenuController.class.getResource("loadGame.fxml")));
+    // Import root from fxml file
+    Parent root = loader.load();
+
+    // Go to screen
+    ScreenController controller = loader.getController();
+    controller.goTo(stage);
+
+    // Set up root on stage (window)
+    Scene aScene = new Scene(root);
+    aScene.getStylesheets().add(getClass().getResource("lobbyStyling.css").toExternalForm());
+
+    // Initialize stage settings
+    stage.setScene(aScene);
+    stage.setTitle("Splendor - Load Save");
+    stage.setResizable(false);
+
+    stage.show();
+
+    // Adds current screen to previous screens stack
+    previousScreens.push(controller);
   }
 
   public void goToInLobbyScreen(Lobby lobby) throws IOException {
-    // Adds current screen to previous screens stack
-    previousScreens.push(currentScreen);
-    ScreenController screen = new InLobbyScreenController();
 
-    // Set the current lobby the player is in
+    // Load basic lobby UI
+    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(Lobby.class.getResource("InLobbyScreen.fxml")));
+
+    // Import root from fxml file
+    Parent root = loader.load();
+
+    // Set the current lobby to where the player is
     User.getUser(stage).setCurrentLobby(lobby);
 
-    // Sets this screen as current screen
-    currentScreen = screen;
-    screen.goTo(stage);
-  }
+    // Go to screen
+    ScreenController controller = loader.getController();
+    controller.goTo(stage);
 
-  public void initialize(URL url, ResourceBundle resourceBundle) {
+    // Set up root on stage (window)
+    Scene aScene = new Scene(root);
+    aScene.getStylesheets().add(getClass().getResource("lobbyStyling.css").toExternalForm());
+
+    // Initialize stage settings
+    stage.setScene(aScene);
+    stage.setTitle("Splendor - Lobby");
+    stage.setResizable(false);
+
+    stage.show();
+
+    // Adds current screen to previous screens stack
+    previousScreens.push(controller);
   }
 }

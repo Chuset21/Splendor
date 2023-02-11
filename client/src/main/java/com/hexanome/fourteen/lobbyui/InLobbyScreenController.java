@@ -59,23 +59,6 @@ public class InLobbyScreenController implements ScreenController{
   public void goTo(Stage stage) throws IOException {
     this.stage = stage;
 
-    // Load basic lobby UI
-    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(Lobby.class.getResource("InLobbyScreen.fxml")));
-
-    // Import root from fxml file
-    Parent root = loader.load();
-
-    // Set up root on stage (window)
-    Scene aScene = new Scene(root);
-    aScene.getStylesheets().add(getClass().getResource("lobbyStyling.css").toExternalForm());
-
-    // Initialize stage settings
-    stage.setScene(aScene);
-    stage.setTitle("Splendor - Lobby");
-    stage.setResizable(false);
-
-    stage.show();
-
     // Get data from MenuController
     this.lobby = User.getCurrentLobby(stage);
 
@@ -84,7 +67,7 @@ public class InLobbyScreenController implements ScreenController{
 
   @FXML
   private void handleLaunchButton(){
-    if(((StagePayload) stage.getUserData()).equals(lobby.getHost())){
+    if(User.getUserid(stage).equals(lobby.getHost())){
       OrientExpansion oe = new OrientExpansion();
 
       try{

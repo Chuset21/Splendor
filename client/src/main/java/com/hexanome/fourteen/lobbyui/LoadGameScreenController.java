@@ -38,22 +38,6 @@ public class LoadGameScreenController implements ScreenController{
   public void goTo(Stage stage) throws IOException {
     this.stage = stage;
 
-    // Create loader class
-    FXMLLoader loader = new FXMLLoader(
-        Objects.requireNonNull(MenuController.class.getResource("loadGame.fxml")));
-    // Import root from fxml file
-    Parent root = loader.load();
-    // Set up root on stage (window)
-    Scene aScene = new Scene(root);
-    aScene.getStylesheets().add(getClass().getResource("lobbyStyling.css").toExternalForm());
-
-    // Initialize stage settings
-    stage.setScene(aScene);
-    stage.setTitle("Splendor - Load Save");
-    stage.setResizable(false);
-
-    stage.show();
-
     // Post init
     //Initialize ToggleGroup and Toggles for selecting a save game in the load game menu
     ArrayList<ToggleButton> loadToggles =
