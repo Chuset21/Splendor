@@ -1,27 +1,27 @@
 package hexanome.fourteen.server.control.form;
 
+import hexanome.fourteen.server.control.form.payment.Payment;
 import hexanome.fourteen.server.model.board.card.Card;
-import hexanome.fourteen.server.model.board.gem.Gems;
 
 /**
  * Purchase card form.
  */
 public final class PurchaseCardForm {
   private Card card;
-  private Gems chosenGems;
-  private Gems substitutedGems;
+  private Payment payment;
+  private boolean isReserved;
 
   /**
    * Constructor.
    *
-   * @param card            card to be purchased
-   * @param chosenGems      gems used to pay for the card.
-   * @param substitutedGems the chosen gems to be substituted for gold gems
+   * @param card       card to be purchased
+   * @param payment    the payment to pay for the card
+   * @param isReserved whether the card is reserved or not
    */
-  public PurchaseCardForm(Card card, Gems chosenGems, Gems substitutedGems) {
+  public PurchaseCardForm(Card card, Payment payment, boolean isReserved) {
     this.card = card;
-    this.chosenGems = chosenGems;
-    this.substitutedGems = substitutedGems;
+    this.payment = payment;
+    this.isReserved = isReserved;
   }
 
   /**
@@ -40,20 +40,15 @@ public final class PurchaseCardForm {
   }
 
   /**
-   * A Getter for Gems a Player has decided to pay with.
+   * A Getter for payment.
    *
-   * @return Chosen Gems
+   * @return Chosen payment
    */
-  public Gems gemsToPayWith() {
-    return chosenGems;
+  public Payment payment() {
+    return payment;
   }
 
-  /**
-   * A Getter for Gems that will be substituted for Gold Gems.
-   *
-   * @return Chosen Gems
-   */
-  public Gems substitutedGems() {
-    return substitutedGems;
+  public boolean isReserved() {
+    return isReserved;
   }
 }

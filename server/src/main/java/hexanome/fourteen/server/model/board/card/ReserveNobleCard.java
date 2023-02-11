@@ -80,6 +80,10 @@ public final class ReserveNobleCard extends Card {
     return nobleToReserve;
   }
 
+  public void removeNobleToReserve() {
+    nobleToReserve = null;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {

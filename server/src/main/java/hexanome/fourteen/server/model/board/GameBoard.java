@@ -302,6 +302,7 @@ public final class GameBoard {
    * Go to the next turn.
    */
   public void nextTurn() {
+    computeLeadingPlayer();
     playerTurn = (playerTurn + 1) % players.size();
   }
 
@@ -313,16 +314,9 @@ public final class GameBoard {
    */
   public Set<Noble> computeClaimableNobles(Hand hand) {
     final Set<Noble> nobles = new HashSet<>(availableNobles);
-    if (hand.reservedNoble() != null) {
-      nobles.add(hand.reservedNoble());
-    }
+    nobles.addAll(hand.reservedNobles());
     return nobles.stream()
-        .filter(n -> hasEnoughGems(hand.gemDiscounts(), n.cost()))
+        .filter(n -> hand.gemDiscounts().hasEnoughGems(n.cost()))
         .collect(Collectors.toSet());
-  }
-
-  private boolean hasEnoughGems(Gems ownedGems, Gems gemsToPayWith) {
-    return gemsToPayWith.entrySet().stream()
-        .noneMatch(entry -> ownedGems.getOrDefault(entry.getKey(), 0) < entry.getValue());
   }
 }

@@ -70,6 +70,10 @@ public final class SatchelCard extends Card {
     return freeCardToTake;
   }
 
+  public void removeFreeCardToTake() {
+    freeCardToTake = null;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {

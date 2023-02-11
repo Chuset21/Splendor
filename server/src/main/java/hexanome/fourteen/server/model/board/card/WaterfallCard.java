@@ -76,6 +76,10 @@ public final class WaterfallCard extends Card {
     return cardToTake;
   }
 
+  public void removeCardToTake() {
+    cardToTake = null;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {

@@ -19,7 +19,7 @@ public final class Hand {
   private final List<Card> reservedCards;
   private final List<Card> purchasedCards;
   private final Set<Noble> visitedNobles;
-  private Noble reservedNoble;
+  private final Set<Noble> reservedNobles;
   private Gems gemDiscounts;
 
   /**
@@ -30,17 +30,17 @@ public final class Hand {
    * @param reservedCards  the reserved cards
    * @param purchasedCards the purchased cards
    * @param visitedNobles  the owned nobles
-   * @param reservedNoble  the reserved noble
+   * @param reservedNobles the reserved nobles
    * @param gemDiscounts   the gem discounts
    */
   public Hand(int prestigePoints, Gems gems, List<Card> reservedCards, List<Card> purchasedCards,
-              Set<Noble> visitedNobles, Noble reservedNoble, Gems gemDiscounts) {
+              Set<Noble> visitedNobles, Set<Noble> reservedNobles, Gems gemDiscounts) {
     this.prestigePoints = prestigePoints;
     this.gems = gems;
     this.reservedCards = reservedCards;
     this.purchasedCards = purchasedCards;
     this.visitedNobles = visitedNobles;
-    this.reservedNoble = reservedNoble;
+    this.reservedNobles = reservedNobles;
     this.gemDiscounts = gemDiscounts;
   }
 
@@ -55,7 +55,7 @@ public final class Hand {
     reservedCards = new ArrayList<>();
     purchasedCards = new ArrayList<>();
     visitedNobles = new HashSet<>();
-    reservedNoble = null;
+    reservedNobles = new HashSet<>();
     gemDiscounts = new Gems();
   }
 
@@ -105,12 +105,12 @@ public final class Hand {
   }
 
   /**
-   * A Getter for the Noble that has been reserved.
+   * A Getter for the Nobles that have been reserved.
    *
-   * @return The Noble that has been reserved.
+   * @return The Nobles that have been reserved.
    */
-  public Noble reservedNoble() {
-    return reservedNoble;
+  public Set<Noble> reservedNobles() {
+    return reservedNobles;
   }
 
   /**
@@ -138,15 +138,6 @@ public final class Hand {
    */
   public void setGems(Gems gems) {
     this.gems = gems;
-  }
-
-  /**
-   * A Setter for the Reserved Noble.
-   *
-   * @param reservedNoble The Visiting Noble that has been reserved to set
-   */
-  public void setReservedNoble(Noble reservedNoble) {
-    this.reservedNoble = reservedNoble;
   }
 
   /**
@@ -189,7 +180,7 @@ public final class Hand {
            && Objects.equals(reservedCards, hand.reservedCards)
            && Objects.equals(purchasedCards, hand.purchasedCards)
            && Objects.equals(visitedNobles, hand.visitedNobles)
-           && Objects.equals(reservedNoble, hand.reservedNoble)
+           && Objects.equals(reservedNobles, hand.reservedNobles)
            && Objects.equals(gemDiscounts, hand.gemDiscounts);
   }
 }
