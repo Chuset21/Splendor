@@ -388,6 +388,12 @@ public class OrientExpansion implements Initializable {
         ioe.printStackTrace();
       }
     }
+
+    try{
+      MenuController.getMenuController(stage).goToWelcomeScreen();
+    } catch (IOException ioe){
+      ioe.printStackTrace();
+    }
   }
 
   @FXML

@@ -71,7 +71,9 @@ public class InLobbyScreenController implements ScreenController{
       OrientExpansion oe = new OrientExpansion();
 
       try{
-        if(LobbyServiceCaller.launchSession(User.getUser(stage))) {oe.goToGame(stage);}
+        //if(LobbyServiceCaller.launchSession(User.getUser(stage))) {
+          oe.goToGame(stage);
+        //}
       } catch(Exception e){
         e.printStackTrace();
       }
