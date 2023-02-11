@@ -1,5 +1,6 @@
 package com.hexanome.fourteen.lobbyui;
 
+import com.hexanome.fourteen.GameServiceName;
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
 import com.hexanome.fourteen.boards.Expansion;
@@ -70,7 +71,6 @@ public class CreateGameScreenController implements ScreenController{
     stage.setScene(aScene);
     stage.setTitle("Splendor - Create Game");
     stage.setResizable(false);
-    stage.centerOnScreen();
 
     stage.show();
   }
@@ -98,8 +98,8 @@ public class CreateGameScreenController implements ScreenController{
     }
 
     // Set toggle values to their respective enums
-    selectOrientToggle.setUserData(Expansion.ORIENT);
-    selectExtraToggle.setUserData(Expansion.STANDARD);
+    selectOrientToggle.setUserData(GameServiceName.BASE);
+    selectExtraToggle.setUserData(GameServiceName.ALL);
   }
 
   /**

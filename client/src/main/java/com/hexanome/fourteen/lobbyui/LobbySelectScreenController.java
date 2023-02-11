@@ -52,7 +52,6 @@ public class LobbySelectScreenController implements ScreenController{
     stage.setScene(aScene);
     stage.setTitle("Splendor - Select Lobby");
     stage.setResizable(false);
-    stage.centerOnScreen();
 
     stage.show();
   }
@@ -85,19 +84,7 @@ public class LobbySelectScreenController implements ScreenController{
     // Resets displayed lobbies
     lobbyVBox.getChildren().clear();
 
-    SessionsForm lobbyForm = null;
-
-    try{
-      lobbyForm = LobbyServiceCaller.getSessions();
-    } catch(TokenRefreshFailedException e){
-      try{
-        MenuController.returnToLogin("Session timed out, retry login");
-      } catch(IOException ioe){
-        ioe.printStackTrace();
-      }
-      aPrimaryStage.close();
-      return;
-    }
+    SessionsForm lobbyForm = lobbyForm = LobbyServiceCaller.getSessions();
 
     if(lobbyForm != null){
       Map<String, SessionForm> lobbies = lobbyForm.sessions();
@@ -138,10 +125,18 @@ public class LobbySelectScreenController implements ScreenController{
    * never directly from FXML.
    */
   public void handleJoinLobbyButton(Lobby lobby){
-    try {
-      MenuController.goToInLobbyScreen(lobby);
-    } catch (IOException ioe) {
-      ioe.printStackTrace();
+    if(!lobby.getHost().equals(LobbyServiceCaller.getUserID())){
+      try{
+        if(LobbyServiceCaller.joinSession(lobby.getSessionid())) { MenuController.goToInLobbyScreen(lobby); }
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    } else{
+      try{
+        MenuController.goToInLobbyScreen(lobby);
+      } catch (IOException ioe){
+        ioe.printStackTrace();
+      }
     }
   }
 

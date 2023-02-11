@@ -42,17 +42,7 @@ public final class SessionsForm {
    */
   public static String getSessionWithHost(String hostName){
     // Get current list of sessions from LobbyService
-    SessionsForm sessions = null;
-
-    try{
-      sessions = LobbyServiceCaller.getSessions();
-    } catch(TokenRefreshFailedException e){
-      try{
-        MenuController.returnToLogin("Session timed out, retry login");
-      } catch(IOException ioe){
-        ioe.printStackTrace();
-      }
-    }
+    SessionsForm sessions = LobbyServiceCaller.getSessions();
 
     if(sessions != null) {
       Map<String, SessionForm> sessionMap = sessions.sessions();

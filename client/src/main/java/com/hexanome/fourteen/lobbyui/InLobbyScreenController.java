@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.ResourceBundle;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
+import com.hexanome.fourteen.TokenRefreshFailedException;
 import com.hexanome.fourteen.boards.OrientExpansion;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -68,7 +69,6 @@ public class InLobbyScreenController implements ScreenController{
     stage.setScene(aScene);
     stage.setTitle("Splendor - Lobby");
     stage.setResizable(false);
-    stage.centerOnScreen();
 
     stage.show();
   }
@@ -90,9 +90,7 @@ public class InLobbyScreenController implements ScreenController{
       MenuController.getStage().setUserData(null);
 
       try{
-        LobbyServiceCaller.launchSession(lobby.getSessionid());
-
-        oe.goToGame(MenuController.getStage());
+        if(LobbyServiceCaller.launchSession(lobby.getSessionid())){oe.goToGame(MenuController.getStage());}
       } catch(IOException ioe){
         ioe.printStackTrace();
       }
@@ -102,7 +100,17 @@ public class InLobbyScreenController implements ScreenController{
   @FXML
   private void handleLeaveButton(){
     if(LobbyServiceCaller.getUserID().equals(lobby.getHost())) {
-      LobbyServiceCaller.deleteSession(lobby.getSessionid());
+      try{
+        LobbyServiceCaller.deleteSession(lobby.getSessionid());
+      } catch(TokenRefreshFailedException e){
+        try{
+          MenuController.returnToLogin("Session timed out, retry login");
+          MenuController.getStage().close();
+          return;
+        } catch(IOException ioe){
+          ioe.printStackTrace();
+        }
+      }
     }
 
     try{

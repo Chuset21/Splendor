@@ -57,7 +57,6 @@ public final class LoginScreenController implements ScreenController {
     aPrimaryStage.setScene(scene);
     aPrimaryStage.setTitle("Splendor");
     aPrimaryStage.setResizable(false);
-    aPrimaryStage.centerOnScreen();
 
     aPrimaryStage.show();
   }

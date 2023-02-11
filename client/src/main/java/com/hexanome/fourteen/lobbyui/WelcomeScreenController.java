@@ -49,7 +49,6 @@ public class WelcomeScreenController implements ScreenController{
     stage.setScene(aScene);
     stage.setTitle("Splendor - Welcome");
     stage.setResizable(false);
-    stage.centerOnScreen();
 
     stage.show();
   }

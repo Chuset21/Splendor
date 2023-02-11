@@ -57,7 +57,7 @@
                         <Font size="25.0" />
                      </font>
                   </PasswordField>
-                  <Button fx:id="loginButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#handleLogin" style="-fx-background-color: #72465B; -fx-border-color: #72465B; -fx-background-radius: 30; -fx-border-radius: 30;" text="Login" textFill="#f8db85">
+                  <Button fx:id="loginButton" alignment="CENTER" contentDisplay="CENTER" defaultButton="true" mnemonicParsing="false" onAction="#handleLogin" style="-fx-background-color: #72465B; -fx-border-color: #72465B; -fx-background-radius: 30; -fx-border-radius: 30;" text="Login" textFill="#f8db85">
                      <font>
                         <Font name="Satoshi Black" size="35.0" />
                      </font>

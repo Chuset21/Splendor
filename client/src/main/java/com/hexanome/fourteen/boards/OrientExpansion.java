@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+
+import com.hexanome.fourteen.LobbyServiceCaller;
+import com.hexanome.fourteen.TokenRefreshFailedException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +21,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import com.hexanome.fourteen.lobbyui.*;
 
 /**
  * A class to represent the game objects required to represent a OrientExpansion Splendor game.
@@ -369,8 +373,16 @@ public class OrientExpansion implements Initializable {
 
   @FXML
   private void handleClickMenuPopupQuitButton() {
-    Platform.exit();
-    System.exit(0);
+    try{
+      LobbyServiceCaller.deleteSession(LobbyServiceCaller.getCurrentLobby().getSessionid());
+    } catch(TokenRefreshFailedException e){
+      try{
+        MenuController.returnToLogin("Session timed out, retry login");
+        MenuController.getStage().close();
+      } catch(IOException ioe){
+        ioe.printStackTrace();
+      }
+    }
   }
 
   @FXML

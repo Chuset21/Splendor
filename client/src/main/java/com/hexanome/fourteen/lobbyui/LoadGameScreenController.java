@@ -48,7 +48,6 @@ public class LoadGameScreenController implements ScreenController{
     stage.setScene(aScene);
     stage.setTitle("Splendor - Load Save");
     stage.setResizable(false);
-    stage.centerOnScreen();
 
     stage.show();
   }

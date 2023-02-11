@@ -15,7 +15,6 @@ import com.hexanome.fourteen.form.server.cardform.WaterfallCardForm;
 import com.hexanome.fourteen.form.server.payment.CardPaymentForm;
 import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
 import com.hexanome.fourteen.form.server.payment.PaymentForm;
-import com.hexanome.fourteen.login.LoginScreen;
 import com.hexanome.fourteen.lobbyui.ScreenController;
 import com.hexanome.fourteen.login.LoginScreenController;
 import javafx.application.Application;
