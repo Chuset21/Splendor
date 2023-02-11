@@ -3,6 +3,7 @@ package com.hexanome.fourteen.form.server;
 import com.hexanome.fourteen.boards.Expansion;
 import com.hexanome.fourteen.form.server.cardform.CardForm;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -88,5 +89,25 @@ public final class GameBoardForm {
 
   public String creator() {
     return creator;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    GameBoardForm that = (GameBoardForm) o;
+    return Objects.equals(playerTurnid, that.playerTurnid)
+           && Objects.equals(availableNobles, that.availableNobles)
+           && Objects.equals(availableGems, that.availableGems)
+           && Objects.equals(cards, that.cards)
+           && Objects.equals(expansions, that.expansions)
+           && Objects.equals(leadingPlayer, that.leadingPlayer)
+           && Objects.equals(players, that.players)
+           && Objects.equals(gameid, that.gameid)
+           && Objects.equals(creator, that.creator);
   }
 }

@@ -1,0 +1,41 @@
+Goals w/ priority (Easiest and most essential jobs first)
+
+- Check w Miguel how to make sessions with different expansions
+- Figure out how to do long polling
+
+
+1) LoadGameScreen ~ Eamonn
+	a) Have it fetch current savedgames (no long polling necessary)
+
+2) LobbyServiceCaller ~ Kai
+	a) Change userid field to Player object
+		i) Should contain the favourite color of the current user
+
+2) InLobbyScreen ~ Kai
+	a) Show which player you are [e.g. "Maex (You)"]
+	b) Implement long-polling to refresh players
+		i) Make updatePlayers() function
+		ii) Get long-polling to call that function when players change
+		iii) Make lobbyscreen boot players out if session closes
+	c) Don't display "Launch" button to non-hosts
+	d) Make player icons into colored circles (cuz that's all we get from the LobbyService)
+
+3) LobbySelectScreen ~ Eamonn
+	a) Implement long-polling to refresh sessions
+	b) Make it possible to join sessions you didn't host
+		i) Make join game button switch to full if session is full (i.e. make button green if available, greyed out if not)
+	c) Should display if the session is launched/running
+		i) Check if you are part of the launched session
+		ii) Indicate if you can join (if above condition holds) (i.e. make button green if available, greyed out if not)
+			I) If you can join an in-progress game, the join button should send you directly to the gameboard
+
+4) Gameboard
+	a) Make player icons into colored circles (cuz that's all we get from the LobbyService)
+	b) be able to interpret gameboard sent from server [going to take a long time] ~ Fernando
+		i) read data
+		ii) be able to display the data (in basegame)
+	c) be able to make any possible move on the gameboard
+		i) Take turns with gems & reserve cards -> Hook up with backend
+	d) Add buttons to leave gameboard and return to lobby
+		i) "Save and end" -> Saves game and deletes session (only available to host)
+		ii) "Return to lobby" -> Returns to lobby screen without leaving session

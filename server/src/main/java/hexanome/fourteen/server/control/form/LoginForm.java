@@ -1,4 +1,4 @@
-package hexanome.fourteen.server.control;
+package hexanome.fourteen.server.control.form;
 
 /**
  * Login Response model.

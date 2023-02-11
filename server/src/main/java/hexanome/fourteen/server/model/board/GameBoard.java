@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Game Board.
@@ -27,10 +28,11 @@ import java.util.Set;
  * If so this might be true for more than just this class.
  */
 public final class GameBoard {
+
   /**
    * The current player's turn.
    */
-  private final int playerTurn;
+  private int playerTurn;
   /**
    * A map to convert player turn to the actual player.
    */
@@ -53,7 +55,7 @@ public final class GameBoard {
    */
   private Player leadingPlayer;
   private final Set<Player> players;
-  private final String gameid;
+  private String gameid;
   private final String creator;
 
   /**
@@ -125,25 +127,19 @@ public final class GameBoard {
         // Get the Cost
         Gems cost = new Gems();
         final int greenCost = Integer.parseInt(cardData[0]);
-        if (greenCost > 0) {
-          cost.put(GemColor.GREEN, greenCost);
-        }
+        cost.computeIfAbsent(GemColor.GREEN, k -> greenCost > 0 ? greenCost : null);
+
         final int whiteCost = Integer.parseInt(cardData[1]);
-        if (whiteCost > 0) {
-          cost.put(GemColor.WHITE, whiteCost);
-        }
+        cost.computeIfAbsent(GemColor.WHITE, k -> whiteCost > 0 ? whiteCost : null);
+
         final int blueCost = Integer.parseInt(cardData[2]);
-        if (blueCost > 0) {
-          cost.put(GemColor.BLUE, blueCost);
-        }
+        cost.computeIfAbsent(GemColor.BLUE, k -> blueCost > 0 ? blueCost : null);
+
         final int blackCost = Integer.parseInt(cardData[3]);
-        if (blackCost > 0) {
-          cost.put(GemColor.BLACK, blackCost);
-        }
+        cost.computeIfAbsent(GemColor.BLACK, k -> blackCost > 0 ? blackCost : null);
+
         final int redCost = Integer.parseInt(cardData[4]);
-        if (redCost > 0) {
-          cost.put(GemColor.RED, redCost);
-        }
+        cost.computeIfAbsent(GemColor.RED, k -> redCost > 0 ? redCost : null);
 
         // Get the level and expansion
         CardLevel level = CardLevel.valueOf(cardData[8]);
@@ -268,6 +264,10 @@ public final class GameBoard {
     return gameid;
   }
 
+  public void setGameid(String gameid) {
+    this.gameid = gameid;
+  }
+
   /**
    * A Getter for the Creator of the Game.
    *
@@ -289,11 +289,40 @@ public final class GameBoard {
       final List<Player> playersWithEqualCount =
           players.stream().filter(p -> p.hand().prestigePoints() == leadingCount).toList();
       if (playersWithEqualCount.size() > 1) {
-        leadingPlayer = playersWithEqualCount.stream().min(
-            Comparator.comparingInt(p -> p.hand().purchasedCards().size())).orElse(leadingPlayer);
+        leadingPlayer = playersWithEqualCount.stream()
+            .min(Comparator.comparingInt(p -> p.hand().purchasedCards().size()))
+            .orElse(leadingPlayer);
       }
     } else {
       leadingPlayer = playersWithHigherCount.get(0);
     }
+  }
+
+  /**
+   * Go to the next turn.
+   */
+  public void nextTurn() {
+    playerTurn = (playerTurn + 1) % players.size();
+  }
+
+  /**
+   * Compute the claimable nobles.
+   *
+   * @param hand the player's hand
+   * @return the set of claimable nobles by this player.
+   */
+  public Set<Noble> computeClaimableNobles(Hand hand) {
+    final Set<Noble> nobles = new HashSet<>(availableNobles);
+    if (hand.reservedNoble() != null) {
+      nobles.add(hand.reservedNoble());
+    }
+    return nobles.stream()
+        .filter(n -> hasEnoughGems(hand.gemDiscounts(), n.cost()))
+        .collect(Collectors.toSet());
+  }
+
+  private boolean hasEnoughGems(Gems ownedGems, Gems gemsToPayWith) {
+    return gemsToPayWith.entrySet().stream()
+        .noneMatch(entry -> ownedGems.getOrDefault(entry.getKey(), 0) < entry.getValue());
   }
 }

@@ -1,4 +1,4 @@
-package hexanome.fourteen.server.control;
+package hexanome.fourteen.server.control.form;
 
 import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.gem.Gems;

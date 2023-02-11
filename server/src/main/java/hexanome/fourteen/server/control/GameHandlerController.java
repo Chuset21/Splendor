@@ -1,6 +1,12 @@
 package hexanome.fourteen.server.control;
 
 import hexanome.fourteen.server.Mapper;
+import hexanome.fourteen.server.control.form.ClaimNobleForm;
+import hexanome.fourteen.server.control.form.LaunchGameForm;
+import hexanome.fourteen.server.control.form.PurchaseCardForm;
+import hexanome.fourteen.server.control.form.ReserveCardForm;
+import hexanome.fourteen.server.control.form.SaveGameForm;
+import hexanome.fourteen.server.control.form.TakeGemsForm;
 import hexanome.fourteen.server.model.User;
 import hexanome.fourteen.server.model.board.GameBoard;
 import hexanome.fourteen.server.model.board.Hand;
@@ -14,6 +20,7 @@ import hexanome.fourteen.server.model.sent.SentGameBoard;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,31 +46,33 @@ import org.springframework.web.bind.annotation.RestController;
 public class GameHandlerController {
 
   private final LobbyServiceCaller lobbyService;
-  private final Map<Set<String>, GameBoard> gameManager;
+  private final Map<String, GameBoard> gameManager;
   private final Mapper<User, Player> userPlayerMapper;
-  private final Mapper<String, Expansion> stringExpansionMapper;
   private final Mapper<GameBoard, SentGameBoard> gameBoardMapper;
   private final GsonInstance gsonInstance;
+  private final SavedGamesService saveGameManager;
+  private final ServerService serverService;
 
   /**
    * Constructor.
    *
-   * @param lobbyService          Lobby service
-   * @param userPlayerMapper      The User to Player Mapper
-   * @param stringExpansionMapper The String to Expansion Mapper
-   * @param gameBoardMapper       The GameBard Mapper
-   * @param gsonInstance          The GSON we will be using
+   * @param lobbyService     Lobby service
+   * @param userPlayerMapper The User to Player Mapper
+   * @param gameBoardMapper  The GameBard Mapper
+   * @param gsonInstance     The GSON we will be using
    */
   public GameHandlerController(@Autowired LobbyServiceCaller lobbyService,
                                @Autowired Mapper<User, Player> userPlayerMapper,
-                               @Autowired Mapper<String, Expansion> stringExpansionMapper,
                                @Autowired Mapper<GameBoard, SentGameBoard> gameBoardMapper,
-                               @Autowired GsonInstance gsonInstance) {
+                               @Autowired GsonInstance gsonInstance,
+                               @Autowired SavedGamesService saveGameManager,
+                               @Autowired ServerService serverService) {
     this.lobbyService = lobbyService;
     this.userPlayerMapper = userPlayerMapper;
-    this.stringExpansionMapper = stringExpansionMapper;
     this.gameBoardMapper = gameBoardMapper;
     this.gsonInstance = gsonInstance;
+    this.saveGameManager = saveGameManager;
+    this.serverService = serverService;
     gameManager = new HashMap<>();
   }
 
@@ -77,16 +86,24 @@ public class GameHandlerController {
   @PutMapping(value = "{gameid}", consumes = "application/json; charset=utf-8")
   public ResponseEntity<String> launchGame(@PathVariable String gameid,
                                            @RequestBody LaunchGameForm launchGameForm) {
-    gameManager.put(
-        Arrays.stream(launchGameForm.players()).map(User::name).collect(Collectors.toSet()),
-        createGame(gameid, launchGameForm)); // TODO add checks
+    GameBoard game = null;
+    if (launchGameForm.saveGame() != null && !launchGameForm.saveGame().isBlank()) {
+      game = saveGameManager.getGame(launchGameForm.saveGame());
+    }
+    if (game == null) {
+      game = createGame(gameid, launchGameForm);
+    } else {
+      game.setGameid(gameid);
+    }
+    gameManager.put(gameid, game);
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
   private GameBoard createGame(String gameid, LaunchGameForm launchGameForm) {
-    Set<Noble> nobles = null; // TODO
+    Set<Noble> nobles = new HashSet<>(); // TODO
 
-    Set<Expansion> expansions = Set.of(stringExpansionMapper.map(launchGameForm.gameType()));
+    Set<Expansion> expansions =
+        GameServiceName.getExpansions(GameServiceName.valueOf(launchGameForm.gameType()));
     Set<Player> players = Arrays.stream(launchGameForm.players()).map(userPlayerMapper::map)
         .collect(Collectors.toSet());
     String creator = launchGameForm.creator();
@@ -96,6 +113,7 @@ public class GameHandlerController {
 
   /**
    * Remove a game with a matching game ID.
+   * Only admins can delete a game.
    *
    * @param gameid game ID to remove
    * @return The full response
@@ -115,22 +133,11 @@ public class GameHandlerController {
    * @return true if the game was successfully removed, false otherwise.
    */
   private boolean removeGame(String gameid) {
-    for (Map.Entry<Set<String>, GameBoard> entry : gameManager.entrySet()) {
-      if (entry.getValue().gameid().equals(gameid)) {
-        gameManager.remove(entry.getKey());
-        return true;
-      }
-    }
-    return false;
+    return gameManager.remove(gameid) != null;
   }
 
-  private GameBoard getGame(String username) {
-    for (Map.Entry<Set<String>, GameBoard> entry : gameManager.entrySet()) {
-      if (entry.getKey().contains(username)) {
-        return entry.getValue();
-      }
-    }
-    return null;
+  private GameBoard getGame(String gameid) {
+    return gameManager.get(gameid);
   }
 
   private String getUsername(String accessToken) {
@@ -140,19 +147,23 @@ public class GameHandlerController {
   /**
    * Get a game board.
    *
-   * @param accessToken The user's access token who is sending the request
+   * @param gameid      The game id corresponding to the game.
+   * @param accessToken The access token belonging to the player getting the game.
    * @return The full response
    */
-  @GetMapping(value = "board", produces = "application/json; charset=utf-8")
-  public ResponseEntity<String> retrieveGame(@RequestParam("access_token") String accessToken) {
+  @GetMapping(value = "{gameid}", produces = "application/json; charset=utf-8")
+  public ResponseEntity<String> retrieveGame(@PathVariable String gameid,
+                                             @RequestParam("access_token") String accessToken) {
     final String username = getUsername(accessToken);
     if (username == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
     }
 
-    final GameBoard gameBoard = getGame(username);
+    final GameBoard gameBoard = getGame(gameid);
     if (gameBoard == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
+    } else if (getHand(gameBoard.players(), username) == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
     } else {
       final SentGameBoard sentGameBoard = gameBoardMapper.map(gameBoard);
       return ResponseEntity.status(HttpStatus.OK)
@@ -161,46 +172,87 @@ public class GameHandlerController {
   }
 
   /**
-   * Purchase a given card.
+   * Save a game.
    *
-   * @param accessToken      The access token belonging to the player trying to purchase the card.
-   * @param purchaseCardForm The purchase card form.
+   * @param gameid      The game id corresponding to the game.
+   * @param accessToken The access token belonging to the player getting the game.
    * @return The response.
    */
-  @PostMapping(value = "card", consumes = "application/json; charset=utf-8")
-  public ResponseEntity<String> purchaseCard(@RequestParam("access_token") String accessToken,
-                                             @RequestBody PurchaseCardForm purchaseCardForm) {
-    // TODO check what type of card it is and perform the relevant action,
-    //  e.g. adding the gem discounts
+  @PostMapping(value = "{gameid}", produces = "application/json; charset=utf-8")
+  public ResponseEntity<String> saveGame(@PathVariable String gameid,
+                                         @RequestParam("access_token") String accessToken) {
     final String username = getUsername(accessToken);
     if (username == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
     }
 
-    final GameBoard gameBoard = getGame(username);
+    final GameBoard gameBoard = getGame(gameid);
+    if (gameBoard == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
+    } else if (getHand(gameBoard.players(), username) == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
+    } else {
+      if (!serverService.refreshToken()) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body("token could not be refreshed");
+      }
+      String saveGameid = saveGameManager.putGame(gameBoard);
+      lobbyService.saveGame(serverService.accessToken,
+          new SaveGameForm(GameServiceName.getGameServiceName(gameBoard.expansions()).name(),
+              gameBoard.players().stream().map(Player::uid).toList(), saveGameid));
+      return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+  }
+
+  /**
+   * Purchase a given card.
+   *
+   * @param gameid           The game id corresponding to the game.
+   * @param accessToken      The access token belonging to the player trying to purchase the card.
+   * @param purchaseCardForm The purchase card form.
+   * @return The response.
+   */
+  @PutMapping(value = "{gameid}/card/purchase", consumes = "application/json; charset=utf-8")
+  public ResponseEntity<String> purchaseCard(@PathVariable String gameid,
+                                             @RequestParam("access_token") String accessToken,
+                                             @RequestBody PurchaseCardForm purchaseCardForm) {
+    // TODO check what type of card it is and perform the relevant action
+    //  check if the card is reserved, must specify it in the form in case
+    //  the cards are duplicated on the board and reserved
+    final String username = getUsername(accessToken);
+    if (username == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
+    }
+
+    final GameBoard gameBoard = getGame(gameid);
     if (gameBoard == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
     }
 
     final Hand hand = getHand(gameBoard.players(), username);
     if (hand == null) {
-      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
     }
 
     final Card card = purchaseCardForm.card();
+    if (card == null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("card cannot be null");
+    }
     final Set<List<Card>> decks = gameBoard.cards();
     if (!cardIsFaceUpOnBoard(decks, card)) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body("card chosen for purchase is not valid");
     }
 
-    final Gems substitutedGems = purchaseCardForm.substitutedGems();
+    final Gems substitutedGems = purchaseCardForm.substitutedGems() == null ? new Gems() :
+        purchaseCardForm.substitutedGems();
     if (substitutedGems.containsKey(GemColor.GOLD)) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body("cannot substitute gold gems for gold gems");
     }
 
-    final Gems gemsToPayWith = purchaseCardForm.gemsToPayWith();
+    final Gems gemsToPayWith =
+        purchaseCardForm.gemsToPayWith() == null ? new Gems() : purchaseCardForm.gemsToPayWith();
     if (countGemAmount(substitutedGems) != gemsToPayWith.getOrDefault(GemColor.GOLD, 0)) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body("substituting amount not equal to gold gems");
@@ -233,7 +285,274 @@ public class GameHandlerController {
     // Compute the leading player
     gameBoard.computeLeadingPlayer();
 
+    return getStringResponseEntity(gameBoard, hand);
+  }
+
+  /**
+   * Reserve a given card.
+   *
+   * @param gameid          The game id corresponding to the game.
+   * @param accessToken     The access token belonging to the player trying to reserve the card.
+   * @param reserveCardForm The reserve card form.
+   * @return The response.
+   */
+  @PutMapping(value = "{gameid}/card/reserve", consumes = "application/json; charset=utf-8")
+  public ResponseEntity<String> reserveCard(@PathVariable String gameid,
+                                            @RequestParam("access_token") String accessToken,
+                                            @RequestBody ReserveCardForm reserveCardForm) {
+    final String username = getUsername(accessToken);
+    if (username == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
+    }
+
+    final GameBoard gameBoard = getGame(gameid);
+    if (gameBoard == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
+    }
+
+    final Hand hand = getHand(gameBoard.players(), username);
+    if (hand == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
+    }
+
+    if (hand.reservedCards().size() >= 3) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("cannot reserve more than 3 cards");
+    }
+
+    Card card = reserveCardForm.card();
+    if (card == null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("card cannot be null");
+    }
+    final Set<List<Card>> decks = gameBoard.cards();
+    if (!reserveCardForm.isTakingFaceDown() && !cardIsFaceUpOnBoard(decks, card)) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("card chosen for reservation is not valid");
+    }
+
+    final Gems availableGems = gameBoard.availableGems();
+    final int gemAmount = countGemAmount(hand.gems());
+    final GemColor gemColor = reserveCardForm.gemColor();
+
+    if (gemAmount < 10 && gemColor != null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("cannot get rid of a gem if you have less than 10 gems");
+    } else if (gemAmount == 10 && gemColor != null && !hand.gems().containsKey(gemColor)) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("cannot get rid of a gem that you do not have");
+    } else if (!availableGems.containsKey(GemColor.GOLD) && gemColor != null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("cannot get rid of a gem if there are no gold gems in the bank");
+    }
+
+    // Remove the card from the game board and add it to the player's reserved stack
+    if (reserveCardForm.isTakingFaceDown()) {
+      card = getFaceDownCard(decks, card);
+      if (card == null) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("not enough cards in the deck to reserve a face down card");
+      }
+    } else if (!removeCardFromDeck(decks, card)) {
+      // This should never happen
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+    hand.reservedCards().add(card);
+
+    if (availableGems.containsKey(GemColor.GOLD)
+        && ((gemAmount == 10 && gemColor != null) || gemAmount < 10)) {
+      hand.gems().compute(GemColor.GOLD, (k, v) -> v == null ? 1 : v + 1);
+      // Remove the GOLD mapping if it reaches 0
+      availableGems.computeIfPresent(GemColor.GOLD, (k, v) -> v == 1 ? null : v - 1);
+
+      if (gemColor != null) {
+        hand.gems().computeIfPresent(gemColor, (k, v) -> v == 1 ? null : v - 1);
+        availableGems.compute(gemColor, (k, v) -> v == null ? 1 : v + 1);
+      }
+    }
+
+    return getStringResponseEntity(gameBoard, hand);
+  }
+
+  private ResponseEntity<String> getStringResponseEntity(GameBoard gameBoard, Hand hand) {
+    final Set<Noble> nobles = gameBoard.computeClaimableNobles(hand);
+    if (!nobles.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.OK).body(gsonInstance.gson.toJson(nobles));
+    } else {
+      gameBoard.nextTurn();
+      return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+  }
+
+  /**
+   * Take gems.
+   *
+   * @param gameid       The game id corresponding to the game.
+   * @param accessToken  The access token belonging to the player trying to take gems.
+   * @param takeGemsForm The take gems form.
+   * @return The response.
+   */
+  @PutMapping(value = "{gameid}/gems", consumes = "application/json; charset=utf-8")
+  public ResponseEntity<String> takeGems(@PathVariable String gameid,
+                                         @RequestParam("access_token") String accessToken,
+                                         @RequestBody TakeGemsForm takeGemsForm) {
+    final String username = getUsername(accessToken);
+    if (username == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
+    }
+
+    final GameBoard gameBoard = getGame(gameid);
+    if (gameBoard == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
+    }
+
+    final Hand hand = getHand(gameBoard.players(), username);
+    if (hand == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
+    }
+
+    final Gems gemsToTake = takeGemsForm.gemsToTake();
+    if (gemsToTake == null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("gems to take cannot be null");
+    } else if (gemsToTake.get(GemColor.GOLD) != null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("cannot take gold gems");
+    }
+
+    final Gems gemsToRemove = takeGemsForm.gemsToRemove();
+    final int amountOfGemsToTake = countGemAmount(gemsToTake);
+    final int amountOfGemsInHand = countGemAmount(hand.gems());
+    if (amountOfGemsToTake > 3) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("cannot take more than 3 gems");
+    } else if (!hasEnoughGems(gameBoard.availableGems(), gemsToTake)) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("not enough gems in the bank");
+    } else {
+      final Gems gemsAfterTaking = new Gems(hand.gems());
+      addGems(gemsAfterTaking, gemsToTake);
+      if (gemsToRemove != null && !hasEnoughGems(gemsAfterTaking, gemsToRemove)) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("cannot remove gems that you do not own");
+      }
+      final int total = amountOfGemsToTake + amountOfGemsInHand;
+      if (total > 10 && (gemsToRemove == null || (total - countGemAmount(gemsToRemove) > 10))) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("can only have a maximum of 10 gems");
+      } else if (total <= 10 && gemsToRemove != null) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("cannot remove gems if not necessary");
+      } else if (total > 10 && total - countGemAmount(gemsToRemove) < 10) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("cannot remove gems and be left with less than 10");
+      }
+    }
+
+    final long sizeOfBankWithoutGoldGems =
+        new Gems(gameBoard.availableGems()).keySet().stream().filter(e -> e != GemColor.GOLD)
+            .count();
+    if (gemsToTake.size() == 1) {
+      final GemColor gemColorToTake = gemsToTake.entrySet().iterator().next().getKey();
+      final int amountOfGemsAvailable = gameBoard.availableGems().get(gemColorToTake);
+      if (amountOfGemsToTake > 2) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("cannot take 3 gems of one color");
+      } else if (amountOfGemsAvailable < 4 && amountOfGemsToTake == 2) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            "cannot take 2 same color gems, there are less than 4 gems of that color in the bank");
+      } else if (amountOfGemsToTake == 1
+                 && (sizeOfBankWithoutGoldGems > 1 || amountOfGemsAvailable >= 4)) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("cannot take 1 gem if it is possible to take more");
+      }
+      // Only possible scenarios now
+      // amountOfGemsAvailable >= 4 && amountOfGemsToTake == 2
+      // amountOfGemsAvailable < 4 && amountOfGemsToTake == 1 && only 1 gem color available
+    } else if (gemsToTake.values().stream().anyMatch(v -> v > 1)) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("cannot take more than one gem of each gem");
+    } else if (gemsToTake.size() == 2 && sizeOfBankWithoutGoldGems != 2) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+          "cannot take 1 gem of each for 2 gem colors if it is possible to take from 3 colors");
+    }
+
+    // Take gems from the bank and add them to the player
+    removeGems(gameBoard.availableGems(), gemsToTake);
+    addGems(hand.gems(), gemsToTake);
+
+    // If necessary, take excess gems from the player and add them to the bank
+    if (gemsToRemove != null) {
+      removeGems(hand.gems(), gemsToRemove);
+      addGems(gameBoard.availableGems(), gemsToRemove);
+    }
+
+    return getStringResponseEntity(gameBoard, hand);
+  }
+
+  /**
+   * Claim a noble.
+   *
+   * @param gameid         The game id corresponding to the game.
+   * @param accessToken    The access token belonging to the player trying to reserve the card.
+   * @param claimNobleForm The claim noble form.
+   * @return The response.
+   */
+  @PutMapping(value = "{gameid}/noble", consumes = "application/json; charset=utf-8")
+  public ResponseEntity<String> claimNoble(@PathVariable String gameid,
+                                           @RequestParam("access_token") String accessToken,
+                                           @RequestBody ClaimNobleForm claimNobleForm) {
+    final String username = getUsername(accessToken);
+    if (username == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
+    }
+
+    final GameBoard gameBoard = getGame(gameid);
+    if (gameBoard == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
+    }
+
+    final Hand hand = getHand(gameBoard.players(), username);
+    if (hand == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
+    }
+
+    final Noble nobleToClaim = claimNobleForm.nobleToClaim();
+    if (nobleToClaim == null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("noble to claim cannot be null");
+    }
+
+    if (!hasEnoughGems(hand.gemDiscounts(), nobleToClaim.cost())) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("do not have enough gem discounts to claim noble");
+    }
+
+    if (gameBoard.availableNobles().contains(nobleToClaim)) {
+      gameBoard.availableNobles().remove(nobleToClaim);
+    } else if (nobleToClaim.equals(hand.reservedNoble())) {
+      hand.setReservedNoble(null);
+    } else {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("noble to claim is not available");
+    }
+    hand.visitedNobles().add(nobleToClaim);
+    hand.incrementPrestigePoints(nobleToClaim.prestigePoints());
+
+    // Compute the leading player
+    gameBoard.computeLeadingPlayer();
+    gameBoard.nextTurn();
+
     return ResponseEntity.status(HttpStatus.OK).body(null);
+  }
+
+  /**
+   * Has a side effect of removing the face down card from the deck if successful.
+   */
+  private Card getFaceDownCard(Set<List<Card>> decks, Card card) {
+    for (List<Card> deck : decks) {
+      if (!deck.isEmpty()) {
+        final Card firstCard = deck.get(0);
+        if (firstCard.level() == card.level() && firstCard.expansion() == firstCard.expansion()) {
+          final int cardIndex = firstCard.expansion() == Expansion.STANDARD ? 4 : 2;
+          return deck.size() <= cardIndex ? null : deck.remove(cardIndex);
+
+        }
+      }
+    }
+    return null;
   }
 
   private Gems getDiscountedCost(Gems originalCost, Gems gemDiscounts) {
@@ -251,15 +570,8 @@ public class GameHandlerController {
   }
 
   private void removeGems(Gems gemsToRemoveFrom, Gems gemsToRemove) {
-    gemsToRemove.forEach((key, amountToRemove) -> {
-      final int amount = gemsToRemoveFrom.get(key);
-      final int newValue = amount - amountToRemove;
-      if (newValue == 0) {
-        gemsToRemoveFrom.remove(key);
-      } else {
-        gemsToRemoveFrom.put(key, newValue);
-      }
-    });
+    gemsToRemove.forEach((key, amountToRemove) -> gemsToRemoveFrom.computeIfPresent(key,
+        (k, v) -> v.equals(amountToRemove) ? null : v - amountToRemove));
   }
 
   private boolean removeCardFromDeck(Set<List<Card>> decks, Card card) {
@@ -303,9 +615,8 @@ public class GameHandlerController {
   }
 
   private boolean hasEnoughGems(Gems ownedGems, Gems gemsToPayWith) {
-    return gemsToPayWith.entrySet().stream().noneMatch(
-        entry -> !ownedGems.containsKey(entry.getKey())
-                 || ownedGems.get(entry.getKey()) < entry.getValue());
+    return gemsToPayWith.entrySet().stream()
+        .noneMatch(entry -> ownedGems.getOrDefault(entry.getKey(), 0) < entry.getValue());
   }
 
   private Hand getHand(Collection<Player> players, String username) {

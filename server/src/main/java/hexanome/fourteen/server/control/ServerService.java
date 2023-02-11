@@ -1,7 +1,9 @@
 package hexanome.fourteen.server.control;
 
-import hexanome.fourteen.server.Mapper;
-import hexanome.fourteen.server.model.board.expansion.Expansion;
+import hexanome.fourteen.server.control.form.LoginForm;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import kong.unirest.HttpResponse;
@@ -18,7 +20,7 @@ public class ServerService {
   private final LobbyServiceCaller lobbyService;
   private final String username;
   private final String password;
-  private final String[] gameServiceNames;
+  private final Set<String> gameServiceNames;
   private final GsonInstance gsonInstance;
   /**
    * Access Token needed.
@@ -29,14 +31,12 @@ public class ServerService {
   /**
    * Constructor.
    *
-   * @param gsonInstance          common gson instance
-   * @param expansionStringMapper expansion to string mapper
-   * @param lobbyService          Lobby service
-   * @param username              The Username
-   * @param password              The Password
+   * @param gsonInstance common gson instance
+   * @param lobbyService Lobby service
+   * @param username     The Username
+   * @param password     The Password
    */
   public ServerService(@Autowired GsonInstance gsonInstance,
-                       @Autowired Mapper<Expansion, String> expansionStringMapper,
                        @Autowired LobbyServiceCaller lobbyService,
                        @Value("${service.username}") String username,
                        @Value("${service.password}") String password) {
@@ -44,8 +44,8 @@ public class ServerService {
     this.lobbyService = lobbyService;
     this.username = username;
     this.password = password;
-    gameServiceNames = new String[] {expansionStringMapper.map(Expansion.STANDARD),
-        expansionStringMapper.map(Expansion.ORIENT)};
+    gameServiceNames =
+        Arrays.stream(GameServiceName.values()).map(Enum::name).collect(Collectors.toSet());
   }
 
   /**

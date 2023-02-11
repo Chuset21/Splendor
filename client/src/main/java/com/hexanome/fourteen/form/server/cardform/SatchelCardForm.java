@@ -1,14 +1,15 @@
 package com.hexanome.fourteen.form.server.cardform;
 
+
 import com.hexanome.fourteen.boards.Expansion;
-import com.hexanome.fourteen.boards.GemColor;
 import com.hexanome.fourteen.form.server.GemsForm;
+import java.util.Objects;
 
 /**
  * Satchel Card form.
  */
 public final class SatchelCardForm extends CardForm {
-  private GemColor gemColor;
+  private CardForm cardToAttach;
 
   /**
    * Constructor.
@@ -17,12 +18,26 @@ public final class SatchelCardForm extends CardForm {
    * @param cost           the cost of the card
    * @param level          the level of the card
    * @param expansion      the expansion to which the card belongs to
-   * @param gemColor       the gem color to attach the satchel card to
+   * @param cardToAttach   the card to attach
    */
-  public SatchelCardForm(int prestigePoints, GemsForm cost, CardLevelForm level, Expansion expansion,
-                         GemColor gemColor) {
+  public SatchelCardForm(int prestigePoints, GemsForm cost, CardLevelForm level,
+                         Expansion expansion, CardForm cardToAttach) {
     super(prestigePoints, cost, level, expansion);
-    this.gemColor = gemColor;
+    this.cardToAttach = cardToAttach;
+  }
+
+
+  /**
+   * Constructor.
+   *
+   * @param prestigePoints the amount of prestige points associated with the card
+   * @param cost           the cost of the card
+   * @param level          the level of the card
+   * @param expansion      the expansion to which the card belongs to
+   */
+  public SatchelCardForm(int prestigePoints, GemsForm cost, CardLevelForm level,
+                         Expansion expansion) {
+    this(prestigePoints, cost, level, expansion, null);
   }
 
   /**
@@ -32,13 +47,9 @@ public final class SatchelCardForm extends CardForm {
     super();
   }
 
-  /**
-   * A Getter for the Gem Color of the Satchel Card.
-   *
-   * @return The Gem Color
-   */
-  public GemColor gemColor() {
-    return gemColor;
+
+  public CardForm cardToAttach() {
+    return cardToAttach;
   }
 
   @Override
@@ -50,8 +61,8 @@ public final class SatchelCardForm extends CardForm {
       return false;
     }
     SatchelCardForm card = (SatchelCardForm) obj;
-    return super.prestigePoints == card.prestigePoints && super.cost.equals(card.cost)
+    return super.prestigePoints == card.prestigePoints && Objects.equals(super.cost, card.cost)
            && super.level == card.level && super.expansion == card.expansion
-           && gemColor == card.gemColor;
+           && Objects.equals(cardToAttach, card.cardToAttach);
   }
 }

@@ -1,7 +1,10 @@
 package com.hexanome.fourteen;
 
+import com.hexanome.fourteen.form.server.ClaimNobleForm;
 import com.hexanome.fourteen.form.server.GameBoardForm;
 import com.hexanome.fourteen.form.server.PurchaseCardForm;
+import com.hexanome.fourteen.form.server.ReserveCardForm;
+import com.hexanome.fourteen.form.server.TakeGemsForm;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 
@@ -20,8 +23,9 @@ public final class ServerCaller {
    *
    * @return The game board form if successful, null otherwise.
    */
-  public static GameBoardForm getGameBoard(String serverLocation, String accessToken) {
-    HttpResponse<String> response = Unirest.get("%s/api/games/board".formatted(serverLocation))
+  public static GameBoardForm getGameBoard(String serverLocation, String gameid,
+                                           String accessToken) {
+    HttpResponse<String> response = Unirest.get("%s/api/games/%s".formatted(serverLocation, gameid))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("access_token", accessToken).asString();
 
@@ -34,14 +38,67 @@ public final class ServerCaller {
 
   /**
    * Purchase a card.
+   * Returns null as the string if successful,
+   * however if a noble can be reserved, it returns the list of nobles that can be reserved
    *
-   * @return The game board form if successful, null otherwise.
+   * @return The response.
    */
-  public static HttpResponse<String> purchaseCard(String serverLocation, String accessToken,
+  public static HttpResponse<String> purchaseCard(String serverLocation, String gameid,
+                                                  String accessToken,
                                                   PurchaseCardForm purchaseCardForm) {
-    return Unirest.post("%s/api/games/board".formatted(serverLocation))
+    return Unirest.put("%s/api/games/%s/card/purchase".formatted(serverLocation, gameid))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("access_token", accessToken).body(Main.GSON.toJson(purchaseCardForm))
         .asString();
+  }
+
+  /**
+   * Reserve a card.
+   *
+   * @return The response.
+   */
+  public static HttpResponse<String> reserveCard(String serverLocation, String gameid,
+                                                 String accessToken,
+                                                 ReserveCardForm reserveCardForm) {
+    return Unirest.put("%s/api/games/%s/card/reserve".formatted(serverLocation, gameid))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", accessToken).body(Main.GSON.toJson(reserveCardForm))
+        .asString();
+  }
+
+  /**
+   * Take gems.
+   *
+   * @return The response.
+   */
+  public static HttpResponse<String> takeGems(String serverLocation, String gameid,
+                                              String accessToken, TakeGemsForm takeGemsForm) {
+    return Unirest.put("%s/api/games/%s/gems".formatted(serverLocation, gameid))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", accessToken).body(Main.GSON.toJson(takeGemsForm)).asString();
+  }
+
+  /**
+   * Claim a noble.
+   *
+   * @return The response.
+   */
+  public static HttpResponse<String> claimNoble(String serverLocation, String gameid,
+                                                String accessToken, ClaimNobleForm claimNobleForm) {
+    return Unirest.put("%s/api/games/%s/noble".formatted(serverLocation, gameid))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", accessToken).body(Main.GSON.toJson(claimNobleForm)).asString();
+  }
+
+  /**
+   * Save a game.
+   *
+   * @return The response.
+   */
+  public static HttpResponse<String> saveGame(String serverLocation, String gameid,
+                                              String accessToken) {
+    return Unirest.post("%s/api/games/%s".formatted(serverLocation, gameid))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", accessToken).asString();
   }
 }

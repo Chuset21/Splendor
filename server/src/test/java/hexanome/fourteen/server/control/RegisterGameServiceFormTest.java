@@ -1,5 +1,6 @@
 package hexanome.fourteen.server.control;
 
+import hexanome.fourteen.server.control.form.RegisterGameServiceForm;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

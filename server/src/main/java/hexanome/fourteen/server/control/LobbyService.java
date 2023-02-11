@@ -1,5 +1,7 @@
 package hexanome.fourteen.server.control;
 
+import hexanome.fourteen.server.control.form.RegisterGameServiceForm;
+import hexanome.fourteen.server.control.form.SaveGameForm;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,5 +98,13 @@ public class LobbyService implements LobbyServiceCaller {
   public String getUsername(String accessToken) {
     return Unirest.post("%soauth/username".formatted(lsLocation))
         .queryString("access_token", accessToken).asString().getBody();
+  }
+
+  @Override
+  public void saveGame(String accessToken, SaveGameForm saveGameForm) {
+    Unirest.put(
+            "%sapi/gameservices/%s/savegames/%s".formatted(lsLocation, saveGameForm.gameName(),
+                saveGameForm.saveGameid()))
+        .queryString("access_token", accessToken).asEmpty();
   }
 }

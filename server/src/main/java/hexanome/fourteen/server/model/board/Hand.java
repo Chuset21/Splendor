@@ -3,8 +3,10 @@ package hexanome.fourteen.server.model.board;
 import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -14,9 +16,9 @@ import java.util.Set;
 public final class Hand {
   private int prestigePoints;
   private Gems gems;
-  private Set<Card> reservedCards;
-  private Set<Card> purchasedCards;
-  private Noble visitedNoble;
+  private final List<Card> reservedCards;
+  private final List<Card> purchasedCards;
+  private final Set<Noble> visitedNobles;
   private Noble reservedNoble;
   private Gems gemDiscounts;
 
@@ -27,17 +29,17 @@ public final class Hand {
    * @param gems           the amount of gems the owned
    * @param reservedCards  the reserved cards
    * @param purchasedCards the purchased cards
-   * @param visitedNoble   the owned noble
+   * @param visitedNobles  the owned nobles
    * @param reservedNoble  the reserved noble
    * @param gemDiscounts   the gem discounts
    */
-  public Hand(int prestigePoints, Gems gems, Set<Card> reservedCards, Set<Card> purchasedCards,
-              Noble visitedNoble, Noble reservedNoble, Gems gemDiscounts) {
+  public Hand(int prestigePoints, Gems gems, List<Card> reservedCards, List<Card> purchasedCards,
+              Set<Noble> visitedNobles, Noble reservedNoble, Gems gemDiscounts) {
     this.prestigePoints = prestigePoints;
     this.gems = gems;
     this.reservedCards = reservedCards;
     this.purchasedCards = purchasedCards;
-    this.visitedNoble = visitedNoble;
+    this.visitedNobles = visitedNobles;
     this.reservedNoble = reservedNoble;
     this.gemDiscounts = gemDiscounts;
   }
@@ -50,9 +52,9 @@ public final class Hand {
     prestigePoints = 0;
     gems = new Gems();
     Arrays.stream(GemColor.values()).forEach(e -> gems.put(e, 3));
-    reservedCards = new HashSet<>();
-    purchasedCards = new HashSet<>();
-    visitedNoble = null;
+    reservedCards = new ArrayList<>();
+    purchasedCards = new ArrayList<>();
+    visitedNobles = new HashSet<>();
     reservedNoble = null;
     gemDiscounts = new Gems();
   }
@@ -80,7 +82,7 @@ public final class Hand {
    *
    * @return Cards reserved.
    */
-  public Set<Card> reservedCards() {
+  public List<Card> reservedCards() {
     return reservedCards;
   }
 
@@ -89,17 +91,17 @@ public final class Hand {
    *
    * @return Cards purchased.
    */
-  public Set<Card> purchasedCards() {
+  public List<Card> purchasedCards() {
     return purchasedCards;
   }
 
   /**
-   * A Getter for the Noble that is visiting.
+   * A Getter for the Nobles that are visiting.
    *
-   * @return The Noble that is visiting.
+   * @return The Nobles that are visiting.
    */
-  public Noble visitedNoble() {
-    return visitedNoble;
+  public Set<Noble> visitedNobles() {
+    return visitedNobles;
   }
 
   /**
@@ -136,33 +138,6 @@ public final class Hand {
    */
   public void setGems(Gems gems) {
     this.gems = gems;
-  }
-
-  /**
-   * A Setter for the Reserved Cards.
-   *
-   * @param reservedCards Cards that have been reserved to set
-   */
-  public void setReservedCards(Set<Card> reservedCards) {
-    this.reservedCards = reservedCards;
-  }
-
-  /**
-   * A Setter for the Purchased Cards.
-   *
-   * @param purchasedCards Cards that have been purchased to set
-   */
-  public void setPurchasedCards(Set<Card> purchasedCards) {
-    this.purchasedCards = purchasedCards;
-  }
-
-  /**
-   * A Setter for the Visited Noble.
-   *
-   * @param visitedNoble The Visiting Noble to set
-   */
-  public void setVisitedNoble(Noble visitedNoble) {
-    this.visitedNoble = visitedNoble;
   }
 
   /**
@@ -213,7 +188,7 @@ public final class Hand {
     return prestigePoints == hand.prestigePoints && Objects.equals(gems, hand.gems)
            && Objects.equals(reservedCards, hand.reservedCards)
            && Objects.equals(purchasedCards, hand.purchasedCards)
-           && Objects.equals(visitedNoble, hand.visitedNoble)
+           && Objects.equals(visitedNobles, hand.visitedNobles)
            && Objects.equals(reservedNoble, hand.reservedNoble)
            && Objects.equals(gemDiscounts, hand.gemDiscounts);
   }

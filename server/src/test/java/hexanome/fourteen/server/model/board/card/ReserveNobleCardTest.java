@@ -99,5 +99,6 @@ public class ReserveNobleCardTest {
         assertNull(nullCard.level);
         assertEquals(nullCard.prestigePoints, 0);
         assertNull(nullCard.discountColor());
+        assertNull(nullCard.nobleToReserve());
     }
 }

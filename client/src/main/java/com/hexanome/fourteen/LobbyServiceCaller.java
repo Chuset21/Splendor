@@ -1,8 +1,13 @@
 package com.hexanome.fourteen;
 
+import com.google.gson.reflect.TypeToken;
 import com.hexanome.fourteen.form.lobbyservice.CreateSessionForm;
+import com.hexanome.fourteen.form.lobbyservice.SaveGameForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import com.hexanome.fourteen.lobbyui.MenuController;
 import com.hexanome.fourteen.login.LoginResponse;
 import kong.unirest.HttpResponse;
@@ -164,8 +169,8 @@ public final class LobbyServiceCaller {
    * Create a session.
    *
    * @param createSessionForm The form to create a session
-   * @return The session ID corresponding to the newly created session.
-   * Returns null if the session couldn't be created
+   * @return The session ID corresponding to the newly created session or
+   * null if the session couldn't be created.
    */
   public static String createSession(CreateSessionForm createSessionForm) throws TokenRefreshFailedException{
     // Try updating tokens, if fails: send user back to login to refresh tokens
@@ -226,4 +231,30 @@ public final class LobbyServiceCaller {
   }
 
 
+
+  /**
+   * Get saved games.
+   *
+   * @param authToken The player's token
+   * @return The list of saved games
+   */
+  public static List<SaveGameForm> getSavedGames(
+      String authToken) { // Can then use this to filter and see where our player appears
+    final Type listType = new TypeToken<ArrayList<SaveGameForm>>() {
+    }.getType();
+    final List<SaveGameForm> saveGameForms = new ArrayList<>();
+    for (GameServiceName e : GameServiceName.values()) {
+      final HttpResponse<String> response =
+          Unirest.get("%sapi/gameservices/%s/savegames".formatted(Main.lsLocation, e))
+              .header("Content-Type", "application/json")
+              .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+              .queryString("access_token", authToken).asString();
+
+      if (response.getStatus() == 200) {
+        saveGameForms.addAll(Main.GSON.fromJson(response.getBody(), listType));
+      }
+    }
+
+    return saveGameForms;
+  }
 }

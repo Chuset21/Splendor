@@ -27,9 +27,6 @@ public class SacrificeCardTest {
   @BeforeAll
   public static void setUp() {
     cost = new Gems();
-    cost.put(GemColor.GREEN, 1);
-    cost.put(GemColor.BLUE, 2);
-    cost.put(GemColor.WHITE, 3);
     sacrificeCard =
         new SacrificeCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor, sacrificeColor);
   }
