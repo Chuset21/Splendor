@@ -44,7 +44,7 @@ public final class LoginScreenController implements ScreenController {
    * @throws IOException Is thrown when invalid input is found
    */
   @Override
-  public void goTo(Stage stage) throws IOException {
+  public void sendStageData(Stage stage) throws IOException {
     this.stage = stage;
 
     // Initialize login message

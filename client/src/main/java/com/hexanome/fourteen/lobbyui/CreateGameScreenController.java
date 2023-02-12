@@ -58,7 +58,7 @@ public class CreateGameScreenController implements ScreenController{
    * @throws IOException thrown when FXML loader fails to load screen's .fxml file
    */
   @Override
-  public void goTo(Stage stage) throws IOException {
+  public void sendStageData(Stage stage) throws IOException {
     this.stage = stage;
 
     // Post init

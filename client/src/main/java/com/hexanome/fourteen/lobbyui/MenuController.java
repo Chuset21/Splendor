@@ -8,11 +8,8 @@ import com.hexanome.fourteen.login.LoginScreenController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Menu;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 
 public class MenuController {
@@ -70,7 +67,7 @@ public class MenuController {
     Parent root = loader.load();
 
     LoginScreenController controller = loader.getController();
-    controller.goTo(stage);
+    controller.sendStageData(stage);
 
     // Set up root on stage (window)
     Scene scene = new Scene(root);
@@ -103,7 +100,7 @@ public class MenuController {
     }
 
     // Go to last screen
-    screen.goTo(stage);
+    screen.sendStageData(stage);
   }
 
   public void goToWelcomeScreen() throws IOException {
@@ -118,7 +115,7 @@ public class MenuController {
 
     // Go to screen
     ScreenController controller = loader.getController();
-    controller.goTo(stage);
+    controller.sendStageData(stage);
 
     // Set up root on stage (window)
     Scene aScene = new Scene(root);
@@ -145,7 +142,7 @@ public class MenuController {
 
     // Go to screen
     ScreenController controller = loader.getController();
-    controller.goTo(stage);
+    controller.sendStageData(stage);
 
     // Set up root on stage (window)
     Scene aScene = new Scene(root);
@@ -172,7 +169,7 @@ public class MenuController {
 
     // Go to screen
     ScreenController controller = loader.getController();
-    controller.goTo(stage);
+    controller.sendStageData(stage);
 
     // Set up root on stage (window)
     Scene aScene = new Scene(root);
@@ -199,7 +196,7 @@ public class MenuController {
 
     // Go to screen
     ScreenController controller = loader.getController();
-    controller.goTo(stage);
+    controller.sendStageData(stage);
 
     // Set up root on stage (window)
     Scene aScene = new Scene(root);
@@ -229,7 +226,7 @@ public class MenuController {
 
     // Go to screen
     ScreenController controller = loader.getController();
-    controller.goTo(stage);
+    controller.sendStageData(stage);
 
     // Set up root on stage (window)
     Scene aScene = new Scene(root);

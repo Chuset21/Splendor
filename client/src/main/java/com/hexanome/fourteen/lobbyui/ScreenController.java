@@ -1,11 +1,11 @@
 package com.hexanome.fourteen.lobbyui;
 
 import java.io.IOException;
-import javafx.fxml.Initializable;
 import javafx.stage.Stage;
 
+@FunctionalInterface
 public interface ScreenController {
 
-  public void goTo(Stage stage) throws IOException;
+  public void sendStageData(Stage stage) throws IOException;
 
 }

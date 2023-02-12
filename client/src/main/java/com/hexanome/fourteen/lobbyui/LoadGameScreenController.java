@@ -35,7 +35,7 @@ public class LoadGameScreenController implements ScreenController{
   private Stage stage;
 
   @Override
-  public void goTo(Stage stage) throws IOException {
+  public void sendStageData(Stage stage) throws IOException {
     this.stage = stage;
 
     // Post init
