@@ -13,6 +13,7 @@ import hexanome.fourteen.server.control.form.PurchaseCardForm;
 import hexanome.fourteen.server.control.form.ReserveCardForm;
 import hexanome.fourteen.server.control.form.TakeGemsForm;
 import hexanome.fourteen.server.control.form.payment.CardPayment;
+import hexanome.fourteen.server.control.form.payment.GemPayment;
 import hexanome.fourteen.server.control.form.payment.Payment;
 import hexanome.fourteen.server.model.User;
 import hexanome.fourteen.server.model.board.GameBoard;
@@ -21,6 +22,7 @@ import hexanome.fourteen.server.model.board.card.Bonus;
 import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.card.CardLevel;
 import hexanome.fourteen.server.model.board.card.DoubleBonusCard;
+import hexanome.fourteen.server.model.board.card.GoldGemCard;
 import hexanome.fourteen.server.model.board.card.SacrificeCard;
 import hexanome.fourteen.server.model.board.card.SatchelCard;
 import hexanome.fourteen.server.model.board.card.StandardCard;
@@ -494,6 +496,160 @@ public class GameHandlerControllerTest {
     player.hand().purchasedCards().clear();
     player.hand().gemDiscounts().clear();
     player.hand().setPrestigePoints(0);
+  }
+
+  @Test
+  public void testPurchaseCardWithGemPayment() {
+    final Map<String, GameBoard> gameManager = new HashMap<>();
+    final Player player = new Player("test");
+    GameBoard board =
+        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player, new Player("test2")), "x",
+            player.uid());
+    gameManager.put("", board);
+    ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
+    Mockito.when(lobbyService.getUsername("token")).thenReturn("test");
+
+    Card cardToPurchase = new SacrificeCard();
+    player.hand().reservedCards().add(cardToPurchase);
+    Payment payment = new GemPayment();
+    PurchaseCardForm purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
+
+    ResponseEntity<String> response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("cannot pay for a card with gems if it is a sacrifice card",
+        response.getBody());
+    player.hand().reservedCards().clear();
+
+    cardToPurchase = new StandardCard();
+    player.hand().reservedCards().add(cardToPurchase);
+    payment = new GemPayment(null, null, -2);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("numGoldGemCards cannot be less than 0", response.getBody());
+    player.hand().reservedCards().clear();
+
+    player.hand().reservedCards().add(cardToPurchase);
+    player.hand().purchasedCards().add(new GoldGemCard());
+    payment = new GemPayment(null, null, 2);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("do not have enough gold gem cards", response.getBody());
+    player.hand().reservedCards().clear();
+
+    player.hand().reservedCards().add(cardToPurchase);
+    player.hand().purchasedCards().add(new GoldGemCard());
+    final Gems substitutedGems = new Gems();
+    substitutedGems.put(GemColor.GOLD, 1);
+    payment = new GemPayment(null, substitutedGems, 2);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("cannot substitute gold gems for gold gems", response.getBody());
+    player.hand().reservedCards().clear();
+    substitutedGems.clear();
+
+    player.hand().reservedCards().add(cardToPurchase);
+    substitutedGems.put(GemColor.BLACK, 2);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("substituting amount not equal to gold gems", response.getBody());
+    player.hand().reservedCards().clear();
+    substitutedGems.clear();
+
+    player.hand().reservedCards().add(cardToPurchase);
+    substitutedGems.put(GemColor.BLACK, 3);
+    payment = new GemPayment(null, substitutedGems, 0);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("substituting amount not equal to gold gems", response.getBody());
+    player.hand().reservedCards().clear();
+    substitutedGems.clear();
+
+    player.hand().gems().clear();
+    player.hand().reservedCards().add(cardToPurchase);
+    substitutedGems.put(GemColor.BLACK, 3);
+    final Gems chosenGems = new Gems();
+    chosenGems.put(GemColor.BLUE, 1);
+    payment = new GemPayment(chosenGems, substitutedGems, 2);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("not enough gems", response.getBody());
+    player.hand().reservedCards().clear();
+    substitutedGems.clear();
+    chosenGems.clear();
+    player.hand().gems().clear();
+
+    cardToPurchase =
+        new StandardCard(1, new Gems(), CardLevel.ONE, Expansion.STANDARD, GemColor.BLUE);
+    player.hand().gems().put(GemColor.BLUE, 1);
+    player.hand().reservedCards().add(cardToPurchase);
+    substitutedGems.put(GemColor.BLACK, 3);
+    chosenGems.put(GemColor.BLUE, 1);
+    payment = new GemPayment(chosenGems, substitutedGems, 2);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("card cost does not match payment", response.getBody());
+    player.hand().reservedCards().clear();
+    substitutedGems.clear();
+    chosenGems.clear();
+    player.hand().gems().clear();
+
+    final Gems cardCost = new Gems();
+    cardCost.put(GemColor.BLUE, 2);
+    cardCost.put(GemColor.RED, 1);
+    cardCost.put(GemColor.BLACK, 3);
+    cardToPurchase =
+        new StandardCard(1, cardCost, CardLevel.ONE, Expansion.STANDARD, GemColor.BLUE);
+    player.hand().gems().put(GemColor.BLUE, 1);
+    player.hand().reservedCards().add(cardToPurchase);
+    substitutedGems.put(GemColor.BLACK, 3);
+    chosenGems.put(GemColor.BLUE, 1);
+    player.hand().gemDiscounts().put(GemColor.RED, 1);
+    player.hand().gemDiscounts().put(GemColor.BLUE, 1);
+    payment = new GemPayment(chosenGems, substitutedGems, 2);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
+    board.availableGems().clear();
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(1, player.hand().purchasedCards().size());
+    assertTrue(player.hand().purchasedCards().contains(cardToPurchase));
+    assertEquals(cardToPurchase.prestigePoints(), player.hand().prestigePoints());
+    assertEquals(2,
+        player.hand().gemDiscounts().get(((StandardCard) cardToPurchase).discountColor()));
+    Gems expectedGameBoardGems = new Gems(board.availableGems());
+    expectedGameBoardGems.put(GemColor.BLUE, 1);
+    assertEquals(expectedGameBoardGems, board.availableGems());
+    assertTrue(player.hand().gems().isEmpty());
+    assertEquals(2, player.hand().gemDiscounts().get(GemColor.BLUE));
+    player.hand().reservedCards().clear();
+    substitutedGems.clear();
+    chosenGems.clear();
+    player.hand().gemDiscounts().clear();
+    player.hand().setPrestigePoints(0);
+
+    // TODO test purchase card with double bonus card, reserve noble card, satchel card, waterfall card
   }
 
 //  @Test

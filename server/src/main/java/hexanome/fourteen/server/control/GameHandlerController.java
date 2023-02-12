@@ -686,10 +686,12 @@ public class GameHandlerController {
   }
 
   private static void removeGoldGemCards(int numGoldGemCards, Hand hand) {
-    for (int i = 0; numGoldGemCards > 0; i++) {
+    for (int i = 0; numGoldGemCards > 0;) {
       if (hand.purchasedCards().get(i) instanceof GoldGemCard) {
         hand.purchasedCards().remove(i);
         numGoldGemCards--;
+      } else {
+        i++;
       }
     }
   }
