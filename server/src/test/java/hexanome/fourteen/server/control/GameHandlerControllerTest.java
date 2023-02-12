@@ -17,6 +17,7 @@ import hexanome.fourteen.server.control.form.payment.Payment;
 import hexanome.fourteen.server.model.User;
 import hexanome.fourteen.server.model.board.GameBoard;
 import hexanome.fourteen.server.model.board.Noble;
+import hexanome.fourteen.server.model.board.card.Bonus;
 import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.card.CardLevel;
 import hexanome.fourteen.server.model.board.card.DoubleBonusCard;
@@ -283,6 +284,25 @@ public class GameHandlerControllerTest {
         response.getBody());
     player.hand().reservedCards().clear();
     player.hand().purchasedCards().clear();
+
+    cardToSacrifice1 =
+        new DoubleBonusCard(0, new Gems(), CardLevel.TWO, Expansion.ORIENT, GemColor.BLUE);
+    player.hand().reservedCards().add(cardToPurchase);
+    player.hand().purchasedCards().add(cardToSacrifice1);
+    payment = new CardPayment(cardToSacrifice1, null);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertTrue(player.hand().reservedCards().isEmpty());
+    assertTrue(player.hand().purchasedCards().contains(cardToPurchase));
+    assertFalse(player.hand().purchasedCards().contains(cardToSacrifice1));
+    assertEquals(cardToPurchase.prestigePoints(), player.hand().prestigePoints());
+    assertEquals(Bonus.SINGLE.getValue(), player.hand().gemDiscounts()
+        .getOrDefault(((SacrificeCard) cardToPurchase).discountColor(), 0));
+
+    // Now test with two cards to sacrifice
   }
 
 //  @Test
