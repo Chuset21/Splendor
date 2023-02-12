@@ -11,7 +11,6 @@ import java.util.Objects;
 public final class SacrificeCardForm extends CardForm {
   private int gemDiscount;
   private GemColor discountColor;
-  private GemColor sacrificeColor;
 
   /**
    * Constructor.
@@ -22,16 +21,13 @@ public final class SacrificeCardForm extends CardForm {
    * @param expansion      the expansion to which the card belongs to
    * @param gemDiscount    the amount of gems to be discounted
    * @param discountColor  the color of the gems to be discounted
-   * @param sacrificeColor the gem color of the cards to be sacrificed
    */
   public SacrificeCardForm(int prestigePoints, GemsForm cost,
                            CardLevelForm level,
-                           Expansion expansion, int gemDiscount, GemColor discountColor,
-                           GemColor sacrificeColor) {
+                           Expansion expansion, int gemDiscount, GemColor discountColor) {
     super(prestigePoints, cost, level, expansion);
     this.gemDiscount = gemDiscount;
     this.discountColor = discountColor;
-    this.sacrificeColor = sacrificeColor;
   }
 
   /**
@@ -59,15 +55,6 @@ public final class SacrificeCardForm extends CardForm {
     return discountColor;
   }
 
-  /**
-   * A Getter for the Color to be Sacrificed to acquire the Sacrifice Card.
-   *
-   * @return The Sacrifice Color.
-   */
-  public GemColor sacrificeColor() {
-    return sacrificeColor;
-  }
-
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -80,7 +67,6 @@ public final class SacrificeCardForm extends CardForm {
     return super.prestigePoints == card.prestigePoints
            && Objects.equals(super.cost, card.cost)
            && super.level == card.level && super.expansion == card.expansion
-           && gemDiscount == card.gemDiscount && discountColor == card.discountColor
-           && sacrificeColor == card.sacrificeColor;
+           && gemDiscount == card.gemDiscount && discountColor == card.discountColor;
   }
 }
