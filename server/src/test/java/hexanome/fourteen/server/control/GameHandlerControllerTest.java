@@ -243,7 +243,6 @@ public class GameHandlerControllerTest {
 
     player.hand().reservedCards().add(cardToPurchase);
     player.hand().purchasedCards().add(cardToSacrifice1);
-    payment = new CardPayment(cardToSacrifice1, null);
     purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
 
     response =
@@ -291,6 +290,7 @@ public class GameHandlerControllerTest {
     player.hand().purchasedCards().add(cardToSacrifice1);
     payment = new CardPayment(cardToSacrifice1, null);
     purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
+    player.hand().gemDiscounts().put(GemColor.BLUE, 2);
 
     response =
         gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
@@ -301,8 +301,199 @@ public class GameHandlerControllerTest {
     assertEquals(cardToPurchase.prestigePoints(), player.hand().prestigePoints());
     assertEquals(Bonus.SINGLE.getValue(), player.hand().gemDiscounts()
         .getOrDefault(((SacrificeCard) cardToPurchase).discountColor(), 0));
+    player.hand().purchasedCards().clear();
+    player.hand().gemDiscounts().clear();
+    player.hand().setPrestigePoints(0);
+
+    // test with satchel card now
+    Card cardToAttach =
+        new StandardCard(1, new Gems(), CardLevel.ONE, Expansion.STANDARD, GemColor.RED);
+    cardToSacrifice1 =
+        new SatchelCard(0, new Gems(), CardLevel.TWO, Expansion.ORIENT, cardToAttach);
+    player.hand().reservedCards().add(cardToPurchase);
+    player.hand().purchasedCards().add(cardToSacrifice1);
+    payment = new CardPayment(cardToSacrifice1, null);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("discount color must match the purchased card's discount color",
+        response.getBody());
+    player.hand().reservedCards().clear();
+    player.hand().purchasedCards().clear();
+
+    cardToAttach =
+        new StandardCard(1, new Gems(), CardLevel.ONE, Expansion.STANDARD, GemColor.BLUE);
+    cardToSacrifice1 =
+        new SatchelCard(0, new Gems(), CardLevel.TWO, Expansion.ORIENT, cardToAttach);
+    player.hand().reservedCards().add(cardToPurchase);
+    player.hand().purchasedCards().add(cardToSacrifice1);
+    payment = new CardPayment(cardToSacrifice1, null);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
+    player.hand().gemDiscounts().put(GemColor.BLUE, 2);
+    player.hand().setPrestigePoints(cardToAttach.prestigePoints());
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertTrue(player.hand().reservedCards().isEmpty());
+    assertTrue(player.hand().purchasedCards().contains(cardToPurchase));
+    assertFalse(player.hand().purchasedCards().contains(cardToSacrifice1));
+    assertEquals(cardToPurchase.prestigePoints(), player.hand().prestigePoints());
+    assertEquals(Bonus.SINGLE.getValue(), player.hand().gemDiscounts()
+        .getOrDefault(((SacrificeCard) cardToPurchase).discountColor(), 0));
+    player.hand().purchasedCards().clear();
+    player.hand().gemDiscounts().clear();
+    player.hand().setPrestigePoints(0);
+
+    cardToAttach =
+        new DoubleBonusCard(1, new Gems(), CardLevel.ONE, Expansion.STANDARD, GemColor.BLUE);
+    cardToSacrifice1 =
+        new SatchelCard(0, new Gems(), CardLevel.TWO, Expansion.ORIENT, cardToAttach);
+    player.hand().reservedCards().add(cardToPurchase);
+    player.hand().purchasedCards().add(cardToSacrifice1);
+    payment = new CardPayment(cardToSacrifice1, null);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
+    player.hand().gemDiscounts().put(GemColor.BLUE, 4);
+    player.hand().setPrestigePoints(cardToAttach.prestigePoints());
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertTrue(player.hand().reservedCards().isEmpty());
+    assertTrue(player.hand().purchasedCards().contains(cardToPurchase));
+    assertFalse(player.hand().purchasedCards().contains(cardToSacrifice1));
+    assertEquals(cardToPurchase.prestigePoints(), player.hand().prestigePoints());
+    assertEquals(Bonus.SINGLE.getValue() + 1, player.hand().gemDiscounts()
+        .getOrDefault(((SacrificeCard) cardToPurchase).discountColor(), 0));
+    player.hand().purchasedCards().clear();
+    player.hand().gemDiscounts().clear();
+    player.hand().setPrestigePoints(0);
 
     // Now test with two cards to sacrifice
+    cardToSacrifice1 =
+        new DoubleBonusCard(0, new Gems(), CardLevel.TWO, Expansion.ORIENT, GemColor.RED);
+    Card cardToSacrifice2 = new StandardCard();
+    player.hand().reservedCards().add(cardToPurchase);
+    player.hand().purchasedCards().add(cardToSacrifice1);
+    payment = new CardPayment(cardToSacrifice1, cardToSacrifice2);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("you must own the cards you're sacrificing", response.getBody());
+    player.hand().reservedCards().clear();
+    player.hand().purchasedCards().clear();
+
+    player.hand().reservedCards().add(cardToPurchase);
+    player.hand().purchasedCards().add(cardToSacrifice1);
+    player.hand().purchasedCards().add(cardToSacrifice2);
+    payment = new CardPayment(cardToSacrifice1, cardToSacrifice2);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("cannot sacrifice a double bonus card or satchel card "
+                 + "if you're sacrificing two cards", response.getBody());
+    player.hand().reservedCards().clear();
+    player.hand().purchasedCards().clear();
+
+    cardToSacrifice1 = new SatchelCard(0, new Gems(), CardLevel.TWO, Expansion.ORIENT,
+        new StandardCard(1, new Gems(), CardLevel.ONE, Expansion.STANDARD, GemColor.BLUE));
+    player.hand().reservedCards().add(cardToPurchase);
+    player.hand().purchasedCards().add(cardToSacrifice1);
+    player.hand().purchasedCards().add(cardToSacrifice2);
+    payment = new CardPayment(cardToSacrifice1, cardToSacrifice2);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("cannot sacrifice a double bonus card or satchel card "
+                 + "if you're sacrificing two cards", response.getBody());
+    player.hand().reservedCards().clear();
+    player.hand().purchasedCards().clear();
+
+    cardToSacrifice1 = new StandardCard();
+    player.hand().purchasedCards().add(
+        new SatchelCard(0, new Gems(), CardLevel.TWO, Expansion.ORIENT,
+            new StandardCard(1, new Gems(), CardLevel.ONE, Expansion.STANDARD, GemColor.BLUE)));
+    player.hand().reservedCards().add(cardToPurchase);
+    player.hand().purchasedCards().add(cardToSacrifice1);
+    player.hand().purchasedCards().add(cardToSacrifice2);
+    payment = new CardPayment(cardToSacrifice1, cardToSacrifice2);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("must sacrifice a satchel card if possible", response.getBody());
+    player.hand().reservedCards().clear();
+    player.hand().purchasedCards().clear();
+
+    cardToSacrifice1 =
+        new StandardCard(1, new Gems(), CardLevel.ONE, Expansion.STANDARD, GemColor.BLUE);
+    cardToSacrifice2 =
+        new StandardCard(1, new Gems(), CardLevel.ONE, Expansion.STANDARD, GemColor.RED);
+    player.hand().reservedCards().add(cardToPurchase);
+    player.hand().purchasedCards().add(cardToSacrifice1);
+    player.hand().purchasedCards().add(cardToSacrifice2);
+    payment = new CardPayment(cardToSacrifice1, cardToSacrifice2);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("discount color must match the purchased card's discount color",
+        response.getBody());
+    player.hand().reservedCards().clear();
+    player.hand().purchasedCards().clear();
+
+    cardToSacrifice1 =
+        new StandardCard(1, new Gems(), CardLevel.ONE, Expansion.STANDARD, GemColor.RED);
+    cardToSacrifice2 =
+        new StandardCard(1, new Gems(), CardLevel.ONE, Expansion.STANDARD, GemColor.BLUE);
+    player.hand().reservedCards().add(cardToPurchase);
+    player.hand().purchasedCards().add(cardToSacrifice1);
+    player.hand().purchasedCards().add(cardToSacrifice2);
+    payment = new CardPayment(cardToSacrifice1, cardToSacrifice2);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("discount color must match the purchased card's discount color",
+        response.getBody());
+    player.hand().reservedCards().clear();
+    player.hand().purchasedCards().clear();
+
+    cardToSacrifice1 =
+        new StandardCard(1, new Gems(), CardLevel.ONE, Expansion.STANDARD, GemColor.BLUE);
+    player.hand().reservedCards().add(cardToPurchase);
+    player.hand().purchasedCards().add(cardToSacrifice1);
+    player.hand().purchasedCards().add(cardToSacrifice2);
+    payment = new CardPayment(cardToSacrifice1, cardToSacrifice2);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
+    player.hand().gemDiscounts().put(GemColor.BLUE, 2);
+    player.hand().incrementPrestigePoints(
+        cardToSacrifice1.prestigePoints() + cardToSacrifice2.prestigePoints());
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertTrue(player.hand().reservedCards().isEmpty());
+    assertTrue(player.hand().purchasedCards().contains(cardToPurchase));
+    assertFalse(player.hand().purchasedCards().contains(cardToSacrifice1));
+    assertFalse(player.hand().purchasedCards().contains(cardToSacrifice2));
+    assertEquals(cardToPurchase.prestigePoints(), player.hand().prestigePoints());
+    assertEquals(Bonus.SINGLE.getValue(), player.hand().gemDiscounts()
+        .getOrDefault(((SacrificeCard) cardToPurchase).discountColor(), 0));
+    player.hand().purchasedCards().clear();
+    player.hand().gemDiscounts().clear();
+    player.hand().setPrestigePoints(0);
   }
 
 //  @Test

@@ -350,6 +350,7 @@ public class GameHandlerController {
                 .body("failed to decrement prestige points");
           }
         }
+        hand.decrementPrestigePoints(satchelCard.cardToAttach().prestigePoints());
       }
 
       hand.purchasedCards().remove(cardToSacrifice);
@@ -362,14 +363,6 @@ public class GameHandlerController {
             .body("you must own the cards you're sacrificing");
       }
 
-      // Check that the player cannot sacrifice a satchel card instead
-      if (hand.purchasedCards().stream()
-          .anyMatch(e -> e instanceof SatchelCard satchel
-                         && matchesCardDiscountColor(cardToPurchase, satchel.cardToAttach()))) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body("must sacrifice a satchel card if possible");
-      }
-
       // Check that neither card is a satchel or double bonus
       if (cardToSacrifice1 instanceof DoubleBonusCard || cardToSacrifice1 instanceof SatchelCard
           || cardToSacrifice2 instanceof DoubleBonusCard
@@ -377,6 +370,14 @@ public class GameHandlerController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("cannot sacrifice a double bonus card or satchel card "
                   + "if you're sacrificing two cards");
+      }
+
+      // Check that the player cannot sacrifice a satchel card instead
+      if (hand.purchasedCards().stream()
+          .anyMatch(e -> e instanceof SatchelCard satchel
+                         && matchesCardDiscountColor(cardToPurchase, satchel.cardToAttach()))) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("must sacrifice a satchel card if possible");
       }
 
       // Check that both cards are of the same color as the card to purchase
