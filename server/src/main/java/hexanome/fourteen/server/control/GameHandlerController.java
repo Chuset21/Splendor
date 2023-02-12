@@ -227,9 +227,6 @@ public class GameHandlerController {
   public ResponseEntity<String> purchaseCard(@PathVariable String gameid,
                                              @RequestParam("access_token") String accessToken,
                                              @RequestBody String purchaseCardString) {
-    // TODO check what type of card it is and perform the relevant action
-    //  check if the card is reserved, must specify it in the form in case
-    //  the cards are duplicated on the board and reserved
     final PurchaseCardForm purchaseCardForm =
         gsonInstance.gson.fromJson(purchaseCardString, PurchaseCardForm.class);
 

@@ -9,8 +9,10 @@ import static org.mockito.Mockito.mock;
 
 import hexanome.fourteen.server.control.form.ClaimNobleForm;
 import hexanome.fourteen.server.control.form.LaunchGameForm;
+import hexanome.fourteen.server.control.form.PurchaseCardForm;
 import hexanome.fourteen.server.control.form.ReserveCardForm;
 import hexanome.fourteen.server.control.form.TakeGemsForm;
+import hexanome.fourteen.server.control.form.payment.CardPayment;
 import hexanome.fourteen.server.model.User;
 import hexanome.fourteen.server.model.board.GameBoard;
 import hexanome.fourteen.server.model.board.Noble;
@@ -67,10 +69,9 @@ public class GameHandlerControllerTest {
     Mockito.when(lobbyService.getUsername("user1")).thenReturn(null);
     Mockito.when(lobbyService.getUsername("user2")).thenReturn("x");
 
-    gameHandlerController =
-        new GameHandlerController(lobbyService, new UserPlayerMapper(),
-            new ServerToClientBoardGameMapper(), gsonInstance, saveGameManager,
-            new ServerService(gsonInstance, lobbyService, "", ""));
+    gameHandlerController = new GameHandlerController(lobbyService, new UserPlayerMapper(),
+        new ServerToClientBoardGameMapper(), gsonInstance, saveGameManager,
+        new ServerService(gsonInstance, lobbyService, "", ""));
   }
 
   @Test
@@ -138,7 +139,56 @@ public class GameHandlerControllerTest {
 
   @Test
   public void testPurchaseCard() {
-    // TODO implement
+    final Map<String, GameBoard> gameManager = new HashMap<>();
+    final Player player = new Player("test");
+    GameBoard board =
+        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player, new Player("test2")), "x",
+            null);
+    gameManager.put("", board);
+    ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
+
+    ResponseEntity<String> response = gameHandlerController.purchaseCard("", "token", null);
+    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    assertEquals("invalid access token", response.getBody());
+
+    Mockito.when(lobbyService.getUsername("token")).thenReturn("x");
+
+    response = gameHandlerController.purchaseCard("x", "token", null);
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+    response = gameHandlerController.purchaseCard("", "token", null);
+    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    assertEquals("player is not part of this game", response.getBody());
+
+    Mockito.when(lobbyService.getUsername("token")).thenReturn("test");
+    PurchaseCardForm purchaseCardForm = new PurchaseCardForm();
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("card cannot be null", response.getBody());
+
+    Card cardToPurchase = new StandardCard();
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, null, true);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("card is not reserved", response.getBody());
+
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, null, false);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("payment cannot be null", response.getBody());
+
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, new CardPayment(), false);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("card chosen for purchase is not valid", response.getBody());
   }
 
 //  @Test
