@@ -9,7 +9,6 @@ import java.util.Objects;
  * Sacrifice Card form.
  */
 public final class SacrificeCardForm extends CardForm {
-  private int gemDiscount;
   private GemColor discountColor;
 
   /**
@@ -19,14 +18,11 @@ public final class SacrificeCardForm extends CardForm {
    * @param cost           the cost of the card, this should be empty or null
    * @param level          the level of the card
    * @param expansion      the expansion to which the card belongs to
-   * @param gemDiscount    the amount of gems to be discounted
    * @param discountColor  the color of the gems to be discounted
    */
   public SacrificeCardForm(int prestigePoints, GemsForm cost,
-                           CardLevelForm level,
-                           Expansion expansion, int gemDiscount, GemColor discountColor) {
+                           CardLevelForm level, Expansion expansion, GemColor discountColor) {
     super(prestigePoints, cost, level, expansion);
-    this.gemDiscount = gemDiscount;
     this.discountColor = discountColor;
   }
 
@@ -35,15 +31,6 @@ public final class SacrificeCardForm extends CardForm {
    */
   public SacrificeCardForm() {
     super();
-  }
-
-  /**
-   * A Getter for the Gem Discount associated with the Sacrifice Card.
-   *
-   * @return The Gem Discount.
-   */
-  public int gemDiscount() {
-    return gemDiscount;
   }
 
   /**
@@ -67,6 +54,6 @@ public final class SacrificeCardForm extends CardForm {
     return super.prestigePoints == card.prestigePoints
            && Objects.equals(super.cost, card.cost)
            && super.level == card.level && super.expansion == card.expansion
-           && gemDiscount == card.gemDiscount && discountColor == card.discountColor;
+           && discountColor == card.discountColor;
   }
 }

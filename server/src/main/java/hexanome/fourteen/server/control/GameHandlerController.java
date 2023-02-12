@@ -14,6 +14,7 @@ import hexanome.fourteen.server.model.User;
 import hexanome.fourteen.server.model.board.GameBoard;
 import hexanome.fourteen.server.model.board.Hand;
 import hexanome.fourteen.server.model.board.Noble;
+import hexanome.fourteen.server.model.board.card.Bonus;
 import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.card.CardLevel;
 import hexanome.fourteen.server.model.board.card.DoubleBonusCard;
@@ -319,8 +320,7 @@ public class GameHandlerController {
         }
 
         hand.gemDiscounts().computeIfPresent(doubleBonusCard.discountColor(),
-            (k, v) -> v == doubleBonusCard.gemDiscount() ? null :
-                v - doubleBonusCard.gemDiscount());
+            (k, v) -> v == Bonus.DOUBLE.getValue() ? null : v - Bonus.DOUBLE.getValue());
       } else {
         final SatchelCard satchelCard = (SatchelCard) cardToSacrifice;
         if (!matchesCardDiscountColor(cardToPurchase, satchelCard.cardToAttach())) {
@@ -331,15 +331,20 @@ public class GameHandlerController {
         // Decrement gem discounts
         switch (satchelCard.cardToAttach()) {
           case ReserveNobleCard c -> hand.gemDiscounts().computeIfPresent(c.discountColor(),
-              (k, v) -> v == c.gemDiscount() + 1 ? null : v - c.gemDiscount() - 1);
+              (k, v) -> v == Bonus.SINGLE.getValue() + Bonus.SINGLE.getValue() ? null :
+                  v - Bonus.SINGLE.getValue() - Bonus.SINGLE.getValue());
           case DoubleBonusCard c -> hand.gemDiscounts().computeIfPresent(c.discountColor(),
-              (k, v) -> v == c.gemDiscount() + 1 ? null : v - c.gemDiscount() - 1);
+              (k, v) -> v == Bonus.DOUBLE.getValue() + Bonus.SINGLE.getValue() ? null :
+                  v - Bonus.DOUBLE.getValue() - Bonus.SINGLE.getValue());
           case SacrificeCard c -> hand.gemDiscounts().computeIfPresent(c.discountColor(),
-              (k, v) -> v == c.gemDiscount() + 1 ? null : v - c.gemDiscount() - 1);
+              (k, v) -> v == Bonus.SINGLE.getValue() + Bonus.SINGLE.getValue() ? null :
+                  v - Bonus.SINGLE.getValue() - Bonus.SINGLE.getValue());
           case StandardCard c -> hand.gemDiscounts().computeIfPresent(c.discountColor(),
-              (k, v) -> v == c.gemDiscount() + 1 ? null : v - c.gemDiscount() - 1);
+              (k, v) -> v == Bonus.SINGLE.getValue() + Bonus.SINGLE.getValue() ? null :
+                  v - Bonus.SINGLE.getValue() - Bonus.SINGLE.getValue());
           case WaterfallCard c -> hand.gemDiscounts().computeIfPresent(c.discountColor(),
-              (k, v) -> v == c.gemDiscount() + 1 ? null : v - c.gemDiscount() - 1);
+              (k, v) -> v == Bonus.SINGLE.getValue() + Bonus.SINGLE.getValue() ? null :
+                  v - Bonus.SINGLE.getValue() - Bonus.SINGLE.getValue());
           case default -> {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("failed to decrement prestige points");
@@ -404,7 +409,7 @@ public class GameHandlerController {
     // Add the card to the player's hand
     hand.purchasedCards().add(card);
     hand.gemDiscounts().merge(cardToPurchase.discountColor(),
-        cardToPurchase.gemDiscount(), Integer::sum);
+        Bonus.SINGLE.getValue(), Integer::sum);
 
     return getStringResponseEntity(gameBoard, hand);
   }
@@ -474,9 +479,9 @@ public class GameHandlerController {
 
     switch (card) {
       case DoubleBonusCard c ->
-          hand.gemDiscounts().merge(c.discountColor(), c.gemDiscount(), Integer::sum);
+          hand.gemDiscounts().merge(c.discountColor(), Bonus.DOUBLE.getValue(), Integer::sum);
       case StandardCard c ->
-          hand.gemDiscounts().merge(c.discountColor(), c.gemDiscount(), Integer::sum);
+          hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
       case ReserveNobleCard c -> {
         final ResponseEntity<String> response = reserveNoble(gameBoard, hand, c);
         if (response != null) {
@@ -515,7 +520,7 @@ public class GameHandlerController {
           }
         }
         // Add gem discounts
-        hand.gemDiscounts().merge(c.discountColor(), c.gemDiscount(), Integer::sum);
+        hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
         c.removeCardToTake();
       }
       case default -> {
@@ -603,9 +608,12 @@ public class GameHandlerController {
     }
 
     switch (card.cardToAttach()) {
-      case StandardCard c -> hand.gemDiscounts().merge(c.discountColor(), 1, Integer::sum);
-      case DoubleBonusCard c -> hand.gemDiscounts().merge(c.discountColor(), 1, Integer::sum);
-      case ReserveNobleCard c -> hand.gemDiscounts().merge(c.discountColor(), 1, Integer::sum);
+      case StandardCard c ->
+          hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
+      case DoubleBonusCard c ->
+          hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
+      case ReserveNobleCard c ->
+          hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
       case default -> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("cannot attach a card that has no gem discount to a satchel card");
@@ -627,7 +635,7 @@ public class GameHandlerController {
     }
 
     // Add gem discounts
-    hand.gemDiscounts().merge(card.discountColor(), card.gemDiscount(), Integer::sum);
+    hand.gemDiscounts().merge(card.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
     // Add reserved noble to hand
     if (card.nobleToReserve() != null) {
       hand.reservedNobles().add(card.nobleToReserve());
@@ -645,9 +653,9 @@ public class GameHandlerController {
 
     switch (card) {
       case DoubleBonusCard c ->
-          hand.gemDiscounts().merge(c.discountColor(), c.gemDiscount(), Integer::sum);
+          hand.gemDiscounts().merge(c.discountColor(), Bonus.DOUBLE.getValue(), Integer::sum);
       case StandardCard c ->
-          hand.gemDiscounts().merge(c.discountColor(), c.gemDiscount(), Integer::sum);
+          hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
       case ReserveNobleCard c -> {
         final ResponseEntity<String> response = reserveNoble(gameBoard, hand, c);
         if (response != null) {
@@ -688,15 +696,15 @@ public class GameHandlerController {
   private static boolean decrementGemDiscounts(Card card, Hand hand) {
     switch (card) {
       case ReserveNobleCard c -> hand.gemDiscounts().computeIfPresent(c.discountColor(),
-          (k, v) -> v == c.gemDiscount() ? null : v - c.gemDiscount());
+          (k, v) -> v == Bonus.SINGLE.getValue() ? null : v - Bonus.SINGLE.getValue());
       case DoubleBonusCard c -> hand.gemDiscounts().computeIfPresent(c.discountColor(),
-          (k, v) -> v == c.gemDiscount() ? null : v - c.gemDiscount());
+          (k, v) -> v == Bonus.DOUBLE.getValue() ? null : v - Bonus.DOUBLE.getValue());
       case SacrificeCard c -> hand.gemDiscounts().computeIfPresent(c.discountColor(),
-          (k, v) -> v == c.gemDiscount() ? null : v - c.gemDiscount());
+          (k, v) -> v == Bonus.SINGLE.getValue() ? null : v - Bonus.SINGLE.getValue());
       case StandardCard c -> hand.gemDiscounts().computeIfPresent(c.discountColor(),
-          (k, v) -> v == c.gemDiscount() ? null : v - c.gemDiscount());
+          (k, v) -> v == Bonus.SINGLE.getValue() ? null : v - Bonus.SINGLE.getValue());
       case WaterfallCard c -> hand.gemDiscounts().computeIfPresent(c.discountColor(),
-          (k, v) -> v == c.gemDiscount() ? null : v - c.gemDiscount());
+          (k, v) -> v == Bonus.SINGLE.getValue() ? null : v - Bonus.SINGLE.getValue());
       case default -> {
         return false;
       }

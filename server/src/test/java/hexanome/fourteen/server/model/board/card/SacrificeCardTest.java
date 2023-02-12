@@ -21,20 +21,19 @@ public class SacrificeCardTest {
   static final int prestigePoints = 3;
   static final CardLevel cardLevel = CardLevel.THREE;
   static final Expansion expansion = Expansion.STANDARD;
-  static final int gemDiscount = 1;
   static final GemColor discountColor = GemColor.RED;
 
   @BeforeAll
   public static void setUp() {
     cost = new Gems();
     sacrificeCard =
-        new SacrificeCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor);
+        new SacrificeCard(prestigePoints, cost, cardLevel, expansion, discountColor);
   }
 
   @Test
   public void testPrestigePoints() {
     sacrificeCard =
-        new SacrificeCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor);
+        new SacrificeCard(prestigePoints, cost, cardLevel, expansion, discountColor);
     assertEquals(prestigePoints, sacrificeCard.prestigePoints());
   }
 
@@ -45,7 +44,7 @@ public class SacrificeCardTest {
     cost.put(GemColor.BLUE, 2);
     cost.put(GemColor.WHITE, 3);
     sacrificeCard =
-        new SacrificeCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor);
+        new SacrificeCard(prestigePoints, cost, cardLevel, expansion, discountColor);
 
     assertEquals(cost, sacrificeCard.cost());
   }
@@ -59,9 +58,6 @@ public class SacrificeCardTest {
   public void testExpansion() {
     assertEquals(expansion, sacrificeCard.expansion());
   }
-
-  @Test
-  public void testGemDiscount() { assertEquals(gemDiscount, sacrificeCard.gemDiscount()); }
 
   @Test
   public void testDiscountColor() { assertEquals(discountColor, sacrificeCard.discountColor()); }
@@ -87,7 +83,7 @@ public class SacrificeCardTest {
   @Test
   public void testEqualsByValue() {
     SacrificeCard cardWithEqualValues =
-        new SacrificeCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor);
+        new SacrificeCard(prestigePoints, cost, cardLevel, expansion, discountColor);
     assertEquals(sacrificeCard, cardWithEqualValues);
   }
 
@@ -98,7 +94,6 @@ public class SacrificeCardTest {
     assertNull(nullCard.expansion);
     assertNull(nullCard.level);
     assertEquals(nullCard.prestigePoints, 0);
-    assertEquals(nullCard.gemDiscount(), 0);
     assertNull(nullCard.discountColor());
   }
 }

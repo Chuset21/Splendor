@@ -142,12 +142,12 @@ public final class GameBoard {
         cost.computeIfAbsent(GemColor.RED, k -> redCost > 0 ? redCost : null);
 
         // Get the level and expansion
-        CardLevel level = CardLevel.valueOf(cardData[8]);
-        Expansion expansion = Expansion.valueOf(cardData[7]);
+        CardLevel level = CardLevel.valueOf(cardData[7]);
+        Expansion expansion = Expansion.valueOf(cardData[6]);
 
         // Create card
-        Card c = new StandardCard(Integer.parseInt(cardData[9]), cost, level, expansion,
-            Integer.parseInt(cardData[6]), GemColor.valueOf(cardData[5]));
+        Card c = new StandardCard(Integer.parseInt(cardData[8]), cost, level, expansion,
+            GemColor.valueOf(cardData[5]));
 
         // Add the card to respective list
         if (expansion == Expansion.STANDARD) {

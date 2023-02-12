@@ -10,7 +10,6 @@ import java.util.Objects;
  * Reserve Noble Card.
  */
 public final class ReserveNobleCard extends Card {
-  private int gemDiscount;
   private GemColor discountColor;
   private Noble nobleToReserve;
 
@@ -21,16 +20,13 @@ public final class ReserveNobleCard extends Card {
    * @param cost           the cost of the card
    * @param level          the level of the card
    * @param expansion      the expansion to which the card belongs to
-   * @param gemDiscount    the amount of gems to be discounted
    * @param discountColor  the color of the gems to be discounted
    * @param nobleToReserve the noble to be reserved
    */
   public ReserveNobleCard(int prestigePoints, Gems cost,
                           CardLevel level,
-                          Expansion expansion, int gemDiscount, GemColor discountColor,
-                          Noble nobleToReserve) {
+                          Expansion expansion, GemColor discountColor, Noble nobleToReserve) {
     super(prestigePoints, cost, level, expansion);
-    this.gemDiscount = gemDiscount;
     this.discountColor = discountColor;
     this.nobleToReserve = nobleToReserve;
   }
@@ -42,13 +38,11 @@ public final class ReserveNobleCard extends Card {
    * @param cost           the cost of the card
    * @param level          the level of the card
    * @param expansion      the expansion to which the card belongs to
-   * @param gemDiscount    the amount of gems to be discounted
    * @param discountColor  the color of the gems to be discounted
    */
   public ReserveNobleCard(int prestigePoints, Gems cost,
-                          CardLevel level,
-                          Expansion expansion, int gemDiscount, GemColor discountColor) {
-    this(prestigePoints, cost, level, expansion, gemDiscount, discountColor, null);
+                          CardLevel level, Expansion expansion, GemColor discountColor) {
+    this(prestigePoints, cost, level, expansion, discountColor, null);
   }
 
   /**
@@ -56,15 +50,6 @@ public final class ReserveNobleCard extends Card {
    */
   public ReserveNobleCard() {
     super();
-  }
-
-  /**
-   * A Getter for the Gem Discount.
-   *
-   * @return Gem Discount
-   */
-  public int gemDiscount() {
-    return gemDiscount;
   }
 
   /**
@@ -95,7 +80,7 @@ public final class ReserveNobleCard extends Card {
     ReserveNobleCard card = (ReserveNobleCard) obj;
     return super.prestigePoints == card.prestigePoints && Objects.equals(super.cost, card.cost)
            && super.level == card.level && super.expansion == card.expansion
-           && gemDiscount == card.gemDiscount && discountColor == card.discountColor
+           && discountColor == card.discountColor
            && Objects.equals(nobleToReserve, card.nobleToReserve);
   }
 }

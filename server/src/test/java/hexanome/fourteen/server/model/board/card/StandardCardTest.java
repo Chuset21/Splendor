@@ -21,7 +21,6 @@ public class StandardCardTest {
   static final int prestigePoints = 3;
   static final CardLevel cardLevel = CardLevel.THREE;
   static final Expansion expansion = Expansion.STANDARD;
-  static final int gemDiscount = 1;
   static final GemColor discountColor = GemColor.RED;
 
   @BeforeAll
@@ -31,13 +30,13 @@ public class StandardCardTest {
     cost.put(GemColor.BLUE, 2);
     cost.put(GemColor.WHITE, 3);
     standardCard =
-        new StandardCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor);
+        new StandardCard(prestigePoints, cost, cardLevel, expansion, discountColor);
   }
 
   @Test
   public void testPrestigePoints() {
-    this.standardCard =
-        new StandardCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor);
+    standardCard =
+        new StandardCard(prestigePoints, cost, cardLevel, expansion, discountColor);
     assertEquals(prestigePoints, standardCard.prestigePoints());
   }
 
@@ -57,11 +56,6 @@ public class StandardCardTest {
   }
 
   @Test
-  public void testGemDiscount() {
-    assertEquals(gemDiscount, standardCard.gemDiscount());
-  }
-
-  @Test
   public void testDiscountColor() {
     assertEquals(discountColor, standardCard.discountColor());
   }
@@ -70,7 +64,7 @@ public class StandardCardTest {
   public void testEqualsByReference() {
     StandardCard duplicate = standardCard;
     boolean equals = standardCard.equals(duplicate);
-    assertEquals(true, equals);
+    assertTrue(equals);
   }
 
   @Test
@@ -78,7 +72,7 @@ public class StandardCardTest {
     StandardCard nullCard = new StandardCard();
     nullCard = null;
     boolean equals = standardCard.equals(nullCard);
-    assertEquals(false, equals);
+    assertFalse(equals);
   }
 
   @Test
@@ -89,7 +83,7 @@ public class StandardCardTest {
   @Test
   public void testEqualsByValue() {
     StandardCard cardWithEqualValues =
-            new StandardCard(prestigePoints, cost, cardLevel, expansion, gemDiscount, discountColor);
+            new StandardCard(prestigePoints, cost, cardLevel, expansion, discountColor);
     assertTrue(standardCard.equals(cardWithEqualValues));
   }
 }
