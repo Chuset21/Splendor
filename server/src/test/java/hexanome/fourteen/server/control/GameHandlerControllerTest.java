@@ -1290,7 +1290,161 @@ public class GameHandlerControllerTest {
     board.availableGems().clear();
     board.cards().clear();
 
-    // TODO test waterfall card
+    // Test waterfall card
+    cardCost.put(GemColor.WHITE, 2);
+    cardCost.put(GemColor.RED, 2);
+    cardCost.put(GemColor.BLACK, 2);
+    cardCost.put(GemColor.BLUE, 2);
+    cardToTake = null;
+    cardToPurchase =
+        new WaterfallCard(0, cardCost, CardLevel.TWO, Expansion.ORIENT, GemColor.RED, cardToTake);
+    player.hand().gems().put(GemColor.WHITE, 2);
+    player.hand().gems().put(GemColor.RED, 2);
+    player.hand().gems().put(GemColor.BLACK, 2);
+    player.hand().gems().put(GemColor.BLUE, 2);
+    chosenGems.put(GemColor.WHITE, 2);
+    chosenGems.put(GemColor.RED, 2);
+    chosenGems.put(GemColor.BLACK, 2);
+    chosenGems.put(GemColor.BLUE, 2);
+    addCardToDeck(board.cards(),
+        new StandardCard(1, new Gems(), CardLevel.TWO, Expansion.STANDARD, GemColor.BLUE));
+    addCardToDeck(board.cards(), cardToPurchase);
+    payment = new GemPayment(chosenGems, substitutedGems, 0);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, false);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("card to take cannot be null", response.getBody());
+    substitutedGems.clear();
+    chosenGems.clear();
+    cardCost.clear();
+    player.hand().purchasedCards().clear();
+    player.hand().gems().clear();
+    player.hand().gemDiscounts().clear();
+    player.hand().setPrestigePoints(0);
+    board.availableGems().clear();
+    board.cards().clear();
+
+    cardCost.put(GemColor.WHITE, 2);
+    cardCost.put(GemColor.RED, 2);
+    cardCost.put(GemColor.BLACK, 2);
+    cardCost.put(GemColor.BLUE, 2);
+    cardToTake =
+        new StandardCard(1, new Gems(), CardLevel.ONE, Expansion.STANDARD, GemColor.BLACK);
+    cardToPurchase =
+        new WaterfallCard(0, cardCost, CardLevel.TWO, Expansion.ORIENT, GemColor.RED, cardToTake);
+    player.hand().gems().put(GemColor.WHITE, 2);
+    player.hand().gems().put(GemColor.RED, 2);
+    player.hand().gems().put(GemColor.BLACK, 2);
+    player.hand().gems().put(GemColor.BLUE, 2);
+    chosenGems.put(GemColor.WHITE, 2);
+    chosenGems.put(GemColor.RED, 2);
+    chosenGems.put(GemColor.BLACK, 2);
+    chosenGems.put(GemColor.BLUE, 2);
+    addCardToDeck(board.cards(),
+        new StandardCard(1, new Gems(), CardLevel.TWO, Expansion.STANDARD, GemColor.BLUE));
+    addCardToDeck(board.cards(), cardToPurchase);
+    payment = new GemPayment(chosenGems, substitutedGems, 0);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, false);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("must take a level two card for free", response.getBody());
+    substitutedGems.clear();
+    chosenGems.clear();
+    cardCost.clear();
+    player.hand().purchasedCards().clear();
+    player.hand().gems().clear();
+    player.hand().gemDiscounts().clear();
+    player.hand().setPrestigePoints(0);
+    board.availableGems().clear();
+    board.cards().clear();
+
+    cardCost.put(GemColor.WHITE, 2);
+    cardCost.put(GemColor.RED, 2);
+    cardCost.put(GemColor.BLACK, 2);
+    cardCost.put(GemColor.BLUE, 2);
+    cardToTake =
+        new StandardCard(1, new Gems(), CardLevel.TWO, Expansion.STANDARD, GemColor.BLACK);
+    cardToPurchase =
+        new WaterfallCard(0, cardCost, CardLevel.TWO, Expansion.ORIENT, GemColor.RED, cardToTake);
+    player.hand().gems().put(GemColor.WHITE, 2);
+    player.hand().gems().put(GemColor.RED, 2);
+    player.hand().gems().put(GemColor.BLACK, 2);
+    player.hand().gems().put(GemColor.BLUE, 2);
+    chosenGems.put(GemColor.WHITE, 2);
+    chosenGems.put(GemColor.RED, 2);
+    chosenGems.put(GemColor.BLACK, 2);
+    chosenGems.put(GemColor.BLUE, 2);
+    addCardToDeck(board.cards(),
+        new StandardCard(1, new Gems(), CardLevel.TWO, Expansion.STANDARD, GemColor.BLUE));
+    addCardToDeck(board.cards(), cardToPurchase);
+    payment = new GemPayment(chosenGems, substitutedGems, 0);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, false);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("card to take is not available", response.getBody());
+    substitutedGems.clear();
+    chosenGems.clear();
+    cardCost.clear();
+    player.hand().purchasedCards().clear();
+    player.hand().gems().clear();
+    player.hand().gemDiscounts().clear();
+    player.hand().setPrestigePoints(0);
+    board.availableGems().clear();
+    board.cards().clear();
+
+    cardCost.put(GemColor.WHITE, 2);
+    cardCost.put(GemColor.RED, 2);
+    cardCost.put(GemColor.BLACK, 2);
+    cardCost.put(GemColor.BLUE, 2);
+    cardToTake =
+        new DoubleBonusCard(0, new Gems(), CardLevel.TWO, Expansion.ORIENT, GemColor.BLACK);
+    cardToPurchase =
+        new WaterfallCard(0, cardCost, CardLevel.TWO, Expansion.ORIENT, GemColor.RED, cardToTake);
+    player.hand().gems().put(GemColor.WHITE, 2);
+    player.hand().gems().put(GemColor.RED, 2);
+    player.hand().gems().put(GemColor.BLACK, 2);
+    player.hand().gems().put(GemColor.BLUE, 2);
+    chosenGems.put(GemColor.WHITE, 2);
+    chosenGems.put(GemColor.RED, 2);
+    chosenGems.put(GemColor.BLACK, 2);
+    chosenGems.put(GemColor.BLUE, 2);
+    addCardToDeck(board.cards(), cardToTake);
+    addCardToDeck(board.cards(), cardToPurchase);
+    payment = new GemPayment(chosenGems, substitutedGems, 0);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, false);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(2, player.hand().purchasedCards().size());
+    assertTrue(player.hand().purchasedCards()
+        .contains(new WaterfallCard(0, cardCost, CardLevel.TWO, Expansion.ORIENT, GemColor.RED)));
+    assertTrue(player.hand().purchasedCards().contains(cardToTake));
+    assertEquals(cardToTake.prestigePoints(), player.hand().prestigePoints());
+    assertEquals(Bonus.DOUBLE.getValue(),
+        player.hand().gemDiscounts().get(((DoubleBonusCard) cardToTake).discountColor()));
+    expectedGameBoardGems = new Gems(board.availableGems());
+    expectedGameBoardGems.put(GemColor.WHITE, 2);
+    expectedGameBoardGems.put(GemColor.RED, 2);
+    expectedGameBoardGems.put(GemColor.BLACK, 2);
+    expectedGameBoardGems.put(GemColor.BLUE, 2);
+    assertEquals(expectedGameBoardGems, board.availableGems());
+    assertTrue(player.hand().gems().isEmpty());
+    substitutedGems.clear();
+    chosenGems.clear();
+    cardCost.clear();
+    player.hand().purchasedCards().clear();
+    player.hand().gems().clear();
+    player.hand().gemDiscounts().clear();
+    player.hand().setPrestigePoints(0);
+    board.availableGems().clear();
+    board.cards().clear();
   }
 
   private void addCardToDeck(Set<List<Card>> decks, Card card) {
