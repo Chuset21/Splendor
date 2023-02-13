@@ -12,6 +12,7 @@ import hexanome.fourteen.server.control.form.payment.GemPayment;
 import hexanome.fourteen.server.control.form.payment.Payment;
 import hexanome.fourteen.server.model.User;
 import hexanome.fourteen.server.model.board.GameBoard;
+import hexanome.fourteen.server.model.board.GameBoardHelper;
 import hexanome.fourteen.server.model.board.Hand;
 import hexanome.fourteen.server.model.board.Noble;
 import hexanome.fourteen.server.model.board.card.Bonus;
@@ -30,7 +31,6 @@ import hexanome.fourteen.server.model.board.gem.Gems;
 import hexanome.fourteen.server.model.board.player.Player;
 import hexanome.fourteen.server.model.sent.SentGameBoard;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -174,7 +174,7 @@ public class GameHandlerController {
     final GameBoard gameBoard = getGame(gameid);
     if (gameBoard == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
-    } else if (getHand(gameBoard.players(), username) == null) {
+    } else if (GameBoardHelper.getHand(gameBoard.players(), username) == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
     } else {
       final SentGameBoard sentGameBoard = gameBoardMapper.map(gameBoard);
@@ -201,7 +201,7 @@ public class GameHandlerController {
     final GameBoard gameBoard = getGame(gameid);
     if (gameBoard == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
-    } else if (getHand(gameBoard.players(), username) == null) {
+    } else if (GameBoardHelper.getHand(gameBoard.players(), username) == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
     } else {
       if (!serverService.refreshToken()) {
@@ -241,7 +241,7 @@ public class GameHandlerController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
     }
 
-    final Hand hand = getHand(gameBoard.players(), username);
+    final Hand hand = GameBoardHelper.getHand(gameBoard.players(), username);
     if (hand == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
     }
@@ -259,7 +259,7 @@ public class GameHandlerController {
     }
 
     final Set<List<Card>> decks = gameBoard.cards();
-    if (!isCardFaceUpOnBoard(decks, card) && !purchaseCardForm.isReserved()) {
+    if (!GameBoardHelper.isCardFaceUpOnBoard(decks, card) && !purchaseCardForm.isReserved()) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body("card chosen for purchase is not valid");
     }
@@ -309,7 +309,8 @@ public class GameHandlerController {
       if (cardToSacrifice instanceof DoubleBonusCard doubleBonusCard) {
         if (hand.purchasedCards().stream()
             .anyMatch(e -> e instanceof SatchelCard satchel
-                           && matchesCardDiscountColor(cardToPurchase, satchel.cardToAttach()))) {
+                           && GameBoardHelper.matchesCardDiscountColor(cardToPurchase,
+                satchel.cardToAttach()))) {
           return ResponseEntity.status(HttpStatus.BAD_REQUEST)
               .body("must sacrifice a satchel card if possible");
         }
@@ -323,7 +324,7 @@ public class GameHandlerController {
             (k, v) -> v == Bonus.DOUBLE.getValue() ? null : v - Bonus.DOUBLE.getValue());
       } else {
         final SatchelCard satchelCard = (SatchelCard) cardToSacrifice;
-        if (!matchesCardDiscountColor(cardToPurchase, satchelCard.cardToAttach())) {
+        if (!GameBoardHelper.matchesCardDiscountColor(cardToPurchase, satchelCard.cardToAttach())) {
           return ResponseEntity.status(HttpStatus.BAD_REQUEST)
               .body("discount color must match the purchased card's discount color");
         }
@@ -375,14 +376,15 @@ public class GameHandlerController {
       // Check that the player cannot sacrifice a satchel card instead
       if (hand.purchasedCards().stream()
           .anyMatch(e -> e instanceof SatchelCard satchel
-                         && matchesCardDiscountColor(cardToPurchase, satchel.cardToAttach()))) {
+                         && GameBoardHelper.matchesCardDiscountColor(cardToPurchase,
+              satchel.cardToAttach()))) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("must sacrifice a satchel card if possible");
       }
 
       // Check that both cards are of the same color as the card to purchase
-      if (!matchesCardDiscountColor(cardToPurchase, cardToSacrifice1)
-          || !matchesCardDiscountColor(cardToPurchase, cardToSacrifice2)) {
+      if (!GameBoardHelper.matchesCardDiscountColor(cardToPurchase, cardToSacrifice1)
+          || !GameBoardHelper.matchesCardDiscountColor(cardToPurchase, cardToSacrifice2)) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("discount color must match the purchased card's discount color");
       }
@@ -391,8 +393,8 @@ public class GameHandlerController {
       hand.purchasedCards().remove(cardToSacrifice2);
       hand.decrementPrestigePoints(
           cardToSacrifice1.prestigePoints() + cardToSacrifice2.prestigePoints());
-      if (!decrementGemDiscounts(cardToSacrifice1, hand)
-          || !decrementGemDiscounts(cardToSacrifice2, hand)) {
+      if (!GameBoardHelper.decrementGemDiscounts(cardToSacrifice1, hand)
+          || !GameBoardHelper.decrementGemDiscounts(cardToSacrifice2, hand)) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body("failed to decrement prestige points");
       }
@@ -402,7 +404,7 @@ public class GameHandlerController {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
           .body("failed to remove card from reserved cards");
     } else {
-      removeCardFromDeck(gameBoard.cards(), card);
+      GameBoardHelper.removeCardFromDeck(gameBoard.cards(), card);
     }
 
     // Increment the player's prestige points
@@ -450,7 +452,7 @@ public class GameHandlerController {
           .body("cannot substitute gold gems for gold gems");
     }
 
-    final int substitutedGemsCount = countGemAmount(substitutedGems);
+    final int substitutedGemsCount = GameBoardHelper.countGemAmount(substitutedGems);
     if ((substitutedGemsCount != gemsWithExtraGoldGems.getOrDefault(GemColor.GOLD, 0)
          && numGoldGemCards == 0)
         || (numGoldGemCards != 0
@@ -471,8 +473,9 @@ public class GameHandlerController {
     }
 
     // Verify that the amount of gems is enough to buy the card
-    final Gems discountedCost = getDiscountedCost(card.cost(), hand.gemDiscounts());
-    if (!discountedCost.equals(getPaymentWithoutGoldGems(substitutedGems, gemsWithExtraGoldGems))) {
+    final Gems discountedCost = GameBoardHelper.getDiscountedCost(card.cost(), hand.gemDiscounts());
+    if (!discountedCost.equals(
+        GameBoardHelper.getPaymentWithoutGoldGems(substitutedGems, gemsWithExtraGoldGems))) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("card cost does not match payment");
     }
 
@@ -484,13 +487,14 @@ public class GameHandlerController {
       case StandardCard c ->
           hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
       case ReserveNobleCard c -> {
-        final ResponseEntity<String> response = reserveNoble(gameBoard, hand, c);
+        final ResponseEntity<String> response = GameBoardHelper.reserveNoble(gameBoard, hand, c);
         if (response != null) {
           return response;
         }
       }
       case SatchelCard c -> {
-        final ResponseEntity<String> response = purchaseSatchelCard(c, hand, gameBoard);
+        final ResponseEntity<String> response =
+            GameBoardHelper.purchaseSatchelCard(c, hand, gameBoard);
         if (response != null) {
           return response;
         }
@@ -507,14 +511,14 @@ public class GameHandlerController {
         } else if (c.cardToTake().level() != CardLevel.TWO) {
           return ResponseEntity.status(HttpStatus.BAD_REQUEST)
               .body("must take a level two card for free");
-        } else if (!isCardFaceUpOnBoard(gameBoard.cards(), c.cardToTake())) {
+        } else if (!GameBoardHelper.isCardFaceUpOnBoard(gameBoard.cards(), c.cardToTake())) {
           return ResponseEntity.status(HttpStatus.BAD_REQUEST)
               .body("card to take is not available");
         }
 
         if (c.cardToTake() != null) {
           final ResponseEntity<String> response =
-              purchaseFreeCard(c.cardToTake(), hand, gameBoard);
+              GameBoardHelper.purchaseFreeCard(c.cardToTake(), hand, gameBoard);
 
           if (response != null) {
             return response;
@@ -532,199 +536,21 @@ public class GameHandlerController {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
           .body("failed to remove card from reserved cards");
     } else {
-      removeCardFromDeck(gameBoard.cards(), card);
+      GameBoardHelper.removeCardFromDeck(gameBoard.cards(), card);
     }
 
     // Remove the chosen gold gem cards from the player's hand
-    removeGoldGemCards(payment.getNumGoldGemCards(), hand);
+    GameBoardHelper.removeGoldGemCards(payment.getNumGoldGemCards(), hand);
     // Take gems from player
-    removeGems(ownedGems, gemsToPayWith);
+    GameBoardHelper.removeGems(ownedGems, gemsToPayWith);
     // Add gems to bank
-    addGems(gameBoard.availableGems(), gemsToPayWith);
+    GameBoardHelper.addGems(gameBoard.availableGems(), gemsToPayWith);
     // Increment the player's prestige points
     hand.incrementPrestigePoints(card.prestigePoints());
     // Add the card to the player's hand
     hand.purchasedCards().add(card);
 
     return getStringResponseEntity(gameBoard, hand);
-  }
-
-  private static ResponseEntity<String> purchaseSatchelCard(SatchelCard card, Hand hand,
-                                                            GameBoard gameBoard) {
-    if (card.cardToAttach() == null) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-          .body("card to attach cannot be null");
-    }
-
-    switch (card.level()) {
-      case ONE -> {
-        if (card.freeCardToTake() != null) {
-          return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-              .body("level one satchel card does not allow you to take a free card");
-        }
-        // Now must add extra gem discount
-        final ResponseEntity<String> response = addAttachedCardGemDiscounts(card, hand);
-        if (response != null) {
-          return response;
-        }
-      }
-      case TWO -> {
-        if (card.freeCardToTake() == null) {
-          if (gameBoard.cards().stream()
-              .anyMatch(l -> !l.isEmpty() && l.get(0).level() == CardLevel.ONE)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("card to take cannot be null");
-          }
-          // Cannot take a free card because there are none to take
-        } else {
-          if (card.freeCardToTake().level() != CardLevel.ONE) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("can only take a free level one card from a level two satchel card");
-          }
-          final ResponseEntity<String> response =
-              purchaseFreeCard(card.freeCardToTake(), hand, gameBoard);
-          if (response != null) {
-            return response;
-          }
-        }
-        // Now must add extra gem discount
-        final ResponseEntity<String> response = addAttachedCardGemDiscounts(card, hand);
-        if (response != null) {
-          return response;
-        }
-      }
-      case default -> {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body("satchel card configured to the wrong level");
-      }
-    }
-    card.removeFreeCardToTake();
-    return null;
-  }
-
-  private static ResponseEntity<String> addAttachedCardGemDiscounts(SatchelCard card, Hand hand) {
-    if (!hand.purchasedCards().contains(card.cardToAttach())) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-          .body("cannot attach a satchel card to a card that you don't own");
-    }
-
-    switch (card.cardToAttach()) {
-      case StandardCard c ->
-          hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
-      case DoubleBonusCard c ->
-          hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
-      case ReserveNobleCard c ->
-          hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
-      case default -> {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body("cannot attach a card that has no gem discount to a satchel card");
-      }
-    }
-    return null;
-  }
-
-  private static ResponseEntity<String> reserveNoble(GameBoard gameBoard, Hand hand,
-                                                     ReserveNobleCard card) {
-    if (card.nobleToReserve() == null) {
-      if (!gameBoard.availableNobles().isEmpty()) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body("noble to reserve cannot be null");
-      }
-    } else if (!gameBoard.availableNobles().contains(card.nobleToReserve())) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-          .body("noble to reserve is not available");
-    }
-
-    // Add gem discounts
-    hand.gemDiscounts().merge(card.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
-    // Add reserved noble to hand
-    if (card.nobleToReserve() != null) {
-      hand.reservedNobles().add(card.nobleToReserve());
-    }
-    card.removeNobleToReserve();
-    return null;
-  }
-
-  private static ResponseEntity<String> purchaseFreeCard(Card card, Hand hand,
-                                                         GameBoard gameBoard) {
-    if (!isCardFaceUpOnBoard(gameBoard.cards(), card)) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-          .body("free card to take is not available");
-    }
-
-    switch (card) {
-      case DoubleBonusCard c ->
-          hand.gemDiscounts().merge(c.discountColor(), Bonus.DOUBLE.getValue(), Integer::sum);
-      case StandardCard c ->
-          hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
-      case ReserveNobleCard c -> {
-        final ResponseEntity<String> response = reserveNoble(gameBoard, hand, c);
-        if (response != null) {
-          return response;
-        }
-      }
-      case SatchelCard c -> {
-        final ResponseEntity<String> response = purchaseSatchelCard(c, hand, gameBoard);
-        if (response != null) {
-          return response;
-        }
-      }
-      case GoldGemCard ignored -> {
-      }
-      case default -> {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body("waterfall card or sacrifice card configured to the wrong level");
-      }
-    }
-    // Increment the player's prestige points
-    hand.incrementPrestigePoints(card.prestigePoints());
-    // Add the card to the player's hand
-    hand.purchasedCards().add(card);
-    // Remove the card from the deck
-    removeCardFromDeck(gameBoard.cards(), card);
-    return null;
-  }
-
-  private static void removeGoldGemCards(int numGoldGemCards, Hand hand) {
-    for (int i = 0; numGoldGemCards > 0;) {
-      if (hand.purchasedCards().get(i) instanceof GoldGemCard) {
-        hand.purchasedCards().remove(i);
-        numGoldGemCards--;
-      } else {
-        i++;
-      }
-    }
-  }
-
-  private static boolean decrementGemDiscounts(Card card, Hand hand) {
-    switch (card) {
-      case ReserveNobleCard c -> hand.gemDiscounts().computeIfPresent(c.discountColor(),
-          (k, v) -> v == Bonus.SINGLE.getValue() ? null : v - Bonus.SINGLE.getValue());
-      case DoubleBonusCard c -> hand.gemDiscounts().computeIfPresent(c.discountColor(),
-          (k, v) -> v == Bonus.DOUBLE.getValue() ? null : v - Bonus.DOUBLE.getValue());
-      case SacrificeCard c -> hand.gemDiscounts().computeIfPresent(c.discountColor(),
-          (k, v) -> v == Bonus.SINGLE.getValue() ? null : v - Bonus.SINGLE.getValue());
-      case StandardCard c -> hand.gemDiscounts().computeIfPresent(c.discountColor(),
-          (k, v) -> v == Bonus.SINGLE.getValue() ? null : v - Bonus.SINGLE.getValue());
-      case WaterfallCard c -> hand.gemDiscounts().computeIfPresent(c.discountColor(),
-          (k, v) -> v == Bonus.SINGLE.getValue() ? null : v - Bonus.SINGLE.getValue());
-      case default -> {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  private static boolean matchesCardDiscountColor(SacrificeCard sacrificeCard,
-                                                  Card card) {
-    return switch (card) {
-      case ReserveNobleCard c -> c.discountColor() == sacrificeCard.discountColor();
-      case DoubleBonusCard c -> c.discountColor() == sacrificeCard.discountColor();
-      case SacrificeCard c -> c.discountColor() == sacrificeCard.discountColor();
-      case StandardCard c -> c.discountColor() == sacrificeCard.discountColor();
-      case WaterfallCard c -> c.discountColor() == sacrificeCard.discountColor();
-      case default -> false;
-    };
   }
 
   /**
@@ -752,7 +578,7 @@ public class GameHandlerController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
     }
 
-    final Hand hand = getHand(gameBoard.players(), username);
+    final Hand hand = GameBoardHelper.getHand(gameBoard.players(), username);
     if (hand == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
     }
@@ -766,13 +592,13 @@ public class GameHandlerController {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("card cannot be null");
     }
     final Set<List<Card>> decks = gameBoard.cards();
-    if (!reserveCardForm.isTakingFaceDown() && !isCardFaceUpOnBoard(decks, card)) {
+    if (!reserveCardForm.isTakingFaceDown() && !GameBoardHelper.isCardFaceUpOnBoard(decks, card)) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body("card chosen for reservation is not valid");
     }
 
     final Gems availableGems = gameBoard.availableGems();
-    final int gemAmount = countGemAmount(hand.gems());
+    final int gemAmount = GameBoardHelper.countGemAmount(hand.gems());
     final GemColor gemColor = reserveCardForm.gemColor();
 
     if (gemAmount < 10 && gemColor != null) {
@@ -788,12 +614,12 @@ public class GameHandlerController {
 
     // Remove the card from the game board and add it to the player's reserved stack
     if (reserveCardForm.isTakingFaceDown()) {
-      card = getFaceDownCard(decks, card);
+      card = GameBoardHelper.getFaceDownCard(decks, card);
       if (card == null) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("not enough cards in the deck to reserve a face down card");
       }
-    } else if (!removeCardFromDeck(decks, card)) {
+    } else if (!GameBoardHelper.removeCardFromDeck(decks, card)) {
       // This should never happen
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
     }
@@ -846,7 +672,7 @@ public class GameHandlerController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
     }
 
-    final Hand hand = getHand(gameBoard.players(), username);
+    final Hand hand = GameBoardHelper.getHand(gameBoard.players(), username);
     if (hand == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
     }
@@ -859,27 +685,28 @@ public class GameHandlerController {
     }
 
     final Gems gemsToRemove = takeGemsForm.gemsToRemove();
-    final int amountOfGemsToTake = countGemAmount(gemsToTake);
-    final int amountOfGemsInHand = countGemAmount(hand.gems());
+    final int amountOfGemsToTake = GameBoardHelper.countGemAmount(gemsToTake);
+    final int amountOfGemsInHand = GameBoardHelper.countGemAmount(hand.gems());
     if (amountOfGemsToTake > 3) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("cannot take more than 3 gems");
     } else if (!gameBoard.availableGems().hasEnoughGems(gemsToTake)) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("not enough gems in the bank");
     } else {
       final Gems gemsAfterTaking = new Gems(hand.gems());
-      addGems(gemsAfterTaking, gemsToTake);
+      GameBoardHelper.addGems(gemsAfterTaking, gemsToTake);
       if (gemsToRemove != null && !gemsAfterTaking.hasEnoughGems(gemsToRemove)) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("cannot remove gems that you do not own");
       }
       final int total = amountOfGemsToTake + amountOfGemsInHand;
-      if (total > 10 && (gemsToRemove == null || (total - countGemAmount(gemsToRemove) > 10))) {
+      if (total > 10 && (gemsToRemove == null
+              || (total - GameBoardHelper.countGemAmount(gemsToRemove) > 10))) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("can only have a maximum of 10 gems");
       } else if (total <= 10 && gemsToRemove != null) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("cannot remove gems if not necessary");
-      } else if (total > 10 && total - countGemAmount(gemsToRemove) < 10) {
+      } else if (total > 10 && total - GameBoardHelper.countGemAmount(gemsToRemove) < 10) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("cannot remove gems and be left with less than 10");
       }
@@ -914,13 +741,13 @@ public class GameHandlerController {
     }
 
     // Take gems from the bank and add them to the player
-    removeGems(gameBoard.availableGems(), gemsToTake);
-    addGems(hand.gems(), gemsToTake);
+    GameBoardHelper.removeGems(gameBoard.availableGems(), gemsToTake);
+    GameBoardHelper.addGems(hand.gems(), gemsToTake);
 
     // If necessary, take excess gems from the player and add them to the bank
     if (gemsToRemove != null) {
-      removeGems(hand.gems(), gemsToRemove);
-      addGems(gameBoard.availableGems(), gemsToRemove);
+      GameBoardHelper.removeGems(hand.gems(), gemsToRemove);
+      GameBoardHelper.addGems(gameBoard.availableGems(), gemsToRemove);
     }
 
     return getStringResponseEntity(gameBoard, hand);
@@ -948,7 +775,7 @@ public class GameHandlerController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
     }
 
-    final Hand hand = getHand(gameBoard.players(), username);
+    final Hand hand = GameBoardHelper.getHand(gameBoard.players(), username);
     if (hand == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
     }
@@ -978,82 +805,4 @@ public class GameHandlerController {
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
-  /**
-   * Has a side effect of removing the face down card from the deck if successful.
-   */
-  private static Card getFaceDownCard(Set<List<Card>> decks, Card card) {
-    for (List<Card> deck : decks) {
-      if (!deck.isEmpty()) {
-        final Card firstCard = deck.get(0);
-        if (firstCard.level() == card.level() && firstCard.expansion() == firstCard.expansion()) {
-          final int cardIndex = firstCard.expansion() == Expansion.STANDARD ? 4 : 2;
-          return deck.size() <= cardIndex ? null : deck.remove(cardIndex);
-
-        }
-      }
-    }
-    return null;
-  }
-
-  private static Gems getDiscountedCost(Gems originalCost, Gems gemDiscounts) {
-    final Gems result = new Gems(originalCost);
-
-    // Remove the gem discounts from the cost of the card to get the cost for this specific player
-    removeGems(result, gemDiscounts);
-
-    return result;
-  }
-
-  private static void addGems(Gems gemsToAddTo, Gems gemsToAdd) {
-    gemsToAdd.forEach((key, value) -> gemsToAddTo.merge(key, value, Integer::sum));
-  }
-
-  private static void removeGems(Gems gemsToRemoveFrom, Gems gemsToRemove) {
-    gemsToRemove.forEach((key, amountToRemove) -> gemsToRemoveFrom.computeIfPresent(key,
-        (k, v) -> v.equals(amountToRemove) ? null : v - amountToRemove));
-  }
-
-  private static boolean removeCardFromDeck(Set<List<Card>> decks, Card card) {
-    for (List<Card> cards : decks) {
-      if (!cards.isEmpty()) {
-        final Card firstCard = cards.get(0);
-        if (firstCard.level() == card.level() && firstCard.expansion() == card.expansion()) {
-          return cards.remove(card);
-        }
-      }
-    }
-    return false;
-  }
-
-  private static Gems getPaymentWithoutGoldGems(Gems substitutedGems, Gems gemsToPayWith) {
-    final Gems result = new Gems(gemsToPayWith);
-    result.remove(GemColor.GOLD);
-
-    substitutedGems.forEach((key, value) -> result.merge(key, value, Integer::sum));
-
-    return result;
-  }
-
-  private static boolean isCardFaceUpOnBoard(Set<List<Card>> decks, Card card) {
-    for (List<Card> cards : decks) {
-      if (!cards.isEmpty()) {
-        final Card firstCard = cards.get(0);
-        if (firstCard.level() == card.level() && firstCard.expansion() == card.expansion()) {
-          final int limit =
-              Integer.min(cards.size(), firstCard.expansion() == Expansion.STANDARD ? 4 : 2);
-          return cards.subList(0, limit).stream().anyMatch(cardToCheck -> cardToCheck.equals(card));
-        }
-      }
-    }
-    return false;
-  }
-
-  private static int countGemAmount(Gems gems) {
-    return gems.values().stream().mapToInt(value -> value).sum();
-  }
-
-  private static Hand getHand(Collection<Player> players, String username) {
-    return players.stream().filter(p -> p.uid().equals(username)).findFirst().map(Player::hand)
-        .orElse(null);
-  }
 }
