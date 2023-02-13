@@ -2,7 +2,7 @@ package com.hexanome.fourteen.lobbyui;
 
 import java.security.InvalidParameterException;
 
-import com.hexanome.fourteen.StagePayload;
+import com.hexanome.fourteen.WindowContextData;
 import com.hexanome.fourteen.boards.OrientExpansion;
 import com.hexanome.fourteen.login.LoginScreenController;
 import javafx.fxml.FXMLLoader;
@@ -24,11 +24,11 @@ public class MenuController {
    * @return the controller of that stage
    */
   public static MenuController getMenuController(Stage stage){
-    if(stage.getUserData() == null || ((StagePayload)stage.getUserData()).getMenuController() == null){
-      stage.setUserData(new StagePayload(new MenuController(stage)));
+    if(stage.getUserData() == null || ((WindowContextData)stage.getUserData()).getMenuController() == null){
+      stage.setUserData(new WindowContextData(new MenuController(stage)));
     }
 
-    return ((StagePayload) stage.getUserData()).getMenuController();
+    return ((WindowContextData) stage.getUserData()).getMenuController();
   }
 
   private MenuController(Stage stage){
@@ -44,7 +44,7 @@ public class MenuController {
       throw new InvalidParameterException("User parameter cannot be null.");
     }
 
-    ((StagePayload) stage.getUserData()).setUser(user);
+    ((WindowContextData) stage.getUserData()).setUser(user);
 
     goToWelcomeScreen();
   }
@@ -57,8 +57,8 @@ public class MenuController {
    */
   public void returnToLogin(String errorMessage) throws IOException{
     // Send errorMessage
-    ((StagePayload) stage.getUserData()).setPayload(errorMessage);
-    ((StagePayload) stage.getUserData()).setUser(null);
+    ((WindowContextData) stage.getUserData()).setPayload(errorMessage);
+    ((WindowContextData) stage.getUserData()).setUser(null);
 
     // Load login ui
     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(Lobby.class.getResource("LoginScreen.fxml")));

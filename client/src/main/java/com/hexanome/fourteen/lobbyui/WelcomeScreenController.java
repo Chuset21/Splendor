@@ -36,7 +36,7 @@ public class WelcomeScreenController implements ScreenController{
   private Stage stage;
 
   @Override
-  public void sendStageData(Stage stage) throws IOException {
+  public void sendStageData(Stage stage) {
     this.stage = stage;
 
     // Post init

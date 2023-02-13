@@ -2,21 +2,20 @@ package com.hexanome.fourteen;
 
 import com.hexanome.fourteen.lobbyui.MenuController;
 import com.hexanome.fourteen.lobbyui.User;
-import javafx.stage.Stage;
 
-public class StagePayload {
+public class WindowContextData {
 
     private User user;
     private MenuController menuController;
     private Object payload;
 
-    public StagePayload(){
+    public WindowContextData(){
         user = null;
         menuController = null;
         payload = null;
     }
 
-    public StagePayload(MenuController menuController){
+    public WindowContextData(MenuController menuController){
         user = null;
         this.menuController = menuController;
         payload = null;

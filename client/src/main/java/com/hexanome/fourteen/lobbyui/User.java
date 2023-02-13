@@ -1,6 +1,6 @@
 package com.hexanome.fourteen.lobbyui;
 
-import com.hexanome.fourteen.StagePayload;
+import com.hexanome.fourteen.WindowContextData;
 import javafx.stage.Stage;
 
 public class User {
@@ -24,23 +24,23 @@ public class User {
     }
 
     public static String getAccessToken(Stage stage){
-        return ((StagePayload) stage.getUserData()).getUser().getAccessToken();
+        return ((WindowContextData) stage.getUserData()).getUser().getAccessToken();
     }
 
     public static String getRefreshToken(Stage stage){
-        return ((StagePayload) stage.getUserData()).getUser().getRefreshToken();
+        return ((WindowContextData) stage.getUserData()).getUser().getRefreshToken();
     }
 
     public static String getUserid(Stage stage){
-        return ((StagePayload) stage.getUserData()).getUser().getUserid();
+        return ((WindowContextData) stage.getUserData()).getUser().getUserid();
     }
 
     public static Lobby getCurrentLobby(Stage stage){
-        return ((StagePayload) stage.getUserData()).getUser().getCurrentLobby();
+        return ((WindowContextData) stage.getUserData()).getUser().getCurrentLobby();
     }
 
     public static User getUser(Stage stage){
-        return ((StagePayload) stage.getUserData()).getUser();
+        return ((WindowContextData) stage.getUserData()).getUser();
     }
 
     public String getAccessToken() {

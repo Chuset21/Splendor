@@ -1,19 +1,10 @@
 package com.hexanome.fourteen.lobbyui;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.Objects;
-import java.util.Random;
-import java.util.ResourceBundle;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
-import com.hexanome.fourteen.StagePayload;
 import com.hexanome.fourteen.TokenRefreshFailedException;
-import com.hexanome.fourteen.boards.OrientExpansion;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -56,7 +47,7 @@ public class InLobbyScreenController implements ScreenController{
   private Stage stage;
 
   @Override
-  public void sendStageData(Stage stage) throws IOException {
+  public void sendStageData(Stage stage) {
     this.stage = stage;
 
     // Get data from MenuController

@@ -1,20 +1,14 @@
 package com.hexanome.fourteen.login;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
-import com.hexanome.fourteen.StagePayload;
+import com.hexanome.fourteen.WindowContextData;
 import com.hexanome.fourteen.lobbyui.MenuController;
 import com.hexanome.fourteen.lobbyui.ScreenController;
 import java.io.IOException;
-import java.net.URL;
-import java.util.Objects;
-import java.util.ResourceBundle;
 
 import com.hexanome.fourteen.lobbyui.User;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -44,11 +38,11 @@ public final class LoginScreenController implements ScreenController {
    * @throws IOException Is thrown when invalid input is found
    */
   @Override
-  public void sendStageData(Stage stage) throws IOException {
+  public void sendStageData(Stage stage) {
     this.stage = stage;
 
     // Initialize login message
-    String message = ((String) ((StagePayload) stage.getUserData()).getPayload());
+    String message = ((String) ((WindowContextData) stage.getUserData()).getPayload());
 
     if(message != null){
       loginMessageLabel.setText(message);
