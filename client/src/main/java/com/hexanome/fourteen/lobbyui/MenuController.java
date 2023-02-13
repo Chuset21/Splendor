@@ -11,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.*;
+import kong.unirest.Empty;
 
 public class MenuController {
   private Stage stage;
@@ -82,9 +83,17 @@ public class MenuController {
 
   // TODO: Make this change where you end up depending on which screen you are at
   public void goBack() throws IOException {
-    // Get last screen
-    ScreenController screen = previousScreens.pop();
-    screen = previousScreens.pop();
+
+    ScreenController screen = null;
+
+    try {
+      // Get last screen
+      screen = previousScreens.pop();
+      screen = previousScreens.pop();
+    } catch (EmptyStackException e){
+      // If no last screen exists, go back to welcome screen
+      screen = new WelcomeScreenController();
+    }
 
     // Clear screen stack since you cannot go back after going to welcome screen
     if (screen instanceof WelcomeScreenController) {
