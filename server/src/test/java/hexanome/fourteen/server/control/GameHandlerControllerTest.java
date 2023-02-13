@@ -652,8 +652,6 @@ public class GameHandlerControllerTest {
     chosenGems.clear();
     player.hand().gemDiscounts().clear();
     player.hand().setPrestigePoints(0);
-
-    // TODO test purchase card with double bonus card, reserve noble card, satchel card, waterfall card
   }
 
   @Test
