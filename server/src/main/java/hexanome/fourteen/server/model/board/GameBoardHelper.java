@@ -89,6 +89,8 @@ public final class GameBoardHelper {
       }
     }
     card.removeFreeCardToTake();
+    // The card is now attached to the satchel card
+    hand.purchasedCards().remove(card.cardToAttach());
     return null;
   }
 
