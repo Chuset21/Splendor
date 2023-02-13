@@ -32,8 +32,10 @@ import hexanome.fourteen.server.model.board.gem.Gems;
 import hexanome.fourteen.server.model.board.player.Player;
 import hexanome.fourteen.server.model.board.player.UserPlayerMapper;
 import hexanome.fourteen.server.model.clientmapper.ServerToClientBoardGameMapper;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
@@ -499,7 +501,7 @@ public class GameHandlerControllerTest {
   }
 
   @Test
-  public void testPurchaseCardWithGemPayment() {
+  public void testPurchaseCardWithSimpleGemPayment() {
     final Map<String, GameBoard> gameManager = new HashMap<>();
     final Player player = new Player("test");
     GameBoard board =
@@ -652,86 +654,77 @@ public class GameHandlerControllerTest {
     // TODO test purchase card with double bonus card, reserve noble card, satchel card, waterfall card
   }
 
-//  @Test
-//  public void testPurchaseCard() {
-//    final Map<String, GameBoard> gameManager = new HashMap<>();
-//    final Player player = new Player("test");
-//    final GameBoard board =
-//        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player), "x", null);
-//    gameManager.put("", board);
-//    ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
-//
-//    ResponseEntity<String> response = gameHandlerController.purchaseCard("", "token", null);
-//    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-//    assertEquals("invalid access token", response.getBody());
-//
-//    Mockito.when(lobbyService.getUsername("token")).thenReturn("x");
-//
-//    response = gameHandlerController.purchaseCard("x", "token", null);
-//    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-//
-//    response = gameHandlerController.purchaseCard("", "token", null);
-//    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-//    assertEquals("player is not part of this game", response.getBody());
-//
-//    Mockito.when(lobbyService.getUsername("token")).thenReturn("test");
-//
-//    Card card =
-//        new StandardCard(0, new Gems(), CardLevel.ONE, Expansion.STANDARD, 1, GemColor.BLACK);
-//    PurchaseCardForm purchaseCardForm = new PurchaseCardForm(card, new Gems(), new Gems());
-//    response = gameHandlerController.purchaseCard("", "token", purchaseCardForm);
-//    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-//    assertEquals("card chosen for purchase is not valid", response.getBody());
-//
-//    Gems cardCost = new Gems();
-//    cardCost.put(GemColor.GREEN, 2);
-//    cardCost.put(GemColor.WHITE, 2);
-//    Gems substitutedGems = new Gems();
-//    substitutedGems.put(GemColor.GOLD, 2);
-//    card = new StandardCard(0, cardCost, CardLevel.ONE, Expansion.STANDARD, 1, GemColor.BLACK);
-//    purchaseCardForm = new PurchaseCardForm(card, new Gems(), substitutedGems);
-//    response = gameHandlerController.purchaseCard("", "token", purchaseCardForm);
-//    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-//    assertEquals("cannot substitute gold gems for gold gems", response.getBody());
-//
-//    substitutedGems = new Gems();
-//    substitutedGems.put(GemColor.BLUE, 2);
-//    purchaseCardForm = new PurchaseCardForm(card, new Gems(), substitutedGems);
-//    response = gameHandlerController.purchaseCard("", "token", purchaseCardForm);
-//    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-//    assertEquals("substituting amount not equal to gold gems", response.getBody());
-//
-//    Gems paymentGems = new Gems();
-//    paymentGems.put(GemColor.BLACK, 4);
-//    purchaseCardForm = new PurchaseCardForm(card, paymentGems, new Gems());
-//    response = gameHandlerController.purchaseCard("", "token", purchaseCardForm);
-//    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-//    assertEquals("not enough gems", response.getBody());
-//
-//    paymentGems = new Gems();
-//    paymentGems.put(GemColor.BLUE, 3);
-//    paymentGems.put(GemColor.WHITE, 1);
-//    purchaseCardForm = new PurchaseCardForm(card, paymentGems, new Gems());
-//    response = gameHandlerController.purchaseCard("", "token", purchaseCardForm);
-//    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-//    assertEquals("card cost does not match payment", response.getBody());
-//
-//    paymentGems = new Gems();
-//    paymentGems.put(GemColor.GOLD, 3);
-//    paymentGems.put(GemColor.WHITE, 1);
-//    substitutedGems = new Gems();
-//    substitutedGems.put(GemColor.WHITE, 1);
-//    substitutedGems.put(GemColor.GREEN, 2);
-//    purchaseCardForm = new PurchaseCardForm(card, paymentGems, substitutedGems);
-//    final Gems previousPlayersGems = new Gems(player.hand().gems());
-//    response = gameHandlerController.purchaseCard("", "token", purchaseCardForm);
-//    assertEquals(HttpStatus.OK, response.getStatusCode());
-//    assertNull(response.getBody());
-//    assertEquals(previousPlayersGems.get(GemColor.GOLD) - paymentGems.get(GemColor.GOLD),
-//        player.hand().gems().getOrDefault(GemColor.GOLD, 0));
-//    assertEquals(previousPlayersGems.get(GemColor.WHITE) - paymentGems.get(GemColor.WHITE),
-//        player.hand().gems().getOrDefault(GemColor.WHITE, 0));
-//  }
+  @Test
+  public void testPurchaseCardWithComplexGemPayment() {
+    final Map<String, GameBoard> gameManager = new HashMap<>();
+    final Player player = new Player("test");
+    GameBoard board =
+        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player, new Player("test2")), "x",
+            player.uid());
+    gameManager.put("", board);
+    ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
+    Mockito.when(lobbyService.getUsername("token")).thenReturn("test");
+    player.hand().gems().clear();
+    board.availableGems().clear();
+
+    // Test double bonus card
+    final Gems substitutedGems = new Gems();
+    final Gems chosenGems = new Gems();
+    final Gems cardCost = new Gems();
+    cardCost.put(GemColor.WHITE, 2);
+    cardCost.put(GemColor.RED, 1);
+    cardCost.put(GemColor.BLACK, 3);
+    cardCost.put(GemColor.BLUE, 1);
+    Card cardToPurchase =
+        new DoubleBonusCard(0, cardCost, CardLevel.TWO, Expansion.ORIENT, GemColor.BLUE);
+    player.hand().gems().put(GemColor.BLUE, 2);
+    player.hand().gems().put(GemColor.GOLD, 2);
+    substitutedGems.put(GemColor.BLACK, 2);
+    chosenGems.put(GemColor.BLUE, 1);
+    chosenGems.put(GemColor.GOLD, 2);
+    player.hand().gemDiscounts().put(GemColor.WHITE, 3);
+    player.hand().gemDiscounts().put(GemColor.RED, 1);
+    player.hand().gemDiscounts().put(GemColor.BLACK, 1);
+    addCardToDeck(board.cards(), cardToPurchase);
+    Payment payment = new GemPayment(chosenGems, substitutedGems, 0);
+    PurchaseCardForm purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, false);
+
+    ResponseEntity<String> response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(1, player.hand().purchasedCards().size());
+    assertTrue(player.hand().purchasedCards().contains(cardToPurchase));
+    assertEquals(cardToPurchase.prestigePoints(), player.hand().prestigePoints());
+    assertEquals(Bonus.DOUBLE.getValue(),
+        player.hand().gemDiscounts().get(((DoubleBonusCard) cardToPurchase).discountColor()));
+    Gems expectedGameBoardGems = new Gems(board.availableGems());
+    expectedGameBoardGems.put(GemColor.BLUE, 1);
+    expectedGameBoardGems.put(GemColor.GOLD, 2);
+    assertEquals(expectedGameBoardGems, board.availableGems());
+    assertEquals(1, player.hand().gems().getOrDefault(GemColor.BLUE, 0));
+    assertEquals(Bonus.DOUBLE.getValue(), player.hand().gemDiscounts().get(GemColor.BLUE));
+    substitutedGems.clear();
+    chosenGems.clear();
+    player.hand().gems().clear();
+    player.hand().gemDiscounts().clear();
+    player.hand().setPrestigePoints(0);
+    board.availableGems().clear();
+  }
+
+  private void addCardToDeck(Set<List<Card>> decks, Card card) {
+    for (List<Card> cards : decks) {
+      if (!cards.isEmpty()) {
+        final Card firstCard = cards.get(0);
+        if (firstCard.level() == card.level() && firstCard.expansion() == card.expansion()) {
+          cards.add(0, card);
+          return;
+        }
+      }
+    }
+    final List<Card> cards = new ArrayList<>();
+    cards.add(card);
+    decks.add(cards);
+  }
 
   @Test
   public void testReserveCard() {

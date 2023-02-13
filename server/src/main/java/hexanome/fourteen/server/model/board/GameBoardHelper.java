@@ -298,7 +298,7 @@ public final class GameBoardHelper {
    */
   public static void removeGems(Gems gemsToRemoveFrom, Gems gemsToRemove) {
     gemsToRemove.forEach((key, amountToRemove) -> gemsToRemoveFrom.computeIfPresent(key,
-        (k, v) -> v.equals(amountToRemove) ? null : v - amountToRemove));
+        (k, v) -> amountToRemove >= v ? null : v - amountToRemove));
   }
 
   /**
