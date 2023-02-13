@@ -24,6 +24,8 @@ import kong.unirest.Unirest;
 public final class LobbyServiceCaller {
 
   List<User> users = new ArrayList<>();
+  static String accessToken = "";
+  static String refreshToken = "";
 
   /**
    * Private constructor to stop instantiation.
