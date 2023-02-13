@@ -12,7 +12,7 @@ public final class HandForm {
   private List<CardForm> reservedCards;
   private List<CardForm> purchasedCards;
   private Set<NobleForm> visitedNobles;
-  private NobleForm reservedNoble;
+  private Set<NobleForm> reservedNobles;
   private GemsForm gemDiscounts;
 
   /**
@@ -22,16 +22,17 @@ public final class HandForm {
    * @param reservedCards  the reserved cards
    * @param purchasedCards the purchased cards
    * @param visitedNobles  the owned nobles
-   * @param reservedNoble  the reserved noble
+   * @param reservedNobles the reserved nobles
    * @param gemDiscounts   the gem discounts
    */
   public HandForm(GemsForm gems, List<CardForm> reservedCards, List<CardForm> purchasedCards,
-                  Set<NobleForm> visitedNobles, NobleForm reservedNoble, GemsForm gemDiscounts) {
+                  Set<NobleForm> visitedNobles, Set<NobleForm> reservedNobles,
+                  GemsForm gemDiscounts) {
     this.gems = gems;
     this.reservedCards = reservedCards;
     this.purchasedCards = purchasedCards;
     this.visitedNobles = visitedNobles;
-    this.reservedNoble = reservedNoble;
+    this.reservedNobles = reservedNobles;
     this.gemDiscounts = gemDiscounts;
   }
 
@@ -78,12 +79,12 @@ public final class HandForm {
   }
 
   /**
-   * A Getter for the Noble that has been reserved.
+   * A Getter for the Nobles that have been reserved.
    *
-   * @return The Noble that has been reserved.
+   * @return The Nobles that have been reserved.
    */
-  public NobleForm reservedNoble() {
-    return reservedNoble;
+  public Set<NobleForm> reservedNobles() {
+    return reservedNobles;
   }
 
   /**

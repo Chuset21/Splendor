@@ -142,12 +142,12 @@ public final class GameBoard {
         cost.computeIfAbsent(GemColor.RED, k -> redCost > 0 ? redCost : null);
 
         // Get the level and expansion
-        CardLevel level = CardLevel.valueOf(cardData[8]);
-        Expansion expansion = Expansion.valueOf(cardData[7]);
+        CardLevel level = CardLevel.valueOf(cardData[7]);
+        Expansion expansion = Expansion.valueOf(cardData[6]);
 
         // Create card
-        Card c = new StandardCard(Integer.parseInt(cardData[9]), cost, level, expansion,
-            Integer.parseInt(cardData[6]), GemColor.valueOf(cardData[5]));
+        Card c = new StandardCard(Integer.parseInt(cardData[8]), cost, level, expansion,
+            GemColor.valueOf(cardData[5]));
 
         // Add the card to respective list
         if (expansion == Expansion.STANDARD) {
@@ -302,6 +302,7 @@ public final class GameBoard {
    * Go to the next turn.
    */
   public void nextTurn() {
+    computeLeadingPlayer();
     playerTurn = (playerTurn + 1) % players.size();
   }
 
@@ -313,16 +314,9 @@ public final class GameBoard {
    */
   public Set<Noble> computeClaimableNobles(Hand hand) {
     final Set<Noble> nobles = new HashSet<>(availableNobles);
-    if (hand.reservedNoble() != null) {
-      nobles.add(hand.reservedNoble());
-    }
+    nobles.addAll(hand.reservedNobles());
     return nobles.stream()
-        .filter(n -> hasEnoughGems(hand.gemDiscounts(), n.cost()))
+        .filter(n -> hand.gemDiscounts().hasEnoughGems(n.cost()))
         .collect(Collectors.toSet());
-  }
-
-  private boolean hasEnoughGems(Gems ownedGems, Gems gemsToPayWith) {
-    return gemsToPayWith.entrySet().stream()
-        .noneMatch(entry -> ownedGems.getOrDefault(entry.getKey(), 0) < entry.getValue());
   }
 }

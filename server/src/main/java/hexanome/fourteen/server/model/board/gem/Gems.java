@@ -23,4 +23,9 @@ public final class Gems extends HashMap<GemColor, Integer> {
   public Gems(Gems gems) {
     super(gems);
   }
+
+  public boolean hasEnoughGems(Gems gemsNeeded) {
+    return gemsNeeded.entrySet().stream()
+        .noneMatch(entry -> this.getOrDefault(entry.getKey(), 0) < entry.getValue());
+  }
 }
