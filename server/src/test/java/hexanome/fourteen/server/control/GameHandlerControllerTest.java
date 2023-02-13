@@ -23,6 +23,7 @@ import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.card.CardLevel;
 import hexanome.fourteen.server.model.board.card.DoubleBonusCard;
 import hexanome.fourteen.server.model.board.card.GoldGemCard;
+import hexanome.fourteen.server.model.board.card.ReserveNobleCard;
 import hexanome.fourteen.server.model.board.card.SacrificeCard;
 import hexanome.fourteen.server.model.board.card.SatchelCard;
 import hexanome.fourteen.server.model.board.card.StandardCard;
@@ -705,10 +706,169 @@ public class GameHandlerControllerTest {
     assertEquals(Bonus.DOUBLE.getValue(), player.hand().gemDiscounts().get(GemColor.BLUE));
     substitutedGems.clear();
     chosenGems.clear();
+    cardCost.clear();
+    player.hand().purchasedCards().clear();
     player.hand().gems().clear();
     player.hand().gemDiscounts().clear();
     player.hand().setPrestigePoints(0);
     board.availableGems().clear();
+
+    // Test Reserve noble card
+    cardCost.put(GemColor.WHITE, 2);
+    cardCost.put(GemColor.RED, 2);
+    cardCost.put(GemColor.BLACK, 2);
+    cardCost.put(GemColor.BLUE, 2);
+    cardToPurchase =
+        new ReserveNobleCard(1, cardCost, CardLevel.TWO, Expansion.ORIENT, GemColor.WHITE);
+    player.hand().gems().put(GemColor.WHITE, 2);
+    player.hand().gems().put(GemColor.RED, 2);
+    player.hand().gems().put(GemColor.BLACK, 2);
+    player.hand().gems().put(GemColor.BLUE, 2);
+    chosenGems.put(GemColor.WHITE, 2);
+    chosenGems.put(GemColor.RED, 2);
+    chosenGems.put(GemColor.BLACK, 2);
+    chosenGems.put(GemColor.BLUE, 2);
+    board.availableNobles().add(new Noble(100, new Gems()));
+    addCardToDeck(board.cards(), cardToPurchase);
+    payment = new GemPayment(chosenGems, substitutedGems, 0);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, false);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("noble to reserve cannot be null", response.getBody());
+    substitutedGems.clear();
+    chosenGems.clear();
+    cardCost.clear();
+    player.hand().gems().clear();
+    player.hand().gemDiscounts().clear();
+    player.hand().setPrestigePoints(0);
+    board.availableGems().clear();
+
+    cardCost.put(GemColor.WHITE, 2);
+    cardCost.put(GemColor.RED, 2);
+    cardCost.put(GemColor.BLACK, 2);
+    cardCost.put(GemColor.BLUE, 2);
+    cardToPurchase =
+        new ReserveNobleCard(1, cardCost, CardLevel.TWO, Expansion.ORIENT, GemColor.WHITE,
+            new Noble(200, new Gems()));
+    player.hand().gems().put(GemColor.WHITE, 2);
+    player.hand().gems().put(GemColor.RED, 2);
+    player.hand().gems().put(GemColor.BLACK, 2);
+    player.hand().gems().put(GemColor.BLUE, 2);
+    chosenGems.put(GemColor.WHITE, 2);
+    chosenGems.put(GemColor.RED, 2);
+    chosenGems.put(GemColor.BLACK, 2);
+    chosenGems.put(GemColor.BLUE, 2);
+    addCardToDeck(board.cards(), cardToPurchase);
+    payment = new GemPayment(chosenGems, substitutedGems, 0);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, false);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("noble to reserve is not available", response.getBody());
+    substitutedGems.clear();
+    chosenGems.clear();
+    cardCost.clear();
+    player.hand().gems().clear();
+    player.hand().gemDiscounts().clear();
+    player.hand().setPrestigePoints(0);
+    board.availableGems().clear();
+
+    cardCost.put(GemColor.WHITE, 2);
+    cardCost.put(GemColor.RED, 2);
+    cardCost.put(GemColor.BLACK, 2);
+    cardCost.put(GemColor.BLUE, 2);
+    cardToPurchase =
+        new ReserveNobleCard(1, cardCost, CardLevel.TWO, Expansion.ORIENT, GemColor.WHITE,
+            new Noble(100, new Gems()));
+    player.hand().gems().put(GemColor.WHITE, 2);
+    player.hand().gems().put(GemColor.RED, 2);
+    player.hand().gems().put(GemColor.BLACK, 2);
+    player.hand().gems().put(GemColor.BLUE, 2);
+    chosenGems.put(GemColor.WHITE, 2);
+    chosenGems.put(GemColor.RED, 2);
+    chosenGems.put(GemColor.BLACK, 2);
+    chosenGems.put(GemColor.BLUE, 2);
+    addCardToDeck(board.cards(), cardToPurchase);
+    payment = new GemPayment(chosenGems, substitutedGems, 0);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, false);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(1, player.hand().purchasedCards().size());
+    assertTrue(player.hand().purchasedCards().contains(
+        new ReserveNobleCard(1, cardCost, CardLevel.TWO, Expansion.ORIENT, GemColor.WHITE)));
+    assertTrue(player.hand().reservedNobles().contains(new Noble(100, new Gems())));
+    assertEquals(cardToPurchase.prestigePoints(), player.hand().prestigePoints());
+    assertEquals(Bonus.SINGLE.getValue(),
+        player.hand().gemDiscounts().get(((ReserveNobleCard) cardToPurchase).discountColor()));
+    expectedGameBoardGems = new Gems(board.availableGems());
+    expectedGameBoardGems.put(GemColor.WHITE, 2);
+    expectedGameBoardGems.put(GemColor.RED, 2);
+    expectedGameBoardGems.put(GemColor.BLACK, 2);
+    expectedGameBoardGems.put(GemColor.BLUE, 2);
+    assertEquals(expectedGameBoardGems, board.availableGems());
+    assertTrue(player.hand().gems().isEmpty());
+    substitutedGems.clear();
+    chosenGems.clear();
+    cardCost.clear();
+    player.hand().reservedNobles().clear();
+    player.hand().purchasedCards().clear();
+    player.hand().gems().clear();
+    player.hand().gemDiscounts().clear();
+    player.hand().setPrestigePoints(0);
+    board.availableGems().clear();
+    board.availableNobles().clear();
+
+    // Test that when there are no nobles to reserve, you can still purchase a reserve noble card
+    cardCost.put(GemColor.WHITE, 2);
+    cardCost.put(GemColor.RED, 2);
+    cardCost.put(GemColor.BLACK, 2);
+    cardCost.put(GemColor.BLUE, 2);
+    cardToPurchase =
+        new ReserveNobleCard(1, cardCost, CardLevel.TWO, Expansion.ORIENT, GemColor.WHITE);
+    player.hand().gems().put(GemColor.WHITE, 2);
+    player.hand().gems().put(GemColor.RED, 2);
+    player.hand().gems().put(GemColor.BLACK, 2);
+    player.hand().gems().put(GemColor.BLUE, 2);
+    chosenGems.put(GemColor.WHITE, 2);
+    chosenGems.put(GemColor.RED, 2);
+    chosenGems.put(GemColor.BLACK, 2);
+    chosenGems.put(GemColor.BLUE, 2);
+    addCardToDeck(board.cards(), cardToPurchase);
+    payment = new GemPayment(chosenGems, substitutedGems, 0);
+    purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, false);
+
+    response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(1, player.hand().purchasedCards().size());
+    assertTrue(player.hand().purchasedCards().contains(cardToPurchase));
+    assertEquals(cardToPurchase.prestigePoints(), player.hand().prestigePoints());
+    assertEquals(Bonus.SINGLE.getValue(),
+        player.hand().gemDiscounts().get(((ReserveNobleCard) cardToPurchase).discountColor()));
+    expectedGameBoardGems = new Gems(board.availableGems());
+    expectedGameBoardGems.put(GemColor.WHITE, 2);
+    expectedGameBoardGems.put(GemColor.RED, 2);
+    expectedGameBoardGems.put(GemColor.BLACK, 2);
+    expectedGameBoardGems.put(GemColor.BLUE, 2);
+    assertEquals(expectedGameBoardGems, board.availableGems());
+    assertTrue(player.hand().gems().isEmpty());
+    substitutedGems.clear();
+    chosenGems.clear();
+    cardCost.clear();
+    player.hand().reservedNobles().clear();
+    player.hand().purchasedCards().clear();
+    player.hand().gems().clear();
+    player.hand().gemDiscounts().clear();
+    player.hand().setPrestigePoints(0);
+    board.availableGems().clear();
+    board.availableNobles().clear();
+
+    // TODO Test satchel card
   }
 
   private void addCardToDeck(Set<List<Card>> decks, Card card) {
