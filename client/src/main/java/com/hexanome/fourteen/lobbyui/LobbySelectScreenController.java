@@ -8,6 +8,8 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,6 +22,7 @@ import javafx.stage.Stage;
 
 public class LobbySelectScreenController implements ScreenController{
 
+  Thread refresherThread;
   @FXML
   private AnchorPane anchorPane;
   @FXML
@@ -36,10 +39,28 @@ public class LobbySelectScreenController implements ScreenController{
   @Override
   public void sendStageData(Stage stage) throws IOException {
     this.stage = stage;
+    Task<Void> task = new Task<>() {
+      @Override
+      public Void call() throws Exception {
 
+        while (!Thread.currentThread().isInterrupted()) {
+          Platform.runLater(() -> {
+            updateLobbies();
+          });
+          Thread.sleep(2000);
+        }
+        return null;
+      }
+    };
+
+    refresherThread = new Thread(task);
+    refresherThread.setDaemon(true);
+    refresherThread.start();
     // Post init
-    updateLobbies();
+    //updateLobbies();
   }
+
+
 
   private void updateLobbies(){
     // Resets displayed lobbies
@@ -78,6 +99,7 @@ public class LobbySelectScreenController implements ScreenController{
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
+    refresherThread.interrupt();
   }
 
   /**
