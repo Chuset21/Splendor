@@ -45,6 +45,7 @@ public class LobbySelectScreenController implements ScreenController{
 
         while (!Thread.currentThread().isInterrupted()) {
           Platform.runLater(() -> {
+            LobbyServiceCaller.updateAccessToken();
             updateLobbies();
           });
           Thread.sleep(2000);
@@ -121,6 +122,7 @@ public class LobbySelectScreenController implements ScreenController{
         ioe.printStackTrace();
       }
     }
+    refresherThread.interrupt();
   }
 
   @FXML

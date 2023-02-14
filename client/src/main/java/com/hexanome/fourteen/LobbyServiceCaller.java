@@ -53,6 +53,18 @@ public final class LobbyServiceCaller {
     return getTokens(response, user);
   }
 
+  public static boolean login(String username, String password) {
+    HttpResponse<String> response = Unirest.post("%soauth/token".formatted(Main.lsLocation))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("grant_type", "password")
+        .queryString("username", username)
+        .queryString("password", password)
+        .body("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true")
+        .asString();
+
+    return getTokens(response);
+  }
+
   /**
    * Update the access token.
    */
@@ -66,6 +78,17 @@ public final class LobbyServiceCaller {
     return getTokens(response, user);
   }
 
+  public static boolean updateAccessToken() {
+    HttpResponse<String> response = Unirest.post("%soauth/token".formatted(Main.lsLocation))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("grant_type", "refresh_token")
+        .queryString("refresh_token", refreshToken)
+        .body("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true")
+        .asString();
+
+    return getTokens(response);
+  }
+
   private static boolean getTokens(HttpResponse<String> response, User user) {
     if (response.getStatus() != 200) {
       return false;
@@ -75,6 +98,21 @@ public final class LobbyServiceCaller {
             Main.GSON.fromJson(response.getBody(), LoginResponse.class);
     user.setAccessToken(loginResponse.accessToken());
     user.setRefreshToken(loginResponse.refreshToken());
+    return true;
+  }
+
+  private static boolean getTokens(HttpResponse<String> response) {
+
+    if (response.getStatus() != 200) {
+      return false;
+    }
+
+    final LoginResponse loginResponse =
+        Main.GSON.fromJson(response.getBody(), LoginResponse.class);
+
+    accessToken = loginResponse.accessToken();
+    refreshToken = loginResponse.refreshToken();
+
     return true;
   }
 
