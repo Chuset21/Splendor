@@ -203,6 +203,8 @@ public class GameHandlerController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
     } else if (GameBoardHelper.getHand(gameBoard.players(), username) == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
+    } else if (gameBoard.isGameOver()) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("game is over");
     } else {
       if (!serverService.refreshToken()) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -239,6 +241,8 @@ public class GameHandlerController {
     final GameBoard gameBoard = getGame(gameid);
     if (gameBoard == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
+    } else if (gameBoard.isGameOver()) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("game is over");
     }
 
     final Hand hand = GameBoardHelper.getHand(gameBoard.players(), username);
@@ -576,6 +580,8 @@ public class GameHandlerController {
     final GameBoard gameBoard = getGame(gameid);
     if (gameBoard == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
+    } else if (gameBoard.isGameOver()) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("game is over");
     }
 
     final Hand hand = GameBoardHelper.getHand(gameBoard.players(), username);
@@ -645,9 +651,19 @@ public class GameHandlerController {
     if (!nobles.isEmpty()) {
       return ResponseEntity.status(HttpStatus.OK).body(gsonInstance.gson.toJson(nobles));
     } else {
-      gameBoard.nextTurn();
-      return ResponseEntity.status(HttpStatus.OK).body(null);
+      return getStringResponseEntity(gameBoard);
     }
+  }
+
+  private static ResponseEntity<String> getStringResponseEntity(GameBoard gameBoard) {
+    final boolean isLastRound = gameBoard.nextTurn();
+
+    if (gameBoard.isGameOver()) {
+      return ResponseEntity.status(HttpStatus.OK).body("game is over");
+    } else if (isLastRound) {
+      return ResponseEntity.status(HttpStatus.OK).body("last round");
+    }
+    return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
   /**
@@ -670,6 +686,8 @@ public class GameHandlerController {
     final GameBoard gameBoard = getGame(gameid);
     if (gameBoard == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
+    } else if (gameBoard.isGameOver()) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("game is over");
     }
 
     final Hand hand = GameBoardHelper.getHand(gameBoard.players(), username);
@@ -700,7 +718,7 @@ public class GameHandlerController {
       }
       final int total = amountOfGemsToTake + amountOfGemsInHand;
       if (total > 10 && (gemsToRemove == null
-              || (total - GameBoardHelper.countGemAmount(gemsToRemove) > 10))) {
+                         || (total - GameBoardHelper.countGemAmount(gemsToRemove) > 10))) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("can only have a maximum of 10 gems");
       } else if (total <= 10 && gemsToRemove != null) {
@@ -773,6 +791,8 @@ public class GameHandlerController {
     final GameBoard gameBoard = getGame(gameid);
     if (gameBoard == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
+    } else if (gameBoard.isGameOver()) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("game is over");
     }
 
     final Hand hand = GameBoardHelper.getHand(gameBoard.players(), username);
@@ -800,9 +820,6 @@ public class GameHandlerController {
     hand.visitedNobles().add(nobleToClaim);
     hand.incrementPrestigePoints(nobleToClaim.prestigePoints());
 
-    gameBoard.nextTurn();
-
-    return ResponseEntity.status(HttpStatus.OK).body(null);
+    return getStringResponseEntity(gameBoard);
   }
-
 }
