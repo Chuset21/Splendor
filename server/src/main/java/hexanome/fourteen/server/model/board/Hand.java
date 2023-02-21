@@ -3,6 +3,7 @@ package hexanome.fourteen.server.model.board;
 import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
+import hexanome.fourteen.server.model.board.tradingposts.TradingPosts;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -22,6 +23,8 @@ public final class Hand {
   private final Set<Noble> reservedNobles;
   private Gems gemDiscounts;
 
+  private TradingPosts tradingPosts;
+
   /**
    * Constructor.
    *
@@ -32,9 +35,11 @@ public final class Hand {
    * @param visitedNobles  the owned nobles
    * @param reservedNobles the reserved nobles
    * @param gemDiscounts   the gem discounts
+   * @param tradingPosts   the trading post powers a playes has
    */
   public Hand(int prestigePoints, Gems gems, List<Card> reservedCards, List<Card> purchasedCards,
-              Set<Noble> visitedNobles, Set<Noble> reservedNobles, Gems gemDiscounts) {
+              Set<Noble> visitedNobles, Set<Noble> reservedNobles, Gems gemDiscounts,
+              TradingPosts tradingPosts) {
     this.prestigePoints = prestigePoints;
     this.gems = gems;
     this.reservedCards = reservedCards;
@@ -42,6 +47,7 @@ public final class Hand {
     this.visitedNobles = visitedNobles;
     this.reservedNobles = reservedNobles;
     this.gemDiscounts = gemDiscounts;
+    this.tradingPosts = tradingPosts;
   }
 
   /**
@@ -57,6 +63,7 @@ public final class Hand {
     visitedNobles = new HashSet<>();
     reservedNobles = new HashSet<>();
     gemDiscounts = new Gems();
+    tradingPosts = new TradingPosts();
   }
 
   /**
@@ -123,6 +130,15 @@ public final class Hand {
   }
 
   /**
+   * A Getter for the Trading Post powers a Player currently has.
+   *
+   * @return The Trading Post powers a Player currently has.
+   */
+  public TradingPosts tradingPosts() {
+    return tradingPosts;
+  }
+
+  /**
    * A Setter for the prestige points.
    *
    * @param prestigePoints prestige points to set
@@ -147,6 +163,15 @@ public final class Hand {
    */
   public void setGemDiscounts(Gems gemDiscounts) {
     this.gemDiscounts = gemDiscounts;
+  }
+
+  /**
+   * a Setter for the Trading Posts.
+   *
+   * @param tradingPosts The Trading Posts that have been allocated to set
+   */
+  public void setTradingPosts(TradingPosts tradingPosts) {
+    this.tradingPosts = tradingPosts;
   }
 
   /**
