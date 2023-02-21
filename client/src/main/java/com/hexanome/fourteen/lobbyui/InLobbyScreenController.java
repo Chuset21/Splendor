@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
@@ -30,6 +32,7 @@ public class InLobbyScreenController implements ScreenController{
   @FXML
   private Button refreshPlayersButton;
 
+  Thread refresherThread;
   // Holds data of current lobby (primarily the lobby location)
   private Lobby lobby;
   
@@ -53,7 +56,27 @@ public class InLobbyScreenController implements ScreenController{
     // Get data from MenuController
     this.lobby = User.getCurrentLobby(stage);
 
-    updateLobbyInfo();
+    // Sets lobby info to automatically refresh
+    Task<Void> task = new Task<>() {
+      @Override
+      public Void call() throws Exception {
+
+        while (!Thread.currentThread().isInterrupted()) {
+          Platform.runLater(() -> {
+            LobbyServiceCaller.updateAccessToken();
+            updateLobbyInfo();
+          });
+          Thread.sleep(2000);
+        }
+        return null;
+      }
+    };
+
+    refresherThread = new Thread(task);
+    refresherThread.setDaemon(true);
+    refresherThread.start();
+
+    //updateLobbyInfo();
   }
 
   @FXML
@@ -130,7 +153,15 @@ public class InLobbyScreenController implements ScreenController{
     return false;
   }
 
+  /**
+   * Updates all lobby information, kicks player from lobby if session is no longer active
+   */
   private void updateLobbyInfo(){
+    if(!LobbyServiceCaller.isSessionActive(lobby.getSessionid())){
+      handleLeaveButton();
+      return;
+    }
+
     lobby.updateLobby();
     updateLobbyName(lobby.getPlayers()[0]);
     updatePlayerCounter(lobby.getNumPlayers(),lobby.getPlayers().length);

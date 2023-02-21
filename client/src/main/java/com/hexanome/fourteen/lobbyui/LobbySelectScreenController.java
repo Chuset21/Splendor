@@ -39,6 +39,8 @@ public class LobbySelectScreenController implements ScreenController{
   @Override
   public void sendStageData(Stage stage) {
     this.stage = stage;
+
+    // Sets lobby list to automatically refresh
     Task<Void> task = new Task<>() {
       @Override
       public Void call() throws Exception {
@@ -67,7 +69,7 @@ public class LobbySelectScreenController implements ScreenController{
     // Resets displayed lobbies
     lobbyVBox.getChildren().clear();
 
-    SessionsForm lobbyForm = lobbyForm = LobbyServiceCaller.getSessions();
+    SessionsForm lobbyForm = LobbyServiceCaller.getSessions();
 
     if(lobbyForm != null){
       Map<String, SessionForm> lobbies = lobbyForm.sessions();

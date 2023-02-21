@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import com.hexanome.fourteen.lobbyui.Lobby;
@@ -156,18 +157,23 @@ public final class LobbyServiceCaller {
    * Leave a session.
    *
    * @param user user to remove from their current session
-   * @return true if successful, false otherwise
+   * @return true if successful, false otherwise (includes case where user is not in lobby in the first place)
    */
   public static boolean leaveSession(User user) throws TokenRefreshFailedException {
+    // Check if user is in a lobby to begin with
+    if(user.getCurrentLobby() == null){
+      return false;
+    }
+
     // Try updating tokens, if fails: send user back to login to refresh tokens
     if (!updateAccessToken(user)) {
       throw new TokenRefreshFailedException();
     }
 
     HttpResponse response = Unirest.delete("%sapi/sessions/%s/players/%s".formatted(Main.lsLocation, user.getCurrentLobby().getSessionid(), user.getUserid()))
-            .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-            .queryString("access_token", user.getAccessToken())
-            .asString();
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", user.getAccessToken())
+        .asString();
 
     return response.getStatus() == 200;
   }
@@ -240,9 +246,14 @@ public final class LobbyServiceCaller {
    * Deletes a session, requires host's token
    *
    * @param user user deleting a session
-   * @return body of HTTP response
+   * @return true if session was deleted, false otherwise (includes case where player wasn't hosting a session)
    */
   public static boolean deleteSession(User user) throws TokenRefreshFailedException {
+    // Check if user is in a lobby to begin with
+    if(user.getCurrentLobby() == null){
+      return false;
+    }
+
     // Try updating tokens, if fails: send user back to login to refresh tokens
     if (!updateAccessToken(user)) {
       throw new TokenRefreshFailedException();
@@ -281,5 +292,22 @@ public final class LobbyServiceCaller {
     }
 
     return saveGameForms;
+  }
+
+  /**
+   * Get whether session is active
+   *
+   * @param session sessionid to check status of
+   * @return active status of the given session
+   */
+  public static boolean isSessionActive(String session){
+    SessionsForm sessions = getSessions();
+    boolean isActive = false;
+
+    for(Map.Entry<String,SessionForm> entry : sessions.sessions().entrySet()){
+      if(entry.getKey().equals(session)){ isActive = true; }
+    }
+
+    return isActive;
   }
 }
