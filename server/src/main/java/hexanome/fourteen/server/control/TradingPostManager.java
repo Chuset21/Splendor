@@ -16,7 +16,7 @@ public class TradingPostManager {
    *
    * @param hand the players hand to check.
    */
-  public void checkCardTradingPosts(Hand hand) {
+  public static void checkCardTradingPosts(Hand hand) {
     checkTradingPost1(hand);
     checkTradingPost2(hand);
     checkTradingPost3(hand);
@@ -29,7 +29,7 @@ public class TradingPostManager {
    *
    * @param hand the players hand to check.
    */
-  public void checkNobleTradingPosts(Hand hand) {
+  public static void checkNobleTradingPosts(Hand hand) {
     checkTradingPost4(hand);
   }
 
@@ -39,7 +39,7 @@ public class TradingPostManager {
    *
    * @param hand the players hand to check.
    */
-  private void checkTradingPost1(Hand hand) {
+  private static void checkTradingPost1(Hand hand) {
     Gems gemsNeeded = new Gems();
     gemsNeeded.put(GemColor.RED, 3);
     gemsNeeded.put(GemColor.WHITE, 1);
@@ -57,7 +57,7 @@ public class TradingPostManager {
    *
    * @param hand the players hand to check.
    */
-  private void checkTradingPost2(Hand hand) {
+  private static void checkTradingPost2(Hand hand) {
     Gems gemsNeeded = new Gems();
     gemsNeeded.put(GemColor.WHITE, 2);
     if (hand.gems().hasEnoughGems(gemsNeeded)) {
@@ -74,7 +74,7 @@ public class TradingPostManager {
    *
    * @param hand the players hand to check.
    */
-  private void checkTradingPost3(Hand hand) {
+  private static void checkTradingPost3(Hand hand) {
     Gems gemsNeeded = new Gems();
     gemsNeeded.put(GemColor.BLUE, 3);
     gemsNeeded.put(GemColor.BLACK, 1);
@@ -92,7 +92,7 @@ public class TradingPostManager {
    *
    * @param hand the players hand to check.
    */
-  private void checkTradingPost4(Hand hand) {
+  private static void checkTradingPost4(Hand hand) {
     Gems gemsNeeded = new Gems();
     gemsNeeded.put(GemColor.GREEN, 5);
     if (hand.gems().hasEnoughGems(gemsNeeded) && hand.visitedNobles().size() >= 1) {
@@ -109,7 +109,7 @@ public class TradingPostManager {
    *
    * @param hand the players hand to check.
    */
-  private void checkTradingPost5(Hand hand) {
+  private static void checkTradingPost5(Hand hand) {
     Gems gemsNeeded = new Gems();
     gemsNeeded.put(GemColor.BLACK, 3);
     if (hand.gems().hasEnoughGems(gemsNeeded)) {
