@@ -99,10 +99,10 @@ public class LobbySelectScreenController implements ScreenController{
   private void handleBackButton(){
     try {
       MenuController.getMenuController(stage).goBack();
+      refresherThread.interrupt();
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
-    refresherThread.interrupt();
   }
 
   /**

@@ -123,7 +123,7 @@ public class InLobbyScreenController implements ScreenController{
 
     try{
       MenuController.getMenuController(stage).goBack();
-
+      refresherThread.interrupt();
       User.getUser(stage).setCurrentLobby(null);
     } catch (IOException ioe){
       ioe.printStackTrace();

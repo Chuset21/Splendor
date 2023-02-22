@@ -106,10 +106,9 @@ public class MenuController {
       goToLoadGameScreen();
     } else if (screen instanceof InLobbyScreenController) {
       goBack();
+    } else {
+      goToWelcomeScreen();
     }
-
-    // Go to last screen
-    screen.sendStageData(stage);
   }
 
   public void goToWelcomeScreen() throws IOException {
@@ -118,17 +117,17 @@ public class MenuController {
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
-            Objects.requireNonNull(MenuController.class.getResource("choiceSelect.fxml")));
+            Objects.requireNonNull(MenuController.class.getResource("WelcomeScreen.fxml")));
     // Import root from fxml file
     Parent root = loader.load();
-
-    // Go to screen
-    ScreenController controller = loader.getController();
-    controller.sendStageData(stage);
 
     // Set up root on stage (window)
     Scene aScene = new Scene(root);
     aScene.getStylesheets().add(getClass().getResource("lobbyStyling.css").toExternalForm());
+
+    // Go to screen
+    ScreenController controller = loader.getController();
+    controller.sendStageData(stage);
 
     // Initialize stage settings
     stage.setScene(aScene);
@@ -145,7 +144,7 @@ public class MenuController {
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
-            Objects.requireNonNull(MenuController.class.getResource("createGame.fxml")));
+            Objects.requireNonNull(MenuController.class.getResource("CreateGameScreen.fxml")));
     // Import root from fxml file
     Parent root = loader.load();
 
@@ -172,7 +171,7 @@ public class MenuController {
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
-            Objects.requireNonNull(MenuController.class.getResource("joinGame.fxml")));
+            Objects.requireNonNull(MenuController.class.getResource("LobbySelectScreen.fxml")));
     // Import root from fxml file
     Parent root = loader.load();
 
@@ -199,7 +198,7 @@ public class MenuController {
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
-            Objects.requireNonNull(MenuController.class.getResource("loadGame.fxml")));
+            Objects.requireNonNull(MenuController.class.getResource("LoadGameScreen.fxml")));
     // Import root from fxml file
     Parent root = loader.load();
 

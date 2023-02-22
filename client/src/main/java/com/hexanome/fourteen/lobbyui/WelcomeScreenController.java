@@ -21,8 +21,6 @@ public class WelcomeScreenController implements ScreenController{
   @FXML
   private AnchorPane anchorPane;
   @FXML
-  private Text welcomeText;
-  @FXML
   private Text displayUsername;
   @FXML
   private Button newGameButton;

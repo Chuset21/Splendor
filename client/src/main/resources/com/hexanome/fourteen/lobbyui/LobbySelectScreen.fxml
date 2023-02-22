@@ -11,7 +11,7 @@
          <font>
             <Font name="Satoshi Bold" size="24.0" />
          </font></Button>
-      <Pane fx:id="textOpacityPane" layoutX="487.0" layoutY="29.0" prefHeight="70.0" prefWidth="220.0">
+      <Pane id="textOpacityPane" layoutX="487.0" layoutY="29.0" prefHeight="70.0" prefWidth="220.0">
          <children>
             <Text layoutX="25.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lobby Search">
                <font>
@@ -19,7 +19,7 @@
                </font>
             </Text>
          </children></Pane>
-      <Pane fx:id="textOpacityPane" layoutX="75.0" layoutY="121.0" prefHeight="70.0" prefWidth="1047.0">
+      <Pane id="textOpacityPane" layoutX="75.0" layoutY="121.0" prefHeight="70.0" prefWidth="1047.0">
          <children>
             <Text layoutX="37.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rooms">
                <font>
