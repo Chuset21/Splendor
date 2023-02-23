@@ -25,6 +25,24 @@ public class TradingPostManager {
   }
 
   /**
+   * This method will call trading post methods to check if they are lost when cards have been lost
+   * due to the loss of cards from the purchase of a sacrifice card.
+   *
+   * @param hand the players hand to check.
+   */
+  public static void checkLoseCardTradingPosts(Hand hand) {
+    checkLoseTradingPost1(hand);
+    checkLoseTradingPost2(hand);
+    checkLoseTradingPost3(hand);
+    if (hand.tradingPosts().get(TradingPostsEnum.FIVE_PRESETIGE_POINTS)) {
+      checkLoseTradingPost4(hand);
+    }
+    if (hand.tradingPosts().get(TradingPostsEnum.ONE_POINT_PER_POWER)) {
+      checkLoseTradingPost5(hand);
+    }
+  }
+
+  /**
    * This method will call all trading posts that can be acquired after claiming a noble.
    *
    * @param hand the players hand to check.
@@ -43,11 +61,29 @@ public class TradingPostManager {
     Gems gemsNeeded = new Gems();
     gemsNeeded.put(GemColor.RED, 3);
     gemsNeeded.put(GemColor.WHITE, 1);
-    if (hand.gems().hasEnoughGems(gemsNeeded)) {
+    if (hand.gemDiscounts().hasEnoughGems(gemsNeeded)) {
       TradingPosts tp = hand.tradingPosts();
       tp.replace(TradingPostsEnum.BONUS_GEM_WITH_CARD, true);
       hand.setTradingPosts(tp);
       //TODO implementation for effects of this trading post still need to be implemented
+    }
+  }
+
+  /**
+   * Check if a player loses trading post 1 when losing cards from the purchase of a sacrifice
+   * card.
+   *
+   * @param hand the players hand to check.
+   */
+  private static void checkLoseTradingPost1(Hand hand) {
+    Gems gemsNeeded = new Gems();
+    gemsNeeded.put(GemColor.RED, 3);
+    gemsNeeded.put(GemColor.WHITE, 1);
+    if (!hand.gems().hasEnoughGems(gemsNeeded)) {
+      TradingPosts tp = hand.tradingPosts();
+      tp.replace(TradingPostsEnum.BONUS_GEM_WITH_CARD, false);
+      hand.setTradingPosts(tp);
+      //TODO remove the effects of this trading post
     }
   }
 
@@ -60,11 +96,28 @@ public class TradingPostManager {
   private static void checkTradingPost2(Hand hand) {
     Gems gemsNeeded = new Gems();
     gemsNeeded.put(GemColor.WHITE, 2);
-    if (hand.gems().hasEnoughGems(gemsNeeded)) {
+    if (hand.gemDiscounts().hasEnoughGems(gemsNeeded)) {
       TradingPosts tp = hand.tradingPosts();
       tp.replace(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO, true);
       hand.setTradingPosts(tp);
       //TODO implementation for effects of this trading post still need to be implemented
+    }
+  }
+
+  /**
+   * Check if a player loses trading post 2 when losing cards from the purchase of a sacrifice
+   * card.
+   *
+   * @param hand the players hand to check.
+   */
+  private static void checkLoseTradingPost2(Hand hand) {
+    Gems gemsNeeded = new Gems();
+    gemsNeeded.put(GemColor.WHITE, 2);
+    if (!hand.gemDiscounts().hasEnoughGems(gemsNeeded)) {
+      TradingPosts tp = hand.tradingPosts();
+      tp.replace(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO, false);
+      hand.setTradingPosts(tp);
+      //TODO remove the effects of this trading post
     }
   }
 
@@ -78,11 +131,29 @@ public class TradingPostManager {
     Gems gemsNeeded = new Gems();
     gemsNeeded.put(GemColor.BLUE, 3);
     gemsNeeded.put(GemColor.BLACK, 1);
-    if (hand.gems().hasEnoughGems(gemsNeeded)) {
+    if (hand.gemDiscounts().hasEnoughGems(gemsNeeded)) {
       TradingPosts tp = hand.tradingPosts();
       tp.replace(TradingPostsEnum.DOUBLE_GOLD_GEMS, true);
       hand.setTradingPosts(tp);
       //TODO implementation for effects of this trading post still need to be implemented
+    }
+  }
+
+  /**
+   * Check if a player loses trading post 3 when losing cards from the purchase of a sacrifice
+   * card.
+   *
+   * @param hand the players hand to check.
+   */
+  private static void checkLoseTradingPost3(Hand hand) {
+    Gems gemsNeeded = new Gems();
+    gemsNeeded.put(GemColor.BLUE, 3);
+    gemsNeeded.put(GemColor.BLACK, 1);
+    if (!hand.gemDiscounts().hasEnoughGems(gemsNeeded)) {
+      TradingPosts tp = hand.tradingPosts();
+      tp.replace(TradingPostsEnum.DOUBLE_GOLD_GEMS, false);
+      hand.setTradingPosts(tp);
+      //TODO remove the effects of this trading post
     }
   }
 
@@ -95,11 +166,28 @@ public class TradingPostManager {
   private static void checkTradingPost4(Hand hand) {
     Gems gemsNeeded = new Gems();
     gemsNeeded.put(GemColor.GREEN, 5);
-    if (hand.gems().hasEnoughGems(gemsNeeded) && hand.visitedNobles().size() >= 1) {
+    if (hand.gemDiscounts().hasEnoughGems(gemsNeeded) && hand.visitedNobles().size() >= 1) {
       TradingPosts tp = hand.tradingPosts();
       tp.replace(TradingPostsEnum.FIVE_PRESETIGE_POINTS, true);
       hand.setTradingPosts(tp);
       hand.setPrestigePoints(hand.prestigePoints() + 5);
+    }
+  }
+
+  /**
+   * Check if a player loses trading post 4 when losing cards from the purchase of a sacrifice
+   * card.
+   *
+   * @param hand the players hand to check.
+   */
+  private static void checkLoseTradingPost4(Hand hand) {
+    Gems gemsNeeded = new Gems();
+    gemsNeeded.put(GemColor.GREEN, 5);
+    if (!hand.gemDiscounts().hasEnoughGems(gemsNeeded)) {
+      TradingPosts tp = hand.tradingPosts();
+      tp.replace(TradingPostsEnum.FIVE_PRESETIGE_POINTS, false);
+      hand.setTradingPosts(tp);
+      hand.setPrestigePoints(hand.prestigePoints() - 5);
     }
   }
 
@@ -112,7 +200,7 @@ public class TradingPostManager {
   private static void checkTradingPost5(Hand hand) {
     Gems gemsNeeded = new Gems();
     gemsNeeded.put(GemColor.BLACK, 3);
-    if (hand.gems().hasEnoughGems(gemsNeeded)) {
+    if (hand.gemDiscounts().hasEnoughGems(gemsNeeded)) {
       TradingPosts tp = hand.tradingPosts();
       tp.replace(TradingPostsEnum.ONE_POINT_PER_POWER, true);
       hand.setTradingPosts(tp);
@@ -123,6 +211,29 @@ public class TradingPostManager {
         }
       }
       hand.setPrestigePoints(hand.prestigePoints() + numPosts);
+    }
+  }
+
+  /**
+   * Check if a player loses trading post 5 when losing cards from the purchase of a sacrifice
+   * card.
+   *
+   * @param hand the players hand to check.
+   */
+  private static void checkLoseTradingPost5(Hand hand) {
+    Gems gemsNeeded = new Gems();
+    gemsNeeded.put(GemColor.BLACK, 3);
+    if (!hand.gemDiscounts().hasEnoughGems(gemsNeeded)) {
+      TradingPosts tp = hand.tradingPosts();
+      int numPosts = 0;
+      for (boolean value : tp.values()) {
+        if (value) {
+          numPosts++;
+        }
+      }
+      tp.replace(TradingPostsEnum.ONE_POINT_PER_POWER, false);
+      hand.setTradingPosts(tp);
+      hand.setPrestigePoints(hand.prestigePoints() - numPosts);
     }
   }
 }

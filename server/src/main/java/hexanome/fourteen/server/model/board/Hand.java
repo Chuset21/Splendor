@@ -22,7 +22,6 @@ public final class Hand {
   private final Set<Noble> visitedNobles;
   private final Set<Noble> reservedNobles;
   private Gems gemDiscounts;
-
   private TradingPosts tradingPosts;
 
   /**
