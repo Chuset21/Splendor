@@ -88,6 +88,11 @@ public class GameHandlerController {
     gameManager = new HashMap<>();
   }
 
+  @GetMapping()
+  public ResponseEntity<String> testApi() {
+    return ResponseEntity.status(HttpStatus.OK).body("game service running");
+  }
+
   /**
    * Create a game given the specified parameters.
    *
