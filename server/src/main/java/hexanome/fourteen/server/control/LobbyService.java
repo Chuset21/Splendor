@@ -25,13 +25,11 @@ public class LobbyService implements LobbyServiceCaller {
    *
    * @param gsonInstance common gson instance
    * @param port         The Port
-   * @param address      The IP Address
    * @param lsLocation   The LobbyService Location
    */
   public LobbyService(@Autowired GsonInstance gsonInstance,
                       @Value("${ls.location}") String lsLocation,
-                      @Value("${server.port}") String port,
-                      @Value("${service.address}") String address) throws UnknownHostException {
+                      @Value("${server.port}") String port) throws UnknownHostException {
     this.gsonInstance = gsonInstance;
     this.lsLocation = lsLocation;
     gameServiceLocation =

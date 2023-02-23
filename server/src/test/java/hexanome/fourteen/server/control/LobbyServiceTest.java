@@ -24,8 +24,7 @@ public class LobbyServiceTest {
   public static void setUp() throws UnknownHostException {
     gsonInstance = new GsonInstance();
     ReflectionTestUtils.invokeMethod(gsonInstance, "initGson");
-    lobbyService = new LobbyService(gsonInstance, "dummy location", "4243",
-        "dummy address");
+    lobbyService = new LobbyService(gsonInstance, "dummy location", "4243");
   }
 
   @Test
