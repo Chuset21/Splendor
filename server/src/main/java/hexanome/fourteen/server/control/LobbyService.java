@@ -34,7 +34,7 @@ public class LobbyService implements LobbyServiceCaller {
     this.gsonInstance = gsonInstance;
     this.lsLocation = lsLocation;
     gameServiceLocation =
-        "http://%s:%s/splendor/".formatted(Inet4Address.getLocalHost().getHostAddress(), port);
+        "http://%s:%s/splendor".formatted(Inet4Address.getLocalHost().getHostAddress(), port);
   }
 
   @Override
