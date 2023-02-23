@@ -79,7 +79,7 @@ public class TradingPostManager {
     Gems gemsNeeded = new Gems();
     gemsNeeded.put(GemColor.RED, 3);
     gemsNeeded.put(GemColor.WHITE, 1);
-    if (!hand.gems().hasEnoughGems(gemsNeeded)) {
+    if (!hand.gemDiscounts().hasEnoughGems(gemsNeeded)) {
       TradingPosts tp = hand.tradingPosts();
       tp.replace(TradingPostsEnum.BONUS_GEM_WITH_CARD, false);
       hand.setTradingPosts(tp);
