@@ -32,7 +32,7 @@ public class LobbyService implements LobbyServiceCaller {
                       @Value("${service.address}") String address) {
     this.gsonInstance = gsonInstance;
     this.lsLocation = lsLocation;
-    gameServiceLocation = "http://%s:%s/".formatted(address, port);
+    gameServiceLocation = "http://%s:%s/splendor/".formatted(address, port);
   }
 
   @Override
