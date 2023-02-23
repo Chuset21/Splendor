@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -339,26 +340,29 @@ public class GameHandlerController {
         }
 
         // Decrement gem discounts
-        switch (satchelCard.cardToAttach()) {
-          case ReserveNobleCard c -> hand.gemDiscounts().computeIfPresent(c.discountColor(),
+        if (Objects.requireNonNull(satchelCard.cardToAttach()) instanceof ReserveNobleCard c) {
+          hand.gemDiscounts().computeIfPresent(c.discountColor(),
               (k, v) -> v == Bonus.SINGLE.getValue() + Bonus.SINGLE.getValue() ? null :
                   v - Bonus.SINGLE.getValue() - Bonus.SINGLE.getValue());
-          case DoubleBonusCard c -> hand.gemDiscounts().computeIfPresent(c.discountColor(),
+        } else if (satchelCard.cardToAttach() instanceof DoubleBonusCard c) {
+          hand.gemDiscounts().computeIfPresent(c.discountColor(),
               (k, v) -> v == Bonus.DOUBLE.getValue() + Bonus.SINGLE.getValue() ? null :
                   v - Bonus.DOUBLE.getValue() - Bonus.SINGLE.getValue());
-          case SacrificeCard c -> hand.gemDiscounts().computeIfPresent(c.discountColor(),
+        } else if (satchelCard.cardToAttach() instanceof SacrificeCard c) {
+          hand.gemDiscounts().computeIfPresent(c.discountColor(),
               (k, v) -> v == Bonus.SINGLE.getValue() + Bonus.SINGLE.getValue() ? null :
                   v - Bonus.SINGLE.getValue() - Bonus.SINGLE.getValue());
-          case StandardCard c -> hand.gemDiscounts().computeIfPresent(c.discountColor(),
+        } else if (satchelCard.cardToAttach() instanceof StandardCard c) {
+          hand.gemDiscounts().computeIfPresent(c.discountColor(),
               (k, v) -> v == Bonus.SINGLE.getValue() + Bonus.SINGLE.getValue() ? null :
                   v - Bonus.SINGLE.getValue() - Bonus.SINGLE.getValue());
-          case WaterfallCard c -> hand.gemDiscounts().computeIfPresent(c.discountColor(),
+        } else if (satchelCard.cardToAttach() instanceof WaterfallCard c) {
+          hand.gemDiscounts().computeIfPresent(c.discountColor(),
               (k, v) -> v == Bonus.SINGLE.getValue() + Bonus.SINGLE.getValue() ? null :
                   v - Bonus.SINGLE.getValue() - Bonus.SINGLE.getValue());
-          case default -> {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("failed to decrement prestige points");
-          }
+        } else {
+          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+              .body("failed to decrement prestige points");
         }
         hand.decrementPrestigePoints(satchelCard.cardToAttach().prestigePoints());
       }
@@ -490,55 +494,48 @@ public class GameHandlerController {
 
     // Now we know that they can pay for this card
 
-    switch (card) {
-      case DoubleBonusCard c ->
-          hand.gemDiscounts().merge(c.discountColor(), Bonus.DOUBLE.getValue(), Integer::sum);
-      case StandardCard c ->
-          hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
-      case ReserveNobleCard c -> {
-        final ResponseEntity<String> response = GameBoardHelper.reserveNoble(gameBoard, hand, c);
-        if (response != null) {
-          return response;
-        }
+    if (card instanceof DoubleBonusCard c) {
+      hand.gemDiscounts().merge(c.discountColor(), Bonus.DOUBLE.getValue(), Integer::sum);
+    } else if (card instanceof StandardCard c) {
+      hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
+    } else if (card instanceof ReserveNobleCard c) {
+      final ResponseEntity<String> response = GameBoardHelper.reserveNoble(gameBoard, hand, c);
+      if (response != null) {
+        return response;
       }
-      case SatchelCard c -> {
+    } else if (card instanceof SatchelCard c) {
+      final ResponseEntity<String> response =
+          GameBoardHelper.purchaseSatchelCard(c, hand, gameBoard);
+      if (response != null) {
+        return response;
+      }
+    } else if (card instanceof WaterfallCard c) { // If card is null
+      if (c.cardToTake() == null) {
+        // If there are level two cards available to take
+        if (gameBoard.cards().stream()
+            .anyMatch(l -> !l.isEmpty() && l.get(0).level() == CardLevel.TWO)) {
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body("card to take cannot be null");
+        }
+      } else if (c.cardToTake().level() != CardLevel.TWO) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("must take a level two card for free");
+      } else if (!GameBoardHelper.isCardFaceUpOnBoard(gameBoard.cards(), c.cardToTake())) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("card to take is not available");
+      }
+
+      if (c.cardToTake() != null) {
         final ResponseEntity<String> response =
-            GameBoardHelper.purchaseSatchelCard(c, hand, gameBoard);
+            GameBoardHelper.purchaseFreeCard(c.cardToTake(), hand, gameBoard);
+
         if (response != null) {
           return response;
         }
       }
-      case WaterfallCard c -> {
-        // If card is null
-        if (c.cardToTake() == null) {
-          // If there are level two cards available to take
-          if (gameBoard.cards().stream()
-              .anyMatch(l -> !l.isEmpty() && l.get(0).level() == CardLevel.TWO)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("card to take cannot be null");
-          }
-        } else if (c.cardToTake().level() != CardLevel.TWO) {
-          return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-              .body("must take a level two card for free");
-        } else if (!GameBoardHelper.isCardFaceUpOnBoard(gameBoard.cards(), c.cardToTake())) {
-          return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-              .body("card to take is not available");
-        }
-
-        if (c.cardToTake() != null) {
-          final ResponseEntity<String> response =
-              GameBoardHelper.purchaseFreeCard(c.cardToTake(), hand, gameBoard);
-
-          if (response != null) {
-            return response;
-          }
-        }
-        // Add gem discounts
-        hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
-        c.removeCardToTake();
-      }
-      case default -> {
-      }
+      // Add gem discounts
+      hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
+      c.removeCardToTake();
     }
 
     if (reserved && !(hand.reservedCards().remove(card))) {
