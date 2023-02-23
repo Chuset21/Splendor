@@ -98,7 +98,7 @@ public class LobbyService implements LobbyServiceCaller {
 
   @Override
   public String getUsername(String accessToken) {
-    final HttpResponse<String> result = Unirest.post("%soauth/username".formatted(lsLocation))
+    final HttpResponse<String> result = Unirest.get("%soauth/username".formatted(lsLocation))
         .queryString("access_token", accessToken).asString();
     return result.getStatus() == HttpStatus.OK ? result.getBody() : null;
   }
