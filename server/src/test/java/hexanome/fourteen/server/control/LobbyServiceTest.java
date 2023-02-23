@@ -1,5 +1,6 @@
 package hexanome.fourteen.server.control;
 
+import java.net.UnknownHostException;
 import kong.unirest.HttpResponse;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ public class LobbyServiceTest {
   static LobbyService lobbyService;
 
   @BeforeAll
-  public static void setUp() {
+  public static void setUp() throws UnknownHostException {
     gsonInstance = new GsonInstance();
     ReflectionTestUtils.invokeMethod(gsonInstance, "initGson");
     lobbyService = new LobbyService(gsonInstance, "dummy location", "4243",

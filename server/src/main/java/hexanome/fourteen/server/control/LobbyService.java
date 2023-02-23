@@ -2,6 +2,8 @@ package hexanome.fourteen.server.control;
 
 import hexanome.fourteen.server.control.form.RegisterGameServiceForm;
 import hexanome.fourteen.server.control.form.SaveGameForm;
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +31,11 @@ public class LobbyService implements LobbyServiceCaller {
   public LobbyService(@Autowired GsonInstance gsonInstance,
                       @Value("${ls.location}") String lsLocation,
                       @Value("${server.port}") String port,
-                      @Value("${service.address}") String address) {
+                      @Value("${service.address}") String address) throws UnknownHostException {
     this.gsonInstance = gsonInstance;
     this.lsLocation = lsLocation;
-    gameServiceLocation = "http://%s:%s/splendor/".formatted(address, port);
+    gameServiceLocation =
+        "http://%s:%s/splendor/".formatted(Inet4Address.getLocalHost().getHostAddress(), port);
   }
 
   @Override
