@@ -105,7 +105,6 @@ public class LobbyService implements LobbyServiceCaller {
 
   @Override
   public void saveGame(String accessToken, SaveGameForm saveGameForm) {
-
     Unirest.put("%sapi/gameservices/%s/savegames/%s".formatted(lsLocation, saveGameForm.gameName(),
             saveGameForm.saveGameid())).queryString("access_token", accessToken)
         .header("Content-Type", "application/json").body(gsonInstance.gson.toJson(saveGameForm))
