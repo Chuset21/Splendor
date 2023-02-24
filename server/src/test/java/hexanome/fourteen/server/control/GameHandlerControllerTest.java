@@ -93,7 +93,7 @@ public class GameHandlerControllerTest {
     ReflectionTestUtils.setField(launchGameForm, "gameType", GameServiceName.BASE.name());
     ReflectionTestUtils.setField(launchGameForm, "players", new User[] {user1, user2});
     ReflectionTestUtils.setField(launchGameForm, "saveGame", "XYZ45");
-    ResponseEntity<String> response = gameHandlerController.launchGame("gameid", launchGameForm);
+    ResponseEntity<String> response = gameHandlerController.launchGame("gameid", gsonInstance.gson.toJson(launchGameForm));
 
     assertNull(response.getBody());
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -102,7 +102,7 @@ public class GameHandlerControllerTest {
     Mockito.when(saveGameManager.getGame(saveGame)).thenReturn(
         new GameBoard(null, Set.of(Expansion.STANDARD), Set.of(new Player("user1")), "gameid", ""));
 
-    response = gameHandlerController.launchGame("gameid", launchGameForm);
+    response = gameHandlerController.launchGame("gameid", gsonInstance.gson.toJson(launchGameForm));
 
     assertNull(response.getBody());
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -1652,7 +1652,7 @@ public class GameHandlerControllerTest {
 
     TakeGemsForm takeGemsForm = new TakeGemsForm(null, null);
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("gems to take cannot be null", response.getBody());
 
@@ -1660,7 +1660,7 @@ public class GameHandlerControllerTest {
     gemsToTake.put(GemColor.GOLD, 1);
     takeGemsForm = new TakeGemsForm(gemsToTake, null);
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("cannot take gold gems", response.getBody());
 
@@ -1669,14 +1669,14 @@ public class GameHandlerControllerTest {
     final Gems gemsToRemove = new Gems();
     takeGemsForm = new TakeGemsForm(gemsToTake, gemsToRemove);
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("cannot take more than 3 gems", response.getBody());
 
     gemsToTake.put(GemColor.WHITE, 2);
     board.availableGems().clear();
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("not enough gems in the bank", response.getBody());
 
@@ -1687,13 +1687,13 @@ public class GameHandlerControllerTest {
     gemsToRemove.put(GemColor.BLUE, 1);
     takeGemsForm = new TakeGemsForm(gemsToTake, gemsToRemove);
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("cannot remove gems that you do not own", response.getBody());
 
     takeGemsForm = new TakeGemsForm(gemsToTake, null);
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("can only have a maximum of 10 gems", response.getBody());
 
@@ -1701,20 +1701,20 @@ public class GameHandlerControllerTest {
     gemsToRemove.put(GemColor.WHITE, 1);
     takeGemsForm = new TakeGemsForm(gemsToTake, gemsToRemove);
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("can only have a maximum of 10 gems", response.getBody());
 
     player.hand().gems().put(GemColor.GOLD, 6);
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("cannot remove gems if not necessary", response.getBody());
 
     gemsToRemove.put(GemColor.GOLD, 2);
     player.hand().gems().put(GemColor.GOLD, 10);
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("cannot remove gems and be left with less than 10", response.getBody());
 
@@ -1722,14 +1722,14 @@ public class GameHandlerControllerTest {
     gemsToTake.put(GemColor.WHITE, 3);
     takeGemsForm = new TakeGemsForm(gemsToTake, null);
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("cannot take 3 gems of one color", response.getBody());
 
     gemsToTake.put(GemColor.WHITE, 2);
     board.availableGems().put(GemColor.WHITE, 3);
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals(
         "cannot take 2 same color gems, there are less than 4 gems of that color in the bank",
@@ -1738,27 +1738,27 @@ public class GameHandlerControllerTest {
     gemsToTake.put(GemColor.WHITE, 1);
     board.availableGems().put(GemColor.WHITE, 4);
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("cannot take 1 gem if it is possible to take more", response.getBody());
 
     board.availableGems().put(GemColor.WHITE, 3);
     board.availableGems().put(GemColor.BLUE, 3);
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("cannot take 1 gem if it is possible to take more", response.getBody());
 
     gemsToTake.put(GemColor.BLUE, 2);
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("cannot take more than one gem of each gem", response.getBody());
 
     gemsToTake.put(GemColor.BLUE, 1);
     board.availableGems().put(GemColor.BLACK, 3);
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals(
         "cannot take 1 gem of each for 2 gem colors if it is possible to take from 3 colors",
@@ -1770,7 +1770,7 @@ public class GameHandlerControllerTest {
     Gems previousOwnedGems = new Gems(player.hand().gems());
     Gems previousBank = new Gems(board.availableGems());
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(previousOwnedGems.getOrDefault(GemColor.BLUE, 0) + 1,
         player.hand().gems().get(GemColor.BLUE));
@@ -1790,7 +1790,7 @@ public class GameHandlerControllerTest {
     previousOwnedGems = new Gems(player.hand().gems());
     previousBank = new Gems(board.availableGems());
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(previousOwnedGems.getOrDefault(GemColor.WHITE, 0) + 2,
         player.hand().gems().get(GemColor.WHITE));
@@ -1806,7 +1806,7 @@ public class GameHandlerControllerTest {
     previousOwnedGems = new Gems(player.hand().gems());
     previousBank = new Gems(board.availableGems());
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(previousOwnedGems.getOrDefault(GemColor.WHITE, 0) + 1,
         player.hand().gems().get(GemColor.WHITE));
@@ -1826,7 +1826,7 @@ public class GameHandlerControllerTest {
     previousOwnedGems = new Gems(player.hand().gems());
     previousBank = new Gems(board.availableGems());
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(previousOwnedGems.getOrDefault(GemColor.WHITE, 0) + 1,
         player.hand().gems().get(GemColor.WHITE));
@@ -1854,7 +1854,7 @@ public class GameHandlerControllerTest {
     previousBank = new Gems(board.availableGems());
     takeGemsForm = new TakeGemsForm(gemsToTake, gemsToRemove);
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(previousOwnedGems.getOrDefault(GemColor.WHITE, 0),
         player.hand().gems().getOrDefault(GemColor.WHITE, 0));
@@ -1879,7 +1879,7 @@ public class GameHandlerControllerTest {
     previousOwnedGems = new Gems(player.hand().gems());
     previousBank = new Gems(board.availableGems());
 
-    response = gameHandlerController.takeGems("", "token", takeGemsForm);
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(previousOwnedGems.getOrDefault(GemColor.WHITE, 0) + 1,
         player.hand().gems().get(GemColor.WHITE));
@@ -1930,7 +1930,7 @@ public class GameHandlerControllerTest {
 
     ClaimNobleForm claimNobleForm = new ClaimNobleForm(null);
 
-    response = gameHandlerController.claimNoble("", "token", claimNobleForm);
+    response = gameHandlerController.claimNoble("", "token", gsonInstance.gson.toJson(claimNobleForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("noble to claim cannot be null", response.getBody());
 
@@ -1941,7 +1941,7 @@ public class GameHandlerControllerTest {
     player.hand().gemDiscounts().clear();
     claimNobleForm = new ClaimNobleForm(nobleToClaim);
 
-    response = gameHandlerController.claimNoble("", "token", claimNobleForm);
+    response = gameHandlerController.claimNoble("", "token", gsonInstance.gson.toJson(claimNobleForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("do not have enough gem discounts to claim noble", response.getBody());
 
@@ -1950,14 +1950,14 @@ public class GameHandlerControllerTest {
     player.hand().gemDiscounts().put(GemColor.RED, 3);
     claimNobleForm = new ClaimNobleForm(nobleToClaim);
 
-    response = gameHandlerController.claimNoble("", "token", claimNobleForm);
+    response = gameHandlerController.claimNoble("", "token", gsonInstance.gson.toJson(claimNobleForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("noble to claim is not available", response.getBody());
 
     player.hand().reservedNobles().add(nobleToClaim);
     int prevPrestigePoints = player.hand().prestigePoints();
 
-    response = gameHandlerController.claimNoble("", "token", claimNobleForm);
+    response = gameHandlerController.claimNoble("", "token", gsonInstance.gson.toJson(claimNobleForm));
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertTrue(player.hand().reservedNobles().isEmpty());
     assertEquals(Set.of(nobleToClaim), player.hand().visitedNobles());
@@ -1972,7 +1972,7 @@ public class GameHandlerControllerTest {
     board.availableNobles().add(nobleToClaim);
     prevPrestigePoints = player.hand().prestigePoints();
 
-    response = gameHandlerController.claimNoble("", "token", claimNobleForm);
+    response = gameHandlerController.claimNoble("", "token", gsonInstance.gson.toJson(claimNobleForm));
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertFalse(board.availableNobles().contains(nobleToClaim));
     assertEquals(Set.of(nobleToClaim), player.hand().visitedNobles());

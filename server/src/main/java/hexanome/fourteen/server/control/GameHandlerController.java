@@ -40,6 +40,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -98,12 +99,14 @@ public class GameHandlerController {
    * Create a game given the specified parameters.
    *
    * @param gameid         The game id for the created game
-   * @param launchGameForm The information needed to create the game
+   * @param rawLaunchGameForm The information needed to create the game
    * @return The full response
    */
-  @PutMapping(value = "{gameid}", consumes = "application/json; charset=utf-8")
+  @PutMapping(value = "{gameid}", consumes = MediaType.ALL_VALUE)
   public ResponseEntity<String> launchGame(@PathVariable String gameid,
-                                           @RequestBody LaunchGameForm launchGameForm) {
+                                           @RequestBody String rawLaunchGameForm) {
+    final LaunchGameForm launchGameForm =
+        gsonInstance.gson.fromJson(rawLaunchGameForm, LaunchGameForm.class);
     GameBoard game = null;
     if (launchGameForm.saveGame() != null && !launchGameForm.saveGame().isBlank()) {
       game = saveGameManager.getGame(launchGameForm.saveGame());
@@ -220,7 +223,7 @@ public class GameHandlerController {
       lobbyService.saveGame(serverService.accessToken,
           new SaveGameForm(GameServiceName.getGameServiceName(gameBoard.expansions()).name(),
               gameBoard.players().stream().map(Player::uid).toList(), saveGameid));
-      return ResponseEntity.status(HttpStatus.OK).body(null);
+      return ResponseEntity.status(HttpStatus.OK).body(saveGameid);
     }
   }
 
@@ -232,7 +235,7 @@ public class GameHandlerController {
    * @param purchaseCardString The purchase card json string containing the form.
    * @return The response.
    */
-  @PutMapping(value = "{gameid}/card/purchase", consumes = "text/plain; charset=utf-8")
+  @PutMapping(value = "{gameid}/card/purchase", consumes = MediaType.ALL_VALUE)
   public ResponseEntity<String> purchaseCard(@PathVariable String gameid,
                                              @RequestParam("access_token") String accessToken,
                                              @RequestBody String purchaseCardString) {
@@ -567,7 +570,7 @@ public class GameHandlerController {
    * @param reserveCardString The reserve card json string containing the form.
    * @return The response.
    */
-  @PutMapping(value = "{gameid}/card/reserve", consumes = "text/plain; charset=utf-8")
+  @PutMapping(value = "{gameid}/card/reserve", consumes = MediaType.ALL_VALUE)
   public ResponseEntity<String> reserveCard(@PathVariable String gameid,
                                             @RequestParam("access_token") String accessToken,
                                             @RequestBody String reserveCardString) {
@@ -673,13 +676,13 @@ public class GameHandlerController {
    *
    * @param gameid       The game id corresponding to the game.
    * @param accessToken  The access token belonging to the player trying to take gems.
-   * @param takeGemsForm The take gems form.
+   * @param takeGemsFormString The take gems form.
    * @return The response.
    */
-  @PutMapping(value = "{gameid}/gems", consumes = "application/json; charset=utf-8")
+  @PutMapping(value = "{gameid}/gems", consumes = MediaType.ALL_VALUE)
   public ResponseEntity<String> takeGems(@PathVariable String gameid,
                                          @RequestParam("access_token") String accessToken,
-                                         @RequestBody TakeGemsForm takeGemsForm) {
+                                         @RequestBody String takeGemsFormString) {
     final String username = getUsername(accessToken);
     if (username == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
@@ -697,6 +700,8 @@ public class GameHandlerController {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
     }
 
+    final TakeGemsForm takeGemsForm =
+        gsonInstance.gson.fromJson(takeGemsFormString, TakeGemsForm.class);
     final Gems gemsToTake = takeGemsForm.gemsToTake();
     if (gemsToTake == null) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("gems to take cannot be null");
@@ -778,13 +783,13 @@ public class GameHandlerController {
    *
    * @param gameid         The game id corresponding to the game.
    * @param accessToken    The access token belonging to the player trying to reserve the card.
-   * @param claimNobleForm The claim noble form.
+   * @param claimNobleFormString The claim noble form.
    * @return The response.
    */
-  @PutMapping(value = "{gameid}/noble", consumes = "application/json; charset=utf-8")
+  @PutMapping(value = "{gameid}/noble", consumes = MediaType.ALL_VALUE)
   public ResponseEntity<String> claimNoble(@PathVariable String gameid,
                                            @RequestParam("access_token") String accessToken,
-                                           @RequestBody ClaimNobleForm claimNobleForm) {
+                                           @RequestBody String claimNobleFormString) {
     final String username = getUsername(accessToken);
     if (username == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
@@ -802,6 +807,8 @@ public class GameHandlerController {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
     }
 
+    final ClaimNobleForm claimNobleForm =
+        gsonInstance.gson.fromJson(claimNobleFormString, ClaimNobleForm.class);
     final Noble nobleToClaim = claimNobleForm.nobleToClaim();
     if (nobleToClaim == null) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("noble to claim cannot be null");

@@ -73,11 +73,11 @@ public class LobbyService implements LobbyServiceCaller {
   @Override
   public boolean registerGameService(String gameServiceName, String accessToken) {
     return Unirest.put("%sapi/gameservices/%s".formatted(lsLocation, gameServiceName))
-               .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-               .header("Content-Type", "application/json").queryString("access_token", accessToken)
-               .body(gsonInstance.gson.toJson(
-                   new RegisterGameServiceForm(gameServiceLocation, gameServiceName,
-                       gameServiceName))).asEmpty().getStatus() == 200;
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .header("Content-Type", "application/json").queryString("access_token", accessToken).body(
+            gsonInstance.gson.toJson(
+                new RegisterGameServiceForm(gameServiceLocation, gameServiceName, gameServiceName)))
+        .asEmpty().getStatus() == 200;
   }
 
   @Override
@@ -105,9 +105,10 @@ public class LobbyService implements LobbyServiceCaller {
 
   @Override
   public void saveGame(String accessToken, SaveGameForm saveGameForm) {
-    Unirest.put(
-            "%sapi/gameservices/%s/savegames/%s".formatted(lsLocation, saveGameForm.gameName(),
-                saveGameForm.saveGameid()))
-        .queryString("access_token", accessToken).asEmpty();
+
+    Unirest.put("%sapi/gameservices/%s/savegames/%s".formatted(lsLocation, saveGameForm.gameName(),
+            saveGameForm.saveGameid())).queryString("access_token", accessToken)
+        .header("Content-Type", "application/json").body(gsonInstance.gson.toJson(saveGameForm))
+        .asString();
   }
 }
