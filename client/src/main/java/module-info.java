@@ -14,6 +14,7 @@ module com.hexanome.fourteen {
   opens com.hexanome.fourteen.form.server.cardform to com.google.gson;
   opens com.hexanome.fourteen to com.google.gson;
 
+  exports com.hexanome.fourteen.form.server.payment;
   exports com.hexanome.fourteen;
   exports com.hexanome.fourteen.boards;
   exports com.hexanome.fourteen.login;

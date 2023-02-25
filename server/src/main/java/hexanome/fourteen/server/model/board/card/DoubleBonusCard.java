@@ -9,7 +9,6 @@ import java.util.Objects;
  * Double bonus card.
  */
 public final class DoubleBonusCard extends Card {
-  private int gemDiscount;
   private GemColor discountColor;
 
   /**
@@ -19,13 +18,11 @@ public final class DoubleBonusCard extends Card {
    * @param cost           the cost of the card
    * @param level          the level of the card
    * @param expansion      the expansion to which the card belongs to
-   * @param gemDiscount    the amount of gems to be discounted
    * @param discountColor  the color of the gems to be discounted
    */
   public DoubleBonusCard(int prestigePoints, Gems cost, CardLevel level, Expansion expansion,
-                         int gemDiscount, GemColor discountColor) {
+                         GemColor discountColor) {
     super(prestigePoints, cost, level, expansion);
-    this.gemDiscount = gemDiscount;
     this.discountColor = discountColor;
   }
 
@@ -37,17 +34,7 @@ public final class DoubleBonusCard extends Card {
   }
 
   /**
-   * A Getter for the Gem Discount associated with the StandardCard.
-   *
-   * @return The Gem Discount
-   */
-  public int gemDiscount() {
-    return gemDiscount;
-  }
-
-
-  /**
-   * A Getter for the Discount Color associated with the StandardCard.
+   * A Getter for the Discount Color associated with the card.
    *
    * @return The Discount Color
    */
@@ -66,6 +53,6 @@ public final class DoubleBonusCard extends Card {
     DoubleBonusCard card = (DoubleBonusCard) obj;
     return super.prestigePoints == card.prestigePoints && Objects.equals(super.cost, card.cost)
            && super.level == card.level && super.expansion == card.expansion
-           && gemDiscount == card.gemDiscount && discountColor == card.discountColor;
+           && discountColor == card.discountColor;
   }
 }

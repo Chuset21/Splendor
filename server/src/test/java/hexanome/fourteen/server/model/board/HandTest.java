@@ -23,7 +23,7 @@ public class HandTest {
     assertNull(handToTest.reservedCards());
     assertNull(handToTest.purchasedCards());
     assertNull(handToTest.visitedNobles());
-    assertNull(handToTest.reservedNoble());
+    assertNull(handToTest.reservedNobles());
     assertNull(handToTest.gemDiscounts());
   }
 
@@ -37,12 +37,6 @@ public class HandTest {
   public void testSetGems() {
     hand.setGems(null);
     assertNull(hand.gems());
-  }
-
-  @Test
-  public void testSetReservedNoble() {
-    hand.setReservedNoble(null);
-    assertNull(hand.reservedNoble());
   }
 
   @Test

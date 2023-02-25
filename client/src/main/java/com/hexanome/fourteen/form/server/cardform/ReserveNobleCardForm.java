@@ -10,7 +10,6 @@ import java.util.Objects;
  * Reserve Noble Card form.
  */
 public final class ReserveNobleCardForm extends CardForm {
-  private int gemDiscount;
   private GemColor discountColor;
   private NobleForm nobleToReserve;
 
@@ -21,16 +20,13 @@ public final class ReserveNobleCardForm extends CardForm {
    * @param cost           the cost of the card
    * @param level          the level of the card
    * @param expansion      the expansion to which the card belongs to
-   * @param gemDiscount    the amount of gems to be discounted
    * @param discountColor  the color of the gems to be discounted
    * @param nobleToReserve the noble to be reserved
    */
   public ReserveNobleCardForm(int prestigePoints, GemsForm cost,
-                          CardLevelForm level,
-                          Expansion expansion, int gemDiscount, GemColor discountColor,
+                          CardLevelForm level, Expansion expansion, GemColor discountColor,
                           NobleForm nobleToReserve) {
     super(prestigePoints, cost, level, expansion);
-    this.gemDiscount = gemDiscount;
     this.discountColor = discountColor;
     this.nobleToReserve = nobleToReserve;
   }
@@ -42,13 +38,12 @@ public final class ReserveNobleCardForm extends CardForm {
    * @param cost           the cost of the card
    * @param level          the level of the card
    * @param expansion      the expansion to which the card belongs to
-   * @param gemDiscount    the amount of gems to be discounted
    * @param discountColor  the color of the gems to be discounted
    */
   public ReserveNobleCardForm(int prestigePoints, GemsForm cost,
                           CardLevelForm level,
-                          Expansion expansion, int gemDiscount, GemColor discountColor) {
-    this(prestigePoints, cost, level, expansion, gemDiscount, discountColor, null);
+                          Expansion expansion, GemColor discountColor) {
+    this(prestigePoints, cost, level, expansion, discountColor, null);
   }
 
   /**
@@ -56,15 +51,6 @@ public final class ReserveNobleCardForm extends CardForm {
    */
   public ReserveNobleCardForm() {
     super();
-  }
-
-  /**
-   * A Getter for the Gem Discount.
-   *
-   * @return Gem Discount
-   */
-  public int gemDiscount() {
-    return gemDiscount;
   }
 
   /**
@@ -91,7 +77,7 @@ public final class ReserveNobleCardForm extends CardForm {
     ReserveNobleCardForm card = (ReserveNobleCardForm) obj;
     return super.prestigePoints == card.prestigePoints && Objects.equals(super.cost, card.cost)
            && super.level == card.level && super.expansion == card.expansion
-           && gemDiscount == card.gemDiscount && discountColor == card.discountColor
+           && discountColor == card.discountColor
            && Objects.equals(nobleToReserve, card.nobleToReserve);
   }
 }

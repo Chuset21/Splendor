@@ -29,10 +29,16 @@ import java.util.stream.Collectors;
  */
 public final class GameBoard {
 
+  private static final int WINNING_POINTS = 15;
+
   /**
    * The current player's turn.
    */
   private int playerTurn;
+  /**
+   * The turn indicating what player started the game.
+   */
+  private final int startingPlayerTurn;
   /**
    * A map to convert player turn to the actual player.
    */
@@ -56,6 +62,7 @@ public final class GameBoard {
   private Player leadingPlayer;
   private final Set<Player> players;
   private String gameid;
+  private boolean lastRound;
   private final String creator;
 
   /**
@@ -75,6 +82,8 @@ public final class GameBoard {
       playerTurnMap.put(count++, player);
     }
     playerTurn = new Random().nextInt(0, count);
+    startingPlayerTurn = playerTurn;
+    lastRound = false;
     leadingPlayer = playerTurnMap.get(0);
 
     availableGems = new Gems();
@@ -142,12 +151,12 @@ public final class GameBoard {
         cost.computeIfAbsent(GemColor.RED, k -> redCost > 0 ? redCost : null);
 
         // Get the level and expansion
-        CardLevel level = CardLevel.valueOf(cardData[8]);
-        Expansion expansion = Expansion.valueOf(cardData[7]);
+        CardLevel level = CardLevel.valueOf(cardData[7]);
+        Expansion expansion = Expansion.valueOf(cardData[6]);
 
         // Create card
-        Card c = new StandardCard(Integer.parseInt(cardData[9]), cost, level, expansion,
-            Integer.parseInt(cardData[6]), GemColor.valueOf(cardData[5]));
+        Card c = new StandardCard(Integer.parseInt(cardData[8]), cost, level, expansion,
+            GemColor.valueOf(cardData[5]));
 
         // Add the card to respective list
         if (expansion == Expansion.STANDARD) {
@@ -300,9 +309,28 @@ public final class GameBoard {
 
   /**
    * Go to the next turn.
+   *
+   * @return true if it's just now the last round of the game, false otherwise.
    */
-  public void nextTurn() {
+  public boolean nextTurn() {
+    boolean wasLastTurn = lastRound;
+    if (!lastRound) {
+      computeLeadingPlayer();
+      if (leadingPlayer.hand().prestigePoints() >= WINNING_POINTS) {
+        lastRound = true;
+      }
+    }
     playerTurn = (playerTurn + 1) % players.size();
+    return wasLastTurn == lastRound;
+  }
+
+  /**
+   * Returns whether the game is over or not.
+   *
+   * @return true if the game is over, false otherwise.
+   */
+  public boolean isGameOver() {
+    return lastRound && playerTurn == startingPlayerTurn;
   }
 
   /**
@@ -313,16 +341,9 @@ public final class GameBoard {
    */
   public Set<Noble> computeClaimableNobles(Hand hand) {
     final Set<Noble> nobles = new HashSet<>(availableNobles);
-    if (hand.reservedNoble() != null) {
-      nobles.add(hand.reservedNoble());
-    }
+    nobles.addAll(hand.reservedNobles());
     return nobles.stream()
-        .filter(n -> hasEnoughGems(hand.gemDiscounts(), n.cost()))
+        .filter(n -> hand.gemDiscounts().hasEnoughGems(n.cost()))
         .collect(Collectors.toSet());
-  }
-
-  private boolean hasEnoughGems(Gems ownedGems, Gems gemsToPayWith) {
-    return gemsToPayWith.entrySet().stream()
-        .noneMatch(entry -> ownedGems.getOrDefault(entry.getKey(), 0) < entry.getValue());
   }
 }

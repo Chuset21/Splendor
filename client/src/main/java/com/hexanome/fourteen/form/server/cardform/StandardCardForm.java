@@ -9,7 +9,6 @@ import java.util.Objects;
  * Standard Card form.
  */
 public final class StandardCardForm extends CardForm {
-  private int gemDiscount;
   private GemColor discountColor;
 
   /**
@@ -19,13 +18,11 @@ public final class StandardCardForm extends CardForm {
    * @param cost           the cost of the card
    * @param level          the level of the card
    * @param expansion      the expansion to which the card belongs to
-   * @param gemDiscount    the amount of gems to be discounted
    * @param discountColor  the color of the gems to be discounted
    */
   public StandardCardForm(int prestigePoints, GemsForm cost, CardLevelForm level, Expansion expansion,
-                          int gemDiscount, GemColor discountColor) {
+                          GemColor discountColor) {
     super(prestigePoints, cost, level, expansion);
-    this.gemDiscount = gemDiscount;
     this.discountColor = discountColor;
   }
 
@@ -34,15 +31,6 @@ public final class StandardCardForm extends CardForm {
    */
   public StandardCardForm() {
     super();
-  }
-
-  /**
-   * A Getter for the Gem Discount associated with the StandardCard.
-   *
-   * @return The Gem Discount
-   */
-  public int gemDiscount() {
-    return gemDiscount;
   }
 
 
@@ -66,6 +54,6 @@ public final class StandardCardForm extends CardForm {
     StandardCardForm card = (StandardCardForm) obj;
     return super.prestigePoints == card.prestigePoints && Objects.equals(super.cost, card.cost)
            && super.level == card.level && super.expansion == card.expansion
-           && gemDiscount == card.gemDiscount && discountColor == card.discountColor;
+           && discountColor == card.discountColor;
   }
 }

@@ -2,7 +2,10 @@ package hexanome.fourteen.server.control;
 
 import hexanome.fourteen.server.control.form.RegisterGameServiceForm;
 import hexanome.fourteen.server.control.form.SaveGameForm;
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
 import kong.unirest.HttpResponse;
+import kong.unirest.HttpStatus;
 import kong.unirest.Unirest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,16 +26,15 @@ public class LobbyService implements LobbyServiceCaller {
    *
    * @param gsonInstance common gson instance
    * @param port         The Port
-   * @param address      The IP Address
    * @param lsLocation   The LobbyService Location
    */
   public LobbyService(@Autowired GsonInstance gsonInstance,
                       @Value("${ls.location}") String lsLocation,
-                      @Value("${server.port}") String port,
-                      @Value("${service.address}") String address) {
+                      @Value("${server.port}") String port) throws UnknownHostException {
     this.gsonInstance = gsonInstance;
     this.lsLocation = lsLocation;
-    gameServiceLocation = "http://%s:%s/".formatted(address, port);
+    gameServiceLocation =
+        "http://%s:%s/splendor".formatted(Inet4Address.getLocalHost().getHostAddress(), port);
   }
 
   @Override
@@ -71,11 +73,11 @@ public class LobbyService implements LobbyServiceCaller {
   @Override
   public boolean registerGameService(String gameServiceName, String accessToken) {
     return Unirest.put("%sapi/gameservices/%s".formatted(lsLocation, gameServiceName))
-               .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-               .header("Content-Type", "application/json").queryString("access_token", accessToken)
-               .body(gsonInstance.gson.toJson(
-                   new RegisterGameServiceForm(gameServiceLocation, gameServiceName,
-                       gameServiceName))).asEmpty().getStatus() == 200;
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .header("Content-Type", "application/json").queryString("access_token", accessToken).body(
+            gsonInstance.gson.toJson(
+                new RegisterGameServiceForm(gameServiceLocation, gameServiceName, gameServiceName)))
+        .asEmpty().getStatus() == 200;
   }
 
   @Override
@@ -96,15 +98,16 @@ public class LobbyService implements LobbyServiceCaller {
 
   @Override
   public String getUsername(String accessToken) {
-    return Unirest.post("%soauth/username".formatted(lsLocation))
-        .queryString("access_token", accessToken).asString().getBody();
+    final HttpResponse<String> result = Unirest.get("%soauth/username".formatted(lsLocation))
+        .queryString("access_token", accessToken).asString();
+    return result.getStatus() == HttpStatus.OK ? result.getBody() : null;
   }
 
   @Override
   public void saveGame(String accessToken, SaveGameForm saveGameForm) {
-    Unirest.put(
-            "%sapi/gameservices/%s/savegames/%s".formatted(lsLocation, saveGameForm.gameName(),
-                saveGameForm.saveGameid()))
-        .queryString("access_token", accessToken).asEmpty();
+    Unirest.put("%sapi/gameservices/%s/savegames/%s".formatted(lsLocation, saveGameForm.gameName(),
+            saveGameForm.saveGameid())).queryString("access_token", accessToken)
+        .header("Content-Type", "application/json").body(gsonInstance.gson.toJson(saveGameForm))
+        .asString();
   }
 }
