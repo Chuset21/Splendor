@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.LobbyController">
+<AnchorPane fx:id="anchorPane" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.LobbySelectScreenController">
    <children>
-      <Button fx:id="backButton" layoutX="20.0" layoutY="21.0" mnemonicParsing="false" onMouseClicked="#unloadScene" text="Back">
+      <Button fx:id="backButton" layoutX="20.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleBackButton" onMouseClicked="#handleBackButton" text="Back">
          <font>
             <Font name="Satoshi Bold" size="24.0" />
          </font></Button>
-      <Pane fx:id="textOpacityPane" layoutX="487.0" layoutY="29.0" prefHeight="70.0" prefWidth="220.0">
+      <Pane id="textOpacityPane" layoutX="487.0" layoutY="29.0" prefHeight="70.0" prefWidth="220.0">
          <children>
             <Text layoutX="25.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lobby Search">
                <font>
@@ -18,7 +19,7 @@
                </font>
             </Text>
          </children></Pane>
-      <Pane fx:id="textOpacityPane" layoutX="75.0" layoutY="121.0" prefHeight="70.0" prefWidth="1047.0">
+      <Pane id="textOpacityPane" layoutX="75.0" layoutY="121.0" prefHeight="70.0" prefWidth="1047.0">
          <children>
             <Text layoutX="37.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rooms">
                <font>
@@ -41,7 +42,7 @@
             <VBox fx:id="lobbyVBox" prefWidth="1025.0" />
          </content>
       </ScrollPane>
-      <Button fx:id="addLobby" layoutX="523.0" layoutY="626.0" mnemonicParsing="false" onAction="#handleAddLobby" text="Add lobby">
+      <Button fx:id="refreshLobbiesButton" layoutX="541.0" layoutY="627.0" mnemonicParsing="false" onAction="#handleRefreshLobbiesButton" text="Refresh">
          <font>
             <Font name="Satoshi Bold" size="24.0" />
          </font>

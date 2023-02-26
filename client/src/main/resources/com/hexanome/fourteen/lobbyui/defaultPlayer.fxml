@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<fx:root fx:id="defaultPlayer" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="227.0" type="HBox" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fx:id="playerAvatar" fitHeight="90.0" fitWidth="90.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@images/cat.jpg" />
+         </image>
+         <HBox.margin>
+            <Insets left="10.0" right="10.0" />
+         </HBox.margin>
+      </ImageView>
+      <Text fx:id="playerName" strokeType="OUTSIDE" strokeWidth="0.0" text="John Doe" HBox.hgrow="NEVER">
+         <font>
+            <Font name="Satoshi Bold" size="20.0" />
+         </font>
+         <HBox.margin>
+            <Insets right="10.0" />
+         </HBox.margin>
+      </Text>
+   </children>
+</fx:root>

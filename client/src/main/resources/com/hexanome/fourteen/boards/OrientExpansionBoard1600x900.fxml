@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 <?import java.net.URL?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
@@ -19,7 +29,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="backgroundPane" minHeight="0.0" minWidth="0.0" prefHeight="900.0" prefWidth="1600.0" styleClass="anchor" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.boards.OrientExpansion">
+<AnchorPane fx:id="backgroundPane" minHeight="0.0" minWidth="0.0" prefHeight="900.0" prefWidth="1600.0" styleClass="anchor" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.boards.OrientExpansion">
    <stylesheets>
       <URL value="@appStyling.css" />
    </stylesheets>
@@ -42,7 +52,7 @@
                            <effect>
                               <DropShadow blurType="GAUSSIAN" height="50.0" radius="24.5" width="50.0">
                                  <color>
-                                    <Color green="0.2666666805744171" blue="1.0" />
+                                    <Color blue="1.0" green="0.2666666805744171" />
                                  </color>
                               </DropShadow>
                            </effect></ImageView>
@@ -512,7 +522,7 @@
          </children>
 
       </Pane>
-      <AnchorPane fx:id="cardActionMenu" layoutX="440.0" layoutY="157.0">
+      <AnchorPane fx:id="cardActionMenu" layoutX="440.0" layoutY="157.0" visible="false">
          <children>
             <Pane layoutX="456.0" prefHeight="600.0" prefWidth="700.0" style="-fx-background-color: #F8DB85; -fx-opacity: 0.7;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
             <BorderPane prefHeight="600.0" prefWidth="700.0">

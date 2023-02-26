@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
+
+import com.hexanome.fourteen.LobbyServiceCaller;
+import com.hexanome.fourteen.TokenRefreshFailedException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,11 +21,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import com.hexanome.fourteen.lobbyui.*;
 
 /**
  * A class to represent the game objects required to represent a OrientExpansion Splendor game.
  */
-public class OrientExpansion implements Initializable {
+public class OrientExpansion {
+
+  private Stage stage;
   Bank bank;
   public int numPlayers = 4;
 
@@ -90,9 +96,9 @@ public class OrientExpansion implements Initializable {
 
   //GEM FIELDS
   @FXML
-  private List<Label> gemLabels;
+  private List<Label> pGemLabels;
   @FXML
-  private List<Label> bankGemLabels;
+  private List<Label> bGemLabels;
   @FXML
   private List<Label> actionGemLabels;
   @FXML
@@ -103,39 +109,22 @@ public class OrientExpansion implements Initializable {
   /**
    * A call to this method displays the game on screen by initializing the scene with the gameboard.
    *
-   * @param primaryStage the stage currently being used to hold JavaFX UI items
+   * @param stage the stage currently being used to hold JavaFX UI items
    * @throws IOException throw an exception if an illegal UI action is executed
    */
-  public void goToGame(Stage primaryStage) throws IOException {
-    // Import root from fxml file
-    Parent root = FXMLLoader.load(Objects.requireNonNull(
-        OrientExpansion.class.getResource("OrientExpansionBoard1600x900.fxml")));
-    // Set up root on stage (window)
-    Scene scene = new Scene(root);
-
-    // Initialize stage settings
-    primaryStage.setScene(scene);
-    primaryStage.setTitle("Splendor");
-    primaryStage.setResizable(false);
-    primaryStage.centerOnScreen();
-
-    primaryStage.show();
-  }
-
-  // Use this function if you want to initialize nodes and their properties.
-  // E.G. Button text, Labels positions, etc. etc.
-  private void init() {
+  public void goToGame(Stage stage) throws IOException {
+    this.stage = stage;
 
     // Set up bank
-    bank = new Bank(numPlayers, addGemButtons, removeGemButtons, gemLabels, bankGemLabels,
-        takeBankButton);
+    bank = new Bank(numPlayers, addGemButtons, removeGemButtons, pGemLabels, bGemLabels,
+            takeBankButton);
 
     // Set up players
     player = new Player("0", "joebiden43");
 
     // Initialize the player's gems
     for (int idx : GEM_INDEX) {
-      gemLabels.get(idx).textProperty().set("" + player.getHand().gems[idx]);
+      pGemLabels.get(idx).textProperty().set("" + player.getHand().gems[idx]);
     }
 
     // Set up game screen
@@ -143,12 +132,6 @@ public class OrientExpansion implements Initializable {
 
     // Set up cards
     setupCards("CardData.csv");
-
-  }
-
-  @Override
-  public void initialize(URL url, ResourceBundle resourceBundle) {
-    init();
   }
 
 
@@ -369,8 +352,23 @@ public class OrientExpansion implements Initializable {
 
   @FXML
   private void handleClickMenuPopupQuitButton() {
-    Platform.exit();
-    System.exit(0);
+    try{
+      LobbyServiceCaller.deleteSession(User.getUser(stage));
+      User.getUser(stage).setCurrentLobby(null);
+    } catch(TokenRefreshFailedException e){
+      try{
+        MenuController.getMenuController(stage).returnToLogin("Session timed out, retry login");
+        stage.close();
+      } catch(IOException ioe){
+        ioe.printStackTrace();
+      }
+    }
+
+    try{
+      MenuController.getMenuController(stage).goToWelcomeScreen();
+    } catch (IOException ioe){
+      ioe.printStackTrace();
+    }
   }
 
   @FXML

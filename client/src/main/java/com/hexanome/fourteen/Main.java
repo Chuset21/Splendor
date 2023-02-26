@@ -15,7 +15,9 @@ import com.hexanome.fourteen.form.server.cardform.WaterfallCardForm;
 import com.hexanome.fourteen.form.server.payment.CardPaymentForm;
 import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
 import com.hexanome.fourteen.form.server.payment.PaymentForm;
-import com.hexanome.fourteen.login.LoginScreen;
+import com.hexanome.fourteen.lobbyui.MenuController;
+import com.hexanome.fourteen.lobbyui.ScreenController;
+import com.hexanome.fourteen.login.LoginScreenController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -51,9 +53,17 @@ public class Main extends Application {
     Application.launch(Main.class, args);
   }
 
+  /**
+   * Run on startup of application. Sends user to login screen
+   * @param stage active stage passed by application
+   */
   @Override
   public void start(Stage stage) throws Exception {
-    LoginScreen ls = new LoginScreen();
-    ls.goToLogin(stage);
+
+    // Initialize MenuController for this window
+    MenuController.getMenuController(stage);
+
+    // Start login process
+    MenuController.getMenuController(stage).returnToLogin("");
   }
 }
