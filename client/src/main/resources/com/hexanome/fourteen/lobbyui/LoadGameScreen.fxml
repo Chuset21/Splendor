@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.LoadGameScreenController">
+<AnchorPane fx:id="anchorPane" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.LoadGameScreenController">
    <children>
       <Button fx:id="backButton" layoutX="20.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleBackButton" text="Back">
          <font>
@@ -25,12 +23,12 @@
                </font>
             </Text>
          </children></Pane>
-      <ToggleButton fx:id="saveGameOneToggle" layoutX="62.0" layoutY="174.0" mnemonicParsing="false" text="Save Game 1">
+      <ToggleButton fx:id="saveGameOneToggle" layoutX="202.0" layoutY="39.0" mnemonicParsing="false" text="Save Game 1">
          <font>
             <Font name="Satoshi Regular" size="24.0" />
          </font>
       </ToggleButton>
-      <ToggleButton fx:id="saveGameTwoToggle" layoutX="245.0" layoutY="172.0" mnemonicParsing="false" text="Save Game 2">
+      <ToggleButton fx:id="saveGameTwoToggle" layoutX="413.0" layoutY="39.0" mnemonicParsing="false" text="Save Game 2">
          <font>
             <Font name="Satoshi Regular" size="24.0" />
          </font>
@@ -40,5 +38,10 @@
             <Font name="Satoshi Bold" size="26.0" />
          </font>
       </Button>
+      <ScrollPane fx:id="savedGamesScrollView" layoutX="76.0" layoutY="181.0" prefHeight="388.0" prefWidth="1045.0">
+         <content>
+            <VBox fx:id="savedGamesVBox" layoutY="10.0" prefWidth="1041.0" />
+         </content>
+      </ScrollPane>
    </children>
 </AnchorPane>

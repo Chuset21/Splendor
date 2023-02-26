@@ -50,7 +50,6 @@ public final class LobbyServiceCaller {
             .body("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true")
             .asString();
 
-
     return getTokens(response, user);
   }
 
@@ -99,6 +98,9 @@ public final class LobbyServiceCaller {
             Main.GSON.fromJson(response.getBody(), LoginResponse.class);
     user.setAccessToken(loginResponse.accessToken());
     user.setRefreshToken(loginResponse.refreshToken());
+
+    accessToken = loginResponse.accessToken();
+    refreshToken = loginResponse.refreshToken();
     return true;
   }
 
@@ -293,6 +295,31 @@ public final class LobbyServiceCaller {
 
     return saveGameForms;
   }
+
+  /**
+   * Get saved games.
+   *
+   * @return The list of saved games
+   */
+  public static List<SaveGameForm> getSavedGames() { // Can then use this to filter and see where our player appears
+    final Type listType = new TypeToken<ArrayList<SaveGameForm>>() {
+    }.getType();
+    final List<SaveGameForm> saveGameForms = new ArrayList<>();
+    for (GameServiceName e : GameServiceName.values()) {
+      final HttpResponse<String> response =
+          Unirest.get("%sapi/gameservices/%s/savegames".formatted(Main.lsLocation, e))
+              .header("Content-Type", "application/json")
+              .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+              .queryString("access_token", accessToken).asString();
+
+      if (response.getStatus() == 200) {
+        saveGameForms.addAll(Main.GSON.fromJson(response.getBody(), listType));
+      }
+    }
+
+    return saveGameForms;
+  }
+
 
   /**
    * Get whether session is active
