@@ -88,16 +88,16 @@ public class CreateGameScreenController implements ScreenController{
   @FXML
   public void handleCreateLobbyButton() {
     // Create template for session with current user's ID and the selected expansion
-    CreateSessionForm session = new CreateSessionForm(User.getUserid(stage),(expansionSetting.getSelectedToggle().getUserData()).toString());
+    CreateSessionForm session = new CreateSessionForm(LobbyServiceCaller.getCurrentUserid(),(expansionSetting.getSelectedToggle().getUserData()).toString());
 
     // Gets sessions
     String sessionid = null;
 
     try{
-      sessionid = LobbyServiceCaller.createSession(session, User.getUser(stage));
+      sessionid = LobbyServiceCaller.createSession(session);
     } catch(TokenRefreshFailedException e){
       try{
-        MenuController.getMenuController(stage).returnToLogin("Session timed out, retry login");
+        MenuController.returnToLogin("Session timed out, retry login");
       } catch(IOException ioe){
         ioe.printStackTrace();
       }
@@ -110,7 +110,7 @@ public class CreateGameScreenController implements ScreenController{
         System.out.println("Expansion toggle: "+(expansionSetting.getSelectedToggle().getUserData()).toString()
                 +"\nPlayer count toggle: "+maxPlayersSetting.getSelectedToggle().toString());
 
-        MenuController.getMenuController(stage).goToInLobbyScreen(new Lobby(sessionid));
+        MenuController.goToInLobbyScreen(new Lobby(sessionid));
       } catch (Exception ioe) {
         ioe.printStackTrace();
       }
@@ -124,7 +124,7 @@ public class CreateGameScreenController implements ScreenController{
   @FXML
   private void handleBackButton(){
     try {
-      MenuController.getMenuController(stage).goBack();
+      MenuController.goBack();
     } catch (Exception e) {
       e.printStackTrace();
     }

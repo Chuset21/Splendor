@@ -27,11 +27,6 @@
             <Font size="32.0" />
          </font>
       </Button>
-      <Button fx:id="refreshPlayersButton" layoutX="277.0" layoutY="594.0" mnemonicParsing="false" onAction="#handleRefreshPlayersButton" prefHeight="69.0" prefWidth="166.0" text="Refresh">
-         <font>
-            <Font size="32.0" />
-         </font>
-      </Button>
       <Pane layoutX="97.0" layoutY="176.0" prefHeight="392.0" prefWidth="874.0">
          <children>
             <Text layoutX="37.0" layoutY="44.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Players">

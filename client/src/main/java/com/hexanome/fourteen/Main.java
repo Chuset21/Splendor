@@ -60,10 +60,10 @@ public class Main extends Application {
   @Override
   public void start(Stage stage) throws Exception {
 
-    // Initialize MenuController for this window
-    MenuController.getMenuController(stage);
+    // Save this window's stage for future use
+    MenuController.setStage(stage);
 
-    // Start login process
-    MenuController.getMenuController(stage).returnToLogin("");
+    // Start login
+    MenuController.returnToLogin("");
   }
 }

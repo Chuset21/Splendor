@@ -29,8 +29,6 @@ public class InLobbyScreenController implements ScreenController{
   private Button launchLobbyButton;
   @FXML
   private Button leaveLobbyButton;
-  @FXML
-  private Button refreshPlayersButton;
 
   Thread refresherThread;
   // Holds data of current lobby (primarily the lobby location)
@@ -54,7 +52,7 @@ public class InLobbyScreenController implements ScreenController{
     this.stage = stage;
 
     // Get data from MenuController
-    this.lobby = User.getCurrentLobby(stage);
+    this.lobby = LobbyServiceCaller.getCurrentUserLobby();
 
     // Sets lobby info to automatically refresh
     Task<Void> task = new Task<>() {
@@ -81,11 +79,11 @@ public class InLobbyScreenController implements ScreenController{
 
   @FXML
   private void handleLaunchButton(){
-    if(User.getUserid(stage).equals(lobby.getHost())){
+    if(LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost())){
 
       try{
         //if(LobbyServiceCaller.launchSession(User.getUser(stage))) {
-          MenuController.getMenuController(stage).goToGameBoard();
+          MenuController.goToGameBoard();
         //}
       } catch(Exception e){
         e.printStackTrace();
@@ -95,12 +93,12 @@ public class InLobbyScreenController implements ScreenController{
 
   @FXML
   private void handleLeaveButton(){
-    if(User.getUserid(stage).equals(lobby.getHost())) {
+    if(LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost())) {
       try{
-        LobbyServiceCaller.deleteSession(User.getUser(stage));
+        LobbyServiceCaller.deleteSession();
       } catch(TokenRefreshFailedException e){
         try{
-          MenuController.getMenuController(stage).returnToLogin("Session timed out, retry login");
+          MenuController.returnToLogin("Session timed out, retry login");
           stage.close();
           return;
         } catch(IOException ioe){
@@ -109,10 +107,10 @@ public class InLobbyScreenController implements ScreenController{
       }
     } else {
       try{
-        LobbyServiceCaller.leaveSession(User.getUser(stage));
+        LobbyServiceCaller.leaveSession();
       } catch (TokenRefreshFailedException e){
         try{
-          MenuController.getMenuController(stage).returnToLogin("Session timed out, retry login");
+          MenuController.returnToLogin("Session timed out, retry login");
           stage.close();
           return;
         } catch(IOException ioe){
@@ -122,17 +120,12 @@ public class InLobbyScreenController implements ScreenController{
     }
 
     try{
-      MenuController.getMenuController(stage).goBack();
+      MenuController.goBack();
       refresherThread.interrupt();
-      User.getUser(stage).setCurrentLobby(null);
+      LobbyServiceCaller.setCurrentUserLobby(null);
     } catch (IOException ioe){
       ioe.printStackTrace();
     }
-  }
-
-  @FXML
-  private void handleRefreshPlayersButton(){
-    updateLobbyInfo();
   }
 
   /**

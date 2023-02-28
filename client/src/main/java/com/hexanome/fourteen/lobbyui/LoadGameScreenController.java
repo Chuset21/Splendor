@@ -88,7 +88,7 @@ public class LoadGameScreenController implements ScreenController{
   @FXML
   private void handleBackButton(){
     try {
-      MenuController.getMenuController(stage).goBack();
+      MenuController.goBack();
     } catch (Exception e) {
       e.printStackTrace();
     }

@@ -39,7 +39,7 @@ public class WelcomeScreenController implements ScreenController{
 
     // Post init
     // Displays the current user's username
-    displayUsername.setText(User.getUserid(stage));
+    displayUsername.setText(LobbyServiceCaller.getCurrentUserid());
   }
 
   @FXML
@@ -52,7 +52,7 @@ public class WelcomeScreenController implements ScreenController{
   public void handleCreateGameButton() {
     //Switch scene to create game screen (game rule selection)
     try {
-      MenuController.getMenuController(stage).goToCreateGameScreen();
+      MenuController.goToCreateGameScreen();
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
@@ -65,7 +65,7 @@ public class WelcomeScreenController implements ScreenController{
   public void handleJoinGameButton() {
     //Switch scene to join game details (lobby selection)
     try {
-      MenuController.getMenuController(stage).goToLobbySelectScreen();
+      MenuController.goToLobbySelectScreen();
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
@@ -75,7 +75,7 @@ public class WelcomeScreenController implements ScreenController{
   public void handleLoadGameButton() {
     //Switch scene to load game details (chose game save)
     try {
-      MenuController.getMenuController(stage).goToLoadGameScreen();
+      MenuController.goToLoadGameScreen();
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }

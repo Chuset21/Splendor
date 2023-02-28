@@ -31,8 +31,6 @@ public class LobbySelectScreenController implements ScreenController{
   private VBox lobbyVBox;
   @FXML
   private Button backButton;
-  @FXML
-  private Button refreshLobbiesButton;
 
   private Stage stage;
 
@@ -98,7 +96,7 @@ public class LobbySelectScreenController implements ScreenController{
   @FXML
   private void handleBackButton(){
     try {
-      MenuController.getMenuController(stage).goBack();
+      MenuController.goBack();
       refresherThread.interrupt();
     } catch (IOException ioe) {
       ioe.printStackTrace();
@@ -111,24 +109,19 @@ public class LobbySelectScreenController implements ScreenController{
    * never directly from FXML.
    */
   public void handleJoinLobbyButton(Lobby lobby){
-    if(!lobby.getHost().equals(User.getUserid(stage))){
+    if(!lobby.getHost().equals(LobbyServiceCaller.getCurrentUserid())){
       try{
-        if(LobbyServiceCaller.joinSession(lobby.getSessionid(),User.getUser(stage))) { MenuController.getMenuController(stage).goToInLobbyScreen(lobby); }
+        if(LobbyServiceCaller.joinSession(lobby.getSessionid())) { MenuController.goToInLobbyScreen(lobby); }
       } catch (Exception e) {
         e.printStackTrace();
       }
     } else{
       try{
-        MenuController.getMenuController(stage).goToInLobbyScreen(lobby);
+        MenuController.goToInLobbyScreen(lobby);
       } catch (IOException ioe){
         ioe.printStackTrace();
       }
     }
     refresherThread.interrupt();
-  }
-
-  @FXML
-  private void handleRefreshLobbiesButton() {
-    updateLobbies();
   }
 }

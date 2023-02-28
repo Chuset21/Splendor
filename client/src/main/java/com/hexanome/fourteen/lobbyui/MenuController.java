@@ -1,8 +1,7 @@
 package com.hexanome.fourteen.lobbyui;
 
-import java.security.InvalidParameterException;
+import com.hexanome.fourteen.LobbyServiceCaller;
 
-import com.hexanome.fourteen.WindowContextData;
 import com.hexanome.fourteen.boards.OrientExpansion;
 import com.hexanome.fourteen.login.LoginScreenController;
 import javafx.fxml.FXMLLoader;
@@ -11,43 +10,25 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.*;
-import kong.unirest.Empty;
 
 public class MenuController {
-  private Stage stage;
-  private Stack<ScreenController> previousScreens = new Stack<>();
+  private static Stage stage;
+  private static Stack<ScreenController> previousScreens = new Stack<>();
 
   /**
-   * Factory method to get current menu controller from the stage.
-   * Links Stage with MenuController
-   *
-   * @param stage Stage operating in the current window
-   * @return the controller of that stage
+   * Gets window's stage
+   * @return stage
    */
-  public static MenuController getMenuController(Stage stage){
-    if(stage.getUserData() == null || ((WindowContextData)stage.getUserData()).getMenuController() == null){
-      stage.setUserData(new WindowContextData(new MenuController(stage)));
-    }
-
-    return ((WindowContextData) stage.getUserData()).getMenuController();
-  }
-
-  private MenuController(Stage stage){
-    this.stage = stage;
-  }
-
-  public Stage getStage() {
+  public static Stage getStage() {
     return stage;
   }
 
-  public void successfulLogin(User user) throws IOException {
-    if (user == null) {
-      throw new InvalidParameterException("User parameter cannot be null.");
-    }
-
-    ((WindowContextData) stage.getUserData()).setUser(user);
-
-    goToWelcomeScreen();
+  /**
+   * Sets window's stage
+   * @param stage stage
+   */
+  public static void setStage(Stage stage) {
+    MenuController.stage = stage;
   }
 
   /**
@@ -56,10 +37,9 @@ public class MenuController {
    * @param errorMessage message to be displayed to the user (e.g. "Session timed out, retry login")
    * @throws IOException
    */
-  public void returnToLogin(String errorMessage) throws IOException{
+  public static void returnToLogin(String errorMessage) throws IOException{
     // Send errorMessage
-    ((WindowContextData) stage.getUserData()).setPayload(errorMessage);
-    ((WindowContextData) stage.getUserData()).setUser(null);
+    stage.setUserData(errorMessage);
 
     // Load login ui
     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(Lobby.class.getResource("LoginScreen.fxml")));
@@ -74,15 +54,15 @@ public class MenuController {
     Scene scene = new Scene(root);
 
     // Initialize stage settings
-    this.stage.setScene(scene);
-    this.stage.setTitle("Splendor");
-    this.stage.setResizable(false);
+    stage.setScene(scene);
+    stage.setTitle("Splendor");
+    stage.setResizable(false);
 
-    this.stage.show();
+    stage.show();
   }
 
   // TODO: Make this change where you end up depending on which screen you are at
-  public void goBack() throws IOException {
+  public static void goBack() throws IOException {
 
     ScreenController screen = null;
 
@@ -111,7 +91,7 @@ public class MenuController {
     }
   }
 
-  public void goToWelcomeScreen() throws IOException {
+  public static  void goToWelcomeScreen() throws IOException {
     // Resets the screen stack since you just got to the welcome menu
     previousScreens.clear();
 
@@ -123,7 +103,7 @@ public class MenuController {
 
     // Set up root on stage (window)
     Scene aScene = new Scene(root);
-    aScene.getStylesheets().add(getClass().getResource("lobbyStyling.css").toExternalForm());
+    aScene.getStylesheets().add(MenuController.class.getResource("lobbyStyling.css").toExternalForm());
 
     // Go to screen
     ScreenController controller = loader.getController();
@@ -140,7 +120,7 @@ public class MenuController {
     previousScreens.push(controller);
   }
 
-  public void goToCreateGameScreen() throws IOException {
+  public static void goToCreateGameScreen() throws IOException {
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
@@ -154,7 +134,7 @@ public class MenuController {
 
     // Set up root on stage (window)
     Scene aScene = new Scene(root);
-    aScene.getStylesheets().add(getClass().getResource("lobbyStyling.css").toExternalForm());
+    aScene.getStylesheets().add(MenuController.class.getResource("lobbyStyling.css").toExternalForm());
 
     // Initialize stage settings
     stage.setScene(aScene);
@@ -167,7 +147,7 @@ public class MenuController {
     previousScreens.push(controller);
   }
 
-  public void goToLobbySelectScreen() throws IOException {
+  public static void goToLobbySelectScreen() throws IOException {
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
@@ -181,7 +161,7 @@ public class MenuController {
 
     // Set up root on stage (window)
     Scene aScene = new Scene(root);
-    aScene.getStylesheets().add(getClass().getResource("lobbyStyling.css").toExternalForm());
+    aScene.getStylesheets().add(MenuController.class.getResource("lobbyStyling.css").toExternalForm());
 
     // Initialize stage settings
     stage.setScene(aScene);
@@ -194,7 +174,7 @@ public class MenuController {
     previousScreens.push(controller);
   }
 
-  public void goToLoadGameScreen() throws IOException {
+  public static void goToLoadGameScreen() throws IOException {
 
     // Create loader class
     FXMLLoader loader = new FXMLLoader(
@@ -208,7 +188,7 @@ public class MenuController {
 
     // Set up root on stage (window)
     Scene aScene = new Scene(root);
-    aScene.getStylesheets().add(getClass().getResource("lobbyStyling.css").toExternalForm());
+    aScene.getStylesheets().add(MenuController.class.getResource("lobbyStyling.css").toExternalForm());
 
     // Initialize stage settings
     stage.setScene(aScene);
@@ -221,7 +201,7 @@ public class MenuController {
     previousScreens.push(controller);
   }
 
-  public void goToInLobbyScreen(Lobby lobby) throws IOException {
+  public static void goToInLobbyScreen(Lobby lobby) throws IOException {
 
     // Load basic lobby UI
     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(Lobby.class.getResource("InLobbyScreen.fxml")));
@@ -230,7 +210,7 @@ public class MenuController {
     Parent root = loader.load();
 
     // Set the current lobby to where the player is
-    User.getUser(stage).setCurrentLobby(lobby);
+    LobbyServiceCaller.setCurrentUserLobby(lobby);
 
     // Go to screen
     ScreenController controller = loader.getController();
@@ -238,7 +218,7 @@ public class MenuController {
 
     // Set up root on stage (window)
     Scene aScene = new Scene(root);
-    aScene.getStylesheets().add(getClass().getResource("lobbyStyling.css").toExternalForm());
+    aScene.getStylesheets().add(MenuController.class.getResource("lobbyStyling.css").toExternalForm());
 
     // Initialize stage settings
     stage.setScene(aScene);
@@ -251,7 +231,7 @@ public class MenuController {
     previousScreens.push(controller);
   }
 
-  public void goToGameBoard() throws IOException {
+  public static void goToGameBoard() throws IOException {
     // Load basic lobby UI
     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
             OrientExpansion.class.getResource("OrientExpansionBoard1600x900.fxml")));
