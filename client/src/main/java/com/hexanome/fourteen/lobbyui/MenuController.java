@@ -202,15 +202,14 @@ public class MenuController {
   }
 
   public static void goToInLobbyScreen(Lobby lobby) throws IOException {
+    // Set the current lobby to where the player is
+    LobbyServiceCaller.setCurrentUserLobby(lobby);
 
     // Load basic lobby UI
     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(Lobby.class.getResource("InLobbyScreen.fxml")));
 
     // Import root from fxml file
     Parent root = loader.load();
-
-    // Set the current lobby to where the player is
-    LobbyServiceCaller.setCurrentUserLobby(lobby);
 
     // Go to screen
     ScreenController controller = loader.getController();

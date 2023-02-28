@@ -45,6 +45,10 @@ public class Lobby {
     return expansion;
   }
 
+  public boolean getLaunched(){
+    return session.launched();
+  }
+
   public void updateLobby(){
     // Get settings for session
     session = LobbyServiceCaller.getSessionDetails(sessionid);

@@ -105,17 +105,18 @@ public class CreateGameScreenController implements ScreenController{
 
     System.out.println("SessionID: "+sessionid);
 
-    if(sessionid != null){
+    if(sessionid != null) {
       try {
-        System.out.println("Expansion toggle: "+(expansionSetting.getSelectedToggle().getUserData()).toString()
-                +"\nPlayer count toggle: "+maxPlayersSetting.getSelectedToggle().toString());
+        System.out.println(
+            "Expansion toggle: " + (expansionSetting.getSelectedToggle().getUserData()).toString()
+                + "\nPlayer count toggle: " + maxPlayersSetting.getSelectedToggle().toString());
 
         MenuController.goToInLobbyScreen(new Lobby(sessionid));
       } catch (Exception ioe) {
+        LobbyServiceCaller.setCurrentUserLobby(null);
         ioe.printStackTrace();
       }
     }
-    // TODO: Implement putting player in correct lobby once created
   }
 
   /**
