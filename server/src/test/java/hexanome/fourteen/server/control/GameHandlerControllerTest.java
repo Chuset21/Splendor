@@ -33,6 +33,7 @@ import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import hexanome.fourteen.server.model.board.player.Player;
 import hexanome.fourteen.server.model.board.player.UserPlayerMapper;
+import hexanome.fourteen.server.model.board.tradingposts.TradingPostsEnum;
 import hexanome.fourteen.server.model.clientmapper.ServerToClientBoardGameMapper;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1443,6 +1444,73 @@ public class GameHandlerControllerTest {
     player.hand().setPrestigePoints(0);
     board.availableGems().clear();
     board.cards().clear();
+  }
+
+  @Test
+  public void testPurchaseCardAwardsTradingPost(){
+    final Map<String, GameBoard> gameManager = new HashMap<>();
+    final Player player = new Player("test");
+    GameBoard board =
+        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player, new Player("test2")), "x",
+            player.uid());
+    gameManager.put("", board);
+    ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
+    Mockito.when(lobbyService.getUsername("token")).thenReturn("test");
+
+    player.hand().gemDiscounts().put(GemColor.BLACK, 2);
+    final Gems cardCost = new Gems();
+    cardCost.put(GemColor.RED, 1);
+    Card cardToPurchase =
+        new StandardCard(1, cardCost, CardLevel.ONE, Expansion.STANDARD, GemColor.BLACK);
+    addCardToDeck(board.cards(), cardToPurchase);
+    player.hand().gems().put(GemColor.RED, 1);
+    Gems chosenGems = new Gems();
+    chosenGems.put(GemColor.RED, 1);
+    Gems substitutedGems = new Gems();
+    Payment payment = new GemPayment(chosenGems, substitutedGems, 0);
+    PurchaseCardForm purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, false);
+
+    ResponseEntity<String> response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertTrue(player.hand().tradingPosts().get(TradingPostsEnum.ONE_POINT_PER_POWER));
+  }
+
+  @Test
+  public void testSacrificeCardLosesTradingPost(){
+    final Map<String, GameBoard> gameManager = new HashMap<>();
+    final Player player = new Player("test");
+    GameBoard board =
+        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player, new Player("test2")), "x",
+            player.uid());
+    gameManager.put("", board);
+    ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
+    Mockito.when(lobbyService.getUsername("token")).thenReturn("test");
+
+    final Gems cardCost = new Gems();
+    cardCost.put(GemColor.RED, 1);
+    Card sacrificeCard1 =
+        new StandardCard(1, cardCost, CardLevel.ONE, Expansion.STANDARD, GemColor.BLACK);
+    Card sacrificeCard2 =
+        new StandardCard(1, cardCost, CardLevel.ONE, Expansion.STANDARD, GemColor.BLACK);
+    addCardToDeck(board.cards(), sacrificeCard1);
+    addCardToDeck(board.cards(), sacrificeCard2);
+    player.hand().purchasedCards().add(sacrificeCard1);
+    player.hand().purchasedCards().add(sacrificeCard2);
+    player.hand().gemDiscounts().put(GemColor.BLACK, 3);
+    player.hand().tradingPosts().replace(TradingPostsEnum.ONE_POINT_PER_POWER, true);
+    Gems cardToPurchaseCost = new Gems();
+    cardToPurchaseCost.put(GemColor.BLACK, 2);
+    Card cardToPurchase =
+        new SacrificeCard(1, cardToPurchaseCost, CardLevel.THREE, Expansion.ORIENT, GemColor.BLACK);
+    addCardToDeck(board.cards(), cardToPurchase);
+    Payment payment = new CardPayment(sacrificeCard1, sacrificeCard2);
+
+    PurchaseCardForm purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment,false);
+    ResponseEntity<String> response =
+        gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertFalse(player.hand().tradingPosts().get(TradingPostsEnum.ONE_POINT_PER_POWER));
   }
 
   private void addCardToDeck(Set<List<Card>> decks, Card card) {
