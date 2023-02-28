@@ -79,23 +79,21 @@ public class InLobbyScreenController implements ScreenController {
     refresherThread.setDaemon(true);
     refresherThread.start();
 
-    joinLobbyButton.setVisible(true);
-    launchLobbyButton.setVisible(false);
+    joinLobbyButton.setVisible(false);
 
     // TODO: remove launch button when not the host (make it into a join button?)
     if(!LobbyServiceCaller.getCurrentUserLobby().getHost().equals(LobbyServiceCaller.getCurrentUserid())){
-
+      launchLobbyButton.setVisible(true);
     }
   }
 
   @FXML
   private void handleLaunchButton(){
     if(LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost())){
-
       try{
-        //if(LobbyServiceCaller.launchSession(User.getUser(stage))) {
+        if(LobbyServiceCaller.launchSession()) {
           MenuController.goToGameBoard();
-        //}
+        }
       } catch(Exception e){
         e.printStackTrace();
       }
@@ -184,10 +182,12 @@ public class InLobbyScreenController implements ScreenController {
    */
   private void updateGUI(){
     // Updates joinLobby buttons for non-host users
-    if(lobby.getLaunched() || true){
-      joinLobbyButton.setStyle("#joinLobbyButton:active");
+    if(lobby.getLaunched()){
+      joinLobbyButton.setVisible(true);
+      launchLobbyButton.setVisible(false);
     } else{
-      joinLobbyButton.setStyle("#joinLobbyButton");
+      joinLobbyButton.setVisible(false);
+      launchLobbyButton.setVisible(true);
     }
   }
 

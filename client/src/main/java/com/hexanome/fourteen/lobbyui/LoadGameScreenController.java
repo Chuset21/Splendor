@@ -97,7 +97,7 @@ public class LoadGameScreenController implements ScreenController{
     savedGamesVBox.getChildren().clear();
 
     // Only load the games that has the user included
-    String username = LobbyServiceCaller.getUsername();
+    String username = LobbyServiceCaller.getCurrentUserid();
     System.out.println(username);
     savedGames = LobbyServiceCaller.getSavedGames().stream().filter(e-> e.players().contains(username)).toList();
 

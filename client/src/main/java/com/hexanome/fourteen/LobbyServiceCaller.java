@@ -115,26 +115,6 @@ public final class LobbyServiceCaller {
   }
 
   /**
-   * Gets the current user's username.
-   *
-   * @return Username if response status is 200, otherwise null.
-   */
-  public static String getUsername() {
-
-    HttpResponse<String> response = Unirest.get("%soauth/username".formatted(Main.lsLocation))
-        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-        .queryString("access_token", currentUser.getAccessToken())
-        .asString();
-
-    if (response.getStatus() != 200) {
-      return null;
-    }
-
-
-    return response.getBody();
-  }
-
-  /**
    * Synchronously get sessions.
    *
    * @return Sessions form containing all sessions. Returns null if the request fails.
@@ -227,6 +207,26 @@ public final class LobbyServiceCaller {
             Unirest.post("%sapi/sessions/%s".formatted(Main.lsLocation, currentUser.getCurrentLobby().getSessionid()))
                     .queryString("access_token", currentUser.getAccessToken())
                     .asString();
+
+    return response.getStatus() == 200;
+  }
+
+  /**
+   * Launch a session.
+   *
+   * @param sessionid session to launch
+   * @return true if successful, false otherwise
+   */
+  public static boolean launchSession(String sessionid) throws TokenRefreshFailedException{
+    // Try updating tokens, if fails: send currentUser back to login to refresh tokens
+    if (!updateAccessToken()) {
+      throw new TokenRefreshFailedException();
+    }
+
+    HttpResponse response =
+        Unirest.post("%sapi/sessions/%s".formatted(Main.lsLocation, sessionid))
+            .queryString("access_token", currentUser.getAccessToken())
+            .asString();
 
     return response.getStatus() == 200;
   }
