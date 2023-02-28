@@ -115,6 +115,26 @@ public final class LobbyServiceCaller {
   }
 
   /**
+   * Gets the current user's username.
+   *
+   * @return Username if response status is 200, otherwise null.
+   */
+  public static String getUsername() {
+
+    HttpResponse<String> response = Unirest.get("%soauth/username".formatted(Main.lsLocation))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", currentUser.getAccessToken())
+        .asString();
+
+    if (response.getStatus() != 200) {
+      return null;
+    }
+
+
+    return response.getBody();
+  }
+
+  /**
    * Synchronously get sessions.
    *
    * @return Sessions form containing all sessions. Returns null if the request fails.

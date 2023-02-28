@@ -7,11 +7,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<fx:root prefHeight="112.0" prefWidth="1041.0" type="Pane" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="112.0" prefWidth="1043.0" type="Pane" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <ToggleButton fx:id="savedGameToggle" layoutY="-1.0" mnemonicParsing="false" prefHeight="112.0" prefWidth="1041.0">
+      <ToggleButton fx:id="savedGameToggle" layoutY="-1.0" mnemonicParsing="false" prefHeight="112.0" prefWidth="1043.0">
          <graphic>
-            <Pane prefHeight="112.0" prefWidth="991.0">
+            <Pane prefHeight="112.0" prefWidth="1043.0">
                <children>
                   <ImageView fx:id="image" fitHeight="90.0" fitWidth="90.0" layoutX="20.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true">
                      <image>

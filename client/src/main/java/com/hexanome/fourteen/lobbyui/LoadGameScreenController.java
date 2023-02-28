@@ -34,10 +34,6 @@ public class LoadGameScreenController implements ScreenController{
   @FXML
   private VBox savedGamesVBox;
   @FXML
-  private ToggleButton saveGameOneToggle;
-  @FXML
-  private ToggleButton saveGameTwoToggle;
-  @FXML
   private final ToggleGroup loadSetting = new ToggleGroup();
   @FXML
   private Button createLobbyButton;
@@ -51,14 +47,14 @@ public class LoadGameScreenController implements ScreenController{
     this.stage = stage;
 
     // Post init
-    //Initialize ToggleGroup and Toggles for selecting a save game in the load game menge
-    ArrayList<ToggleButton> loadToggles =
-            new ArrayList<>(Arrays.asList(saveGameOneToggle, saveGameTwoToggle));
-    for (Toggle toggle : loadToggles) {
-      toggle.setToggleGroup(loadSetting);
-    }
 
-    getSavedGames();
+    // Update our access tokens on page load
+    LobbyServiceCaller.updateAccessToken();
+
+    // display our saved games
+    displaySavedGames();
+
+
   }
 
   @FXML
@@ -70,12 +66,6 @@ public class LoadGameScreenController implements ScreenController{
       e.printStackTrace();
     }*/
 
-
-    System.out.println("Loading game:" +  loadSetting.getSelectedToggle().getUserData());
-
-    // TODO: Add player to existing lobby if sessions already exists, otherwise create it.
-
-    // TODO: Implement putting player in correct lobby once created
     /*String selectedExpansion =
         getJavaFXControlName(expansionSetting.getSelectedToggle().toString());
     String selectedMaxPlayers =
@@ -83,6 +73,13 @@ public class LoadGameScreenController implements ScreenController{
 
     String[] lobbyData = new String[] {selectedExpansion, selectedMaxPlayers};
     System.out.println(Arrays.toString(lobbyData));*/
+
+    System.out.println("Loading game:" +  loadSetting.getSelectedToggle().getUserData());
+
+    // TODO: Add player to existing lobby if sessions already exists, otherwise create it.
+
+    // TODO: Implement putting player in correct lobby once created
+
   }
 
   @FXML
@@ -94,11 +91,15 @@ public class LoadGameScreenController implements ScreenController{
     }
   }
 
-  private void getSavedGames() {
+  private void displaySavedGames() {
 
-    LobbyServiceCaller.updateAccessToken();
+    // Clear the VBox
     savedGamesVBox.getChildren().clear();
-    savedGames = LobbyServiceCaller.getSavedGames();
+
+    // Only load the games that has the user included
+    String username = LobbyServiceCaller.getUsername();
+    System.out.println(username);
+    savedGames = LobbyServiceCaller.getSavedGames().stream().filter(e-> e.players().contains(username)).toList();
 
     if (savedGames != null) {
       for (SaveGameForm sg : savedGames){
