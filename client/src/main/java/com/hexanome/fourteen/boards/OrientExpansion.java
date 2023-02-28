@@ -1,5 +1,6 @@
 package com.hexanome.fourteen.boards;
 
+import com.hexanome.fourteen.ServerCaller;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -17,8 +18,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import com.hexanome.fourteen.lobbyui.*;
@@ -56,6 +60,11 @@ public class OrientExpansion {
   private Button cardReserveButton;
   @FXML
   private Button cardPurchaseButton;
+  @FXML
+  private Pane purchasedCardsView;
+  private List<Image> purchasedCardImages = new ArrayList<Image>();
+  @FXML
+  private BorderPane purchasedBorderPane;
 
 
   //CARD FIELDS
@@ -129,6 +138,7 @@ public class OrientExpansion {
 
     // Set up game screen
     cardActionMenu.setVisible(false);
+    purchasedCardsView.setVisible(false);
 
     // Set up cards
     setupCards("CardData.csv");
@@ -240,6 +250,10 @@ public class OrientExpansion {
 
     // Get card to be purchased
     Card cardPurchased = (Card) selectedCard.getImage();
+
+    // Store image of purchased card in player's purchase stack
+    purchasedCardImages.add(selectedCard.getImage());
+
     // Clear imageview of purchased card
     selectedCard.setImage(null);
 
@@ -376,7 +390,51 @@ public class OrientExpansion {
     selectedCard = null;
     cardActionMenu.setVisible(false);
   }
+  @FXML
+  public void handlePurchasedPaneSelect(MouseEvent event) {
 
+    Hand hand = player.getHand();
+
+    //Print to console all the player's purchased cards
+    System.out.println("DEBUG: USER'S PURCHASED CARDS");
+    for (int i = 0; i < hand.purchasedCards.size(); i++) {
+      Card current = hand.purchasedCards.get(i);
+      System.out.println(current.toString());
+    }
+
+    // Create a GridPane to hold the images
+    GridPane cardImageGrid = new GridPane();
+    cardImageGrid.setHgap(10);
+    cardImageGrid.setVgap(10);
+
+    // Loop through the images and add them to the GridPane
+    int row = 0;
+    int col = 0;
+    for (Image image : purchasedCardImages) {
+      ImageView cardIV = new ImageView(image);
+      cardIV.setFitWidth(120);
+      cardIV.setFitHeight(170);
+      cardImageGrid.add(cardIV, col, row);
+      col++;
+
+      // Store 9 cards per row
+      if (col == 9) {
+        col = 0;
+        row++;
+      }
+    }
+
+    // Set the purchased pane's content to the card image grid
+    purchasedBorderPane.setCenter(cardImageGrid);
+
+    // Open purchased pane
+    purchasedCardsView.setVisible(true);
+  }
+
+  @FXML
+  private void handleExitPurchasedCardsMenu() {
+    purchasedCardsView.setVisible(false);
+  }
 }
 
 
