@@ -1,5 +1,6 @@
 package com.hexanome.fourteen.lobbyui;
 
+import com.hexanome.fourteen.LobbyServiceCaller;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
@@ -18,6 +19,7 @@ public class DisplayPlayer extends HBox implements Initializable {
   @FXML private ImageView playerAvatar;
   @FXML private Text playerName;
   private Player player;
+  private boolean isYou;
 
   private InLobbyScreenController controller;
 
@@ -27,6 +29,7 @@ public class DisplayPlayer extends HBox implements Initializable {
   public DisplayPlayer(Player player, InLobbyScreenController controller)
       throws IOException {
     this.player = player;
+    this.isYou = player.getUsername().equals(LobbyServiceCaller.getCurrentUserid());
 
     // Load basic lobby UI
     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(Lobby.class.getResource("defaultPlayer.fxml")));
@@ -42,7 +45,7 @@ public class DisplayPlayer extends HBox implements Initializable {
     playerAvatar.setImage(new Image(Objects.requireNonNull(Lobby.class.getResource("images/"+playerImgs[new Random().nextInt(4)]).toString())));
 
     // Set lobby name
-    this.playerName.setText(player.getUsername());
+    this.playerName.setText(player.getUsername() + ((isYou) ? " (you)":""));
 
     this.controller = controller;
   }

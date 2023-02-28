@@ -367,11 +367,11 @@ public class OrientExpansion {
   @FXML
   private void handleClickMenuPopupQuitButton() {
     try{
-      LobbyServiceCaller.deleteSession(User.getUser(stage));
-      User.getUser(stage).setCurrentLobby(null);
+      LobbyServiceCaller.deleteSession();
+      LobbyServiceCaller.setCurrentUserLobby(null);
     } catch(TokenRefreshFailedException e){
       try{
-        MenuController.getMenuController(stage).returnToLogin("Session timed out, retry login");
+        MenuController.returnToLogin("Session timed out, retry login");
         stage.close();
       } catch(IOException ioe){
         ioe.printStackTrace();
@@ -379,7 +379,7 @@ public class OrientExpansion {
     }
 
     try{
-      MenuController.getMenuController(stage).goToWelcomeScreen();
+      MenuController.goToWelcomeScreen();
     } catch (IOException ioe){
       ioe.printStackTrace();
     }

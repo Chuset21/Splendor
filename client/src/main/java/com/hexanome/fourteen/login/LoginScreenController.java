@@ -1,7 +1,6 @@
 package com.hexanome.fourteen.login;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
-import com.hexanome.fourteen.WindowContextData;
 import com.hexanome.fourteen.lobbyui.MenuController;
 import com.hexanome.fourteen.lobbyui.ScreenController;
 import java.io.IOException;
@@ -42,7 +41,7 @@ public final class LoginScreenController implements ScreenController {
     this.stage = stage;
 
     // Initialize login message
-    String message = ((String) ((WindowContextData) stage.getUserData()).getPayload());
+    String message = (String) stage.getUserData();
 
     if(message != null){
       loginMessageLabel.setText(message);
@@ -62,8 +61,8 @@ public final class LoginScreenController implements ScreenController {
 
     User user = new User(username);
 
-    if (LobbyServiceCaller.login(username, password, user)) {
-      launchGame(user);
+    if (LobbyServiceCaller.login(username, password)) {
+      launchGame();
     } else {
       failedLogin();
     }
@@ -82,11 +81,11 @@ public final class LoginScreenController implements ScreenController {
   /**
    * Creates new lobby instance and routes the player through it
    */
-  private void launchGame(User user) {
+  private void launchGame() {
 
     // Try launching the game
     try {
-      MenuController.getMenuController(stage).successfulLogin(user);
+      MenuController.goToWelcomeScreen();
     } catch (Exception ex) {
       ex.printStackTrace();
     }

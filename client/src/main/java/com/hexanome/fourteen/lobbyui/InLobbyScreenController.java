@@ -4,16 +4,19 @@ import java.io.IOException;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class InLobbyScreenController implements ScreenController{
+public class InLobbyScreenController implements ScreenController {
 
   //TODO: Add "Waiting for player" text in empty player spots
 
@@ -28,9 +31,9 @@ public class InLobbyScreenController implements ScreenController{
   @FXML
   private Button launchLobbyButton;
   @FXML
-  private Button leaveLobbyButton;
+  private Button joinLobbyButton;
   @FXML
-  private Button refreshPlayersButton;
+  private Button leaveLobbyButton;
 
   Thread refresherThread;
   // Holds data of current lobby (primarily the lobby location)
@@ -54,7 +57,7 @@ public class InLobbyScreenController implements ScreenController{
     this.stage = stage;
 
     // Get data from MenuController
-    this.lobby = User.getCurrentLobby(stage);
+    this.lobby = LobbyServiceCaller.getCurrentUserLobby();
 
     // Sets lobby info to automatically refresh
     Task<Void> task = new Task<>() {
@@ -76,16 +79,22 @@ public class InLobbyScreenController implements ScreenController{
     refresherThread.setDaemon(true);
     refresherThread.start();
 
-    //updateLobbyInfo();
+    joinLobbyButton.setVisible(true);
+    launchLobbyButton.setVisible(false);
+
+    // TODO: remove launch button when not the host (make it into a join button?)
+    if(!LobbyServiceCaller.getCurrentUserLobby().getHost().equals(LobbyServiceCaller.getCurrentUserid())){
+
+    }
   }
 
   @FXML
   private void handleLaunchButton(){
-    if(User.getUserid(stage).equals(lobby.getHost())){
+    if(LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost())){
 
       try{
         //if(LobbyServiceCaller.launchSession(User.getUser(stage))) {
-          MenuController.getMenuController(stage).goToGameBoard();
+          MenuController.goToGameBoard();
         //}
       } catch(Exception e){
         e.printStackTrace();
@@ -94,13 +103,18 @@ public class InLobbyScreenController implements ScreenController{
   }
 
   @FXML
+  private void handleJoinButton(){
+
+  }
+
+  @FXML
   private void handleLeaveButton(){
-    if(User.getUserid(stage).equals(lobby.getHost())) {
+    if(LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost())) {
       try{
-        LobbyServiceCaller.deleteSession(User.getUser(stage));
+        LobbyServiceCaller.deleteSession();
       } catch(TokenRefreshFailedException e){
         try{
-          MenuController.getMenuController(stage).returnToLogin("Session timed out, retry login");
+          MenuController.returnToLogin("Session timed out, retry login");
           stage.close();
           return;
         } catch(IOException ioe){
@@ -109,10 +123,10 @@ public class InLobbyScreenController implements ScreenController{
       }
     } else {
       try{
-        LobbyServiceCaller.leaveSession(User.getUser(stage));
+        LobbyServiceCaller.leaveSession();
       } catch (TokenRefreshFailedException e){
         try{
-          MenuController.getMenuController(stage).returnToLogin("Session timed out, retry login");
+          MenuController.returnToLogin("Session timed out, retry login");
           stage.close();
           return;
         } catch(IOException ioe){
@@ -122,17 +136,12 @@ public class InLobbyScreenController implements ScreenController{
     }
 
     try{
-      MenuController.getMenuController(stage).goBack();
+      MenuController.goBack();
       refresherThread.interrupt();
-      User.getUser(stage).setCurrentLobby(null);
+      LobbyServiceCaller.setCurrentUserLobby(null);
     } catch (IOException ioe){
       ioe.printStackTrace();
     }
-  }
-
-  @FXML
-  private void handleRefreshPlayersButton(){
-    updateLobbyInfo();
   }
 
   /**
@@ -163,19 +172,36 @@ public class InLobbyScreenController implements ScreenController{
     }
 
     lobby.updateLobby();
-    updateLobbyName(lobby.getPlayers()[0]);
-    updatePlayerCounter(lobby.getNumPlayers(),lobby.getPlayers().length);
-    updateLobbyPlayers(lobby);
+
+    //updateGUI();
+    updateLobbyName();
+    updatePlayerCounter();
+    updateLobbyPlayers();
   }
 
-  private void updateLobbyPlayers(Lobby aLobby){
+  /**
+   * Updates GUI elements to match gamestate
+   */
+  private void updateGUI(){
+    // Updates joinLobby buttons for non-host users
+    if(lobby.getLaunched() || true){
+      joinLobbyButton.setStyle("#joinLobbyButton:active");
+    } else{
+      joinLobbyButton.setStyle("#joinLobbyButton");
+    }
+  }
+
+  /**
+   * Updates display of players currently in the lobby
+   */
+  private void updateLobbyPlayers(){
     lobbyGrid.getChildren().clear();
 
-    for(int i = 0;i<aLobby.getNumPlayers();i++){
+    for(int i = 0;i<lobby.getNumPlayers();i++){
       DisplayPlayer player = null;
 
       try{
-        player = new DisplayPlayer(new Player(aLobby.getPlayers()[i], "Green"), this);
+        player = new DisplayPlayer(new Player(lobby.getPlayers()[i], "Green"), this);
       } catch(IOException ioe){
         ioe.printStackTrace();
       }
@@ -187,21 +213,17 @@ public class InLobbyScreenController implements ScreenController{
   }
 
   /**
-   * Displays the passed owner name as the lobby owner
-   * @param ownerName name to display as owner
+   * Displays the lobby's owner name as the lobby owner
    */
-  private void updateLobbyName(String ownerName){
-    titleText.setText(LOBBY_NAME_TEMPLATE.replace("[ownerName]",ownerName));
+  private void updateLobbyName(){
+    titleText.setText(LOBBY_NAME_TEMPLATE.replace("[ownerName]",lobby.getPlayers()[0]));
   }
 
   /**
-   * Displays the passed player amounts on the lobby screen
-   * @param curPlayers players currently in the lobby
-   * @param maxPlayers maximum players in the lobby
+   * Updates player count with gamestate
    */
-  private void updatePlayerCounter(int curPlayers,int maxPlayers){
-    String temp = PLAYER_COUNT_TEMPLATE.replace("[curPlayers]",""+curPlayers);
-    capacityText.setText(temp.replace("[maxPlayers]",""+maxPlayers));
+  private void updatePlayerCounter(){
+    String temp = PLAYER_COUNT_TEMPLATE.replace("[curPlayers]",""+lobby.getNumPlayers());
+    capacityText.setText(temp.replace("[maxPlayers]",""+lobby.getPlayers().length));
   }
-
 }

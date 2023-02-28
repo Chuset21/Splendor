@@ -22,12 +22,12 @@
             <Font size="32.0" />
          </font>
       </Button>
-      <Button fx:id="leaveLobbyButton" layoutX="988.0" layoutY="53.0" mnemonicParsing="false" onAction="#handleLeaveButton" prefHeight="37.0" prefWidth="149.0" text="Leave">
+      <Button fx:id="joinLobbyButton" layoutX="77.0" layoutY="594.0" mnemonicParsing="false" onAction="#handleJoinButton" prefHeight="69.0" prefWidth="135.0" text="Join">
          <font>
             <Font size="32.0" />
          </font>
       </Button>
-      <Button fx:id="refreshPlayersButton" layoutX="277.0" layoutY="594.0" mnemonicParsing="false" onAction="#handleRefreshPlayersButton" prefHeight="69.0" prefWidth="166.0" text="Refresh">
+      <Button fx:id="leaveLobbyButton" layoutX="988.0" layoutY="53.0" mnemonicParsing="false" onAction="#handleLeaveButton" prefHeight="37.0" prefWidth="149.0" text="Leave">
          <font>
             <Font size="32.0" />
          </font>

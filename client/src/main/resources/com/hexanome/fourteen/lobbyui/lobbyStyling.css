@@ -64,7 +64,7 @@
     -fx-background-radius: 20 20 20 20;
 }
 
-#createGameButton, #createLobbyButton, #launchLobbyButton {
+#createGameButton, #createLobbyButton, #launchLobbyButton, #joinLobbyButton {
     -fx-background-color: #3699FF;
     -fx-background-radius: 20 20 20 20;
 }
