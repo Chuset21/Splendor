@@ -1,21 +1,12 @@
 package com.hexanome.fourteen.boards;
 
-import com.hexanome.fourteen.ServerCaller;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.ResourceBundle;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -30,7 +21,7 @@ import com.hexanome.fourteen.lobbyui.*;
 /**
  * A class to represent the game objects required to represent a OrientExpansion Splendor game.
  */
-public class OrientExpansion {
+public class GameBoard {
 
   private Stage stage;
   Bank bank;

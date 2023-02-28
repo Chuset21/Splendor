@@ -60,6 +60,29 @@ public final class LobbyServiceCaller {
   }
 
   /**
+   * Gets access token for game service (to delete sessions)
+   * @return
+   */
+  public static String getGameServiceToken(){
+    HttpResponse<String> response = Unirest.post("%soauth/token".formatted(Main.lsLocation))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("grant_type", "password")
+        .queryString("username", "Splendor")
+        .queryString("password", "abc123_ABC123")
+        .body("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true")
+        .asString();
+
+    if (response.getStatus() != 200) {
+      return null;
+    }
+
+    final LoginResponse loginResponse =
+        Main.GSON.fromJson(response.getBody(), LoginResponse.class);
+
+    return loginResponse.accessToken();
+  }
+
+  /**
    * Login a currentUser. Resets currentUser with new data.
    *
    * @param username username
@@ -94,6 +117,8 @@ public final class LobbyServiceCaller {
 
     return getTokens(response);
   }
+
+
 
   /**
    * Parse tokens from request to LobbyService
@@ -258,24 +283,26 @@ public final class LobbyServiceCaller {
   }
 
   /**
-   * Deletes a session, requires host's token
+   * Deletes a session from LobbyService, DON'T USE UNLESS NECESSARY
    *
    * @return true if session was deleted, false otherwise (includes case where player wasn't hosting a session)
    */
   public static boolean deleteSession() throws TokenRefreshFailedException {
     // Check if currentUser is in a lobby to begin with
-    if(currentUser.getCurrentLobby() == null){
+    if(currentUser.getCurrentLobby() == null || !currentUser.getCurrentLobby().getHost().equals(currentUser.getUserid())){
       return false;
     }
 
+    String gsToken = getGameServiceToken();
+
     // Try updating tokens, if fails: send currentUser back to login to refresh tokens
-    if (!updateAccessToken()) {
+    if (gsToken == null) {
       throw new TokenRefreshFailedException();
     }
 
     HttpResponse response = Unirest.delete("%sapi/sessions/%s".formatted(Main.lsLocation, currentUser.getCurrentLobby().getSessionid()))
             .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-            .queryString("access_token", currentUser.getAccessToken())
+            .queryString("access_token", gsToken)
             .asString();
 
     return response.getStatus() == 200;

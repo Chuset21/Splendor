@@ -83,7 +83,7 @@ public class InLobbyScreenController implements ScreenController {
 
     // TODO: remove launch button when not the host (make it into a join button?)
     if(!LobbyServiceCaller.getCurrentUserLobby().getHost().equals(LobbyServiceCaller.getCurrentUserid())){
-      launchLobbyButton.setVisible(true);
+      launchLobbyButton.setVisible(false);
     }
   }
 
@@ -92,6 +92,7 @@ public class InLobbyScreenController implements ScreenController {
     if(LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost())){
       try{
         if(LobbyServiceCaller.launchSession()) {
+          refresherThread.interrupt();
           MenuController.goToGameBoard();
         }
       } catch(Exception e){

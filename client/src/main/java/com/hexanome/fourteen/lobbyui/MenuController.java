@@ -2,7 +2,7 @@ package com.hexanome.fourteen.lobbyui;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
 
-import com.hexanome.fourteen.boards.OrientExpansion;
+import com.hexanome.fourteen.boards.GameBoard;
 import com.hexanome.fourteen.login.LoginScreenController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -233,13 +233,13 @@ public class MenuController {
   public static void goToGameBoard() throws IOException {
     // Load basic lobby UI
     FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
-            OrientExpansion.class.getResource("OrientExpansionBoard1600x900.fxml")));
+            GameBoard.class.getResource("OrientExpansionBoard1600x900.fxml")));
 
     // Import root from fxml file
     Parent root = loader.load();
 
     // Go to screen
-    OrientExpansion controller = loader.getController();
+    GameBoard controller = loader.getController();
     controller.goToGame(stage);
 
     // Set up root on stage (window)
