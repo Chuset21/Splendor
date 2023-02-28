@@ -79,11 +79,12 @@ public class InLobbyScreenController implements ScreenController {
     refresherThread.setDaemon(true);
     refresherThread.start();
 
+    joinLobbyButton.setVisible(true);
+    launchLobbyButton.setVisible(false);
+
     // TODO: remove launch button when not the host (make it into a join button?)
-    if(LobbyServiceCaller.getCurrentUserLobby().getHost().equals(LobbyServiceCaller.getCurrentUserid())){
-      joinLobbyButton.setVisible(false);
-    } else {
-      //launchLobbyButton.setVisible(false);
+    if(!LobbyServiceCaller.getCurrentUserLobby().getHost().equals(LobbyServiceCaller.getCurrentUserid())){
+
     }
   }
 
@@ -103,11 +104,7 @@ public class InLobbyScreenController implements ScreenController {
 
   @FXML
   private void handleJoinButton(){
-    if(joinLobbyButton.getStyle().equals("#joinLobbyButton")){
-      joinLobbyButton.setStyle("#joinLobbyButton:active");
-    } else{
-      joinLobbyButton.setStyle("#joinLobbyButton");
-    }
+
   }
 
   @FXML
