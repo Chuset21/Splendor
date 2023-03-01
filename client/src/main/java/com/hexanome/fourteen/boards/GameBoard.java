@@ -3,6 +3,7 @@ package com.hexanome.fourteen.boards;
 import com.hexanome.fourteen.ServerCaller;
 import com.hexanome.fourteen.form.server.GameBoardForm;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,11 +56,20 @@ public class GameBoard {
   private Button cardReserveButton;
   @FXML
   private Button cardPurchaseButton;
+
+  // PURCHASED CARDS PANE
   @FXML
   private Pane purchasedCardsView;
   private List<Image> purchasedCardImages = new ArrayList<Image>();
   @FXML
   private BorderPane purchasedBorderPane;
+
+  // RESERVED CARDS PANE
+  @FXML
+  private Pane reservedCardsView;
+  private List<Image> reservedCardImages = new ArrayList<Image>();
+  @FXML
+  private BorderPane reservedBorderPane;
 
 
   //CARD FIELDS
@@ -280,6 +290,9 @@ public class GameBoard {
     // Get card to be purchased
     Card cardReserved = (Card) selectedCard.getImage();
 
+    // Store image of purchased card in player's purchase stack
+    reservedCardImages.add(selectedCard.getImage());
+
     // Clear imageview of reserved card
     selectedCard.setImage(null);
 
@@ -389,18 +402,10 @@ public class GameBoard {
     selectedCard = null;
     cardActionMenu.setVisible(false);
   }
+
   @FXML
-  public void handlePurchasedPaneSelect(MouseEvent event) {
-
-    Hand hand = player.getHand();
-
-    //Print to console all the player's purchased cards
-    System.out.println("DEBUG: USER'S PURCHASED CARDS");
-    for (int i = 0; i < hand.purchasedCards.size(); i++) {
-      Card current = hand.purchasedCards.get(i);
-      System.out.println(current.toString());
-    }
-
+  // viewParams = [cardWidth, cardHeight, numOfColumns]
+  public GridPane generateCardGrid(List<Image> imageList, int[] viewParams) {
     // Create a GridPane to hold the images
     GridPane cardImageGrid = new GridPane();
     cardImageGrid.setHgap(10);
@@ -409,30 +414,61 @@ public class GameBoard {
     // Loop through the images and add them to the GridPane
     int row = 0;
     int col = 0;
-    for (Image image : purchasedCardImages) {
+    for (Image image : imageList) {
       ImageView cardIV = new ImageView(image);
-      cardIV.setFitWidth(120);
-      cardIV.setFitHeight(170);
+      cardIV.setFitWidth(viewParams[0]);
+      cardIV.setFitHeight(viewParams[1]);
       cardImageGrid.add(cardIV, col, row);
       col++;
 
       // Store 9 cards per row
-      if (col == 9) {
+      if (col == viewParams[2]) {
         col = 0;
         row++;
       }
     }
+    return cardImageGrid;
+  }
+  @FXML
+  public void handlePurchasedPaneSelect(MouseEvent event) {
+
+    //Print to console all the player's purchased cards
+    System.out.println("DEBUG: USER'S PURCHASED CARDS");
+    Hand hand = player.getHand();
+    for (int i = 0; i < hand.purchasedCards.size(); i++) {
+      Card current = hand.purchasedCards.get(i);
+      System.out.println(current.toString());
+    }
 
     // Set the purchased pane's content to the card image grid
-    purchasedBorderPane.setCenter(cardImageGrid);
+    purchasedBorderPane.setCenter(generateCardGrid(purchasedCardImages, new int[] {120, 170, 9}));
 
     // Open purchased pane
     purchasedCardsView.setVisible(true);
   }
 
   @FXML
-  private void handleExitPurchasedCardsMenu() {
+  private void handleExitPurchaseOrReservePane() {
     purchasedCardsView.setVisible(false);
+    reservedCardsView.setVisible(false);
+  }
+
+  @FXML
+  public void handleReservedPaneSelect(MouseEvent event) {
+
+    //Print to console all the player's purchased cards
+    System.out.println("DEBUG: USER'S RESERVED CARDS");
+    Hand hand = player.getHand();
+    for (int i = 0; i < hand.reservedCards.size(); i++) {
+      Card current = hand.reservedCards.get(i);
+      System.out.println(current.toString());
+    }
+
+    // Set the purchased pane's content to the card image grid
+    reservedBorderPane.setCenter(generateCardGrid(reservedCardImages,new int[] {200, 260, 3}));
+
+    // Open purchased pane
+    reservedCardsView.setVisible(true);
   }
 }
 
