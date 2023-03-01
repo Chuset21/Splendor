@@ -52,7 +52,7 @@ public class Noble extends Image {
           Integer.valueOf(nobleData[2]), Integer.valueOf(nobleData[3]),
           Integer.valueOf(nobleData[4])
       }, Integer.valueOf(nobleData[5]),
-          Card.class.getResource("images/tempcards/" + nobleData[6]).toString());
+          Noble.class.getResource("images/nobles/" + nobleData[6]).toString());
 
       // Add card to cards list
       nobles.add(newNoble);

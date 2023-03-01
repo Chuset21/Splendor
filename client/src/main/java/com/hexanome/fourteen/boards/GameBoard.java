@@ -37,6 +37,7 @@ public class GameBoard {
   // Player's Info
   private Player player;
   private ArrayList<Card> gameCards;
+  private ArrayList<Noble> gameNobles;
   private Deck level3Cards;
   private Deck level2Cards;
   private Deck level1Cards;
@@ -147,6 +148,15 @@ public class GameBoard {
 
     // Set up cards
     setupCards("CardData.csv");
+
+    // Test nobles creation
+    try {
+      gameNobles = Noble.setupNobles("NobleData.csv");
+    } catch (IOException ioe) {
+      ioe.printStackTrace();
+    }
+
+    System.out.println("DEBUG NOBLES: \n" + gameNobles);
 
     gb = ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby());
     System.out.println(gb.playerTurnid());

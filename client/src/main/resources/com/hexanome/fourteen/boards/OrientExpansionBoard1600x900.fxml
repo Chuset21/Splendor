@@ -642,7 +642,7 @@
             <fx:reference source="pYellowGemLabel" />
          </java.util.ArrayList>
       </fx:define>
-      <AnchorPane fx:id="reservedCardsView" layoutX="273.0" layoutY="91.0" prefHeight="627.0" prefWidth="1103.0">
+      <AnchorPane fx:id="reservedCardsView" layoutX="273.0" layoutY="91.0" prefHeight="627.0" prefWidth="1103.0" visible="false">
          <children>
             <Pane layoutX="-3.0" prefHeight="629.0" prefWidth="1106.0" style="-fx-background-color: #F8DB85; -fx-opacity: 0.9;" AnchorPane.leftAnchor="-3.0" AnchorPane.topAnchor="0.0" />
             <BorderPane fx:id="reservedBorderPane" layoutX="132.0" prefHeight="628.0" prefWidth="778.0">

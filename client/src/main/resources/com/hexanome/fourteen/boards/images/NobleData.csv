@@ -1,2 +1,11 @@
 costGreen,costWhite,costBlue,costBlack,costRed,prestigePts,fileName
-2,2,2,0,0,3,noble1.png
+3,0,3,0,3,3,noble1.png
+4,0,4,0,0,3,noble2.png
+0,4,0,4,0,3,noble3.png
+4,0,0,0,4,3,noble4.png
+0,3,0,3,3,3,noble5.png
+0,4,4,0,0,3,noble6.png
+3,0,0,3,3,3,noble7.png
+0,3,3,3,0,3,noble8.png
+3,3,3,0,0,3,noble9.png
+0,0,0,4,4,3,noble10.png
