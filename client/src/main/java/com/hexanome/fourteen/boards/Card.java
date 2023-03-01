@@ -1,5 +1,6 @@
 package com.hexanome.fourteen.boards;
 
+import com.hexanome.fourteen.form.server.cardform.CardForm;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

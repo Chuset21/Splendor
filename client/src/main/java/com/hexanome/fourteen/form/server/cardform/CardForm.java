@@ -1,5 +1,6 @@
 package com.hexanome.fourteen.form.server.cardform;
 
+import com.hexanome.fourteen.boards.Card;
 import com.hexanome.fourteen.boards.Expansion;
 import com.hexanome.fourteen.form.server.GemsForm;
 
