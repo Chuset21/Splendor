@@ -471,6 +471,3 @@ public class GameBoard {
     reservedCardsView.setVisible(true);
   }
 }
-
-
-
