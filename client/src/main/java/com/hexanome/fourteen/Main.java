@@ -35,7 +35,7 @@ public class Main extends Application {
               RuntimeTypeAdapterFactory.of(CardForm.class).registerSubtype(GoldGemCardForm.class)
                   .registerSubtype(ReserveNobleCardForm.class)
                   .registerSubtype(SacrificeCardForm.class).registerSubtype(SatchelCardForm.class)
-                  .registerSubtype(StandardCardForm.class).registerSubtype(WaterfallCardForm.class)
+                  .registerSubtype(StandardCardForm.class, "StandardCard").registerSubtype(WaterfallCardForm.class)
                   .registerSubtype(DoubleBonusCardForm.class)).registerTypeAdapterFactory(
               RuntimeTypeAdapterFactory.of(PaymentForm.class).registerSubtype(GemPaymentForm.class)
                   .registerSubtype(CardPaymentForm.class)).serializeNulls().create();

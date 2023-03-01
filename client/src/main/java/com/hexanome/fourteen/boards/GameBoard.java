@@ -26,6 +26,8 @@ import com.hexanome.fourteen.lobbyui.*;
 public class GameBoard {
 
   private Stage stage;
+
+  public static GameBoardForm gb;
   Bank bank;
   public int numPlayers = 4;
 
@@ -136,9 +138,8 @@ public class GameBoard {
     // Set up cards
     setupCards("CardData.csv");
 
-    GameBoardForm gb =
-        ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby());
-
+    gb = ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby());
+    System.out.println(gb.playerTurnid());
 
   }
 
