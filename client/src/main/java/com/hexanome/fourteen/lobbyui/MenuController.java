@@ -5,8 +5,10 @@ import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.boards.GameBoard;
 import com.hexanome.fourteen.login.LoginScreenController;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.*;
@@ -248,7 +250,16 @@ public class MenuController {
     // Initialize stage settings
     stage.setScene(scene);
     stage.setTitle("Splendor");
+
+    Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+
+    double x = (screenBounds.getWidth() - stage.getWidth()) / 2;
+    double y = (screenBounds.getHeight() - stage.getHeight()) / 2;
+    stage.setX(x);
+    stage.setY(y);
+
     stage.setResizable(false);
+    stage.setMaximized(true);
 
     stage.show();
   }

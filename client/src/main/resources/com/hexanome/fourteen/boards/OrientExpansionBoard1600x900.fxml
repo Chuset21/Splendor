@@ -25,6 +25,21 @@
       <URL value="@appStyling.css" />
    </stylesheets>
    <children>
+      <Pane fx:id="noblesPane" layoutX="1303.0" layoutY="83.0" prefHeight="614.0" prefWidth="187.0">
+         <children>
+            <VBox fx:id="publicNoblesVBox" alignment="TOP_CENTER" prefHeight="620.0" prefWidth="185.0" spacing="10.0" style="-fx-background-color: #F8DB85;">
+               <children>
+                  <Label text="Nobles" textAlignment="CENTER" textFill="#72465b">
+                     <font>
+                        <Font name="Satoshi Bold" size="24.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </Label>
+               </children>
+            </VBox>
+         </children></Pane>
       <Pane id="playersPane" fx:id="playersPane" layoutX="529.0" layoutY="-21.0" prefHeight="184.0" prefWidth="532.0" style="-fx-background-color: #F8DB85; -fx-background-radius: 20;" AnchorPane.topAnchor="-21.0">
          <children>
             <Label alignment="CENTER" layoutX="166.0" layoutY="28.0" prefHeight="47.0" prefWidth="200.0" text="Billy's Turn" textAlignment="CENTER" textFill="#72465b">
@@ -813,21 +828,6 @@
             </Button>
          </children>
       </AnchorPane>
-      <Pane layoutX="1303.0" layoutY="83.0" prefHeight="614.0" prefWidth="205.0">
-         <children>
-            <VBox fx:id="publicNoblesVBox" alignment="TOP_CENTER" prefHeight="620.0" prefWidth="205.0" spacing="10.0" style="-fx-background-color: #F8DB85;">
-               <children>
-                  <Label text="Nobles" textAlignment="CENTER" textFill="#72465b">
-                     <font>
-                        <Font name="Satoshi Bold" size="24.0" />
-                     </font>
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
-                  </Label>
-               </children>
-            </VBox>
-         </children></Pane>
 
 
    </children>

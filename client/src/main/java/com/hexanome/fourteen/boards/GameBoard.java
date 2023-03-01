@@ -10,6 +10,7 @@ import java.util.Random;
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
 import javafx.fxml.FXML;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -19,6 +20,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import com.hexanome.fourteen.lobbyui.*;
 
@@ -502,8 +504,15 @@ public class GameBoard {
       iv.setFitHeight(100);
       iv.setFitWidth(100);
 
+      //Add noble event handler
+      iv.setOnMouseClicked(e -> handleImageViewClick(iv));
+
       //Add to board
       publicNoblesVBox.getChildren().add(iv);
     }
+  }
+  @FXML
+  public void handleImageViewClick(ImageView iv) {
+    System.out.println(iv);
   }
 }
