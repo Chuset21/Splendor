@@ -5,6 +5,9 @@ import com.hexanome.fourteen.form.server.GameBoardForm;
 import com.hexanome.fourteen.form.server.PurchaseCardForm;
 import com.hexanome.fourteen.form.server.ReserveCardForm;
 import com.hexanome.fourteen.form.server.TakeGemsForm;
+import com.hexanome.fourteen.lobbyui.Lobby;
+import com.hexanome.fourteen.lobbyui.MenuController;
+import java.io.IOException;
 import kong.unirest.HttpResponse;
 import kong.unirest.Unirest;
 
@@ -26,6 +29,37 @@ public final class ServerCaller {
   public static GameBoardForm getGameBoard(String serverLocation, String gameid,
                                            String accessToken) {
     HttpResponse<String> response = Unirest.get("/%s/api/games/%s".formatted(serverLocation, gameid))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", accessToken).asString();
+
+    if (response.getStatus() != 200) {
+      return null;
+    }
+
+    return Main.GSON.fromJson(response.getBody(), GameBoardForm.class);
+  }
+
+  /**
+   * Overloaded get game board, uses a lobby object to get all session info.
+   *
+   * @param lobby lobby to get info from
+   * @return The game board form if successful, null otherwise.
+   */
+  public static GameBoardForm getGameBoard(Lobby lobby) {
+    String accessToken = null;
+
+    try{
+      accessToken = LobbyServiceCaller.getCurrentUserAccessToken();
+    } catch(TokenRefreshFailedException e){
+      try{
+        MenuController.returnToLogin("Session timed out, retry login");
+        return null;
+      } catch(IOException ioe){
+        ioe.printStackTrace();
+      }
+    }
+
+    HttpResponse<String> response = Unirest.get("%s/api/games/%s".formatted(lobby.getGameServiceLocation(), lobby.getSessionid()))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("access_token", accessToken).asString();
 

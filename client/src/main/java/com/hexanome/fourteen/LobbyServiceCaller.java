@@ -6,12 +6,10 @@ import com.hexanome.fourteen.form.lobbyservice.SaveGameForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
 
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 import com.hexanome.fourteen.lobbyui.Lobby;
 import com.hexanome.fourteen.lobbyui.User;
@@ -61,9 +59,10 @@ public final class LobbyServiceCaller {
 
   /**
    * Gets access token for game service (to delete sessions)
-   * @return
+   *
+   * @return token of the game service
    */
-  public static String getGameServiceToken(){
+  private static String getGameServiceToken(){
     HttpResponse<String> response = Unirest.post("%soauth/token".formatted(Main.lsLocation))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("grant_type", "password")
@@ -118,7 +117,23 @@ public final class LobbyServiceCaller {
     return getTokens(response);
   }
 
+  /**
+   * Updates the user's access token and sends it in the return.
+   */
+  public static String getCurrentUserAccessToken() throws TokenRefreshFailedException{
+    HttpResponse<String> response = Unirest.post("%soauth/token".formatted(Main.lsLocation))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("grant_type", "refresh_token")
+        .queryString("refresh_token", currentUser.getRefreshToken())
+        .body("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true")
+        .asString();
 
+    if(!getTokens(response)){
+      throw new TokenRefreshFailedException();
+    }
+
+    return currentUser.getAccessToken();
+  }
 
   /**
    * Parse tokens from request to LobbyService
@@ -288,6 +303,30 @@ public final class LobbyServiceCaller {
    * @return true if session was deleted, false otherwise (includes case where player wasn't hosting a session)
    */
   public static boolean deleteSession() throws TokenRefreshFailedException {
+    // Check if currentUser is in a lobby to begin with
+    if(currentUser.getCurrentLobby() == null){
+      return false;
+    }
+
+    // Try updating tokens, if fails: send currentUser back to login to refresh tokens
+    if (!updateAccessToken()) {
+      throw new TokenRefreshFailedException();
+    }
+
+    HttpResponse response = Unirest.delete("%sapi/sessions/%s".formatted(Main.lsLocation, currentUser.getCurrentLobby().getSessionid()))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", currentUser.getAccessToken())
+        .asString();
+
+    return response.getStatus() == 200;
+  }
+
+  /**
+   * Deletes a session from LobbyService, DON'T USE UNLESS NECESSARY
+   *
+   * @return true if session was deleted, false otherwise (includes case where player wasn't hosting a session)
+   */
+  public static boolean deleteLaunchedSession() throws TokenRefreshFailedException {
     // Check if currentUser is in a lobby to begin with
     if(currentUser.getCurrentLobby() == null || !currentUser.getCurrentLobby().getHost().equals(currentUser.getUserid())){
       return false;

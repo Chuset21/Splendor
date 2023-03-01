@@ -49,6 +49,10 @@ public class Lobby {
     return session.launched();
   }
 
+  public String getGameServiceLocation(){
+    return session.gameParameters().location();
+  }
+
   public void updateLobby(){
     // Get settings for session
     session = LobbyServiceCaller.getSessionDetails(sessionid);

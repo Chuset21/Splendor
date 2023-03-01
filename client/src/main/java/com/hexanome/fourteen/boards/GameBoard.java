@@ -1,5 +1,7 @@
 package com.hexanome.fourteen.boards;
 
+import com.hexanome.fourteen.ServerCaller;
+import com.hexanome.fourteen.form.server.GameBoardForm;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -133,6 +135,11 @@ public class GameBoard {
 
     // Set up cards
     setupCards("CardData.csv");
+
+    GameBoardForm gb =
+        ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby());
+
+
   }
 
 
@@ -358,7 +365,7 @@ public class GameBoard {
   @FXML
   private void handleClickMenuPopupQuitButton() {
     try{
-      LobbyServiceCaller.deleteSession();
+      LobbyServiceCaller.deleteLaunchedSession();
       LobbyServiceCaller.setCurrentUserLobby(null);
     } catch(TokenRefreshFailedException e){
       try{
