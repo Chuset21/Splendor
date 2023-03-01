@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
@@ -18,6 +19,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import com.hexanome.fourteen.lobbyui.*;
 
@@ -33,6 +35,8 @@ public class GameBoard {
   public int numPlayers = 4;
 
   public static final int[] GEM_INDEX = {0, 1, 2, 3, 4, 5};
+
+  private static Random random = new Random();
 
   // Player's Info
   private Player player;
@@ -71,6 +75,8 @@ public class GameBoard {
   private List<Image> reservedCardImages = new ArrayList<Image>();
   @FXML
   private BorderPane reservedBorderPane;
+  @FXML
+  private VBox publicNoblesVBox;
 
 
   //CARD FIELDS
@@ -149,12 +155,8 @@ public class GameBoard {
     // Set up cards
     setupCards("CardData.csv");
 
-    // Test nobles creation
-    try {
-      gameNobles = Noble.setupNobles("NobleData.csv");
-    } catch (IOException ioe) {
-      ioe.printStackTrace();
-    }
+    // Setup nobles CSV data and display on board
+    generateNobles();
 
     System.out.println("DEBUG NOBLES: \n" + gameNobles);
 
@@ -479,5 +481,23 @@ public class GameBoard {
 
     // Open purchased pane
     reservedCardsView.setVisible(true);
+  }
+
+  @FXML
+  public void generateNobles() {
+    // Create noble objects from CSV data
+    try {
+      gameNobles = Noble.setupNobles("NobleData.csv");
+    } catch (IOException ioe) {
+      ioe.printStackTrace();
+    }
+
+    for (int i = 0; i < numPlayers; i++) {
+      int randIndex = random.nextInt(gameNobles.size());
+      Noble randomNoble = gameNobles.get(randIndex);
+      //publicNoblesVBox.getChildren().add(randomNoble);
+    }
+
+
   }
 }
