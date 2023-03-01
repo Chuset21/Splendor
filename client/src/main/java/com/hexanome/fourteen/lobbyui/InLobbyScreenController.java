@@ -96,8 +96,10 @@ public class InLobbyScreenController implements ScreenController {
         if(LobbyServiceCaller.launchSession()) {
           refresherThread.interrupt();
 
-          // Gets the gameboard
-          //GameBoardForm gameboard =  ServerCaller.getGameBoard(lobby.getGameServiceLocation(), lobby.getSessionid(), LobbyServiceCaller.getCurrentUserAccessToken());
+          // Gets the gameboard info
+          GameBoardForm gameboard =  ServerCaller.getGameBoard(lobby.getGameServiceLocation(), lobby.getSessionid(), LobbyServiceCaller.getCurrentUserAccessToken());
+
+          // Go to board screen
           MenuController.goToGameBoard();
         }
       } catch(Exception e){
