@@ -12,7 +12,7 @@ module com.hexanome.fourteen {
   opens com.hexanome.fourteen.form.lobbyservice to com.google.gson;
   opens com.hexanome.fourteen.form.server to com.google.gson;
   opens com.hexanome.fourteen.form.server.cardform to com.google.gson;
-  opens com.hexanome.fourteen to com.google.gson;
+  opens com.hexanome.fourteen to com.google.gson, gson.extras;
 
   exports com.hexanome.fourteen.form.server.payment;
   exports com.hexanome.fourteen;
