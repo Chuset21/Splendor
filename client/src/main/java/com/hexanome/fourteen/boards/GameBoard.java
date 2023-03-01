@@ -491,12 +491,19 @@ public class GameBoard {
       ioe.printStackTrace();
     }
 
-    for (int i = 0; i < numPlayers; i++) {
+    for (int i = 0; i <= numPlayers; i++) {
+      // Select a random noble from the gameNobles
       int randIndex = random.nextInt(gameNobles.size());
       Noble randomNoble = gameNobles.get(randIndex);
-      //publicNoblesVBox.getChildren().add(randomNoble);
+
+      // Format the noble into a JavaFX Image
+      ImageView iv = new ImageView();
+      iv.setImage(randomNoble);
+      iv.setFitHeight(100);
+      iv.setFitWidth(100);
+
+      //Add to board
+      publicNoblesVBox.getChildren().add(iv);
     }
-
-
   }
 }

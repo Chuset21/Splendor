@@ -813,9 +813,9 @@
             </Button>
          </children>
       </AnchorPane>
-      <Pane layoutX="1306.0" layoutY="155.0" prefHeight="526.0" prefWidth="227.0">
+      <Pane layoutX="1303.0" layoutY="83.0" prefHeight="614.0" prefWidth="205.0">
          <children>
-            <VBox fx:id="publicNoblesVBox" alignment="TOP_CENTER" prefHeight="523.0" prefWidth="228.0" style="-fx-background-color: #F8DB85;">
+            <VBox fx:id="publicNoblesVBox" alignment="TOP_CENTER" prefHeight="620.0" prefWidth="205.0" spacing="10.0" style="-fx-background-color: #F8DB85;">
                <children>
                   <Label text="Nobles" textAlignment="CENTER" textFill="#72465b">
                      <font>
