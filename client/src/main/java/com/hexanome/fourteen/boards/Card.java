@@ -14,6 +14,8 @@ import javafx.scene.image.Image;
 
 public class Card extends Image {
 
+  public static ArrayList<Card> cards = null;
+
   // Cost = { CostGreen, CostWhite, CostBlue, CostBlack, CostRed }
   private final int[] aCost;
   private final GemColor aDiscountColor;
@@ -56,7 +58,7 @@ public class Card extends Image {
    * isn't static
    */
   public static ArrayList<Card> setupCards(String csvFileName) throws IOException {
-    ArrayList<Card> cards = new ArrayList<>();
+    cards = new ArrayList<>();
 
     // Current line of CSV file
     String curLine;

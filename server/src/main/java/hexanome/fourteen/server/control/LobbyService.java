@@ -1,5 +1,6 @@
 package hexanome.fourteen.server.control;
 
+import hexanome.fourteen.server.RestLauncher;
 import hexanome.fourteen.server.control.form.RegisterGameServiceForm;
 import hexanome.fourteen.server.control.form.SaveGameForm;
 import java.net.Inet4Address;
@@ -33,8 +34,14 @@ public class LobbyService implements LobbyServiceCaller {
                       @Value("${server.port}") String port) throws UnknownHostException {
     this.gsonInstance = gsonInstance;
     this.lsLocation = lsLocation;
-    gameServiceLocation =
-        "http://%s:%s/splendor".formatted(Inet4Address.getLocalHost().getHostAddress(), port);
+
+    if(RestLauncher.gsLocation != null){
+      gameServiceLocation =
+          "http://%s:%s/splendor".formatted(RestLauncher.gsLocation, port);
+    } else{
+      gameServiceLocation =
+          "http://%s:%s/splendor".formatted(Inet4Address.getLocalHost().getHostAddress(), port);
+    }
   }
 
   @Override
