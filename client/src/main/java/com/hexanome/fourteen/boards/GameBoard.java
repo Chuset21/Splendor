@@ -3,7 +3,6 @@ package com.hexanome.fourteen.boards;
 import com.hexanome.fourteen.ServerCaller;
 import com.hexanome.fourteen.form.server.GameBoardForm;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +27,7 @@ public class GameBoard {
 
   private Stage stage;
 
-  public static GameBoardForm gb;
+  private GameBoardForm gameBoardForm;
   Bank bank;
   public int numPlayers = 4;
 
@@ -158,8 +157,8 @@ public class GameBoard {
 
     System.out.println("DEBUG NOBLES: \n" + gameNobles);
 
-    gb = ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby());
-    System.out.println(gb.playerTurnid());
+    gameBoardForm = ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby());
+    System.out.println(gameBoardForm.playerTurnid());
 
   }
 
