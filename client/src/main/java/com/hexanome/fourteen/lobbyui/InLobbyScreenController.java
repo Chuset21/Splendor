@@ -1,5 +1,7 @@
 package com.hexanome.fourteen.lobbyui;
 
+import com.hexanome.fourteen.ServerCaller;
+import com.hexanome.fourteen.form.server.GameBoardForm;
 import java.io.IOException;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
@@ -90,9 +92,12 @@ public class InLobbyScreenController implements ScreenController {
   @FXML
   private void handleLaunchButton(){
     if(LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost())){
-      try{
+      try {
         if(LobbyServiceCaller.launchSession()) {
           refresherThread.interrupt();
+
+          // Gets the gameboard
+          //GameBoardForm gameboard =  ServerCaller.getGameBoard(lobby.getGameServiceLocation(), lobby.getSessionid(), LobbyServiceCaller.getCurrentUserAccessToken());
           MenuController.goToGameBoard();
         }
       } catch(Exception e){

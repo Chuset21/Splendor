@@ -1,13 +1,19 @@
 package com.hexanome.fourteen.lobbyui;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
+import com.hexanome.fourteen.ServerCaller;
+import com.hexanome.fourteen.TokenRefreshFailedException;
 import com.hexanome.fourteen.form.lobbyservice.CreateSessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SaveGameForm;
+import com.hexanome.fourteen.form.lobbyservice.SessionForm;
+import com.hexanome.fourteen.form.server.GameBoardForm;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -38,8 +44,7 @@ public class LoadGameScreenController implements ScreenController{
   @FXML
   private Button createLobbyButton;
 
-
-  private List<SaveGameForm> savedGames;
+  private Map<String, SaveGameForm> savedGames;
   private Stage stage;
 
   @Override
@@ -47,6 +52,7 @@ public class LoadGameScreenController implements ScreenController{
     this.stage = stage;
 
     // Post init
+    savedGames = new HashMap<String, SaveGameForm>();
 
     // Update our access tokens on page load
     LobbyServiceCaller.updateAccessToken();
@@ -59,26 +65,63 @@ public class LoadGameScreenController implements ScreenController{
 
   @FXML
   public void handleCreateLobbyButton() {
-    /*try {
-      System.out.println("Loaded game: "+loadSetting.getSelectedToggle().toString());
-      MenuController.getMenuController(stage).goToInLobbyScreen(null);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }*/
 
-    /*String selectedExpansion =
-        getJavaFXControlName(expansionSetting.getSelectedToggle().toString());
-    String selectedMaxPlayers =
-        getJavaFXControlName(maxPlayersSetting.getSelectedToggle().toString());
+    // Information Variables about our session/savegame
+    String sessionID = null;
+    String saveGameID = (String) loadSetting.getSelectedToggle().getUserData();
+    SaveGameForm saveGame = savedGames.get(saveGameID);
 
-    String[] lobbyData = new String[] {selectedExpansion, selectedMaxPlayers};
-    System.out.println(Arrays.toString(lobbyData));*/
+    // Print to console our next step
+    System.out.println("Loading game:" +  saveGameID);
 
-    System.out.println("Loading game:" +  loadSetting.getSelectedToggle().getUserData());
+    // Check if any of the current sessions already have the savegameID.
+    var currentSessions = LobbyServiceCaller.getSessions().sessions();
+    for (var session : currentSessions.entrySet()) {
+      if (session.getValue().saveGameid().equals(saveGameID)) {
+        sessionID = session.getKey();
+        System.out.println("Session already exists! Loading existing session's data...");
+      }
+    }
 
-    // TODO: Add player to existing lobby if sessions already exists, otherwise create it.
+    // Otherwise, we create a new session
+    if (sessionID == null) {
+      System.out.println("Creating a session...");
 
-    // TODO: Implement putting player in correct lobby once created
+      // Creates template for session with current user's ID and the selected expansion
+      CreateSessionForm session = new CreateSessionForm(LobbyServiceCaller.getCurrentUserid(), savedGames.get(saveGameID).gameName(), saveGameID);
+
+      // Get the session
+      try {
+        sessionID = LobbyServiceCaller.createSession(session);
+      } catch(TokenRefreshFailedException e) {
+        try {
+          MenuController.returnToLogin("Session timed out, retry login");
+        } catch (IOException ioe) {
+          ioe.printStackTrace();
+        }
+      }
+
+    }
+
+    System.out.println("Session ID: " + sessionID);
+
+    // Create the lobby for the session
+    if (sessionID != null) {
+
+      // Get the Session Information
+      SessionForm sf = LobbyServiceCaller.getSessions().sessions().get(sessionID);
+
+      try {
+
+        // Go to Lobby
+        MenuController.goToInLobbyScreen(new Lobby(sessionID));
+
+      } catch (IOException ioe) {
+        LobbyServiceCaller.setCurrentUserLobby(null);
+        ioe.printStackTrace();
+      }
+    }
+
 
   }
 
@@ -98,12 +141,16 @@ public class LoadGameScreenController implements ScreenController{
 
     // Only load the games that has the user included
     String username = LobbyServiceCaller.getCurrentUserid();
-    System.out.println(username);
-    savedGames = LobbyServiceCaller.getSavedGames().stream().filter(e-> e.players().contains(username)).toList();
+    List<SaveGameForm> savedGamesList = LobbyServiceCaller.getSavedGames().stream().filter(e-> e.players().contains(username)).toList();
 
-    if (savedGames != null) {
-      for (SaveGameForm sg : savedGames){
-        System.out.println(sg.saveGameid());
+    if (savedGamesList != null) {
+
+      for (SaveGameForm sg : savedGamesList) {
+
+        // Add our saved game to our list
+        savedGames.put(sg.saveGameid(), sg);
+
+        // Make a toggle button for the game
         DisplaySavedGame displayGame = null;
 
         try {

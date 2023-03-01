@@ -28,7 +28,7 @@ public final class ServerCaller {
    */
   public static GameBoardForm getGameBoard(String serverLocation, String gameid,
                                            String accessToken) {
-    HttpResponse<String> response = Unirest.get("/%s/api/games/%s".formatted(serverLocation, gameid))
+    HttpResponse<String> response = Unirest.get("%s/api/games/%s".formatted(serverLocation, gameid))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("access_token", accessToken).asString();
 
