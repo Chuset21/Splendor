@@ -1,6 +1,5 @@
 package com.hexanome.fourteen.boards;
 
-import com.hexanome.fourteen.form.server.cardform.CardLevelForm;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,14 +14,24 @@ public enum GemColor {
   RED,
   GOLD;
 
-  public static final Map<String, GemColor> CONVERSION_ARRAY = new HashMap<>();
+  public static final Map<String, GemColor> STRING_CONVERSION_ARRAY = new HashMap<>();
+  public static final Map<Integer, GemColor> INT_CONVERSION_ARRAY = new HashMap<>();
 
   static {
-    CONVERSION_ARRAY.put("GREEN", GREEN);
-    CONVERSION_ARRAY.put("WHITE", WHITE);
-    CONVERSION_ARRAY.put("BLUE", BLUE);
-    CONVERSION_ARRAY.put("BLACK", BLACK);
-    CONVERSION_ARRAY.put("RED", RED);
-    CONVERSION_ARRAY.put("GOLD", GOLD);
+    STRING_CONVERSION_ARRAY.put("GREEN", GREEN);
+    STRING_CONVERSION_ARRAY.put("WHITE", WHITE);
+    STRING_CONVERSION_ARRAY.put("BLUE", BLUE);
+    STRING_CONVERSION_ARRAY.put("BLACK", BLACK);
+    STRING_CONVERSION_ARRAY.put("RED", RED);
+    STRING_CONVERSION_ARRAY.put("GOLD", GOLD);
+
+    INT_CONVERSION_ARRAY.put(0, GREEN);
+    INT_CONVERSION_ARRAY.put(1, WHITE);
+    INT_CONVERSION_ARRAY.put(2, BLUE);
+    INT_CONVERSION_ARRAY.put(3, BLACK);
+    INT_CONVERSION_ARRAY.put(4, RED);
+    INT_CONVERSION_ARRAY.put(5, GOLD);
   }
+
+
 }

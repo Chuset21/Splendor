@@ -37,7 +37,7 @@ public class InLobbyScreenController implements ScreenController {
   @FXML
   private Button leaveLobbyButton;
 
-  Thread refresherThread;
+  private Thread refresherThread;
   // Holds data of current lobby (primarily the lobby location)
   private Lobby lobby;
   
@@ -99,6 +99,15 @@ public class InLobbyScreenController implements ScreenController {
           // Go to board screen
           MenuController.goToGameBoard();
         }
+      } catch(Exception e){
+        e.printStackTrace();
+      }
+    } else{
+      try {
+        refresherThread.interrupt();
+
+        // Go to board screen
+        MenuController.goToGameBoard();
       } catch(Exception e){
         e.printStackTrace();
       }
@@ -176,7 +185,7 @@ public class InLobbyScreenController implements ScreenController {
 
     lobby.updateLobby();
 
-    //updateGUI();
+    updateGUI();
     updateLobbyName();
     updatePlayerCounter();
     updateLobbyPlayers();
@@ -187,12 +196,12 @@ public class InLobbyScreenController implements ScreenController {
    */
   private void updateGUI(){
     // Updates joinLobby buttons for non-host users
-    if(lobby.getLaunched()){
-      joinLobbyButton.setVisible(true);
-      launchLobbyButton.setVisible(false);
-    } else{
+    if(LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost()) || lobby.getLaunched()){
       joinLobbyButton.setVisible(false);
       launchLobbyButton.setVisible(true);
+    } else{
+      joinLobbyButton.setVisible(false);
+      launchLobbyButton.setVisible(false);
     }
   }
 
