@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import javafx.scene.image.Image;
 
@@ -15,58 +17,71 @@ import javafx.scene.image.Image;
  * Noble.
  */
 public class Noble extends Image {
-  private NobleForm nobleForm;
+  private static final Map<NobleForm, String> NOBLE_FORM_MAP = new HashMap<>();
+
+  static {
+    try {
+      buildMap();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private final NobleForm nobleForm;
 
   /**
    * Constructor.
    *
    * @param nobleForm form to construct into Noble
    */
-  private Noble(NobleForm nobleForm) throws IOException {
-    super(getImageFileFromCSV(nobleForm));
+  private Noble(NobleForm nobleForm) {
+    super(getNobleFromForm(nobleForm));
 
     this.nobleForm = nobleForm;
   }
 
-  private static String getImageFileFromCSV(NobleForm nobleForm) throws IOException{
-    String csvFileName = "NobleData.csv";
-
-    // Current line of CSV file
-    String curLine;
-
-    // Get CardData.csv file
-    BufferedReader br = new BufferedReader(new InputStreamReader(
-        Objects.requireNonNull(Card.class.getResourceAsStream("images/" + csvFileName))));
+  private static void buildMap() throws IOException {
+    // Get NobleData.csv file
+    final BufferedReader br = new BufferedReader(new InputStreamReader(
+        Objects.requireNonNull(Card.class.getResourceAsStream("images/NobleData.csv"))));
 
     // Skip header of the CSV file
     br.readLine();
-
-    // Read through lines of file and get card data
+    // Read through lines of file and get noble data
+    String curLine;
     while ((curLine = br.readLine()) != null) {
       // Use comma as a delimiter
       String[] nobleData = curLine.split(",");
 
-      int[] cost = {Integer.valueOf(nobleData[0]), Integer.valueOf(nobleData[1]),
-          Integer.valueOf(nobleData[2]), Integer.valueOf(nobleData[3]),
-          Integer.valueOf(nobleData[4])};
-      int prestigePoints = Integer.valueOf(nobleData[5]);
+      final GemsForm cost = new GemsForm();
+      final int greenCost = Integer.parseInt(nobleData[0]);
+      cost.computeIfAbsent(GemColor.GREEN, k -> greenCost > 0 ? greenCost : null);
 
-      // If nobleForm has equivalent data to CSV entry
-      if(Arrays.equals(GemsForm.costHashToArray(nobleForm.cost()), cost)
-          && nobleForm.prestigePoints() == prestigePoints){
-        // Add card to cards list
-        return Noble.class.getResource("images/nobles/" + nobleData[6]).toString();
-      }
-      // Otherwise, loop
+      final int whiteCost = Integer.parseInt(nobleData[1]);
+      cost.computeIfAbsent(GemColor.WHITE, k -> whiteCost > 0 ? whiteCost : null);
+
+      final int blueCost = Integer.parseInt(nobleData[2]);
+      cost.computeIfAbsent(GemColor.BLUE, k -> blueCost > 0 ? blueCost : null);
+
+      final int blackCost = Integer.parseInt(nobleData[3]);
+      cost.computeIfAbsent(GemColor.BLACK, k -> blackCost > 0 ? blackCost : null);
+
+      final int redCost = Integer.parseInt(nobleData[4]);
+      cost.computeIfAbsent(GemColor.RED, k -> redCost > 0 ? redCost : null);
+
+      final int prestigePoints = Integer.parseInt(nobleData[5]);
+      NOBLE_FORM_MAP.put(new NobleForm(prestigePoints, cost), nobleData[6]);
     }
-
-    throw new IOException("No matching noble found in "+csvFileName);
   }
 
-  public static ArrayList<Noble> interpretNobles(GameBoardForm gameBoardForm) throws IOException {
+  private static String getNobleFromForm(NobleForm nobleForm) {
+    return NOBLE_FORM_MAP.get(nobleForm);
+  }
+
+  public static ArrayList<Noble> interpretNobles(GameBoardForm gameBoardForm) {
     ArrayList<Noble> nobles = new ArrayList<>();
 
-    for(NobleForm nf : gameBoardForm.availableNobles()){
+    for (NobleForm nf : gameBoardForm.availableNobles()) {
       nobles.add(new Noble(nf));
     }
 
@@ -84,7 +99,7 @@ public class Noble extends Image {
   @Override
   public String toString() {
     return "\nPrestige Points: " + getPrestigePoints() + ", Visit Cost: " +
-        Arrays.toString(getCost()) + "," + super.toString();
+           Arrays.toString(getCost()) + "," + super.toString();
   }
 
   @Override
@@ -97,11 +112,11 @@ public class Noble extends Image {
     }
     Noble that = (Noble) obj;
     return this.getPrestigePoints() == that.getPrestigePoints()
-        && Objects.equals(this.getCost(), that.getCost());
+           && Arrays.equals(this.getCost(), that.getCost());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(getPrestigePoints(), getCost());
+    return Objects.hash(getPrestigePoints(), Arrays.hashCode(getCost()));
   }
 }
