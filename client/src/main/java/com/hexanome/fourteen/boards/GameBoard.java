@@ -3,6 +3,7 @@ package com.hexanome.fourteen.boards;
 import com.hexanome.fourteen.GameServiceName;
 import com.hexanome.fourteen.ServerCaller;
 import com.hexanome.fourteen.form.server.GameBoardForm;
+import com.hexanome.fourteen.form.server.GemsForm;
 import com.hexanome.fourteen.form.server.PlayerForm;
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -58,9 +59,11 @@ public class GameBoard {
   private Player player;
   private List<Player> players;
   @FXML
-  private ArrayList playerViews;
+  private ArrayList<ImageView> playerViews;
   @FXML
-  private ArrayList playerNameLabels;
+  private ArrayList<Label> playerNameLabels;
+  @FXML
+  private Label currentPlayerTurnLabel;
   private static final Effect currentPlayerEffect = new DropShadow(BlurType.GAUSSIAN, Color.web("#0048ff"), 24.5, 0, 0,0);
 
   private ArrayList<Card> gameCards;
@@ -149,6 +152,10 @@ public class GameBoard {
   private List<Button> removeGemButtons;
   @FXML
   private List<Button> addGemButtons;
+  @FXML
+  private Pane takenTokenPane;
+  @FXML
+  private ArrayList<Label> takenGemLabels;
 
   /**
    * A call to this method displays the game on screen by initializing the scene with the gameboard.
@@ -166,8 +173,8 @@ public class GameBoard {
     setupPlayers();
 
     // Set up bank
-    bank = new Bank(numPlayers, addGemButtons, removeGemButtons, pGemLabels, bGemLabels,
-            takeBankButton);
+    bank = new Bank(players.size(), addGemButtons, removeGemButtons, takenGemLabels, bGemLabels,
+            takeBankButton, takenTokenPane, this);
 
     // Initialize the player's gems
     for (int idx : GEM_INDEX) {
@@ -177,16 +184,34 @@ public class GameBoard {
     // Set up game screen
     cardActionMenu.setVisible(false);
     purchasedCardsView.setVisible(false);
-
+    takenTokenPane.setVisible(false);
 
 
     // Set up cards
-    //setupCards("CardData.csv");
     setupCards();
 
     // Setup nobles CSV data and display on board
     generateNobles();
 
+  }
+
+  public void updateBoard(){
+    // Get gameBoardForm
+    gameBoardForm = ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby());
+
+    setupPlayers();
+
+    // Set up game screen
+    cardActionMenu.setVisible(false);
+    purchasedCardsView.setVisible(false);
+    takenTokenPane.setVisible(false);
+
+
+    // Set up cards
+    setupCards();
+
+    // Setup nobles CSV data and display on board
+    generateNobles();
   }
 
 
@@ -300,7 +325,17 @@ public class GameBoard {
       }
     }
 
+    // Show whose turn it is
     displayCurrentPlayer();
+
+    // Initialize the player's gems
+    for (PlayerForm playerForm : gameBoardForm.players()) {
+      if(playerForm.uid().equals(LobbyServiceCaller.getCurrentUserid())){
+        for(i = 0;i<5;i++){
+          pGemLabels.get(i).textProperty().set("" + GemsForm.costHashToArray(playerForm.hand().gems())[i]);
+        }
+      }
+    }
   }
 
   private void displayCurrentPlayer(){
@@ -310,6 +345,7 @@ public class GameBoard {
 
     for(int i = 0;i<players.size();i++){
       if(players.get(i).getUserId().equals(gameBoardForm.playerTurnid())){
+        currentPlayerTurnLabel.setText(players.get(i).getUserId()+"'s Turn");
         ((ImageView) playerViews.get(i)).setEffect(currentPlayerEffect);
       } else{
         ((ImageView) playerViews.get(i)).setEffect(null);
@@ -436,51 +472,51 @@ public class GameBoard {
   }
 
   public void handleTakeGreenGemButton() {
-    bank.takeGem(player.getHand().gems, 0);
+    bank.takeGem( 0);
   }
 
   public void handleReturnGreenGemButton() {
-    bank.returnGem(player.getHand().gems, 0);
+    bank.returnGem(0);
   }
 
   public void handleTakeWhiteGemButton() {
-    bank.takeGem(player.getHand().gems, 1);
+    bank.takeGem(1);
   }
 
   public void handleReturnWhiteGemButton() {
-    bank.returnGem(player.getHand().gems, 1);
+    bank.returnGem(1);
   }
 
   public void handleTakeBlueGemButton() {
-    bank.takeGem(player.getHand().gems, 2);
+    bank.takeGem(2);
   }
 
   public void handleReturnBlueGemButton() {
-    bank.returnGem(player.getHand().gems, 2);
+    bank.returnGem(2);
   }
 
   public void handleTakeBlackGemButton() {
-    bank.takeGem(player.getHand().gems, 3);
+    bank.takeGem(3);
   }
 
   public void handleReturnBlackGemButton() {
-    bank.returnGem(player.getHand().gems, 3);
+    bank.returnGem(3);
   }
 
   public void handleTakeRedGemButton() {
-    bank.takeGem(player.getHand().gems, 4);
+    bank.takeGem(4);
   }
 
   public void handleReturnRedGemButton() {
-    bank.returnGem(player.getHand().gems, 4);
+    bank.returnGem(4);
   }
 
   public void handleTakeYellowGemButton() {
-    bank.takeGem(player.getHand().gems, 5);
+    bank.takeGem(5);
   }
 
   public void handleReturnYellowGemButton() {
-    bank.returnGem(player.getHand().gems, 5);
+    bank.returnGem(5);
   }
 
   @FXML

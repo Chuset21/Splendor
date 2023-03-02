@@ -1,11 +1,19 @@
 package com.hexanome.fourteen.boards;
 
+import com.hexanome.fourteen.LobbyServiceCaller;
+import com.hexanome.fourteen.ServerCaller;
+import com.hexanome.fourteen.TokenRefreshFailedException;
+import com.hexanome.fourteen.form.server.GemsForm;
+import com.hexanome.fourteen.form.server.TakeGemsForm;
+import com.hexanome.fourteen.lobbyui.MenuController;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
 
 /**
  * A Bank Class to allow handling of Gems.
@@ -25,6 +33,8 @@ public class Bank {
   // Includes reference to the players gems labels so bank can just update it itself.
   List<Label> bankGemLabels;
   Button takeBankButton;
+  Pane takenTokenPane;
+  GameBoard gameBoard;
 
   /**
    * Constructor for our Bank object to be made.
@@ -32,8 +42,8 @@ public class Bank {
    * @param numPlayers       The number of Players in the game
    * @param addGemButtons    The button to add Gems
    * @param removeGemButtons The button to remove Gems
-   * @param gemLabels        The names of each Gem
-   * @param bankGemLabels    The names of each Gem the Bank uses
+   * @param gemLabels        The labels displaying the number of each Gem
+   * @param bankGemLabels    The labels displaying the number of each Gem the Bank uses
    * @param takeBankButton   Button to allow you take Gems from the Bank
    */
   public Bank(int numPlayers,
@@ -41,7 +51,9 @@ public class Bank {
               List<Button> removeGemButtons,
               List<Label> gemLabels,
               List<Label> bankGemLabels,
-              Button takeBankButton) {
+              Button takeBankButton,
+              Pane takenTokenPane,
+              GameBoard gameBoard) {
 
     // Initialize/Link our Objects
     this.addGemButtons = addGemButtons;
@@ -50,6 +62,8 @@ public class Bank {
     this.bankGemLabels = bankGemLabels;
     this.takeBankButton = takeBankButton;
     this.selectedGems = new ArrayList<>();
+    this.takenTokenPane = takenTokenPane;
+    this.gameBoard = gameBoard;
     isTaking = false;
 
     // Initialize Starting Tokens and the respective Labels
@@ -74,18 +88,52 @@ public class Bank {
     if (isTaking) {
       selectedGems.clear();
       takeBankButton.textProperty().set("Take");
+      takenTokenPane.setVisible(true);
       for (int idx : GEM_INDEX) {
         removeGemButtons.get(idx).setVisible(true);
         addGemButtons.get(idx).setVisible(true);
+        if(idx < 5){
+          gemLabels.get(idx).setText(""+0);
+        }
       }
       updateBankButtons();
 
     } else {
       takeBankButton.textProperty().set("Open");
+      takenTokenPane.setVisible(false);
       // Otherwise, just hide all the buttons!
       for (int idx : GEM_INDEX) {
         removeGemButtons.get(idx).setVisible(false);
         addGemButtons.get(idx).setVisible(false);
+      }
+
+      sendTakeGems(selectedGems);
+    }
+  }
+
+  public void sendTakeGems(List<Integer> takenGems){
+    GemsForm convertedForm = new GemsForm();
+
+    for(int i = 0; i<5;i++){
+      convertedForm.put(GemColor.INT_CONVERSION_ARRAY.get(i), 0);
+    }
+
+    for(Integer i : takenGems){
+      convertedForm.put(GemColor.INT_CONVERSION_ARRAY.get(i),convertedForm.get(GemColor.INT_CONVERSION_ARRAY.get(i)).intValue() + 1);
+    }
+
+    TakeGemsForm form = new TakeGemsForm(convertedForm, GemsForm.costArrayToHash(new int[]{0,0,0,0,0}));
+
+    try {
+      ServerCaller.takeGems(LobbyServiceCaller.getCurrentUserLobby(),
+          LobbyServiceCaller.getCurrentUserAccessToken(), form);
+
+      gameBoard.updateBoard();
+    } catch (TokenRefreshFailedException e){
+      try{
+        MenuController.returnToLogin("Session timed out, retry login");
+      } catch(IOException ioe){
+        ioe.printStackTrace();
       }
     }
   }
@@ -93,19 +141,17 @@ public class Bank {
   /**
    * Allows a Player to take Gems.
    *
-   * @param playerGems The Player Gems
    * @param index      The index in the list
    */
-  public void takeGem(int[] playerGems, int index) {
+  public void takeGem(int index) {
 
     // Update the internal values
     selectedGems.add(index);
-    playerGems[index]++;
     bankGems[index]--;
+    gemLabels.get(index).setText(""+(Integer.valueOf(gemLabels.get(index).getText())+1));
 
     // Update our text properties (Bank and Hand)
     bankGemLabels.get(index).textProperty().set("" + bankGems[index]);
-    gemLabels.get(index).textProperty().set("" + playerGems[index]);
 
     // Update the buttons (specifically, their Enabled/Disabled state)
     updateBankButtons();
@@ -114,19 +160,17 @@ public class Bank {
   /**
    * Allows a Player to return Gems.
    *
-   * @param playerGems The Player Gems
    * @param index      The index in the list
    */
-  public void returnGem(int[] playerGems, int index) {
+  public void returnGem(int index) {
 
     //Update Values
     selectedGems.remove(Integer.valueOf(index));
-    playerGems[index]--;
     bankGems[index]++;
+    gemLabels.get(index).setText(""+(Integer.valueOf(gemLabels.get(index).getText())-1));
 
     // Update our text properties (Bank and Hand)
     bankGemLabels.get(index).textProperty().set("" + bankGems[index]);
-    gemLabels.get(index).textProperty().set("" + playerGems[index]);
 
     // Update the buttons (specifically, their Abled/Disabled state)
     updateBankButtons();
@@ -190,6 +234,4 @@ public class Bank {
     }
     return false;
   }
-
-
 }

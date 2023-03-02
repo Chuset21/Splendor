@@ -1,14 +1,11 @@
 package com.hexanome.fourteen.boards;
 
-import com.hexanome.fourteen.form.server.GameBoardForm;
 import com.hexanome.fourteen.form.server.GemsForm;
-import com.hexanome.fourteen.form.server.NobleForm;
 import com.hexanome.fourteen.form.server.cardform.CardLevelForm;
 import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -68,7 +65,7 @@ public class StandardCard extends Image {
         final int redCost = Integer.parseInt(cardData[4]);
         cost.computeIfAbsent(GemColor.RED, k -> redCost > 0 ? redCost : null);
 
-        final GemColor color = GemColor.CONVERSION_ARRAY.get(cardData[5]);
+        final GemColor color = GemColor.STRING_CONVERSION_ARRAY.get(cardData[5]);
 
         final Expansion expansion = Expansion.CONVERSION_ARRAY.get(cardData[7]);
 

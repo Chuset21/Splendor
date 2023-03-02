@@ -53,7 +53,7 @@
          </children></Pane>
       <Pane id="playersPane" fx:id="playersPane" layoutX="529.0" layoutY="-21.0" prefHeight="184.0" prefWidth="532.0" style="-fx-background-color: #F8DB85; -fx-background-radius: 20;" AnchorPane.topAnchor="-21.0">
          <children>
-            <Label alignment="CENTER" layoutX="166.0" layoutY="28.0" prefHeight="47.0" prefWidth="200.0" text="Billy's Turn" textAlignment="CENTER" textFill="#72465b">
+            <Label fx:id="currentPlayerTurnLabel" alignment="CENTER" layoutX="166.0" layoutY="28.0" prefHeight="47.0" prefWidth="200.0" text="Billy's Turn" textAlignment="CENTER" textFill="#72465b">
                <font>
                   <Font name="Satoshi Bold" size="24.0" />
                </font>
@@ -67,11 +67,7 @@
                               <Image url="@images/profile1.png" />
                            </image>
                            <effect>
-                              <DropShadow blurType="GAUSSIAN" height="50.0" radius="24.5" width="50.0">
-                                 <color>
-                                    <Color blue="1.0" green="0.2666666805744171" />
-                                 </color>
-                              </DropShadow>
+                              <DropShadow blurType="GAUSSIAN" color="#0048ff" height="50.0" radius="24.5" width="50.0" />
                            </effect></ImageView>
                      </children></Pane>
                   <Pane layoutX="10.0" layoutY="10.0" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 10;">
@@ -444,6 +440,55 @@
             </ImageView>
          </children>
       </GridPane>
+      <Pane id="bankPane" fx:id="takenTokenPane" layoutX="234.0" layoutY="187.0" prefHeight="340.0" prefWidth="101.0" style="-fx-background-color: #F8DB85; -fx-background-radius: 20;">
+         <children>
+            <GridPane id="bankMatrix" fx:id="takenTokenMatrix" alignment="CENTER" layoutX="22.0" layoutY="75.0" prefHeight="300.0" prefWidth="49.0">
+               <children>
+                  <Label fx:id="takenGreenGemLabel" alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.halignment="CENTER">
+                     <font>
+                        <Font name="Satoshi Black" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="takenWhiteGemLabel" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                     <font>
+                        <Font name="Satoshi Black" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="takenBlueGemLabel" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="7" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                     <font>
+                        <Font name="Satoshi Black" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="takenBlackGemLabel" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                     <font>
+                        <Font name="Satoshi Black" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="takenRedGemLabel" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+                     <font>
+                        <Font name="Satoshi Black" size="24.0" />
+                     </font>
+                  </Label>
+               </children>
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="69.0" minWidth="10.0" prefWidth="33.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+            </GridPane>
+            <Label alignment="CENTER" layoutX="7.0" layoutY="10.0" prefHeight="64.0" prefWidth="87.0" text="Gems taken" textAlignment="CENTER" textFill="#72465b" wrapText="true">
+               <font>
+                  <Font name="Satoshi Bold" size="24.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
       <Button fx:id="menuButton" contentDisplay="RIGHT" layoutX="1465.0" layoutY="8.0" mnemonicParsing="false" onAction="#handleClickMenuButton" style="-fx-background-color: #F8DB85;" text="Menu" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <graphic>
             <ImageView fitHeight="40.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
@@ -601,7 +646,6 @@
             </GridPane>
          </children>
       </AnchorPane>
-      <ImageView fx:id="testImageView" fitHeight="150.0" fitWidth="200.0" layoutX="164.0" layoutY="59.0" pickOnBounds="true" preserveRatio="true" />
 
       <AnchorPane fx:id="reservedCardsView" layoutX="273.0" layoutY="91.0" prefHeight="627.0" prefWidth="1103.0" visible="false">
          <children>
@@ -680,6 +724,15 @@
       </AnchorPane>
    </children>
 
+   <fx:define>
+      <java.util.ArrayList fx:id="takenGemLabels">
+         <fx:reference source="takenGreenGemLabel" />
+         <fx:reference source="takenWhiteGemLabel" />
+         <fx:reference source="takenBlueGemLabel" />
+         <fx:reference source="takenBlackGemLabel" />
+         <fx:reference source="takenRedGemLabel" />
+      </java.util.ArrayList>
+   </fx:define>
    <fx:define>
       <java.util.ArrayList fx:id="playerViews">
          <fx:reference source="playerView0" />
@@ -802,4 +855,5 @@
          <fx:reference source="level3CardViewsOrient" />
       </java.util.ArrayList>
    </fx:define>
+
 </AnchorPane>
