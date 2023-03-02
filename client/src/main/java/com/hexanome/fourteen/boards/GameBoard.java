@@ -171,6 +171,7 @@ public class GameBoard {
     // Initialize a list of cards to use for the game
     gameCards = null;
     // Fill list with final cards
+    //TODO: THIS IS TAKING FOREVER PLEASE FIX (@KAI)
     try {
       gameCards = Card.setupCards(cardDatacsv);
     } catch (IOException ioe) {
@@ -487,11 +488,7 @@ public class GameBoard {
   @FXML
   public void generateNobles(GameBoardForm gbf) {
     // Create noble objects from CSV data
-    try {
-      gameNobles = Noble.interpretNobles(gbf);
-    } catch (IOException ioe) {
-      ioe.printStackTrace();
-    }
+    gameNobles = Noble.interpretNobles(gbf);
 
     for (Noble n : gameNobles) {
       // Select a random noble from the gameNobles
@@ -511,6 +508,6 @@ public class GameBoard {
   }
   @FXML
   public void handleImageViewClick(ImageView iv) {
-    System.out.println(iv);
+    System.out.println(iv.getImage());
   }
 }

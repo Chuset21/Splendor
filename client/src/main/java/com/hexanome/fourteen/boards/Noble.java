@@ -35,7 +35,7 @@ public class Noble extends Image {
    * @param nobleForm form to construct into Noble
    */
   private Noble(NobleForm nobleForm) {
-    super(getNobleFromForm(nobleForm));
+    super(NOBLE_FORM_MAP.get(nobleForm));
 
     this.nobleForm = nobleForm;
   }
@@ -70,14 +70,16 @@ public class Noble extends Image {
       cost.computeIfAbsent(GemColor.RED, k -> redCost > 0 ? redCost : null);
 
       final int prestigePoints = Integer.parseInt(nobleData[5]);
-      NOBLE_FORM_MAP.put(new NobleForm(prestigePoints, cost), nobleData[6]);
+      NOBLE_FORM_MAP.put(new NobleForm(prestigePoints, cost), Noble.class.getResource("images/nobles/"+nobleData[6]).toString());
     }
   }
 
-  private static String getNobleFromForm(NobleForm nobleForm) {
-    return NOBLE_FORM_MAP.get(nobleForm);
-  }
-
+  /**
+   * Turns NobleForms from GameBoardForm into list of Nobles
+   *
+   * @param gameBoardForm form to convert from
+   * @return list of Nobles
+   */
   public static ArrayList<Noble> interpretNobles(GameBoardForm gameBoardForm) {
     ArrayList<Noble> nobles = new ArrayList<>();
 
