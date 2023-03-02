@@ -93,14 +93,15 @@ public class GameHandlerControllerTest {
     ReflectionTestUtils.setField(launchGameForm, "gameType", GameServiceName.BASE.name());
     ReflectionTestUtils.setField(launchGameForm, "players", new User[] {user1, user2});
     ReflectionTestUtils.setField(launchGameForm, "saveGame", "XYZ45");
-    ResponseEntity<String> response = gameHandlerController.launchGame("gameid", gsonInstance.gson.toJson(launchGameForm));
+    ResponseEntity<String> response =
+        gameHandlerController.launchGame("gameid", gsonInstance.gson.toJson(launchGameForm));
 
     assertNull(response.getBody());
     assertEquals(HttpStatus.OK, response.getStatusCode());
 
     final String saveGame = "XYZ45";
     Mockito.when(saveGameManager.getGame(saveGame)).thenReturn(
-        new GameBoard(null, Set.of(Expansion.STANDARD), Set.of(new Player("user1")), "gameid", ""));
+        new GameBoard(Set.of(Expansion.STANDARD), Set.of(new Player("user1")), "gameid", ""));
 
     response = gameHandlerController.launchGame("gameid", gsonInstance.gson.toJson(launchGameForm));
 
@@ -112,7 +113,7 @@ public class GameHandlerControllerTest {
   public void testDeleteGame() {
     final Map<String, GameBoard> gameManager = new HashMap<>();
     gameManager.put("x",
-        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(new Player("test")), "x", null));
+        new GameBoard(new HashSet<>(), Set.of(new Player("test")), "x", null));
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
 
     ResponseEntity<String> response = gameHandlerController.deleteGame("???");
@@ -126,7 +127,7 @@ public class GameHandlerControllerTest {
   public void testRetrieveGame() {
     final Map<String, GameBoard> gameManager = new HashMap<>();
     final GameBoard board =
-        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(new Player("player2")), "x", null);
+        new GameBoard(new HashSet<>(), Set.of(new Player("player2")), "x", null);
     gameManager.put("test", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
 
@@ -153,7 +154,7 @@ public class GameHandlerControllerTest {
     final Map<String, GameBoard> gameManager = new HashMap<>();
     final Player player = new Player("test");
     GameBoard board =
-        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player, new Player("test2")), "x",
+        new GameBoard(new HashSet<>(), Set.of(player, new Player("test2")), "x",
             null);
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
@@ -207,7 +208,7 @@ public class GameHandlerControllerTest {
     final Map<String, GameBoard> gameManager = new HashMap<>();
     final Player player = new Player("test");
     GameBoard board =
-        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player, new Player("test2")), "x",
+        new GameBoard(new HashSet<>(), Set.of(player, new Player("test2")), "x",
             null);
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
@@ -507,7 +508,7 @@ public class GameHandlerControllerTest {
     final Map<String, GameBoard> gameManager = new HashMap<>();
     final Player player = new Player("test");
     GameBoard board =
-        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player, new Player("test2")), "x",
+        new GameBoard(new HashSet<>(), Set.of(player, new Player("test2")), "x",
             player.uid());
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
@@ -659,7 +660,7 @@ public class GameHandlerControllerTest {
     final Map<String, GameBoard> gameManager = new HashMap<>();
     final Player player = new Player("test");
     GameBoard board =
-        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player, new Player("test2")), "x",
+        new GameBoard(new HashSet<>(), Set.of(player, new Player("test2")), "x",
             player.uid());
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
@@ -1293,9 +1294,8 @@ public class GameHandlerControllerTest {
     cardCost.put(GemColor.RED, 2);
     cardCost.put(GemColor.BLACK, 2);
     cardCost.put(GemColor.BLUE, 2);
-    cardToTake = null;
     cardToPurchase =
-        new WaterfallCard(0, cardCost, CardLevel.TWO, Expansion.ORIENT, GemColor.RED, cardToTake);
+        new WaterfallCard(0, cardCost, CardLevel.TWO, Expansion.ORIENT, GemColor.RED, null);
     player.hand().gems().put(GemColor.WHITE, 2);
     player.hand().gems().put(GemColor.RED, 2);
     player.hand().gems().put(GemColor.BLACK, 2);
@@ -1464,7 +1464,7 @@ public class GameHandlerControllerTest {
   public void testReserveCard() {
     final Map<String, GameBoard> gameManager = new HashMap<>();
     final Player player = new Player("test");
-    GameBoard board = new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player), "x", null);
+    GameBoard board = new GameBoard(new HashSet<>(), Set.of(player), "x", null);
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
 
@@ -1560,7 +1560,7 @@ public class GameHandlerControllerTest {
     player.hand().reservedCards().remove(null);
     // 0 reserved cards
 
-    board = new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player), "x", null);
+    board = new GameBoard(new HashSet<>(), Set.of(player), "x", null);
     gameManager.put("", board);
     board.availableGems().clear();
     board.availableGems().put(GemColor.GOLD, 2);
@@ -1578,7 +1578,7 @@ public class GameHandlerControllerTest {
     assertTrue(player.hand().reservedCards().remove(card));
     assertTrue(player.hand().reservedCards().isEmpty());
 
-    board = new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player), "x", null);
+    board = new GameBoard(new HashSet<>(), Set.of(player), "x", null);
     gameManager.put("", board);
     board.availableGems().clear();
     board.availableGems().put(GemColor.GOLD, 2);
@@ -1592,7 +1592,7 @@ public class GameHandlerControllerTest {
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("card cannot be null", response.getBody());
 
-    board = new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player), "x", null);
+    board = new GameBoard(new HashSet<>(), Set.of(player), "x", null);
     ReflectionTestUtils.setField(board, "cards", new HashSet<>());
     gameManager.put("", board);
     board.availableGems().clear();
@@ -1607,7 +1607,7 @@ public class GameHandlerControllerTest {
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("not enough cards in the deck to reserve a face down card", response.getBody());
 
-    board = new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player), "x", null);
+    board = new GameBoard(new HashSet<>(), Set.of(player), "x", null);
     gameManager.put("", board);
     board.availableGems().clear();
     board.availableGems().put(GemColor.GOLD, 2);
@@ -1629,9 +1629,8 @@ public class GameHandlerControllerTest {
   public void testTakeGems() {
     final Map<String, GameBoard> gameManager = new HashMap<>();
     final Player player = new Player("test");
-    GameBoard board =
-        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player, new Player("test2")), "x",
-            null);
+    GameBoard board = new GameBoard(new HashSet<>(), Set.of(player, new Player("test2")),
+        "x", null);
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
 
@@ -1908,7 +1907,7 @@ public class GameHandlerControllerTest {
     final Map<String, GameBoard> gameManager = new HashMap<>();
     final Player player = new Player("test");
     GameBoard board =
-        new GameBoard(new HashSet<>(), new HashSet<>(), Set.of(player, new Player("test2")), "x",
+        new GameBoard(new HashSet<>(), Set.of(player, new Player("test2")), "x",
             null);
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
@@ -1930,7 +1929,8 @@ public class GameHandlerControllerTest {
 
     ClaimNobleForm claimNobleForm = new ClaimNobleForm(null);
 
-    response = gameHandlerController.claimNoble("", "token", gsonInstance.gson.toJson(claimNobleForm));
+    response =
+        gameHandlerController.claimNoble("", "token", gsonInstance.gson.toJson(claimNobleForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("noble to claim cannot be null", response.getBody());
 
@@ -1941,7 +1941,8 @@ public class GameHandlerControllerTest {
     player.hand().gemDiscounts().clear();
     claimNobleForm = new ClaimNobleForm(nobleToClaim);
 
-    response = gameHandlerController.claimNoble("", "token", gsonInstance.gson.toJson(claimNobleForm));
+    response =
+        gameHandlerController.claimNoble("", "token", gsonInstance.gson.toJson(claimNobleForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("do not have enough gem discounts to claim noble", response.getBody());
 
@@ -1950,14 +1951,16 @@ public class GameHandlerControllerTest {
     player.hand().gemDiscounts().put(GemColor.RED, 3);
     claimNobleForm = new ClaimNobleForm(nobleToClaim);
 
-    response = gameHandlerController.claimNoble("", "token", gsonInstance.gson.toJson(claimNobleForm));
+    response =
+        gameHandlerController.claimNoble("", "token", gsonInstance.gson.toJson(claimNobleForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("noble to claim is not available", response.getBody());
 
     player.hand().reservedNobles().add(nobleToClaim);
     int prevPrestigePoints = player.hand().prestigePoints();
 
-    response = gameHandlerController.claimNoble("", "token", gsonInstance.gson.toJson(claimNobleForm));
+    response =
+        gameHandlerController.claimNoble("", "token", gsonInstance.gson.toJson(claimNobleForm));
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertTrue(player.hand().reservedNobles().isEmpty());
     assertEquals(Set.of(nobleToClaim), player.hand().visitedNobles());
@@ -1972,7 +1975,8 @@ public class GameHandlerControllerTest {
     board.availableNobles().add(nobleToClaim);
     prevPrestigePoints = player.hand().prestigePoints();
 
-    response = gameHandlerController.claimNoble("", "token", gsonInstance.gson.toJson(claimNobleForm));
+    response =
+        gameHandlerController.claimNoble("", "token", gsonInstance.gson.toJson(claimNobleForm));
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertFalse(board.availableNobles().contains(nobleToClaim));
     assertEquals(Set.of(nobleToClaim), player.hand().visitedNobles());

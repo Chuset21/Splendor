@@ -3,15 +3,12 @@ package hexanome.fourteen.server.model.clientmapper;
 import hexanome.fourteen.server.model.board.GameBoard;
 import hexanome.fourteen.server.model.board.Hand;
 import hexanome.fourteen.server.model.board.Noble;
-import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.expansion.Expansion;
 import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import hexanome.fourteen.server.model.board.player.Player;
 import hexanome.fourteen.server.model.sent.SentGameBoard;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -53,9 +50,6 @@ public class ServerToClientBoardGameMapperTest {
     availableGems.put(GemColor.BLACK, 4);
     availableGems.put(GemColor.RED, 4);
 
-    availableNobles = new HashSet<>();
-    availableNobles.add(new Noble(3, nobleCost));
-
     expansions = new HashSet<>();
     expansions.add(Expansion.ORIENT);
 
@@ -72,7 +66,7 @@ public class ServerToClientBoardGameMapperTest {
     creator = "player1";
 
     gameBoard =
-        new GameBoard(availableNobles, expansions, players, gameid, creator);
+        new GameBoard(expansions, players, gameid, creator);
   }
 
   @Test

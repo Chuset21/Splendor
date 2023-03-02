@@ -1,6 +1,5 @@
 package hexanome.fourteen.server.model.sent;
 
-import hexanome.fourteen.server.model.board.GameBoard;
 import hexanome.fourteen.server.model.board.Hand;
 import hexanome.fourteen.server.model.board.Noble;
 import hexanome.fourteen.server.model.board.card.Card;
@@ -8,7 +7,6 @@ import hexanome.fourteen.server.model.board.expansion.Expansion;
 import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import hexanome.fourteen.server.model.board.player.Player;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -66,7 +64,6 @@ public class SentGameBoardTest {
         expansions = new HashSet<>();
         expansions.add(Expansion.STANDARD);
         expansions.add(Expansion.ORIENT);
-        cards = GameBoard.getDecks(expansions);
         Player player1 = new Player(playerTurnid, new Hand());
         Player player2 = new Player("player2", new Hand());
         Player player3 = new Player("player3", new Hand());

@@ -32,7 +32,6 @@ import hexanome.fourteen.server.model.board.player.Player;
 import hexanome.fourteen.server.model.sent.SentGameBoard;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -121,15 +120,13 @@ public class GameHandlerController {
   }
 
   private GameBoard createGame(String gameid, LaunchGameForm launchGameForm) {
-    Set<Noble> nobles = new HashSet<>(); // TODO
-
     Set<Expansion> expansions =
         GameServiceName.getExpansions(GameServiceName.valueOf(launchGameForm.gameType()));
     Set<Player> players = Arrays.stream(launchGameForm.players()).map(userPlayerMapper::map)
         .collect(Collectors.toSet());
     String creator = launchGameForm.creator();
 
-    return new GameBoard(nobles, expansions, players, gameid, creator);
+    return new GameBoard(expansions, players, gameid, creator);
   }
 
   /**

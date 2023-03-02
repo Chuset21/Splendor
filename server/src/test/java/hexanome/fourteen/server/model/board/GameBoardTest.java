@@ -20,8 +20,6 @@ class GameBoardTest {
   // Test Object
   GameBoard gameBoard;
 
-  Set<Noble> availableNobles;
-
   Gems availableGems;
 
   Set<Expansion> expansions;
@@ -35,7 +33,7 @@ class GameBoardTest {
   @BeforeEach
   public void setup() {
     //gameBoard = new GameBoard();
-    Gems nobleCost = new Gems();
+    final Gems nobleCost = new Gems();
     nobleCost.put(GemColor.GREEN, 1);
     nobleCost.put(GemColor.BLUE, 2);
     nobleCost.put(GemColor.WHITE, 3);
@@ -47,9 +45,6 @@ class GameBoardTest {
     availableGems.put(GemColor.GOLD, 5);
     availableGems.put(GemColor.BLACK, 4);
     availableGems.put(GemColor.RED, 4);
-
-    availableNobles = new HashSet<>();
-    availableNobles.add(new Noble(3, nobleCost));
 
     expansions = new HashSet<>();
     expansions.add(Expansion.STANDARD);
@@ -67,7 +62,7 @@ class GameBoardTest {
 
     creator = "player1";
 
-    gameBoard = new GameBoard(availableNobles, expansions, players, gameid, creator);
+    gameBoard = new GameBoard(expansions, players, gameid, creator);
   }
 
   @Test
@@ -78,11 +73,6 @@ class GameBoardTest {
   @Test
   public void testPlayerTurnMap() {
     assertNotNull(gameBoard.playerTurnMap());
-  }
-
-  @Test
-  public void testAvailableNobles() {
-    assertEquals(availableNobles, gameBoard.availableNobles());
   }
 
   @Test

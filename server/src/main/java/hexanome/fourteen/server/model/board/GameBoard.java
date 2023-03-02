@@ -11,6 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -68,14 +69,12 @@ public final class GameBoard {
   /**
    * Constructor.
    *
-   * @param availableNobles The nobles on the board
    * @param expansions      The set of expansions
    * @param players         The players
    * @param gameid          The game ID
    * @param creator         The creator of the game
    */
-  public GameBoard(Set<Noble> availableNobles, Set<Expansion> expansions, Set<Player> players,
-                   String gameid, String creator) {
+  public GameBoard(Set<Expansion> expansions, Set<Player> players, String gameid, String creator) {
     playerTurnMap = new HashMap<>();
     int count = 0;
     for (Player player : players) {
@@ -93,8 +92,8 @@ public final class GameBoard {
     }
     availableGems.put(GemColor.GOLD, 5);
 
-    this.availableNobles = availableNobles;
-    this.cards = getDecks(expansions);
+    this.availableNobles = createNobles(count + 1);
+    this.cards = createDecks(expansions);
     this.expansions = expansions;
     this.players = players;
     this.gameid = gameid;
@@ -102,12 +101,12 @@ public final class GameBoard {
   }
 
   /**
-   * A Getter for the Decks within the game.
+   * Creates the decks for the game.
    *
    * @param expansions Expansions being played.
    * @return All the decks within the game.
    */
-  public static Set<List<Card>> getDecks(Set<Expansion> expansions) {
+  private static Set<List<Card>> createDecks(Set<Expansion> expansions) {
     Set<List<Card>> decks = new HashSet<>();
 
     List<Card> levelOne = new ArrayList<>();
@@ -190,6 +189,45 @@ public final class GameBoard {
     }
 
     return decks;
+  }
+
+  private static Set<Noble> createNobles(int numberOfNobles) {
+    final List<Noble> nobles = new ArrayList<>();
+
+    try {
+      final BufferedReader br = new BufferedReader(new InputStreamReader(
+          Objects.requireNonNull(GameBoard.class.getResourceAsStream("NobleData.csv"))));
+      br.readLine();
+
+      String curLine;
+      while ((curLine = br.readLine()) != null) {
+        final String[] nobleData = curLine.split(",");
+
+        final Gems cost = new Gems();
+        final int greenCost = Integer.parseInt(nobleData[0]);
+        cost.computeIfAbsent(GemColor.GREEN, k -> greenCost > 0 ? greenCost : null);
+
+        final int whiteCost = Integer.parseInt(nobleData[1]);
+        cost.computeIfAbsent(GemColor.WHITE, k -> whiteCost > 0 ? whiteCost : null);
+
+        final int blueCost = Integer.parseInt(nobleData[2]);
+        cost.computeIfAbsent(GemColor.BLUE, k -> blueCost > 0 ? blueCost : null);
+
+        final int blackCost = Integer.parseInt(nobleData[3]);
+        cost.computeIfAbsent(GemColor.BLACK, k -> blackCost > 0 ? blackCost : null);
+
+        final int redCost = Integer.parseInt(nobleData[4]);
+        cost.computeIfAbsent(GemColor.RED, k -> redCost > 0 ? redCost : null);
+
+        final int prestigePoints = Integer.parseInt(nobleData[5]);
+        nobles.add(new Noble(prestigePoints, cost));
+      }
+    } catch (IOException ioe) {
+      throw new RuntimeException(ioe);
+    }
+    Collections.shuffle(nobles);
+
+    return new HashSet<>(nobles.subList(0, numberOfNobles));
   }
 
   /**
