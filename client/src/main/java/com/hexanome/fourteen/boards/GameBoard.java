@@ -651,6 +651,7 @@ public class GameBoard {
 
     // Create noble objects from CSV data
     gameNobles = Noble.interpretNobles(gameBoardForm);
+    publicNoblesVBox.getChildren().clear();
 
     for (Noble n : gameNobles) {
       // Select a random noble from the gameNobles
