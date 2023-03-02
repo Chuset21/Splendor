@@ -85,7 +85,7 @@ public class Card extends Image {
               Integer.valueOf(cardData[4])}, GemColor.valueOf(cardData[5]),
               Integer.valueOf(cardData[6]), Expansion.valueOf(cardData[7]),
               Integer.valueOf(cardData[8]), Integer.valueOf(cardData[9]),
-              Card.class.getResource("images/tempcards/" + cardData[10]).toString());
+              Card.class.getResource("images/cards/" + cardData[10]).toString());
 
       // Add card to cards list
       cards.add(c);

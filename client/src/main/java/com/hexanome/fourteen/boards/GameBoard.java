@@ -159,7 +159,7 @@ public class GameBoard {
 
 
     // Set up cards
-    setupCards("CardData.csv");
+    //setupCards("CardData.csv");
 
     // Setup nobles CSV data and display on board
     generateNobles(gameBoardForm);
