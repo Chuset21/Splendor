@@ -18,7 +18,7 @@ public final class Hand {
   private final List<Card> purchasedCards;
   private final Set<Noble> visitedNobles;
   private final Set<Noble> reservedNobles;
-  private Gems gemDiscounts;
+  private final Gems gemDiscounts;
 
   /**
    * Constructor.
@@ -120,15 +120,6 @@ public final class Hand {
    */
   public void setPrestigePoints(int prestigePoints) {
     this.prestigePoints = prestigePoints;
-  }
-
-  /**
-   * A Setter for the Gem Discounts.
-   *
-   * @param gemDiscounts The Gem Discounts that have been allocated to set
-   */
-  public void setGemDiscounts(Gems gemDiscounts) {
-    this.gemDiscounts = gemDiscounts;
   }
 
   /**
