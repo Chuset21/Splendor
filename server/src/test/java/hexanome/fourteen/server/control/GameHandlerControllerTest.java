@@ -1487,6 +1487,7 @@ public class GameHandlerControllerTest {
     cardCost.put(GemColor.GREEN, 2);
     cardCost.put(GemColor.WHITE, 2);
     Card card = new StandardCard(0, cardCost, CardLevel.ONE, Expansion.STANDARD, GemColor.BLACK);
+    addCardToDeck(board.cards(), card);
     ReserveCardForm reserveCardForm = new ReserveCardForm(card, GemColor.WHITE, false);
 
     player.hand().gems().clear();
@@ -1568,6 +1569,7 @@ public class GameHandlerControllerTest {
     player.hand().gems().put(GemColor.GOLD, 1);
     player.hand().gems().put(GemColor.BLUE, 8);
     reserveCardForm = new ReserveCardForm(card, null, false);
+    addCardToDeck(board.cards(), card);
 
     response =
         gameHandlerController.reserveCard("", "token", gsonInstance.gson.toJson(reserveCardForm));

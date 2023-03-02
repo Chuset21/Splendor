@@ -69,10 +69,10 @@ public final class GameBoard {
   /**
    * Constructor.
    *
-   * @param expansions      The set of expansions
-   * @param players         The players
-   * @param gameid          The game ID
-   * @param creator         The creator of the game
+   * @param expansions The set of expansions
+   * @param players    The players
+   * @param gameid     The game ID
+   * @param creator    The creator of the game
    */
   public GameBoard(Set<Expansion> expansions, Set<Player> players, String gameid, String creator) {
     playerTurnMap = new HashMap<>();
@@ -94,6 +94,7 @@ public final class GameBoard {
 
     this.availableNobles = createNobles(count + 1);
     this.cards = createDecks(expansions);
+    cards.forEach(Collections::shuffle);
     this.expansions = expansions;
     this.players = players;
     this.gameid = gameid;
