@@ -34,12 +34,6 @@ public class HandTest {
   }
 
   @Test
-  public void testSetGems() {
-    hand.setGems(null);
-    assertNull(hand.gems());
-  }
-
-  @Test
   public void testSetGemDiscounts() {
     hand.setGemDiscounts(null);
     assertNull(hand.gemDiscounts());

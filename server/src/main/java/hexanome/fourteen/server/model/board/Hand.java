@@ -13,7 +13,7 @@ import java.util.Set;
  */
 public final class Hand {
   private int prestigePoints;
-  private Gems gems;
+  private final Gems gems;
   private final List<Card> reservedCards;
   private final List<Card> purchasedCards;
   private final Set<Noble> visitedNobles;
@@ -44,16 +44,10 @@ public final class Hand {
 
   /**
    * Default constructor.
-   * For the demo we start with 3 of each gem.
    */
   public Hand() {
-    prestigePoints = 0;
-    gems = new Gems();
-    reservedCards = new ArrayList<>();
-    purchasedCards = new ArrayList<>();
-    visitedNobles = new HashSet<>();
-    reservedNobles = new HashSet<>();
-    gemDiscounts = new Gems();
+    this(0, new Gems(), new ArrayList<>(), new ArrayList<>(), new HashSet<>(), new HashSet<>(),
+        new Gems());
   }
 
   /**
@@ -126,15 +120,6 @@ public final class Hand {
    */
   public void setPrestigePoints(int prestigePoints) {
     this.prestigePoints = prestigePoints;
-  }
-
-  /**
-   * A Setter for the Gems.
-   *
-   * @param gems Gems to set
-   */
-  public void setGems(Gems gems) {
-    this.gems = gems;
   }
 
   /**
