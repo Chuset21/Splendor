@@ -5,6 +5,8 @@ import com.hexanome.fourteen.form.lobbyservice.CreateSessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SaveGameForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
+import com.hexanome.fourteen.lobbyui.User;
+import com.hexanome.fourteen.login.LoginResponse;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -137,7 +139,7 @@ public final class LobbyServiceCaller {
 
   /**
    * Parse tokens from request to LobbyService
-   * 
+   *
    * @param response HTTP response to token refresh request from LS (see updateAccessToken())
    * @return true if tokens are found, false if error is found instead
    */
@@ -147,7 +149,7 @@ public final class LobbyServiceCaller {
     }
 
     final LoginResponse loginResponse =
-            Main.GSON.fromJson(response.getBody(), LoginResponse.class);
+        Main.GSON.fromJson(response.getBody(), LoginResponse.class);
 
     currentUser.setAccessToken(loginResponse.accessToken());
     currentUser.setRefreshToken(loginResponse.refreshToken());
@@ -161,7 +163,7 @@ public final class LobbyServiceCaller {
    */
   public static SessionsForm getSessions() {
     HttpResponse<String> response = Unirest.get("%sapi/sessions".formatted(Main.lsLocation))
-            .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=").asString();
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=").asString();
 
     if (response.getStatus() != 200) {
       return null;
@@ -222,8 +224,8 @@ public final class LobbyServiceCaller {
    */
   public static SessionForm getSessionDetails(String sessionid) {
     HttpResponse<String> response =
-            Unirest.get("%sapi/sessions/%s".formatted(Main.lsLocation, sessionid))
-                    .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=").asString();
+        Unirest.get("%sapi/sessions/%s".formatted(Main.lsLocation, sessionid))
+            .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=").asString();
 
     if (response.getStatus() != 200) {
       return null;
@@ -400,19 +402,17 @@ public final class LobbyServiceCaller {
 
 
   /**
-   * Get whether session is active
+   * Get whether session is active.
    *
    * @param session sessionid to check status of
    * @return active status of the given session
    */
-  public static boolean isSessionActive(String session){
-    SessionsForm sessions = getSessions();
-    boolean isActive = false;
-
-    for(Map.Entry<String,SessionForm> entry : sessions.sessions().entrySet()){
-      if(entry.getKey().equals(session)){ isActive = true; }
+  public static boolean isSessionActive(String session) {
+    final SessionsForm sessions = getSessions();
+    if (sessions == null) {
+      return false;
     }
 
-    return isActive;
+    return sessions.sessions().keySet().stream().anyMatch(k -> k.equals(session));
   }
 }
