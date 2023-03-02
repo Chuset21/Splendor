@@ -35,13 +35,10 @@ public class LobbyService implements LobbyServiceCaller {
     this.gsonInstance = gsonInstance;
     this.lsLocation = lsLocation;
 
-    if(RestLauncher.gsLocation != null){
-      gameServiceLocation =
-          "http://%s:%s/splendor".formatted(RestLauncher.gsLocation, port);
-    } else{
-      gameServiceLocation =
-          "http://%s:%s/splendor".formatted(Inet4Address.getLocalHost().getHostAddress(), port);
-    }
+    gameServiceLocation =
+        "http://%s:%s/splendor".formatted(
+            RestLauncher.gsLocation != null ? RestLauncher.gsLocation :
+                Inet4Address.getLocalHost().getHostAddress(), port);
   }
 
   @Override
@@ -80,11 +77,13 @@ public class LobbyService implements LobbyServiceCaller {
   @Override
   public boolean registerGameService(String gameServiceName, String accessToken) {
     return Unirest.put("%sapi/gameservices/%s".formatted(lsLocation, gameServiceName))
-        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-        .header("Content-Type", "application/json").queryString("access_token", accessToken).body(
-            gsonInstance.gson.toJson(
-                new RegisterGameServiceForm(gameServiceLocation, gameServiceName, gameServiceName)))
-        .asEmpty().getStatus() == 200;
+               .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+               .header("Content-Type", "application/json").queryString("access_token", accessToken)
+               .body(
+                   gsonInstance.gson.toJson(
+                       new RegisterGameServiceForm(gameServiceLocation, gameServiceName,
+                           gameServiceName)))
+               .asEmpty().getStatus() == 200;
   }
 
   @Override
