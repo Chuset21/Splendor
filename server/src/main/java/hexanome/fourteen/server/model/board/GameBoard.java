@@ -360,7 +360,7 @@ public final class GameBoard {
       }
     }
     playerTurn = (playerTurn + 1) % players.size();
-    return wasLastTurn == lastRound;
+    return wasLastTurn != lastRound;
   }
 
   /**
