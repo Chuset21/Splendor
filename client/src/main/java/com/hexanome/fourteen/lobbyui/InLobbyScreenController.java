@@ -37,7 +37,7 @@ public class InLobbyScreenController implements ScreenController {
   @FXML
   private Button leaveLobbyButton;
 
-  Thread refresherThread;
+  private Thread refresherThread;
   // Holds data of current lobby (primarily the lobby location)
   private Lobby lobby;
   

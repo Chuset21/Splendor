@@ -16,6 +16,8 @@ import java.util.Random;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -48,6 +50,7 @@ public class GameBoard {
   private Stage stage;
 
   private GameBoardForm gameBoardForm;
+  private Thread refresherThread;
 
   private static final Map<String/*Player id*/, String/*Player Icon Filename*/> PLAYER_ID_MAP = new HashMap<>();
   private static final String[] DEFAULT_PLAYER_ICONS = {"cat.jpg","dog.jpg","squirrel.jpg","chameleon.jpg"};
@@ -202,10 +205,29 @@ public class GameBoard {
 
     // Set up cards
     setupCards();
+    setupBank();
 
     // Setup nobles CSV data and display on board
     generateNobles();
 
+    // Sets lobby info to automatically refresh
+    Task<Void> task = new Task<>() {
+      @Override
+      public Void call() throws Exception {
+
+        while (!Thread.currentThread().isInterrupted()) {
+          Platform.runLater(() -> {
+            updateBoard();
+          });
+          Thread.sleep(2000);
+        }
+        return null;
+      }
+    };
+
+    refresherThread = new Thread(task);
+    refresherThread.setDaemon(true);
+    refresherThread.start();
   }
 
   public void updateBoard(){
@@ -214,14 +236,9 @@ public class GameBoard {
 
     setupPlayers();
 
-    // Set up game screen
-    cardActionMenu.setVisible(false);
-    purchasedCardsView.setVisible(false);
-    takenTokenPane.setVisible(false);
-
-
     // Set up cards
     setupCards();
+    setupBank();
 
     // Setup nobles CSV data and display on board
     generateNobles();
@@ -297,7 +314,7 @@ public class GameBoard {
   }
 
   /**
-   * Displays players to the board and generates list of players.
+   * Refreshes displayed info for all player-related fields.
    * Current user will always be in position players.get(0)
    */
   private void setupPlayers(){
@@ -364,6 +381,17 @@ public class GameBoard {
         ((ImageView) playerViews.get(i)).setEffect(null);
       }
     }
+  }
+
+  /**
+   * Refreshes displays for all gems in the bank
+   */
+  private void setupBank(){
+    if(gameBoardForm == null || bank == null){
+      throw new InvalidParameterException("gameBoardForm nor bank can be null");
+    }
+
+    bank.updateGemCount(gameBoardForm.availableGems());
   }
 
   /**
@@ -550,6 +578,7 @@ public class GameBoard {
   @FXML
   private void handleClickMenuPopupQuitButton() {
     try{
+      refresherThread.interrupt();
       LobbyServiceCaller.deleteLaunchedSession();
       LobbyServiceCaller.setCurrentUserLobby(null);
     } catch(TokenRefreshFailedException e){

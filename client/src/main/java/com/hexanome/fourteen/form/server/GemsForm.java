@@ -10,7 +10,7 @@ import java.util.HashMap;
 public final class GemsForm extends HashMap<GemColor, Integer> {
 
   private static final GemColor[] CONVERSION_ARRAY =
-      {GemColor.GREEN, GemColor.WHITE, GemColor.BLUE, GemColor.BLACK, GemColor.RED};
+      {GemColor.GREEN, GemColor.WHITE, GemColor.BLUE, GemColor.BLACK, GemColor.RED, GemColor.GOLD};
 
   /**
    * Create a new empty gems form.
@@ -49,6 +49,26 @@ public final class GemsForm extends HashMap<GemColor, Integer> {
   }
 
   /**
+   * Converts a GemsForm representing cost (which excludes GOLD) into a 5-int array [0,0,0,0,0]
+   *
+   * @param gemsForm form to convert
+   * @return array of cost values
+   */
+  public static int[] costHashToArrayWithGold(GemsForm gemsForm){
+    if(gemsForm == null){
+      throw new InvalidParameterException("gemsForm cannot be null");
+    }
+
+    int[] cost = new int[6];
+
+    for(int i = 0;i<cost.length;i++){
+      cost[i] = (gemsForm.get(CONVERSION_ARRAY[i]) == null) ? 0 : gemsForm.get(CONVERSION_ARRAY[i]).intValue();
+    }
+
+    return cost;
+  }
+
+  /**
    * Converts an array representing cost (which excludes GOLD) into a GemsForm
    *
    * @param cost array to convert
@@ -71,4 +91,5 @@ public final class GemsForm extends HashMap<GemColor, Integer> {
 
     return convertedForm;
   }
+
 }

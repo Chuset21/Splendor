@@ -78,6 +78,16 @@ public class Bank {
     takeBankButton.textProperty().set("Open");
   }
 
+  public void updateGemCount(GemsForm bankGems){
+    if(!isTaking){
+      this.bankGems = GemsForm.costHashToArrayWithGold(bankGems);
+
+      for(int i = 0;i<6;i++){
+        bankGemLabels.get(i).textProperty().set("" + this.bankGems[i]);
+      }
+    }
+  }
+
   /**
    * Toggles the Shop functionality which allows a Player to begin a buy session(Toggle on)
    * or hide the Shop(Toggle Off).
@@ -107,6 +117,7 @@ public class Bank {
         addGemButtons.get(idx).setVisible(false);
       }
 
+      // Send take gems action to the server
       sendTakeGems(selectedGems);
     }
   }
@@ -122,7 +133,7 @@ public class Bank {
       convertedForm.put(GemColor.INT_CONVERSION_ARRAY.get(i),convertedForm.get(GemColor.INT_CONVERSION_ARRAY.get(i)).intValue() + 1);
     }
 
-    TakeGemsForm form = new TakeGemsForm(convertedForm, GemsForm.costArrayToHash(new int[]{0,0,0,0,0}));
+    TakeGemsForm form = new TakeGemsForm(convertedForm, null);
 
     try {
       ServerCaller.takeGems(LobbyServiceCaller.getCurrentUserLobby(),
@@ -148,10 +159,10 @@ public class Bank {
     // Update the internal values
     selectedGems.add(index);
     bankGems[index]--;
-    gemLabels.get(index).setText(""+(Integer.valueOf(gemLabels.get(index).getText())+1));
 
     // Update our text properties (Bank and Hand)
     bankGemLabels.get(index).textProperty().set("" + bankGems[index]);
+    gemLabels.get(index).setText(""+(Integer.valueOf(gemLabels.get(index).getText())+1));
 
     // Update the buttons (specifically, their Enabled/Disabled state)
     updateBankButtons();
@@ -167,10 +178,10 @@ public class Bank {
     //Update Values
     selectedGems.remove(Integer.valueOf(index));
     bankGems[index]++;
-    gemLabels.get(index).setText(""+(Integer.valueOf(gemLabels.get(index).getText())-1));
 
     // Update our text properties (Bank and Hand)
     bankGemLabels.get(index).textProperty().set("" + bankGems[index]);
+    gemLabels.get(index).setText(""+(Integer.valueOf(gemLabels.get(index).getText())-1));
 
     // Update the buttons (specifically, their Abled/Disabled state)
     updateBankButtons();
