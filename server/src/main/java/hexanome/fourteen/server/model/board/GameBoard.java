@@ -1,5 +1,7 @@
 package hexanome.fourteen.server.model.board;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import eu.kartoffelquadrat.asyncrestlib.BroadcastContent;
 import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.card.CardLevel;
 import hexanome.fourteen.server.model.board.card.StandardCard;
@@ -28,7 +30,8 @@ import java.util.stream.Collectors;
  * and only the necessary information to send to the clients (We'll see).
  * If so this might be true for more than just this class.
  */
-public final class GameBoard {
+@JsonSerialize(using = GameBoardSerializer.class)
+public final class GameBoard implements BroadcastContent {
 
   private static final int WINNING_POINTS = 15;
 
@@ -383,5 +386,10 @@ public final class GameBoard {
     return nobles.stream()
         .filter(n -> hand.gemDiscounts().hasEnoughGems(n.cost()))
         .collect(Collectors.toSet());
+  }
+
+  @Override
+  public boolean isEmpty() {
+    return false;
   }
 }

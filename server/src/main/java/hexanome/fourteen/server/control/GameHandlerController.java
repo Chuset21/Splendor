@@ -1,5 +1,7 @@
 package hexanome.fourteen.server.control;
 
+import eu.kartoffelquadrat.asyncrestlib.BroadcastContentManager;
+import eu.kartoffelquadrat.asyncrestlib.ResponseGenerator;
 import hexanome.fourteen.server.Mapper;
 import hexanome.fourteen.server.control.form.ClaimNobleForm;
 import hexanome.fourteen.server.control.form.LaunchGameForm;
@@ -29,15 +31,16 @@ import hexanome.fourteen.server.model.board.expansion.Expansion;
 import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import hexanome.fourteen.server.model.board.player.Player;
-import hexanome.fourteen.server.model.sent.SentGameBoard;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +53,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.async.DeferredResult;
 
 /**
  * Controller to handle lobby service callbacks.
@@ -58,10 +62,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/games/")
 public class GameHandlerController {
 
+  private final long longPollTimeout;
   private final LobbyServiceCaller lobbyService;
   private final Map<String, GameBoard> gameManager;
+  private final Map<String, BroadcastContentManager<GameBoard>> gameSpecificBroadcastManagers;
   private final Mapper<User, Player> userPlayerMapper;
-  private final Mapper<GameBoard, SentGameBoard> gameBoardMapper;
   private final GsonInstance gsonInstance;
   private final SavedGamesService saveGameManager;
   private final ServerService serverService;
@@ -71,22 +76,22 @@ public class GameHandlerController {
    *
    * @param lobbyService     Lobby service
    * @param userPlayerMapper The User to Player Mapper
-   * @param gameBoardMapper  The GameBard Mapper
    * @param gsonInstance     The GSON we will be using
    */
-  public GameHandlerController(@Autowired LobbyServiceCaller lobbyService,
+  public GameHandlerController(@Value("${long.poll.timeout}") long longPollTimeout,
+                               @Autowired LobbyServiceCaller lobbyService,
                                @Autowired Mapper<User, Player> userPlayerMapper,
-                               @Autowired Mapper<GameBoard, SentGameBoard> gameBoardMapper,
                                @Autowired GsonInstance gsonInstance,
                                @Autowired SavedGamesService saveGameManager,
                                @Autowired ServerService serverService) {
+    this.longPollTimeout = longPollTimeout;
     this.lobbyService = lobbyService;
     this.userPlayerMapper = userPlayerMapper;
-    this.gameBoardMapper = gameBoardMapper;
     this.gsonInstance = gsonInstance;
     this.saveGameManager = saveGameManager;
     this.serverService = serverService;
     gameManager = new HashMap<>();
+    gameSpecificBroadcastManagers = new LinkedHashMap<>();
   }
 
   @GetMapping()
@@ -97,7 +102,7 @@ public class GameHandlerController {
   /**
    * Create a game given the specified parameters.
    *
-   * @param gameid         The game id for the created game
+   * @param gameid            The game id for the created game
    * @param rawLaunchGameForm The information needed to create the game
    * @return The full response
    */
@@ -116,6 +121,7 @@ public class GameHandlerController {
       game.setGameid(gameid);
     }
     gameManager.put(gameid, game);
+    gameSpecificBroadcastManagers.put(gameid, new BroadcastContentManager<>(game));
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
@@ -141,6 +147,8 @@ public class GameHandlerController {
     if (!removeGame(gameid)) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
     }
+    gameSpecificBroadcastManagers.get(gameid).terminate();
+    gameSpecificBroadcastManagers.remove(gameid);
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 
@@ -170,22 +178,44 @@ public class GameHandlerController {
    * @return The full response
    */
   @GetMapping(value = "{gameid}", produces = "application/json; charset=utf-8")
-  public ResponseEntity<String> retrieveGame(@PathVariable String gameid,
-                                             @RequestParam("access_token") String accessToken) {
+  public DeferredResult<ResponseEntity<String>> retrieveGame(@PathVariable String gameid,
+                                                             @RequestParam("access_token")
+                                                             String accessToken,
+                                                             @RequestParam(required = false)
+                                                             String hash) {
+    final DeferredResult<ResponseEntity<String>> result = new DeferredResult<>();
     final String username = getUsername(accessToken);
     if (username == null) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
+      result.setResult(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token"));
+      return result;
     }
 
     final GameBoard gameBoard = getGame(gameid);
     if (gameBoard == null) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
+      result.setResult(ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found"));
+      return result;
     } else if (GameBoardHelper.getHand(gameBoard.players(), username) == null) {
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
+      result.setResult(
+          ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game"));
+      return result;
     } else {
-      final SentGameBoard sentGameBoard = gameBoardMapper.map(gameBoard);
-      return ResponseEntity.status(HttpStatus.OK)
-          .body(gsonInstance.gson.toJson(sentGameBoard, SentGameBoard.class));
+      // No hash provided at all -> return a synced update.
+      // We achieve this by setting a hash that clearly differs from any valid hash.
+      if (hash == null) {
+        hash = "-";
+      }
+
+      // Hash was provided, but is empty -> return an asynchronous update,
+      // as soon as something has changed
+      if (hash.isBlank()) {
+        return ResponseGenerator.getAsyncUpdate(longPollTimeout,
+            gameSpecificBroadcastManagers.get(gameid));
+      }
+
+      // A hash was provided,
+      // or we want to provoke a hash mismatch because no hash (not even an empty hash) was provided
+      return ResponseGenerator.getHashBasedUpdate(longPollTimeout,
+          gameSpecificBroadcastManagers.get(gameid), hash);
     }
   }
 
@@ -650,6 +680,7 @@ public class GameHandlerController {
 
   private ResponseEntity<String> getStringResponseEntity(GameBoard gameBoard, Hand hand) {
     final Set<Noble> nobles = gameBoard.computeClaimableNobles(hand);
+    gameSpecificBroadcastManagers.get(gameBoard.gameid()).touch();
     if (!nobles.isEmpty()) {
       return ResponseEntity.status(HttpStatus.OK).body(gsonInstance.gson.toJson(nobles));
     } else {
@@ -671,8 +702,8 @@ public class GameHandlerController {
   /**
    * Take gems.
    *
-   * @param gameid       The game id corresponding to the game.
-   * @param accessToken  The access token belonging to the player trying to take gems.
+   * @param gameid             The game id corresponding to the game.
+   * @param accessToken        The access token belonging to the player trying to take gems.
    * @param takeGemsFormString The take gems form.
    * @return The response.
    */
@@ -778,8 +809,8 @@ public class GameHandlerController {
   /**
    * Claim a noble.
    *
-   * @param gameid         The game id corresponding to the game.
-   * @param accessToken    The access token belonging to the player trying to reserve the card.
+   * @param gameid               The game id corresponding to the game.
+   * @param accessToken          The access token belonging to the player reserving the card.
    * @param claimNobleFormString The claim noble form.
    * @return The response.
    */
