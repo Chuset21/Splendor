@@ -137,6 +137,9 @@ public class GameBoard {
   public void goToGame(Stage stage) throws IOException {
     this.stage = stage;
 
+    // Get gameBoardForm
+    gameBoardForm = ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby());
+
     // Set up bank
     bank = new Bank(numPlayers, addGemButtons, removeGemButtons, pGemLabels, bGemLabels,
             takeBankButton);
@@ -153,16 +156,13 @@ public class GameBoard {
     cardActionMenu.setVisible(false);
     purchasedCardsView.setVisible(false);
 
+
+
     // Set up cards
     setupCards("CardData.csv");
 
     // Setup nobles CSV data and display on board
-    generateNobles();
-
-    System.out.println("DEBUG NOBLES: \n" + gameNobles);
-
-    gameBoardForm = ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby());
-    System.out.println(gameBoardForm.playerTurnid());
+    generateNobles(gameBoardForm);
 
   }
 
@@ -485,24 +485,22 @@ public class GameBoard {
   }
 
   @FXML
-  public void generateNobles() {
+  public void generateNobles(GameBoardForm gbf) {
     // Create noble objects from CSV data
     try {
-      gameNobles = Noble.setupNobles("NobleData.csv");
+      gameNobles = Noble.interpretNobles(gbf);
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
 
-    for (int i = 0; i <= numPlayers; i++) {
+    for (Noble n : gameNobles) {
       // Select a random noble from the gameNobles
-      int randIndex = random.nextInt(gameNobles.size());
-      Noble randomNoble = gameNobles.get(randIndex);
 
       // Format the noble into a JavaFX Image
       ImageView iv = new ImageView();
-      iv.setImage(randomNoble);
       iv.setFitHeight(100);
       iv.setFitWidth(100);
+      iv.setImage(n);
 
       //Add noble event handler
       iv.setOnMouseClicked(e -> handleImageViewClick(iv));
