@@ -10,8 +10,11 @@ import java.util.Random;
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
 import javafx.fxml.FXML;
-import javafx.geometry.Rectangle2D;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -20,7 +23,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Screen;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import com.hexanome.fourteen.lobbyui.*;
 
@@ -74,10 +77,19 @@ public class GameBoard {
   @FXML
   private Pane reservedCardsView;
   private List<Image> reservedCardImages = new ArrayList<Image>();
+
+  // ACQUIRED NOBLES PANE
+  @FXML
+  private BorderPane acquiredNoblesView;
+  private List<Image> acquiredNoblesImages = new ArrayList<Image>();
   @FXML
   private BorderPane reservedBorderPane;
   @FXML
   private VBox publicNoblesVBox;
+  @FXML
+  private DialogPane acquiredNobleAlertPane;
+  @FXML
+  private ImageView noblesStack;
 
 
   //CARD FIELDS
@@ -462,9 +474,10 @@ public class GameBoard {
   }
 
   @FXML
-  private void handleExitPurchaseOrReservePane() {
+  private void handleExitActionMenu() {
     purchasedCardsView.setVisible(false);
     reservedCardsView.setVisible(false);
+    acquiredNoblesView.setVisible(false);
   }
 
   @FXML
@@ -499,15 +512,49 @@ public class GameBoard {
       iv.setFitWidth(100);
       iv.setImage(n);
 
-      //Add noble event handler
+      // Add noble event handler
       iv.setOnMouseClicked(e -> handleImageViewClick(iv));
 
-      //Add to board
+      // Add to board
       publicNoblesVBox.getChildren().add(iv);
     }
   }
+
   @FXML
   public void handleImageViewClick(ImageView iv) {
     System.out.println(iv.getImage());
+
+    // TODO -> Move the below code to the noble application check at beginning of every turn
+    VBox vb = new VBox();
+    vb.setPadding(new Insets(10));
+    vb.setSpacing(10);
+    vb.setAlignment(Pos.CENTER);
+
+    Label notice = new Label("A noble has visited you! You gained 3 prestige points.");
+    notice.setFont(new Font("Satoshi", 16));
+
+    vb.getChildren().add(iv);
+    vb.getChildren().add(notice);
+
+    acquiredNobleAlertPane.setContent(vb);
+    acquiredNobleAlertPane.setVisible(true);
+    acquiredNobleAlertPane.lookupButton(ButtonType.OK).setOnMouseClicked(event -> {
+      acquiredNobleAlertPane.setVisible(false);
+      // Update top of noble stack for player
+      noblesStack.setImage(iv.getImage());
+      // Add image to full list of acquired nobles
+      acquiredNoblesImages.add(iv.getImage());
+    });
+  }
+
+  @FXML
+  public void handleAcquiredNoblesViewSelect(MouseEvent event) {
+    // Set the purchased pane's content to the card image grid
+    GridPane nobleGrid = generateCardGrid(acquiredNoblesImages, new int[] {180, 180, 3});
+    nobleGrid.setPadding(new Insets(0, 70, 0, 70));
+    acquiredNoblesView.setCenter(nobleGrid);
+
+    // Open purchased pane
+    acquiredNoblesView.setVisible(true);
   }
 }

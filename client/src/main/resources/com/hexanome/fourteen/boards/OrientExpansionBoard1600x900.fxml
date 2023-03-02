@@ -4,8 +4,11 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonType?>
+<?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.effect.InnerShadow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -25,9 +28,9 @@
       <URL value="@appStyling.css" />
    </stylesheets>
    <children>
-      <Pane fx:id="noblesPane" layoutX="1303.0" layoutY="83.0" prefHeight="614.0" prefWidth="187.0">
+      <Pane fx:id="noblesPane" layoutX="1303.0" layoutY="83.0" prefHeight="614.0" prefWidth="187.0" style="-fx-border-radius: 20;">
          <children>
-            <VBox fx:id="publicNoblesVBox" alignment="TOP_CENTER" prefHeight="620.0" prefWidth="185.0" spacing="10.0" style="-fx-background-color: #F8DB85;">
+            <VBox fx:id="publicNoblesVBox" alignment="TOP_CENTER" prefHeight="620.0" prefWidth="185.0" spacing="10.0" style="-fx-background-color: #F8DB85; -fx-border-radius: 20;">
                <children>
                   <Label text="Nobles" textAlignment="CENTER" textFill="#72465b">
                      <font>
@@ -38,6 +41,9 @@
                      </padding>
                   </Label>
                </children>
+               <effect>
+                  <InnerShadow />
+               </effect>
             </VBox>
          </children></Pane>
       <Pane id="playersPane" fx:id="playersPane" layoutX="529.0" layoutY="-21.0" prefHeight="184.0" prefWidth="532.0" style="-fx-background-color: #F8DB85; -fx-background-radius: 20;" AnchorPane.topAnchor="-21.0">
@@ -195,10 +201,13 @@
                </cursor>
             </Button>
          </children>
+         <effect>
+            <InnerShadow />
+         </effect>
       </Pane>
       <AnchorPane fx:id="reservedPane" layoutX="30.0" layoutY="710.0" onMouseClicked="#handleReservedPaneSelect" prefHeight="261.0" prefWidth="468.0" AnchorPane.bottomAnchor="-90.0" AnchorPane.leftAnchor="30.0">
          <children>
-            <Pane opacity="0.5" prefHeight="261.0" prefWidth="468.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 30;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Pane opacity="0.8" prefHeight="261.0" prefWidth="468.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 30;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
             <Pane layoutX="52.0" layoutY="62.0" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #E2A6FF; -fx-background-radius: 10;" AnchorPane.leftAnchor="53.0" />
             <Label alignment="CENTER" layoutX="150.0" layoutY="5.0" prefHeight="47.0" prefWidth="174.0" text="Reserved" textAlignment="CENTER" textFill="WHITE">
                <font>
@@ -221,10 +230,10 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </AnchorPane>
-      <AnchorPane fx:id="purchasedPane" layoutX="40.0" layoutY="720.0" onMouseClicked="#handlePurchasedPaneSelect" prefHeight="261.0" prefWidth="468.0" AnchorPane.bottomAnchor="-90.0" AnchorPane.rightAnchor="30.0">
+      <AnchorPane fx:id="purchasedPane" layoutX="40.0" layoutY="720.0" prefHeight="261.0" prefWidth="454.0" AnchorPane.bottomAnchor="-90.0" AnchorPane.rightAnchor="30.0">
          <children>
-            <Pane opacity="0.5" prefHeight="261.0" prefWidth="468.0" style="-fx-background-color: #5A9BD7; -fx-background-radius: 30;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-            <Pane prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="53.0" AnchorPane.topAnchor="62.0">
+            <Pane opacity="0.8" prefHeight="261.0" prefWidth="468.0" style="-fx-background-color: #5A9BD7; -fx-background-radius: 40;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Pane onMouseClicked="#handlePurchasedPaneSelect" prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="53.0" AnchorPane.topAnchor="62.0">
                <children>
                   <Pane layoutX="80.0" layoutY="30.0" prefHeight="148.0" prefWidth="120.0" style="-fx-background-color: #C4E5BA; -fx-background-radius: 10;" />
                   <Pane layoutY="30.0" prefHeight="146.0" prefWidth="120.0" style="-fx-background-color: #DEF0FC; -fx-background-radius: 10;" />
@@ -234,7 +243,11 @@
                      </children></Pane>
                </children>
             </Pane>
-            <Pane layoutX="52.0" layoutY="62.0" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #E2A6FF; -fx-background-radius: 10;" AnchorPane.rightAnchor="53.0" />
+            <Pane layoutX="52.0" layoutY="62.0" onMouseClicked="#handleAcquiredNoblesViewSelect" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #E2A6FF; -fx-background-radius: 10;" AnchorPane.rightAnchor="53.0">
+               <children>
+                  <ImageView fx:id="noblesStack" fitHeight="120.0" fitWidth="120.0" pickOnBounds="true" preserveRatio="true" />
+               </children>
+            </Pane>
             <Label alignment="CENTER" layoutX="150.0" layoutY="5.0" prefHeight="47.0" prefWidth="174.0" text="Purchased" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="Satoshi Bold" size="24.0" />
@@ -334,6 +347,9 @@
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
+               <effect>
+                  <InnerShadow />
+               </effect>
             </Pane>
             <Pane fx:id="level2CardStack" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #C4E5BA; -fx-background-radius: 10;" GridPane.rowIndex="1">
                <children>
@@ -346,6 +362,9 @@
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
+               <effect>
+                  <InnerShadow />
+               </effect>
             </Pane>
             <Pane fx:id="level1CardStack" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #F8F9CF; -fx-background-radius: 10;" GridPane.rowIndex="2">
                <children>
@@ -358,6 +377,9 @@
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
+               <effect>
+                  <InnerShadow />
+               </effect>
             </Pane>
             <Pane fx:id="level1CardStackO" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #fa8484; -fx-background-radius: 10;" GridPane.columnIndex="7" GridPane.rowIndex="2">
                <children>
@@ -370,6 +392,9 @@
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
+               <effect>
+                  <InnerShadow />
+               </effect>
             </Pane>
             <Pane fx:id="level2CardStackO" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #fa8484; -fx-background-radius: 10;" GridPane.columnIndex="7" GridPane.rowIndex="1">
                <children>
@@ -382,6 +407,9 @@
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
+               <effect>
+                  <InnerShadow />
+               </effect>
             </Pane>
             <Pane fx:id="level3CardStackO" prefHeight="164.0" prefWidth="119.0" style="-fx-background-color: #fa8484; -fx-background-radius: 10;" GridPane.columnIndex="7">
                <children>
@@ -394,6 +422,9 @@
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
+               <effect>
+                  <InnerShadow />
+               </effect>
             </Pane>
             <ImageView fx:id="R3C1" fitHeight="137.0" fitWidth="119.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
                <image>
@@ -530,17 +561,12 @@
       </Pane>
       <AnchorPane fx:id="cardActionMenu" layoutX="440.0" layoutY="157.0" visible="false">
          <children>
-            <Pane layoutX="456.0" prefHeight="600.0" prefWidth="700.0" style="-fx-background-color: #F8DB85; -fx-opacity: 0.7;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Pane layoutX="456.0" prefHeight="600.0" prefWidth="700.0" style="-fx-background-color: #faecc0; -fx-border-color: #000000; -fx-border-width: 5;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
             <BorderPane prefHeight="600.0" prefWidth="700.0">
                <center>
                   <VBox alignment="CENTER" spacing="30.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Label text="Card Actions">
-                           <font>
-                              <Font name="Satoshi Black" size="70.0" />
-                           </font>
-                        </Label>
-                        <ImageView fx:id="cardActionImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                        <ImageView fx:id="cardActionImage" fitHeight="250.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
                         <Button fx:id="cardReserveButton" mnemonicParsing="false" onAction="#handleReserve" style="-fx-background-color: #fc6060;" text="Reserve" textFill="WHITE">
                            <font>
                               <Font name="Satoshi Black" size="30.0" />
@@ -560,6 +586,16 @@
                      </children>
                   </VBox>
                </center>
+               <top>
+                  <Label text="Card Actions" BorderPane.alignment="CENTER">
+                     <font>
+                        <Font name="Satoshi Black" size="70.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </Label>
+               </top>
             </BorderPane>
             <Button fx:id="exitCardActionMenu" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#handleExitCardMenu" style="-fx-background-color: transparent;" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                <cursor>
@@ -644,27 +680,14 @@
             </GridPane>
          </children>
       </AnchorPane>
-      <ImageView fx:id="testImageView" fitHeight="150.0" fitWidth="200.0" layoutX="164.0" layoutY="59.0" pickOnBounds="true" preserveRatio="true" />
-
-
-      <fx:define>
-         <java.util.ArrayList fx:id="pGemLabels">
-            <fx:reference source="pGreenGemLabel" />
-            <fx:reference source="pWhiteGemLabel" />
-            <fx:reference source="pBlueGemLabel" />
-            <fx:reference source="pBlackGemLabel" />
-            <fx:reference source="pRedGemLabel" />
-            <fx:reference source="pYellowGemLabel" />
-         </java.util.ArrayList>
-      </fx:define>
-      <AnchorPane fx:id="reservedCardsView" layoutX="273.0" layoutY="91.0" prefHeight="627.0" prefWidth="1103.0" visible="false">
+      <AnchorPane fx:id="reservedCardsView" layoutX="342.0" layoutY="96.0" prefHeight="574.0" prefWidth="899.0" visible="false">
          <children>
-            <Pane layoutX="-3.0" prefHeight="629.0" prefWidth="1106.0" style="-fx-background-color: #F8DB85; -fx-opacity: 0.9;" AnchorPane.leftAnchor="-3.0" AnchorPane.topAnchor="0.0" />
-            <BorderPane fx:id="reservedBorderPane" layoutX="132.0" prefHeight="628.0" prefWidth="778.0">
+            <Pane layoutX="-1.0" prefHeight="574.0" prefWidth="937.0" style="-fx-background-color: #faecc0; -fx-border-color: #000000; -fx-border-width: 5;" AnchorPane.leftAnchor="-1.0" AnchorPane.topAnchor="0.0" />
+            <BorderPane fx:id="reservedBorderPane" layoutX="27.0" prefHeight="497.0" prefWidth="849.0">
                <top>
-                  <VBox alignment="CENTER" spacing="30.0" BorderPane.alignment="CENTER">
+                  <VBox alignment="TOP_CENTER" spacing="30.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Label text="Reserved Cards">
+                        <Label text="Reserved Cards" textAlignment="CENTER">
                            <font>
                               <Font name="Satoshi Black" size="70.0" />
                            </font>
@@ -676,7 +699,7 @@
                   <Insets bottom="100.0" left="100.0" right="100.0" top="20.0" />
                </padding>
             </BorderPane>
-            <Button fx:id="exitReservedCardsView" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#handleExitPurchaseOrReservePane" style="-fx-background-color: transparent;" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+            <Button fx:id="exitReservedCardsView" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#handleExitActionMenu" style="-fx-background-color: transparent;" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                <cursor>
                   <Cursor fx:constant="OPEN_HAND" />
                </cursor>
@@ -693,6 +716,18 @@
             </Button>
          </children>
       </AnchorPane>
+
+
+      <fx:define>
+         <java.util.ArrayList fx:id="pGemLabels">
+            <fx:reference source="pGreenGemLabel" />
+            <fx:reference source="pWhiteGemLabel" />
+            <fx:reference source="pBlueGemLabel" />
+            <fx:reference source="pBlackGemLabel" />
+            <fx:reference source="pRedGemLabel" />
+            <fx:reference source="pYellowGemLabel" />
+         </java.util.ArrayList>
+      </fx:define>
 
       <fx:define>
          <java.util.ArrayList fx:id="bGemLabels">
@@ -726,6 +761,36 @@
             <fx:reference source="removeYellowButton" />
          </java.util.ArrayList>
       </fx:define>
+      <BorderPane fx:id="acquiredNoblesView" layoutX="410.0" layoutY="178.0" prefHeight="563.0" prefWidth="772.0" style="-fx-background-color: #faecc0; -fx-border-color: #000000; -fx-border-width: 5;" visible="false">
+         <top>
+            <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="TOP_RIGHT">
+               <children>
+                  <Label text="Acquired Nobles" textAlignment="CENTER" textFill="#72465b">
+                     <font>
+                        <Font name="Satoshi Bold" size="45.0" />
+                     </font>
+                     <HBox.margin>
+                        <Insets right="150.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Button fx:id="exitAcquiredNoblesView" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#handleExitActionMenu" style="-fx-background-color: transparent;">
+                     <cursor>
+                        <Cursor fx:constant="OPEN_HAND" />
+                     </cursor>
+                     <font>
+                        <Font name="Satoshi Black" size="20.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/close_x.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+         </top></BorderPane>
 
       <fx:define>
          <java.util.ArrayList fx:id="addGemButtons">
@@ -790,11 +855,11 @@
             <fx:reference source="level3CardViewsOrient" />
          </java.util.ArrayList>
       </fx:define>
-      <AnchorPane fx:id="purchasedCardsView" layoutX="159.0" layoutY="81.0" prefHeight="750.0" prefWidth="1240.0" visible="false">
+      <AnchorPane fx:id="purchasedCardsView" layoutX="159.0" layoutY="81.0" prefHeight="636.0" prefWidth="1240.0" visible="false">
          <children>
-            <Pane layoutX="456.0" prefHeight="750.0" prefWidth="1240.0" style="-fx-background-color: #F8DB85; -fx-opacity: 0.9;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <Pane layoutX="456.0" prefHeight="701.0" prefWidth="1240.0" style="-fx-background-color: #faecc0; -fx-border-color: #000000; -fx-border-width: 5;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <BorderPane fx:id="purchasedBorderPane" layoutX="176.0" layoutY="-10.0" prefHeight="750.0" prefWidth="1240.0">
+                  <BorderPane fx:id="purchasedBorderPane" layoutX="10.0" layoutY="-5.0" prefHeight="701.0" prefWidth="1235.0">
                      <top>
                         <VBox alignment="CENTER" spacing="30.0" BorderPane.alignment="CENTER">
                            <children>
@@ -811,7 +876,7 @@
                      </padding>
                   </BorderPane>
                </children></Pane>
-            <Button fx:id="exitPurchasedCardsView" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#handleExitPurchaseOrReservePane" style="-fx-background-color: transparent;" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+            <Button fx:id="exitPurchasedCardsView" contentDisplay="RIGHT" mnemonicParsing="false" onAction="#handleExitActionMenu" style="-fx-background-color: transparent;" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                <cursor>
                   <Cursor fx:constant="OPEN_HAND" />
                </cursor>
@@ -828,6 +893,21 @@
             </Button>
          </children>
       </AnchorPane>
+      <DialogPane fx:id="acquiredNobleAlertPane" layoutX="500.0" layoutY="300.0" prefHeight="143.0" prefWidth="584.0" style="-fx-background-color: #faecc0; -fx-border-width: 5; -fx-border-color: #000000;" visible="false">
+         <header>
+            <Label alignment="TOP_CENTER" text="Noble Acquired!" textAlignment="CENTER" textFill="#72465b">
+               <font>
+                  <Font name="Satoshi Bold" size="24.0" />
+               </font>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </Label>
+         </header>
+         <buttonTypes>
+            <ButtonType fx:constant="OK" />
+         </buttonTypes>
+      </DialogPane>
 
 
    </children>
