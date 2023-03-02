@@ -1,10 +1,16 @@
 package com.hexanome.fourteen.boards;
 
+import com.hexanome.fourteen.GameServiceName;
 import com.hexanome.fourteen.ServerCaller;
 import com.hexanome.fourteen.form.server.GameBoardForm;
+import com.hexanome.fourteen.form.server.PlayerForm;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
@@ -16,6 +22,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -24,6 +34,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import com.hexanome.fourteen.lobbyui.*;
 
@@ -35,6 +47,10 @@ public class GameBoard {
   private Stage stage;
 
   private GameBoardForm gameBoardForm;
+
+  private static final Map<String/*Player id*/, String/*Player Icon Filename*/> PLAYER_ID_MAP = new HashMap<>();
+  private static final String[] DEFAULT_PLAYER_ICONS = {"cat.jpg","dog.jpg","squirrel.jpg","chameleon.jpg"};
+
   Bank bank;
   public int numPlayers = 4;
 
@@ -44,6 +60,13 @@ public class GameBoard {
 
   // Player's Info
   private Player player;
+  private List<Player> players;
+  @FXML
+  private ArrayList playerViews;
+  @FXML
+  private ArrayList playerNameLabels;
+  private static final Effect currentPlayerEffect = new DropShadow(BlurType.GAUSSIAN, Color.web("#0048ff"), 24.5, 0, 0,0);
+
   private ArrayList<Card> gameCards;
   private ArrayList<Noble> gameNobles;
   private Deck level3Cards;
@@ -152,12 +175,12 @@ public class GameBoard {
     // Get gameBoardForm
     gameBoardForm = ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby());
 
+    setupPlayerMap();
+    setupPlayers();
+
     // Set up bank
     bank = new Bank(numPlayers, addGemButtons, removeGemButtons, pGemLabels, bGemLabels,
             takeBankButton);
-
-    // Set up players
-    player = new Player("0", "joebiden43");
 
     // Initialize the player's gems
     for (int idx : GEM_INDEX) {
@@ -171,10 +194,11 @@ public class GameBoard {
 
 
     // Set up cards
-    setupCards("CardData.csv");
+    //setupCards("CardData.csv");
+    setupCards();
 
     // Setup nobles CSV data and display on board
-    generateNobles(gameBoardForm);
+    generateNobles();
 
   }
 
@@ -218,6 +242,91 @@ public class GameBoard {
 
     for (int i = 0; i < 4; i++) {
       ((ImageView) cardViews.get(0).get(i)).setImage(level1Cards.pop());
+    }
+  }
+
+  /**
+   * Puts all visible cards on the board
+   */
+  private void setupCards() {
+    if(gameBoardForm == null){
+      throw new InvalidParameterException("gameBoardForm is null");
+    }
+
+  }
+
+  /**
+   * Statically maps all players to a single image
+   */
+  private void setupPlayerMap(){
+    if(gameBoardForm == null){
+      throw new InvalidParameterException("gameBoardForm is null");
+    }
+
+    int i = 0;
+
+    for(PlayerForm player : gameBoardForm.players()){
+      PLAYER_ID_MAP.put(player.uid(), User.class.getResource("images/" + DEFAULT_PLAYER_ICONS[i]).toString());
+      i = (i + 1) % DEFAULT_PLAYER_ICONS.length;
+    }
+  }
+
+  /**
+   * Displays players to the board and generates list of players.
+   * Current user will always be in position players.get(0)
+   */
+  private void setupPlayers(){
+    if(gameBoardForm == null){
+      throw new InvalidParameterException("gameBoardForm is null");
+    }
+
+    // Reset list of players
+    players = new ArrayList<Player>();
+
+    int i = 0;
+
+    // Add all players to players list
+    for(PlayerForm playerForm : gameBoardForm.players()){
+      if(playerForm.uid().equals(LobbyServiceCaller.getCurrentUserid())){
+        player = new Player(playerForm, PLAYER_ID_MAP.get(playerForm.uid()));
+
+        if(i != 0){
+          Player temp = players.get(0);
+          players.set(0,player);
+          players.add(temp);
+        } else{
+          players.add(player);
+        }
+      } else{
+        players.add(new Player(playerForm, PLAYER_ID_MAP.get(playerForm.uid())));
+      }
+      i++;
+    }
+
+    // Place all players in their frames
+    for(i = 0;i<playerViews.size();i++){
+      if(i < players.size() && players.get(i) != null){
+        ((ImageView) playerViews.get(i)).setImage(players.get(i));
+        Tooltip.install(((ImageView) playerViews.get(i)), new Tooltip(players.get(i).getUserId() + (player.getUserId().equals(players.get(i).getUserId()) ? " (you)":"")));
+      } else{
+        ((ImageView) playerViews.get(i)).imageProperty().set(null);
+      }
+    }
+
+    displayCurrentPlayer();
+  }
+
+  private void displayCurrentPlayer(){
+    if(gameBoardForm == null || playerViews == null){
+      throw new InvalidParameterException("gameBoardForm nor playerViews can be null");
+    }
+
+    for(int i = 0;i<players.size();i++){
+      if(players.get(i).getUserId().equals(gameBoardForm.playerTurnid())){
+        ((ImageView) playerViews.get(i)).setEffect(currentPlayerEffect);
+      } else{
+        ((ImageView) playerViews.get(i)).setEffect(null);
+      }
     }
   }
 
@@ -499,9 +608,13 @@ public class GameBoard {
   }
 
   @FXML
-  public void generateNobles(GameBoardForm gbf) {
+  public void generateNobles() {
+    if(gameBoardForm == null){
+      throw new InvalidParameterException("gameBoardForm is null");
+    }
+
     // Create noble objects from CSV data
-    gameNobles = Noble.interpretNobles(gbf);
+    gameNobles = Noble.interpretNobles(gameBoardForm);
 
     for (Noble n : gameNobles) {
       // Select a random noble from the gameNobles

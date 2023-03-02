@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
@@ -23,7 +34,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="backgroundPane" minHeight="0.0" minWidth="0.0" prefHeight="900.0" prefWidth="1600.0" styleClass="anchor" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.boards.GameBoard">
+<AnchorPane fx:id="backgroundPane" minHeight="0.0" minWidth="0.0" prefHeight="900.0" prefWidth="1600.0" styleClass="anchor" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.boards.GameBoard">
    <stylesheets>
       <URL value="@appStyling.css" />
    </stylesheets>
@@ -57,35 +68,35 @@
                <children>
                   <Pane prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 10;">
                      <children>
-                        <ImageView fitHeight="74.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="playerView0" fitHeight="74.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@images/profile1.png" />
                            </image>
                            <effect>
                               <DropShadow blurType="GAUSSIAN" height="50.0" radius="24.5" width="50.0">
                                  <color>
-                                    <Color green="0.2666666805744171" blue="1.0" />
+                                    <Color blue="1.0" green="0.2666666805744171" />
                                  </color>
                               </DropShadow>
                            </effect></ImageView>
                      </children></Pane>
                   <Pane layoutX="10.0" layoutY="10.0" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 10;">
                      <children>
-                        <ImageView fitHeight="74.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="playerView1" fitHeight="74.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@images/profile2.png" />
                            </image></ImageView>
                      </children></Pane>
                   <Pane layoutX="110.0" layoutY="10.0" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 10;">
                      <children>
-                        <ImageView fitHeight="74.0" fitWidth="76.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="playerView2" fitHeight="74.0" fitWidth="76.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@images/profile3.png" />
                            </image></ImageView>
                      </children></Pane>
                   <Pane layoutX="210.0" layoutY="10.0" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 10;">
                      <children>
-                        <ImageView fitHeight="80.0" fitWidth="76.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="playerView3" fitHeight="80.0" fitWidth="76.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@images/profile4.png" />
                            </image></ImageView>
@@ -94,22 +105,22 @@
             </HBox>
             <HBox alignment="CENTER" layoutX="50.0" layoutY="156.0" prefHeight="27.0" prefWidth="436.0" spacing="115.0">
                <children>
-                  <Label text="2">
+                  <Label fx:id="playerName0" text="2">
                      <font>
                         <Font name="Satoshi Bold" size="14.0" />
                      </font>
                   </Label>
-                  <Label text="1">
+                  <Label fx:id="playerName1" text="1">
                      <font>
                         <Font name="Satoshi Bold" size="14.0" />
                      </font>
                   </Label>
-                  <Label text="3">
+                  <Label fx:id="playerName2" text="3">
                      <font>
                         <Font name="Satoshi Bold" size="14.0" />
                      </font>
                   </Label>
-                  <Label text="4">
+                  <Label fx:id="playerName3" text="4">
                      <font>
                         <Font name="Satoshi Bold" size="14.0" />
                      </font>
@@ -427,94 +438,40 @@
                </effect>
             </Pane>
             <ImageView fx:id="R3C1" fitHeight="137.0" fitWidth="119.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
-               <image>
-                  <Image url="@images/3a.png" />
-               </image>
             </ImageView>
             <ImageView fx:id="R3C2" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2">
-               <image>
-                  <Image url="@images/2a.png" />
-               </image>
             </ImageView>
             <ImageView fx:id="R3C3" fitHeight="137.0" fitWidth="97.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3">
-               <image>
-                  <Image url="@images/2b.png" />
-               </image>
             </ImageView>
             <ImageView fx:id="R3C4" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4">
-               <image>
-                  <Image url="@images/3a.png" />
-               </image>
             </ImageView>
             <ImageView fx:id="R3C5" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5">
-               <image>
-                  <Image url="@images/orient_diamonds.png" />
-               </image>
             </ImageView>
             <ImageView fx:id="R3C6" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6">
-               <image>
-                  <Image url="@images/orient_sapphire.png" />
-               </image>
             </ImageView>
             <ImageView fx:id="R2C1" fitHeight="137.0" fitWidth="97.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
-               <image>
-                  <Image url="@images/1b.png" />
-               </image>
             </ImageView>
             <ImageView fx:id="R2C2" fitHeight="137.0" fitWidth="99.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="1">
-               <image>
-                  <Image url="@images/1a.png" />
-               </image>
             </ImageView>
             <ImageView fx:id="R2C3" fitHeight="137.0" fitWidth="102.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.rowIndex="1">
-               <image>
-                  <Image url="@images/2d.png" />
-               </image>
             </ImageView>
             <ImageView fx:id="R2C4" fitHeight="137.0" fitWidth="102.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4" GridPane.rowIndex="1">
-               <image>
-                  <Image url="@images/2c.png" />
-               </image>
             </ImageView>
             <ImageView fx:id="R2C5" fitHeight="137.0" fitWidth="98.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5" GridPane.rowIndex="1">
-               <image>
-                  <Image url="@images/bag.png" />
-               </image>
             </ImageView>
             <ImageView fx:id="R2C6" fitHeight="137.0" fitWidth="97.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.rowIndex="1">
-               <image>
-                  <Image url="@images/bag.png" />
-               </image>
             </ImageView>
             <ImageView fx:id="R1C1" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
-               <image>
-                  <Image url="@images/0a.png" />
-               </image>
             </ImageView>
             <ImageView fx:id="R1C2" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="2">
-               <image>
-                  <Image url="@images/0b.png" />
-               </image>
             </ImageView>
             <ImageView fx:id="R1C3" fitHeight="137.0" fitWidth="98.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" GridPane.rowIndex="2">
-               <image>
-                  <Image url="@images/0c.png" />
-               </image>
             </ImageView>
             <ImageView fx:id="R1C4" fitHeight="137.0" fitWidth="98.0" layoutX="3.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="4" GridPane.rowIndex="2">
-               <image>
-                  <Image url="@images/1a.png" />
-               </image>
             </ImageView>
             <ImageView fx:id="R1C5" fitHeight="137.0" fitWidth="102.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="5" GridPane.rowIndex="2">
-               <image>
-                  <Image url="@images/joker.png" />
-               </image>
             </ImageView>
             <ImageView fx:id="R1C6" fitHeight="137.0" fitWidth="102.0" layoutX="2.0" onMouseClicked="#handleCardSelect" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="6" GridPane.rowIndex="2">
-               <image>
-                  <Image url="@images/joker.png" />
-               </image>
             </ImageView>
          </children>
       </GridPane>
@@ -680,6 +637,7 @@
             </GridPane>
          </children>
       </AnchorPane>
+
       <AnchorPane fx:id="reservedCardsView" layoutX="342.0" layoutY="96.0" prefHeight="574.0" prefWidth="899.0" visible="false">
          <children>
             <Pane layoutX="-1.0" prefHeight="574.0" prefWidth="937.0" style="-fx-background-color: #faecc0; -fx-border-color: #000000; -fx-border-width: 5;" AnchorPane.leftAnchor="-1.0" AnchorPane.topAnchor="0.0" />
@@ -716,7 +674,6 @@
             </Button>
          </children>
       </AnchorPane>
-
 
       <fx:define>
          <java.util.ArrayList fx:id="pGemLabels">
@@ -893,6 +850,7 @@
             </Button>
          </children>
       </AnchorPane>
+
       <DialogPane fx:id="acquiredNobleAlertPane" layoutX="500.0" layoutY="300.0" prefHeight="143.0" prefWidth="584.0" style="-fx-background-color: #faecc0; -fx-border-width: 5; -fx-border-color: #000000;" visible="false">
          <header>
             <Label alignment="TOP_CENTER" text="Noble Acquired!" textAlignment="CENTER" textFill="#72465b">
@@ -908,7 +866,128 @@
             <ButtonType fx:constant="OK" />
          </buttonTypes>
       </DialogPane>
-
-
    </children>
+
+   <fx:define>
+      <java.util.ArrayList fx:id="playerViews">
+         <fx:reference source="playerView0" />
+         <fx:reference source="playerView1" />
+         <fx:reference source="playerView2" />
+         <fx:reference source="playerView3" />
+      </java.util.ArrayList>
+   </fx:define>
+   <fx:define>
+      <java.util.ArrayList fx:id="playerNameLabels">
+         <fx:reference source="playerName0" />
+         <fx:reference source="playerName1" />
+         <fx:reference source="playerName2" />
+         <fx:reference source="playerName3" />
+      </java.util.ArrayList>
+   </fx:define>
+   <fx:define>
+      <java.util.ArrayList fx:id="pGemLabels">
+         <fx:reference source="pGreenGemLabel" />
+         <fx:reference source="pWhiteGemLabel" />
+         <fx:reference source="pBlueGemLabel" />
+         <fx:reference source="pBlackGemLabel" />
+         <fx:reference source="pRedGemLabel" />
+         <fx:reference source="pYellowGemLabel" />
+      </java.util.ArrayList>
+   </fx:define>
+   <fx:define>
+      <java.util.ArrayList fx:id="bGemLabels">
+         <fx:reference source="bGreenGemLabel" />
+         <fx:reference source="bWhiteGemLabel" />
+         <fx:reference source="bBlueGemLabel" />
+         <fx:reference source="bBlackGemLabel" />
+         <fx:reference source="bRedGemLabel" />
+         <fx:reference source="bYellowGemLabel" />
+      </java.util.ArrayList>
+   </fx:define>
+
+   <fx:define>
+      <java.util.ArrayList fx:id="actionGemLabels">
+         <fx:reference source="actionGreenGemLabel" />
+         <fx:reference source="actionWhiteGemLabel" />
+         <fx:reference source="actionBlueGemLabel" />
+         <fx:reference source="actionBlackGemLabel" />
+         <fx:reference source="actionRedGemLabel" />
+         <fx:reference source="actionYellowGemLabel" />
+      </java.util.ArrayList>
+   </fx:define>
+
+   <fx:define>
+      <java.util.ArrayList fx:id="removeGemButtons">
+         <fx:reference source="removeGreenButton" />
+         <fx:reference source="removeWhiteButton" />
+         <fx:reference source="removeBlueButton" />
+         <fx:reference source="removeBlackButton" />
+         <fx:reference source="removeRedButton" />
+         <fx:reference source="removeYellowButton" />
+      </java.util.ArrayList>
+   </fx:define>
+
+   <fx:define>
+      <java.util.ArrayList fx:id="addGemButtons">
+         <fx:reference source="addGreenButton" />
+         <fx:reference source="addWhiteButton" />
+         <fx:reference source="addBlueButton" />
+         <fx:reference source="addBlackButton" />
+         <fx:reference source="addRedButton" />
+         <fx:reference source="addYellowButton" />
+      </java.util.ArrayList>
+   </fx:define>
+
+   <fx:define>
+      <java.util.ArrayList fx:id="level3CardViewsBase">
+         <fx:reference source="R3C1" />
+         <fx:reference source="R3C2" />
+         <fx:reference source="R3C3" />
+         <fx:reference source="R3C4" />
+      </java.util.ArrayList>
+   </fx:define>
+   <fx:define>
+      <java.util.ArrayList fx:id="level2CardViewsBase">
+         <fx:reference source="R2C1" />
+         <fx:reference source="R2C2" />
+         <fx:reference source="R2C3" />
+         <fx:reference source="R2C4" />
+      </java.util.ArrayList>
+   </fx:define>
+   <fx:define>
+      <java.util.ArrayList fx:id="level1CardViewsBase">
+         <fx:reference source="R1C1" />
+         <fx:reference source="R1C2" />
+         <fx:reference source="R1C3" />
+         <fx:reference source="R1C4" />
+      </java.util.ArrayList>
+   </fx:define>
+   <fx:define>
+      <java.util.ArrayList fx:id="level3CardViewsOrient">
+         <fx:reference source="R3C5" />
+         <fx:reference source="R3C6" />
+      </java.util.ArrayList>
+   </fx:define>
+   <fx:define>
+      <java.util.ArrayList fx:id="level2CardViewsOrient">
+         <fx:reference source="R2C5" />
+         <fx:reference source="R2C6" />
+      </java.util.ArrayList>
+   </fx:define>
+   <fx:define>
+      <java.util.ArrayList fx:id="level1CardViewsOrient">
+         <fx:reference source="R1C5" />
+         <fx:reference source="R1C6" />
+      </java.util.ArrayList>
+   </fx:define>
+   <fx:define>
+      <java.util.ArrayList fx:id="cardViews">
+         <fx:reference source="level1CardViewsBase" />
+         <fx:reference source="level2CardViewsBase" />
+         <fx:reference source="level3CardViewsBase" />
+         <fx:reference source="level1CardViewsOrient" />
+         <fx:reference source="level2CardViewsOrient" />
+         <fx:reference source="level3CardViewsOrient" />
+      </java.util.ArrayList>
+   </fx:define>
 </AnchorPane>
