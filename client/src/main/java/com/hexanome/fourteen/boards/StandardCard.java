@@ -28,8 +28,8 @@ public class StandardCard extends Image {
   private final StandardCardForm cardForm;
 
   public StandardCard(StandardCardForm cardForm){
-    super(STANDARD_CARD_FORM_MAP.get(cardForm));
 
+    super(STANDARD_CARD_FORM_MAP.get(cardForm));
     this.cardForm = cardForm;
   }
 
@@ -38,44 +38,66 @@ public class StandardCard extends Image {
     final BufferedReader br = new BufferedReader(new InputStreamReader(
         Objects.requireNonNull(Card.class.getResourceAsStream("images/StandardCardData.csv"))));
 
-    // Skip header of the CSV file
-    br.readLine();
-    // Read through lines of file and get noble data
-    String curLine;
+    try {
 
-    while ((curLine = br.readLine()) != null) {
-      // Use comma as a delimiter
-      String[] cardData = curLine.split(",");
+      // Skip header of the CSV file
+      br.readLine();
 
-      // Parse cost
-      final GemsForm cost = new GemsForm();
+      // Read through lines of file and get noble data
+      String curLine;
 
-      final int greenCost = Integer.parseInt(cardData[0]);
-      cost.computeIfAbsent(GemColor.GREEN, k -> greenCost > 0 ? greenCost : null);
+      while ((curLine = br.readLine()) != null) {
+        // Use comma as a delimiter
+        String[] cardData = curLine.split(",");
 
-      final int whiteCost = Integer.parseInt(cardData[1]);
-      cost.computeIfAbsent(GemColor.WHITE, k -> whiteCost > 0 ? whiteCost : null);
+        // Parse cost
+        final GemsForm cost = new GemsForm();
 
-      final int blueCost = Integer.parseInt(cardData[2]);
-      cost.computeIfAbsent(GemColor.BLUE, k -> blueCost > 0 ? blueCost : null);
+        final int greenCost = Integer.parseInt(cardData[0]);
+        cost.computeIfAbsent(GemColor.GREEN, k -> greenCost > 0 ? greenCost : null);
 
-      final int blackCost = Integer.parseInt(cardData[3]);
-      cost.computeIfAbsent(GemColor.BLACK, k -> blackCost > 0 ? blackCost : null);
+        final int whiteCost = Integer.parseInt(cardData[1]);
+        cost.computeIfAbsent(GemColor.WHITE, k -> whiteCost > 0 ? whiteCost : null);
 
-      final int redCost = Integer.parseInt(cardData[4]);
-      cost.computeIfAbsent(GemColor.RED, k -> redCost > 0 ? redCost : null);
+        final int blueCost = Integer.parseInt(cardData[2]);
+        cost.computeIfAbsent(GemColor.BLUE, k -> blueCost > 0 ? blueCost : null);
 
-      final GemColor color = GemColor.CONVERSION_ARRAY.get(cardData[5]);
+        final int blackCost = Integer.parseInt(cardData[3]);
+        cost.computeIfAbsent(GemColor.BLACK, k -> blackCost > 0 ? blackCost : null);
 
-      final Expansion expansion = Expansion.CONVERSION_ARRAY.get(cardData[7]);
+        final int redCost = Integer.parseInt(cardData[4]);
+        cost.computeIfAbsent(GemColor.RED, k -> redCost > 0 ? redCost : null);
 
-      final CardLevelForm level = CardLevelForm.CONVERSION_ARRAY.get(Integer.valueOf(cardData[8]));
+        final GemColor color = GemColor.CONVERSION_ARRAY.get(cardData[5]);
 
-      final int prestigePoints = Integer.parseInt(cardData[9]);
+        final Expansion expansion = Expansion.CONVERSION_ARRAY.get(cardData[7]);
 
-      STANDARD_CARD_FORM_MAP.put(new StandardCardForm(prestigePoints, cost, level, expansion, color),
-          StandardCard.class.getResource("images/cards/" + cardData[10]).toString());
+        final CardLevelForm level = CardLevelForm.CONVERSION_ARRAY.get(Integer.valueOf(cardData[8]));
+
+        final int prestigePoints = Integer.parseInt(cardData[9]);
+
+        STANDARD_CARD_FORM_MAP.put(new StandardCardForm(prestigePoints, cost, level, expansion, color),
+            StandardCard.class.getResource("images/cards/" + cardData[10]).toString());
+      }
+      br.close();
+    } catch (Exception e) {
+      br.close();
+      e.printStackTrace();
     }
   }
 
+  public static void RetrievalTest() {
+
+    GemsForm cost1 = new GemsForm();
+    cost1.put(GemColor.WHITE, 4);
+    cost1.put(GemColor.BLUE, 2);
+    cost1.put(GemColor.BLACK, 1);
+
+    StandardCardForm hash1 = new StandardCardForm(2, cost1, CardLevelForm.TWO, Expansion.STANDARD, GemColor.GREEN);
+
+    String retrieved = STANDARD_CARD_FORM_MAP.get(hash1);
+
+    System.out.println(retrieved);
+
+  }
 }
