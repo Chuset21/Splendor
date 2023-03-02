@@ -5,6 +5,9 @@ import com.hexanome.fourteen.ServerCaller;
 import com.hexanome.fourteen.form.server.GameBoardForm;
 import com.hexanome.fourteen.form.server.GemsForm;
 import com.hexanome.fourteen.form.server.PlayerForm;
+import com.hexanome.fourteen.form.server.cardform.CardForm;
+import com.hexanome.fourteen.form.server.cardform.CardLevelForm;
+import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.security.InvalidParameterException;
@@ -244,7 +247,6 @@ public class GameBoard {
     generateNobles();
   }
 
-
   private void setupCards(String cardDatacsv) {
     // Initialize a list of cards to use for the game
     gameCards = null;
@@ -291,9 +293,35 @@ public class GameBoard {
    * Puts all visible cards on the board
    */
   private void setupCards() {
+
     if(gameBoardForm == null){
       throw new InvalidParameterException("gameBoardForm is null");
     }
+
+    // Iterate through each list of the gameBoardForm.cards set (each different levels)
+    for (List<CardForm>  cardlist : gameBoardForm.cards() ) {
+
+      // Check to see that we have at least one card to assign
+      if (cardlist.size() > 0) {
+
+        // set listToUpdate (GUI list) according list's level
+        ArrayList<ImageView> listToUpdate;
+
+        switch(cardlist.get(0).level()) {
+          case ONE -> listToUpdate = level1CardViewsBase;
+          case TWO -> listToUpdate = level2CardViewsBase;
+          case THREE -> listToUpdate = level3CardViewsBase;
+          default -> throw new IllegalStateException("Invalid card level from gameBoardForm.");
+         }
+
+         // update listToUpdate's images according to the cardlist data.
+         for (int i = 0; i < cardlist.size(); i++) {
+           StandardCardForm cardForm = (StandardCardForm) cardlist.get(i);
+           listToUpdate.get(i).setImage(new StandardCard(cardForm));
+         }
+       }
+    }
+
 
   }
 
