@@ -352,7 +352,7 @@ public final class GameBoard {
    * @return true if it's just now the last round of the game, false otherwise.
    */
   public boolean nextTurn() {
-    boolean wasLastTurn = lastRound;
+    boolean wasLastRound = lastRound;
     if (!lastRound) {
       computeLeadingPlayer();
       if (leadingPlayer.hand().prestigePoints() >= WINNING_POINTS) {
@@ -360,7 +360,7 @@ public final class GameBoard {
       }
     }
     playerTurn = (playerTurn + 1) % players.size();
-    return wasLastTurn != lastRound;
+    return wasLastRound != lastRound;
   }
 
   /**
