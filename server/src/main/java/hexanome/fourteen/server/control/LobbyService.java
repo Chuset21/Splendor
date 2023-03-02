@@ -3,7 +3,9 @@ package hexanome.fourteen.server.control;
 import hexanome.fourteen.server.control.form.RegisterGameServiceForm;
 import hexanome.fourteen.server.control.form.SaveGameForm;
 import java.net.Inet4Address;
-import java.net.UnknownHostException;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Collections;
 import kong.unirest.HttpResponse;
 import kong.unirest.HttpStatus;
 import kong.unirest.Unirest;
@@ -30,11 +32,21 @@ public class LobbyService implements LobbyServiceCaller {
    */
   public LobbyService(@Autowired GsonInstance gsonInstance,
                       @Value("${ls.location}") String lsLocation,
-                      @Value("${server.port}") String port) throws UnknownHostException {
+                      @Value("${server.port}") String port) throws SocketException {
     this.gsonInstance = gsonInstance;
     this.lsLocation = lsLocation;
     gameServiceLocation =
-        "http://%s:%s/splendor".formatted(Inet4Address.getLocalHost().getHostAddress(), port);
+        "http://%s:%s/splendor".formatted(getAddress().getHostAddress(), port);
+  }
+
+  private static Inet4Address getAddress() throws SocketException {
+    return Collections.list(NetworkInterface.getNetworkInterfaces()).stream()
+        .map(NetworkInterface::getInetAddresses)
+        .flatMap(inetAddresses -> Collections.list(inetAddresses).stream()).filter(
+            inetAddress -> inetAddress instanceof Inet4Address
+                           && !inetAddress.isLoopbackAddress()
+                           && !inetAddress.getHostAddress().startsWith("127"))
+        .map(inetAddress -> (Inet4Address) inetAddress).findFirst().orElseThrow();
   }
 
   @Override
@@ -73,11 +85,13 @@ public class LobbyService implements LobbyServiceCaller {
   @Override
   public boolean registerGameService(String gameServiceName, String accessToken) {
     return Unirest.put("%sapi/gameservices/%s".formatted(lsLocation, gameServiceName))
-        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-        .header("Content-Type", "application/json").queryString("access_token", accessToken).body(
-            gsonInstance.gson.toJson(
-                new RegisterGameServiceForm(gameServiceLocation, gameServiceName, gameServiceName)))
-        .asEmpty().getStatus() == 200;
+               .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+               .header("Content-Type", "application/json").queryString("access_token", accessToken)
+               .body(
+                   gsonInstance.gson.toJson(
+                       new RegisterGameServiceForm(gameServiceLocation, gameServiceName,
+                           gameServiceName)))
+               .asEmpty().getStatus() == 200;
   }
 
   @Override

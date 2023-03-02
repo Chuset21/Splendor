@@ -1,8 +1,7 @@
 package hexanome.fourteen.server.control;
 
-import java.net.UnknownHostException;
+import java.net.SocketException;
 import kong.unirest.HttpResponse;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.api.TestInstance;
@@ -11,7 +10,6 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.mock;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @TestInstance(PER_CLASS)
@@ -21,7 +19,7 @@ public class LobbyServiceTest {
   static LobbyService lobbyService;
 
   @BeforeAll
-  public static void setUp() throws UnknownHostException {
+  public static void setUp() throws SocketException {
     gsonInstance = new GsonInstance();
     ReflectionTestUtils.invokeMethod(gsonInstance, "initGson");
     lobbyService = new LobbyService(gsonInstance, "dummy location", "4243");
