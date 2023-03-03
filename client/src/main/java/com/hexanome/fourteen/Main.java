@@ -16,8 +16,6 @@ import com.hexanome.fourteen.form.server.payment.CardPaymentForm;
 import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
 import com.hexanome.fourteen.form.server.payment.PaymentForm;
 import com.hexanome.fourteen.lobbyui.MenuController;
-import com.hexanome.fourteen.lobbyui.ScreenController;
-import com.hexanome.fourteen.login.LoginScreenController;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -32,13 +30,19 @@ public class Main extends Application {
   public static final Gson GSON =
       new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
           .registerTypeAdapterFactory(
-              RuntimeTypeAdapterFactory.of(CardForm.class).registerSubtype(GoldGemCardForm.class)
-                  .registerSubtype(ReserveNobleCardForm.class)
-                  .registerSubtype(SacrificeCardForm.class).registerSubtype(SatchelCardForm.class)
-                  .registerSubtype(StandardCardForm.class, "StandardCard").registerSubtype(WaterfallCardForm.class)
-                  .registerSubtype(DoubleBonusCardForm.class)).registerTypeAdapterFactory(
-              RuntimeTypeAdapterFactory.of(PaymentForm.class).registerSubtype(GemPaymentForm.class)
-                  .registerSubtype(CardPaymentForm.class)).serializeNulls().create();
+              RuntimeTypeAdapterFactory.of(CardForm.class)
+                  .registerSubtype(GoldGemCardForm.class, "GoldGemCard")
+                  .registerSubtype(ReserveNobleCardForm.class, "ReserveNobleCard")
+                  .registerSubtype(SacrificeCardForm.class, "SacrificeCard")
+                  .registerSubtype(SatchelCardForm.class, "SatchelCard")
+                  .registerSubtype(StandardCardForm.class, "StandardCard")
+                  .registerSubtype(WaterfallCardForm.class, "WaterfallCard")
+                  .registerSubtype(DoubleBonusCardForm.class, "DoubleBonusCard"))
+          .registerTypeAdapterFactory(
+              RuntimeTypeAdapterFactory.of(PaymentForm.class)
+                  .registerSubtype(GemPaymentForm.class, "GemPayment")
+                  .registerSubtype(CardPaymentForm.class, "CardPayment"))
+          .serializeNulls().create();
   private static final String HTTP_STRING = "http://%s:%s/";
   private static final String LOBBY_SERVICE_PORT = "4242";
   private static final String DEFAULT_IP = "127.0.0.1";
@@ -55,6 +59,7 @@ public class Main extends Application {
 
   /**
    * Run on startup of application. Sends user to login screen
+   *
    * @param stage active stage passed by application
    */
   @Override
