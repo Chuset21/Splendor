@@ -35,8 +35,11 @@ public class GsonInstance {
   public GsonInstance() {
   }
 
+  /**
+   * Initialize gson.
+   */
   @PostConstruct
-  private void initGson() {
+  public void initGson() {
     final RuntimeTypeAdapterFactory<Card> adapter =
         RuntimeTypeAdapterFactory.of(Card.class).registerSubtype(GoldGemCard.class)
             .registerSubtype(ReserveNobleCard.class).registerSubtype(SacrificeCard.class)

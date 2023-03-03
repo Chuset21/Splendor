@@ -1,5 +1,7 @@
 package hexanome.fourteen.server.model.board;
 
+import com.google.gson.reflect.TypeToken;
+import hexanome.fourteen.server.control.GsonInstance;
 import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.card.CardLevel;
 import hexanome.fourteen.server.model.board.card.StandardCard;
@@ -10,6 +12,8 @@ import hexanome.fourteen.server.model.board.player.Player;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,6 +34,12 @@ import java.util.stream.Collectors;
  * If so this might be true for more than just this class.
  */
 public final class GameBoard {
+
+  private static final GsonInstance GSON = new GsonInstance();
+
+  static {
+    GSON.initGson();
+  }
 
   private static final int WINNING_POINTS = 15;
 
@@ -159,20 +170,11 @@ public final class GameBoard {
             GemColor.valueOf(cardData[5]));
 
         // Add the card to respective list
-        if (expansion == Expansion.STANDARD) {
-          switch (level) {
-            case ONE -> levelOne.add(c);
-            case TWO -> levelTwo.add(c);
-            case THREE -> levelThree.add(c);
-            default -> throw new IllegalStateException("Unexpected value: " + level);
-          }
-        } else if (expansions.contains(Expansion.ORIENT) && expansion == Expansion.ORIENT) {
-          switch (level) {
-            case ONE -> orientLevelOne.add(c);
-            case TWO -> orientLevelTwo.add(c);
-            case THREE -> orientLevelThree.add(c);
-            default -> throw new IllegalStateException("Unexpected value: " + level);
-          }
+        switch (level) {
+          case ONE -> levelOne.add(c);
+          case TWO -> levelTwo.add(c);
+          case THREE -> levelThree.add(c);
+          default -> throw new IllegalStateException("Unexpected value: " + level);
         }
       }
 
@@ -180,6 +182,15 @@ public final class GameBoard {
       decks.add(levelTwo);
       decks.add(levelThree);
       if (expansions.contains(Expansion.ORIENT)) {
+        final List<Card> orientCards = createOrientDeck();
+        for (Card card : orientCards) {
+          switch (card.level()) {
+            case ONE -> orientLevelOne.add(card);
+            case TWO -> orientLevelTwo.add(card);
+            case THREE -> orientLevelThree.add(card);
+            default -> throw new IllegalStateException("Unexpected value: " + card.level());
+          }
+        }
         decks.add(orientLevelOne);
         decks.add(orientLevelTwo);
         decks.add(orientLevelThree);
@@ -190,6 +201,16 @@ public final class GameBoard {
     }
 
     return decks;
+  }
+
+  private static List<Card> createOrientDeck() {
+    final Type mapType = new TypeToken<Map<String, Card>>() {
+    }.getType();
+    final Map<String, Card> map = GSON.gson.fromJson(new Scanner(
+        Objects.requireNonNull(GameBoard.class.getResourceAsStream("OrientCardData.json")),
+        StandardCharsets.UTF_8).useDelimiter("\\A").next(), mapType);
+
+    return map.values().stream().toList();
   }
 
   private static Set<Noble> createNobles(int numberOfNobles) {
