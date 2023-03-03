@@ -5,7 +5,7 @@ import hexanome.fourteen.server.model.board.gem.Gems;
 /**
  * A class to represent payment using Gems.
  */
-public class GemPayment implements Payment {
+public final class GemPayment implements Payment {
 
   private Gems chosenGems;
 

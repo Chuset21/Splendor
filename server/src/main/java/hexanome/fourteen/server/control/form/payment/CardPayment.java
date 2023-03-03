@@ -5,7 +5,7 @@ import hexanome.fourteen.server.model.board.card.Card;
 /**
  * A class to represent payment using cards as required by sacrifice cards.
  */
-public class CardPayment implements Payment {
+public final class CardPayment implements Payment {
 
   private Card cardToSacrifice1;
 
