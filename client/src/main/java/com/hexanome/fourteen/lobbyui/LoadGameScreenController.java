@@ -1,11 +1,13 @@
 package com.hexanome.fourteen.lobbyui;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
+import com.hexanome.fourteen.Main;
 import com.hexanome.fourteen.ServerCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
 import com.hexanome.fourteen.form.lobbyservice.CreateSessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SaveGameForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionForm;
+import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
 import com.hexanome.fourteen.form.server.GameBoardForm;
 import java.io.IOException;
 import java.net.URL;
@@ -29,7 +31,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class LoadGameScreenController implements ScreenController{
+public class LoadGameScreenController implements ScreenController {
 
   @FXML
   private AnchorPane anchorPane;
@@ -72,10 +74,12 @@ public class LoadGameScreenController implements ScreenController{
     SaveGameForm saveGame = savedGames.get(saveGameID);
 
     // Print to console our next step
-    System.out.println("Loading game:" +  saveGameID);
+    System.out.println("Loading game:" + saveGameID);
 
     // Check if any of the current sessions already have the savegameID.
-    var currentSessions = LobbyServiceCaller.getSessions().sessions();
+    var currentSessions =
+        Main.GSON.fromJson(LobbyServiceCaller.getSessions().getBody(), SessionsForm.class)
+            .sessions();
     for (var session : currentSessions.entrySet()) {
       if (session.getValue().saveGameid().equals(saveGameID)) {
         sessionID = session.getKey();
@@ -88,12 +92,13 @@ public class LoadGameScreenController implements ScreenController{
       System.out.println("Creating a session...");
 
       // Creates template for session with current user's ID and the selected expansion
-      CreateSessionForm session = new CreateSessionForm(LobbyServiceCaller.getCurrentUserid(), savedGames.get(saveGameID).gameName(), saveGameID);
+      CreateSessionForm session = new CreateSessionForm(LobbyServiceCaller.getCurrentUserid(),
+          savedGames.get(saveGameID).gameName(), saveGameID);
 
       // Get the session
       try {
         sessionID = LobbyServiceCaller.createSession(session);
-      } catch(TokenRefreshFailedException e) {
+      } catch (TokenRefreshFailedException e) {
         try {
           MenuController.returnToLogin("Session timed out, retry login");
         } catch (IOException ioe) {
@@ -109,7 +114,9 @@ public class LoadGameScreenController implements ScreenController{
     if (sessionID != null) {
 
       // Get the Session Information
-      SessionForm sf = LobbyServiceCaller.getSessions().sessions().get(sessionID);
+      SessionForm sf =
+          Main.GSON.fromJson(LobbyServiceCaller.getSessions().getBody(), SessionsForm.class)
+              .sessions().get(sessionID);
 
       try {
 
@@ -126,7 +133,7 @@ public class LoadGameScreenController implements ScreenController{
   }
 
   @FXML
-  private void handleBackButton(){
+  private void handleBackButton() {
     try {
       MenuController.goBack();
     } catch (Exception e) {
@@ -141,7 +148,9 @@ public class LoadGameScreenController implements ScreenController{
 
     // Only load the games that has the user included
     String username = LobbyServiceCaller.getCurrentUserid();
-    List<SaveGameForm> savedGamesList = LobbyServiceCaller.getSavedGames().stream().filter(e-> e.players().contains(username)).toList();
+    List<SaveGameForm> savedGamesList =
+        LobbyServiceCaller.getSavedGames().stream().filter(e -> e.players().contains(username))
+            .toList();
 
     if (savedGamesList != null) {
 

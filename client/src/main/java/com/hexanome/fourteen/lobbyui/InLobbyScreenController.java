@@ -40,13 +40,14 @@ public class InLobbyScreenController implements ScreenController {
   private Thread refresherThread;
   // Holds data of current lobby (primarily the lobby location)
   private Lobby lobby;
-  
+
 
   // List of current players
   private DisplayPlayer[] displayPlayers = new DisplayPlayer[4];
 
   // Temp names to use for players
-  private static final String[] playerNames = {"Billy Bob", "John Smith", "Gerald", "Betsy", "Brenda"};
+  private static final String[] playerNames =
+      {"Billy Bob", "John Smith", "Gerald", "Betsy", "Brenda"};
 
   // Template for lobby text
   private static final String LOBBY_NAME_TEMPLATE = "[ownerName]'s Lobby";
@@ -71,7 +72,6 @@ public class InLobbyScreenController implements ScreenController {
             LobbyServiceCaller.updateAccessToken();
             updateLobbyInfo();
           });
-          Thread.sleep(2000);
         }
         return null;
       }
@@ -84,74 +84,75 @@ public class InLobbyScreenController implements ScreenController {
     joinLobbyButton.setVisible(false);
 
     // TODO: remove launch button when not the host (make it into a join button?)
-    if(!LobbyServiceCaller.getCurrentUserLobby().getHost().equals(LobbyServiceCaller.getCurrentUserid())){
+    if (!LobbyServiceCaller.getCurrentUserLobby().getHost()
+        .equals(LobbyServiceCaller.getCurrentUserid())) {
       launchLobbyButton.setVisible(false);
     }
   }
 
   @FXML
-  private void handleLaunchButton(){
-    if(LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost())){
+  private void handleLaunchButton() {
+    if (LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost())) {
       try {
-        if(LobbyServiceCaller.launchSession()) {
+        if (LobbyServiceCaller.launchSession()) {
           refresherThread.interrupt();
 
           // Go to board screen
           MenuController.goToGameBoard();
         }
-      } catch(Exception e){
+      } catch (Exception e) {
         e.printStackTrace();
       }
-    } else{
+    } else {
       try {
         refresherThread.interrupt();
 
         // Go to board screen
         MenuController.goToGameBoard();
-      } catch(Exception e){
+      } catch (Exception e) {
         e.printStackTrace();
       }
     }
   }
 
   @FXML
-  private void handleJoinButton(){
+  private void handleJoinButton() {
 
   }
 
   @FXML
-  private void handleLeaveButton(){
-    if(LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost())) {
-      try{
+  private void handleLeaveButton() {
+    if (LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost())) {
+      try {
         LobbyServiceCaller.deleteSession();
-      } catch(TokenRefreshFailedException e){
-        try{
+      } catch (TokenRefreshFailedException e) {
+        try {
           MenuController.returnToLogin("Session timed out, retry login");
           stage.close();
           return;
-        } catch(IOException ioe){
+        } catch (IOException ioe) {
           ioe.printStackTrace();
         }
       }
     } else {
-      try{
+      try {
         LobbyServiceCaller.leaveSession();
-      } catch (TokenRefreshFailedException e){
-        try{
+      } catch (TokenRefreshFailedException e) {
+        try {
           MenuController.returnToLogin("Session timed out, retry login");
           stage.close();
           return;
-        } catch(IOException ioe){
+        } catch (IOException ioe) {
           ioe.printStackTrace();
         }
       }
     }
 
-    try{
+    try {
       MenuController.goBack();
       refresherThread.interrupt();
       LobbyServiceCaller.setCurrentUserLobby(null);
-    } catch (IOException ioe){
+    } catch (IOException ioe) {
       ioe.printStackTrace();
     }
   }
@@ -163,11 +164,11 @@ public class InLobbyScreenController implements ScreenController {
    * @param displayPlayer player to be added
    * @return true if player was added successfully, false if no room was left in lobby
    */
-  private boolean addPlayer(DisplayPlayer displayPlayer){
-    for(int i = 0;i<4;i++){
-      if(displayPlayers[i] == null){
+  private boolean addPlayer(DisplayPlayer displayPlayer) {
+    for (int i = 0; i < 4; i++) {
+      if (displayPlayers[i] == null) {
         displayPlayers[i] = displayPlayer;
-        lobbyGrid.add(displayPlayer,i/2,i%2);
+        lobbyGrid.add(displayPlayer, i / 2, i % 2);
         return true;
       }
     }
@@ -177,8 +178,8 @@ public class InLobbyScreenController implements ScreenController {
   /**
    * Updates all lobby information, kicks player from lobby if session is no longer active
    */
-  private void updateLobbyInfo(){
-    if(!LobbyServiceCaller.isSessionActive(lobby.getSessionid())){
+  private void updateLobbyInfo() {
+    if (!LobbyServiceCaller.isSessionActive(lobby.getSessionid())) {
       handleLeaveButton();
       return;
     }
@@ -194,12 +195,12 @@ public class InLobbyScreenController implements ScreenController {
   /**
    * Updates GUI elements to match gamestate
    */
-  private void updateGUI(){
+  private void updateGUI() {
     // Updates joinLobby buttons for non-host users
-    if(LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost()) || lobby.getLaunched()){
+    if (LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost()) || lobby.getLaunched()) {
       joinLobbyButton.setVisible(false);
       launchLobbyButton.setVisible(true);
-    } else{
+    } else {
       joinLobbyButton.setVisible(false);
       launchLobbyButton.setVisible(false);
     }
@@ -208,20 +209,20 @@ public class InLobbyScreenController implements ScreenController {
   /**
    * Updates display of players currently in the lobby
    */
-  private void updateLobbyPlayers(){
+  private void updateLobbyPlayers() {
     lobbyGrid.getChildren().clear();
 
-    for(int i = 0;i<lobby.getNumPlayers();i++){
+    for (int i = 0; i < lobby.getNumPlayers(); i++) {
       DisplayPlayer player = null;
 
-      try{
+      try {
         player = new DisplayPlayer(new Player(lobby.getPlayers()[i], "Green"), this);
-      } catch(IOException ioe){
+      } catch (IOException ioe) {
         ioe.printStackTrace();
       }
 
-      if(player != null){
-        lobbyGrid.add(player,i/2,i%2);
+      if (player != null) {
+        lobbyGrid.add(player, i / 2, i % 2);
       }
     }
   }
@@ -229,15 +230,15 @@ public class InLobbyScreenController implements ScreenController {
   /**
    * Displays the lobby's owner name as the lobby owner
    */
-  private void updateLobbyName(){
-    titleText.setText(LOBBY_NAME_TEMPLATE.replace("[ownerName]",lobby.getPlayers()[0]));
+  private void updateLobbyName() {
+    titleText.setText(LOBBY_NAME_TEMPLATE.replace("[ownerName]", lobby.getPlayers()[0]));
   }
 
   /**
    * Updates player count with gamestate
    */
-  private void updatePlayerCounter(){
-    String temp = PLAYER_COUNT_TEMPLATE.replace("[curPlayers]",""+lobby.getNumPlayers());
-    capacityText.setText(temp.replace("[maxPlayers]",""+lobby.getPlayers().length));
+  private void updatePlayerCounter() {
+    String temp = PLAYER_COUNT_TEMPLATE.replace("[curPlayers]", "" + lobby.getNumPlayers());
+    capacityText.setText(temp.replace("[maxPlayers]", "" + lobby.getPlayers().length));
   }
 }

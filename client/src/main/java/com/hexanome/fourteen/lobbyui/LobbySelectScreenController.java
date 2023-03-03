@@ -1,6 +1,7 @@
 package com.hexanome.fourteen.lobbyui;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
+import com.hexanome.fourteen.Main;
 import com.hexanome.fourteen.form.lobbyservice.SessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
 import java.io.IOException;
@@ -19,8 +20,10 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import kong.unirest.HttpResponse;
+import org.apache.commons.codec.digest.DigestUtils;
 
-public class LobbySelectScreenController implements ScreenController{
+public class LobbySelectScreenController implements ScreenController {
 
   Thread refresherThread;
   @FXML
@@ -33,6 +36,7 @@ public class LobbySelectScreenController implements ScreenController{
   private Button backButton;
 
   private Stage stage;
+  private String hashedResponse = null;
 
   @Override
   public void sendStageData(Stage stage) {
@@ -48,7 +52,6 @@ public class LobbySelectScreenController implements ScreenController{
             LobbyServiceCaller.updateAccessToken();
             updateLobbies();
           });
-          Thread.sleep(2000);
         }
         return null;
       }
@@ -62,27 +65,38 @@ public class LobbySelectScreenController implements ScreenController{
   }
 
 
+  private void updateLobbies() {
+    SessionsForm lobbyForm = null;
+    HttpResponse<String> longPollResponse = null;
+    int responseCode = 408;
+    while (responseCode == 408) {
+      longPollResponse = hashedResponse != null ? LobbyServiceCaller.getSessions(hashedResponse) :
+          LobbyServiceCaller.getSessions();
 
-  private void updateLobbies(){
+      responseCode = longPollResponse.getStatus();
+    }
+
+    if (responseCode == 200) {
+      hashedResponse = DigestUtils.md5Hex(longPollResponse.getBody());
+      lobbyForm = Main.GSON.fromJson(longPollResponse.getBody(), SessionsForm.class);
+    }
+
     // Resets displayed lobbies
     lobbyVBox.getChildren().clear();
-
-    SessionsForm lobbyForm = LobbyServiceCaller.getSessions();
-
-    if(lobbyForm != null){
+    if (lobbyForm != null) {
       Map<String, SessionForm> lobbies = lobbyForm.sessions();
 
       // Iterates through all active sessions
-      for(Map.Entry<String, SessionForm> entry : lobbies.entrySet()){
+      for (Map.Entry<String, SessionForm> entry : lobbies.entrySet()) {
         // Creates new lobby based on session data from lobby service
         Lobby lobby = new Lobby(entry.getKey());
         DisplayLobby displayLobby = null;
 
-        try{
+        try {
           // Creates new display lobby based on data received from lobby service
 
           displayLobby = new DisplayLobby(lobby, this);
-        } catch(IOException ioe){
+        } catch (IOException ioe) {
           ioe.printStackTrace();
         }
 
@@ -94,7 +108,7 @@ public class LobbySelectScreenController implements ScreenController{
   }
 
   @FXML
-  private void handleBackButton(){
+  private void handleBackButton() {
     try {
       MenuController.goBack();
       refresherThread.interrupt();
@@ -108,17 +122,19 @@ public class LobbySelectScreenController implements ScreenController{
    * This function is only used when called by the Lobby object,
    * never directly from FXML.
    */
-  public void handleJoinLobbyButton(Lobby lobby){
-    if(!lobby.getHost().equals(LobbyServiceCaller.getCurrentUserid())){
-      try{
-        if(LobbyServiceCaller.joinSession(lobby.getSessionid())) { MenuController.goToInLobbyScreen(lobby); }
+  public void handleJoinLobbyButton(Lobby lobby) {
+    if (!lobby.getHost().equals(LobbyServiceCaller.getCurrentUserid())) {
+      try {
+        if (LobbyServiceCaller.joinSession(lobby.getSessionid())) {
+          MenuController.goToInLobbyScreen(lobby);
+        }
       } catch (Exception e) {
         e.printStackTrace();
       }
-    } else{
-      try{
+    } else {
+      try {
         MenuController.goToInLobbyScreen(lobby);
-      } catch (IOException ioe){
+      } catch (IOException ioe) {
         ioe.printStackTrace();
       }
     }

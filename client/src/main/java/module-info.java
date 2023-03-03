@@ -5,6 +5,7 @@ module com.hexanome.fourteen {
   requires com.google.gson;
   requires unirest.java;
   requires gson.extras;
+  requires org.apache.commons.codec;
 
   opens com.hexanome.fourteen.boards to javafx.fxml;
   opens com.hexanome.fourteen.lobbyui to javafx.fxml;
