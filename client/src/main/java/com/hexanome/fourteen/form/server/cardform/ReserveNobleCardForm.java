@@ -80,4 +80,9 @@ public final class ReserveNobleCardForm extends CardForm {
            && discountColor == card.discountColor
            && Objects.equals(nobleToReserve, card.nobleToReserve);
   }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(prestigePoints, cost, level, expansion, discountColor, nobleToReserve);
+  }
 }

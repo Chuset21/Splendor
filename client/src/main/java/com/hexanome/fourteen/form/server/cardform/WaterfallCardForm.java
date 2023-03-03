@@ -76,4 +76,9 @@ public final class WaterfallCardForm extends CardForm {
            && super.level == card.level && super.expansion == card.expansion
            && discountColor == card.discountColor && Objects.equals(cardToTake, card.cardToTake);
   }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(prestigePoints, cost, level, expansion, discountColor, cardToTake);
+  }
 }

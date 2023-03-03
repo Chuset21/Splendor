@@ -56,4 +56,9 @@ public final class DoubleBonusCardForm extends CardForm {
            && super.level == card.level && super.expansion == card.expansion
            && discountColor == card.discountColor;
   }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(prestigePoints, cost, level, expansion, discountColor);
+  }
 }

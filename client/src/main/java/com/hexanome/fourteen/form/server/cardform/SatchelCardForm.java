@@ -84,4 +84,9 @@ public final class SatchelCardForm extends CardForm {
            && Objects.equals(cardToAttach, card.cardToAttach)
            && Objects.equals(freeCardToTake, card.freeCardToTake);
   }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(prestigePoints, cost, level, expansion, cardToAttach, freeCardToTake);
+  }
 }

@@ -1,0 +1,335 @@
+{
+  "orient-1j-1.png": {
+    "type": "GoldGemCard",
+    "prestige_points": 0,
+    "cost": {
+      "GREEN": 3
+    },
+    "level": "ONE",
+    "expansion": "ORIENT"
+  },
+  "orient-1j-2.png": {
+    "type": "GoldGemCard",
+    "prestige_points": 0,
+    "cost": {
+      "BLUE": 3
+    },
+    "level": "ONE",
+    "expansion": "ORIENT"
+  },
+  "orient-1j-3.png": {
+    "type": "GoldGemCard",
+    "prestige_points": 0,
+    "cost": {
+      "WHITE": 3
+    },
+    "level": "ONE",
+    "expansion": "ORIENT"
+  },
+  "orient-1j-4.png": {
+    "type": "GoldGemCard",
+    "prestige_points": 0,
+    "cost": {
+      "BLACK": 3
+    },
+    "level": "ONE",
+    "expansion": "ORIENT"
+  },
+  "orient-1j-5.png": {
+    "type": "GoldGemCard",
+    "prestige_points": 0,
+    "cost": {
+      "RED": 3
+    },
+    "level": "ONE",
+    "expansion": "ORIENT"
+  },
+  "orient-1x-1.png": {
+    "type": "SatchelCard",
+    "prestige_points": 0,
+    "card_to_attach": null,
+    "free_card_to_take": null,
+    "cost": {
+      "BLUE": 3,
+      "GREEN": 2
+    },
+    "level": "ONE",
+    "expansion": "ORIENT"
+  },
+  "orient-1x-2.png": {
+    "type": "SatchelCard",
+    "prestige_points": 0,
+    "card_to_attach": null,
+    "free_card_to_take": null,
+    "cost": {
+      "GREEN": 3,
+      "BLACK": 2
+    },
+    "level": "ONE",
+    "expansion": "ORIENT"
+  },
+  "orient-1x-3.png": {
+    "type": "SatchelCard",
+    "prestige_points": 0,
+    "card_to_attach": null,
+    "free_card_to_take": null,
+    "cost": {
+      "BLACK": 3,
+      "WHITE": 2
+    },
+    "level": "ONE",
+    "expansion": "ORIENT"
+  },
+  "orient-1x-4.png": {
+    "type": "SatchelCard",
+    "prestige_points": 0,
+    "card_to_attach": null,
+    "free_card_to_take": null,
+    "cost": {
+      "RED": 3,
+      "BLUE": 2
+    },
+    "level": "ONE",
+    "expansion": "ORIENT"
+  },
+  "orient-1x-5.png": {
+    "type": "SatchelCard",
+    "prestige_points": 0,
+    "card_to_attach": null,
+    "free_card_to_take": null,
+    "cost": {
+      "WHITE": 3,
+      "RED": 2
+    },
+    "level": "ONE",
+    "expansion": "ORIENT"
+  },
+  "orient-2blk-1.png": {
+    "type": "DoubleBonusCard",
+    "prestige_points": 0,
+    "discount_color": "BLACK",
+    "cost": {
+      "RED": 4,
+      "BLUE": 3
+    },
+    "level": "TWO",
+    "expansion": "ORIENT"
+  },
+  "orient-2blu-1.png": {
+    "type": "DoubleBonusCard",
+    "prestige_points": 0,
+    "discount_color": "BLUE",
+    "cost": {
+      "BLACK": 4,
+      "WHITE": 3
+    },
+    "level": "TWO",
+    "expansion": "ORIENT"
+  },
+  "orient-2g-1.png": {
+    "type": "ReserveNobleCard",
+    "prestige_points": 1,
+    "discount_color": "GREEN",
+    "noble_to_reserve": null,
+    "cost": {
+      "WHITE": 2,
+      "BLUE": 2,
+      "RED": 2,
+      "BLACK": 2
+    },
+    "level": "TWO",
+    "expansion": "ORIENT"
+  },
+  "orient-2g-2.png": {
+    "type": "DoubleBonusCard",
+    "prestige_points": 0,
+    "discount_color": "GREEN",
+    "cost": {
+      "WHITE": 4,
+      "RED": 3
+    },
+    "level": "TWO",
+    "expansion": "ORIENT"
+  },
+  "orient-2r-1.png": {
+    "type": "ReserveNobleCard",
+    "prestige_points": 1,
+    "discount_color": "RED",
+    "noble_to_reserve": null,
+    "cost": {
+      "WHITE": 2,
+      "BLUE": 2,
+      "GREEN": 2,
+      "BLACK": 2
+    },
+    "level": "TWO",
+    "expansion": "ORIENT"
+  },
+  "orient-2r-2.png": {
+    "type": "DoubleBonusCard",
+    "prestige_points": 0,
+    "discount_color": "RED",
+    "cost": {
+      "GREEN": 4,
+      "BLACK": 3
+    },
+    "level": "TWO",
+    "expansion": "ORIENT"
+  },
+  "orient-2w-1.png": {
+    "type": "ReserveNobleCard",
+    "prestige_points": 1,
+    "discount_color": "WHITE",
+    "noble_to_reserve": null,
+    "cost": {
+      "BLUE": 2,
+      "GREEN": 2,
+      "RED": 2,
+      "BLACK": 2
+    },
+    "level": "TWO",
+    "expansion": "ORIENT"
+  },
+  "orient-2w-2.png": {
+    "type": "DoubleBonusCard",
+    "prestige_points": 0,
+    "discount_color": "WHITE",
+    "cost": {
+      "BLUE": 4,
+      "GREEN": 3
+    },
+    "level": "TWO",
+    "expansion": "ORIENT"
+  },
+  "orient-2x-1.png": {
+    "type": "SatchelCard",
+    "prestige_points": 0,
+    "card_to_attach": null,
+    "free_card_to_take": null,
+    "cost": {
+      "GREEN": 4,
+      "RED": 3,
+      "BLACK": 1
+    },
+    "level": "TWO",
+    "expansion": "ORIENT"
+  },
+  "orient-2x-2.png": {
+    "type": "SatchelCard",
+    "prestige_points": 0,
+    "card_to_attach": null,
+    "free_card_to_take": null,
+    "cost": {
+      "WHITE": 4,
+      "BLUE": 3,
+      "BLACK": 1
+    },
+    "level": "TWO",
+    "expansion": "ORIENT"
+  },
+  "orient-3blk-1.png": {
+    "type": "WaterfallCard",
+    "prestige_points": 0,
+    "discount_color": "BLACK",
+    "card_to_take": null,
+    "cost": {
+      "WHITE": 6,
+      "BLUE": 3,
+      "BLACK": 1
+    },
+    "level": "THREE",
+    "expansion": "ORIENT"
+  },
+  "orient-3blk-2.png": {
+    "type": "SacrificeCard",
+    "prestige_points": 3,
+    "discount_color": "BLACK",
+    "cost": null,
+    "level": "THREE",
+    "expansion": "ORIENT"
+  },
+  "orient-3blu-1.png": {
+    "type": "WaterfallCard",
+    "prestige_points": 0,
+    "discount_color": "BLUE",
+    "card_to_take": null,
+    "cost": {
+      "GREEN": 6,
+      "RED": 3,
+      "BLUE": 1
+    },
+    "level": "THREE",
+    "expansion": "ORIENT"
+  },
+  "orient-3blu-2.png": {
+    "type": "SacrificeCard",
+    "prestige_points": 3,
+    "discount_color": "BLUE",
+    "cost": null,
+    "level": "THREE",
+    "expansion": "ORIENT"
+  },
+  "orient-3g-1.png": {
+    "type": "WaterfallCard",
+    "prestige_points": 0,
+    "discount_color": "BLUE",
+    "card_to_take": null,
+    "cost": {
+      "RED": 6,
+      "BLACK": 3,
+      "GREEN": 1
+    },
+    "level": "THREE",
+    "expansion": "ORIENT"
+  },
+  "orient-3g-2.png": {
+    "type": "SacrificeCard",
+    "prestige_points": 3,
+    "discount_color": "GREEN",
+    "cost": null,
+    "level": "THREE",
+    "expansion": "ORIENT"
+  },
+  "orient-3r-1.png": {
+    "type": "WaterfallCard",
+    "prestige_points": 0,
+    "discount_color": "RED",
+    "card_to_take": null,
+    "cost": {
+      "BLACK": 6,
+      "WHITE": 3,
+      "RED": 1
+    },
+    "level": "THREE",
+    "expansion": "ORIENT"
+  },
+  "orient-3r-2.png": {
+    "type": "SacrificeCard",
+    "prestige_points": 3,
+    "discount_color": "RED",
+    "cost": null,
+    "level": "THREE",
+    "expansion": "ORIENT"
+  },
+  "orient-3w-1.png": {
+    "type": "SacrificeCard",
+    "prestige_points": 3,
+    "discount_color": "WHITE",
+    "cost": null,
+    "level": "THREE",
+    "expansion": "ORIENT"
+  },
+  "orient-3w-2.png": {
+    "type": "WaterfallCard",
+    "prestige_points": 0,
+    "discount_color": "WHITE",
+    "card_to_take": null,
+    "cost": {
+      "BLUE": 6,
+      "GREEN": 3,
+      "WHITE": 1
+    },
+    "level": "THREE",
+    "expansion": "ORIENT"
+  }
+}
