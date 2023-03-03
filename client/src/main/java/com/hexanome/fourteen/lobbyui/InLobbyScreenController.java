@@ -1,6 +1,8 @@
 package com.hexanome.fourteen.lobbyui;
 
+import com.hexanome.fourteen.Main;
 import com.hexanome.fourteen.ServerCaller;
+import com.hexanome.fourteen.form.lobbyservice.SessionForm;
 import com.hexanome.fourteen.form.server.GameBoardForm;
 import java.io.IOException;
 
@@ -9,6 +11,7 @@ import com.hexanome.fourteen.TokenRefreshFailedException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
+import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,6 +20,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import kong.unirest.HttpResponse;
+import org.apache.commons.codec.digest.DigestUtils;
 
 public class InLobbyScreenController implements ScreenController {
 
@@ -37,7 +42,7 @@ public class InLobbyScreenController implements ScreenController {
   @FXML
   private Button leaveLobbyButton;
 
-  private Thread refresherThread;
+  private Service<Void> service;
   // Holds data of current lobby (primarily the lobby location)
   private Lobby lobby;
 
@@ -63,23 +68,44 @@ public class InLobbyScreenController implements ScreenController {
     this.lobby = LobbyServiceCaller.getCurrentUserLobby();
 
     // Sets lobby info to automatically refresh
-    Task<Void> task = new Task<>() {
+    service = new Service<>() {
       @Override
-      public Void call() throws Exception {
+      protected Task<Void> createTask() {
+        return new Task<>() {
+          final String sessionid = LobbyServiceCaller.getCurrentUserLobby().getSessionid();
 
-        while (!Thread.currentThread().isInterrupted()) {
-          Platform.runLater(() -> {
-            LobbyServiceCaller.updateAccessToken();
-            updateLobbyInfo();
-          });
-        }
-        return null;
+          @Override
+          protected Void call() {
+            HttpResponse<String> longPollResponse = null;
+            String hashedResponse = null;
+            while (true) {
+              int responseCode = 408;
+              while (responseCode == 408) {
+                longPollResponse =
+                    hashedResponse != null
+                        ? LobbyServiceCaller.getSessionDetails(sessionid, hashedResponse) :
+                        LobbyServiceCaller.getSessionDetails(sessionid);
+
+                responseCode = longPollResponse.getStatus();
+              }
+
+              if (responseCode == 200) {
+                hashedResponse = DigestUtils.md5Hex(longPollResponse.getBody());
+                final SessionForm session =
+                    Main.GSON.fromJson(longPollResponse.getBody(), SessionForm.class);
+                Platform.runLater(() -> {
+                  lobby.setSession(session);
+                  updateLobbyInfo();
+                });
+              } else {
+                LobbyServiceCaller.updateAccessToken();
+              }
+            }
+          }
+        };
       }
     };
-
-    refresherThread = new Thread(task);
-    refresherThread.setDaemon(true);
-    refresherThread.start();
+    service.start();
 
     joinLobbyButton.setVisible(false);
 
@@ -95,7 +121,7 @@ public class InLobbyScreenController implements ScreenController {
     if (LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost())) {
       try {
         if (LobbyServiceCaller.launchSession()) {
-          refresherThread.interrupt();
+          service.cancel();
 
           // Go to board screen
           MenuController.goToGameBoard();
@@ -105,7 +131,7 @@ public class InLobbyScreenController implements ScreenController {
       }
     } else {
       try {
-        refresherThread.interrupt();
+        service.cancel();
 
         // Go to board screen
         MenuController.goToGameBoard();
@@ -150,7 +176,7 @@ public class InLobbyScreenController implements ScreenController {
 
     try {
       MenuController.goBack();
-      refresherThread.interrupt();
+      service.cancel();
       LobbyServiceCaller.setCurrentUserLobby(null);
     } catch (IOException ioe) {
       ioe.printStackTrace();
@@ -183,8 +209,6 @@ public class InLobbyScreenController implements ScreenController {
       handleLeaveButton();
       return;
     }
-
-    lobby.updateLobby();
 
     updateGUI();
     updateLobbyName();

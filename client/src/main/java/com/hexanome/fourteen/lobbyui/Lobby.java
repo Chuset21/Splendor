@@ -13,8 +13,6 @@ public class Lobby {
   private String sessionid;
   private SessionForm session;
   private Expansion expansion;
-  private String hashedResponse = null;
-
   public Lobby(String sessionid) {
 
     // Get settings for session
@@ -58,24 +56,7 @@ public class Lobby {
     return session.gameParameters().location();
   }
 
-  public void updateLobby() {
-    // Get settings for session
-    HttpResponse<String> longPollResponse = null;
-    int responseCode = 408;
-    while (responseCode == 408) {
-      longPollResponse =
-          hashedResponse != null
-              ? LobbyServiceCaller.getSessionDetails(sessionid, hashedResponse) :
-              LobbyServiceCaller.getSessionDetails(sessionid);
-
-      responseCode = longPollResponse.getStatus();
-    }
-
-    if (responseCode == 200) {
-      hashedResponse = DigestUtils.md5Hex(longPollResponse.getBody());
-      session = Main.GSON.fromJson(longPollResponse.getBody(), SessionForm.class);
-    }
-
-    GameParametersForm gameParameters = session.gameParameters();
+  public void setSession(SessionForm session) {
+    this.session = session;
   }
 }

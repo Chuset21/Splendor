@@ -5,16 +5,11 @@ import com.hexanome.fourteen.Main;
 import com.hexanome.fourteen.form.lobbyservice.SessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Map;
-import java.util.Objects;
-import java.util.ResourceBundle;
 import javafx.application.Platform;
+import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
@@ -25,7 +20,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 public class LobbySelectScreenController implements ScreenController {
 
-  Thread refresherThread;
   @FXML
   private AnchorPane anchorPane;
   @FXML
@@ -36,51 +30,56 @@ public class LobbySelectScreenController implements ScreenController {
   private Button backButton;
 
   private Stage stage;
-  private String hashedResponse = null;
+
+  private SessionsForm lobbyForm;
+
+  private Service<Void> service;
 
   @Override
   public void sendStageData(Stage stage) {
     this.stage = stage;
 
-    // Sets lobby list to automatically refresh
-    Task<Void> task = new Task<>() {
+    service = new Service<>() {
       @Override
-      public Void call() throws Exception {
+      protected Task<Void> createTask() {
+        return new Task<>() {
+          @Override
+          protected Void call() {
+            HttpResponse<String> longPollResponse = null;
+            String hashedResponse = null;
+            while (true) {
+              int responseCode = 408;
+              while (responseCode == 408) {
+                longPollResponse =
+                    hashedResponse != null ? LobbyServiceCaller.getSessions(hashedResponse) :
+                        LobbyServiceCaller.getSessions();
 
-        while (!Thread.currentThread().isInterrupted()) {
-          Platform.runLater(() -> {
-            LobbyServiceCaller.updateAccessToken();
-            updateLobbies();
-          });
-        }
-        return null;
+                responseCode = longPollResponse.getStatus();
+              }
+
+              if (responseCode == 200) {
+                hashedResponse = DigestUtils.md5Hex(longPollResponse.getBody());
+                final SessionsForm sessions =
+                    Main.GSON.fromJson(longPollResponse.getBody(), SessionsForm.class);
+                Platform.runLater(() -> {
+                  lobbyForm = sessions;
+                  updateLobbies();
+                });
+              } else {
+                LobbyServiceCaller.updateAccessToken();
+              }
+            }
+          }
+        };
       }
     };
-
-    refresherThread = new Thread(task);
-    refresherThread.setDaemon(true);
-    refresherThread.start();
+    service.start();
     // Post init
     //updateLobbies();
   }
 
 
   private void updateLobbies() {
-    SessionsForm lobbyForm = null;
-    HttpResponse<String> longPollResponse = null;
-    int responseCode = 408;
-    while (responseCode == 408) {
-      longPollResponse = hashedResponse != null ? LobbyServiceCaller.getSessions(hashedResponse) :
-          LobbyServiceCaller.getSessions();
-
-      responseCode = longPollResponse.getStatus();
-    }
-
-    if (responseCode == 200) {
-      hashedResponse = DigestUtils.md5Hex(longPollResponse.getBody());
-      lobbyForm = Main.GSON.fromJson(longPollResponse.getBody(), SessionsForm.class);
-    }
-
     // Resets displayed lobbies
     lobbyVBox.getChildren().clear();
     if (lobbyForm != null) {
@@ -111,7 +110,7 @@ public class LobbySelectScreenController implements ScreenController {
   private void handleBackButton() {
     try {
       MenuController.goBack();
-      refresherThread.interrupt();
+      service.cancel();
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
@@ -138,6 +137,6 @@ public class LobbySelectScreenController implements ScreenController {
         ioe.printStackTrace();
       }
     }
-    refresherThread.interrupt();
+    service.cancel();
   }
 }
