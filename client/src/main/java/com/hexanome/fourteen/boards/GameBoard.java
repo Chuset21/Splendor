@@ -1,7 +1,9 @@
 package com.hexanome.fourteen.boards;
 
 import com.hexanome.fourteen.GameServiceName;
+import com.hexanome.fourteen.Main;
 import com.hexanome.fourteen.ServerCaller;
+import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
 import com.hexanome.fourteen.form.server.GameBoardForm;
 import com.hexanome.fourteen.form.server.GemsForm;
 import com.hexanome.fourteen.form.server.PlayerForm;
@@ -15,11 +17,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
 import javafx.application.Platform;
+import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -44,6 +48,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import com.hexanome.fourteen.lobbyui.*;
+import kong.unirest.HttpResponse;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  * A class to represent the game objects required to represent a OrientExpansion Splendor game.
@@ -53,10 +59,11 @@ public class GameBoard {
   private Stage stage;
 
   private GameBoardForm gameBoardForm;
-  private Thread refresherThread;
 
-  private static final Map<String/*Player id*/, String/*Player Icon Filename*/> PLAYER_ID_MAP = new HashMap<>();
-  private static final String[] DEFAULT_PLAYER_ICONS = {"cat.jpg","dog.jpg","squirrel.jpg","chameleon.jpg"};
+  private static final Map<String/*Player id*/, String/*Player Icon Filename*/> PLAYER_ID_MAP =
+      new HashMap<>();
+  private static final String[] DEFAULT_PLAYER_ICONS =
+      {"cat.jpg", "dog.jpg", "squirrel.jpg", "chameleon.jpg"};
 
   Bank bank;
   public int numPlayers = 4;
@@ -74,7 +81,8 @@ public class GameBoard {
   private ArrayList<Label> playerNameLabels;
   @FXML
   private Label currentPlayerTurnLabel;
-  private static final Effect currentPlayerEffect = new DropShadow(BlurType.GAUSSIAN, Color.web("#0048ff"), 24.5, 0, 0,0);
+  private static final Effect currentPlayerEffect =
+      new DropShadow(BlurType.GAUSSIAN, Color.web("#0048ff"), 24.5, 0, 0, 0);
 
   private ArrayList<Card> gameCards;
   private ArrayList<Noble> gameNobles;
@@ -175,6 +183,7 @@ public class GameBoard {
   private Pane takenTokenPane;
   @FXML
   private ArrayList<Label> takenGemLabels;
+  private Service<Void> service;
 
   /**
    * A call to this method displays the game on screen by initializing the scene with the gameboard.
@@ -186,14 +195,16 @@ public class GameBoard {
     this.stage = stage;
 
     // Get gameBoardForm
-    gameBoardForm = ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby());
+    gameBoardForm = Main.GSON.fromJson(
+        Objects.requireNonNull(ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby()))
+            .getBody(), GameBoardForm.class);
 
     setupPlayerMap();
     setupPlayers();
 
     // Set up bank
     bank = new Bank(players.size(), addGemButtons, removeGemButtons, takenGemLabels, bGemLabels,
-            takeBankButton, takenTokenPane, this);
+        takeBankButton, takenTokenPane, this);
 
     // Initialize the player's gems
     for (int idx : GEM_INDEX) {
@@ -213,30 +224,48 @@ public class GameBoard {
     // Setup nobles CSV data and display on board
     generateNobles();
 
-    // Sets lobby info to automatically refresh
-    Task<Void> task = new Task<>() {
+    service = new Service<>() {
       @Override
-      public Void call() throws Exception {
+      protected Task<Void> createTask() {
+        return new Task<>() {
+          @Override
+          protected Void call() {
+            HttpResponse<String> longPollResponse = null;
+            String hashedResponse = null;
+            while (true) {
+              int responseCode = 408;
+              while (responseCode == 408) {
+                longPollResponse = hashedResponse != null
+                    ? ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby(),
+                    hashedResponse) :
+                    ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby());
 
-        while (!Thread.currentThread().isInterrupted()) {
-          Platform.runLater(() -> {
-            updateBoard();
-          });
-          Thread.sleep(2000);
-        }
-        return null;
+                if (longPollResponse == null) {
+                  break;
+                }
+                responseCode = longPollResponse.getStatus();
+              }
+
+              if (responseCode == 200) {
+                hashedResponse = DigestUtils.md5Hex(longPollResponse.getBody());
+                final GameBoardForm game =
+                    Main.GSON.fromJson(longPollResponse.getBody(), GameBoardForm.class);
+                Platform.runLater(() -> {
+                  gameBoardForm = game;
+                  updateBoard();
+                });
+              } else {
+                LobbyServiceCaller.updateAccessToken();
+              }
+            }
+          }
+        };
       }
     };
-
-    refresherThread = new Thread(task);
-    refresherThread.setDaemon(true);
-    refresherThread.start();
+    service.start();
   }
 
-  public void updateBoard(){
-    // Get gameBoardForm
-    gameBoardForm = ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby());
-
+  public void updateBoard() {
     setupPlayers();
 
     // Set up cards
@@ -294,12 +323,12 @@ public class GameBoard {
    */
   private void setupCards() {
 
-    if(gameBoardForm == null){
+    if (gameBoardForm == null) {
       throw new InvalidParameterException("gameBoardForm is null");
     }
 
     // Iterate through each list of the gameBoardForm.cards set (each different levels)
-    for (List<CardForm>  cardlist : gameBoardForm.cards() ) {
+    for (List<CardForm> cardlist : gameBoardForm.cards()) {
 
       // Check to see that we have at least one card to assign
       if (cardlist.size() > 0) {
@@ -307,19 +336,21 @@ public class GameBoard {
         // set listToUpdate (GUI list) according list's level
         ArrayList<ImageView> listToUpdate;
 
-        switch(cardlist.get(0).level()) {
+        switch (cardlist.get(0).level()) {
           case ONE -> listToUpdate = level1CardViewsBase;
           case TWO -> listToUpdate = level2CardViewsBase;
           case THREE -> listToUpdate = level3CardViewsBase;
           default -> throw new IllegalStateException("Invalid card level from gameBoardForm.");
-         }
+        }
 
-         // update listToUpdate's images according to the cardlist data.
-         for (int i = 0; i < cardlist.size(); i++) {
-           StandardCardForm cardForm = (StandardCardForm) cardlist.get(i);
-           listToUpdate.get(i).setImage(new StandardCard(cardForm));
-         }
-       }
+        // update listToUpdate's images according to the cardlist data.
+        if (!cardlist.isEmpty() && cardlist.get(0).expansion() == Expansion.STANDARD) {
+          for (int i = 0; i < cardlist.size(); i++) {
+            StandardCardForm cardForm = (StandardCardForm) cardlist.get(i);
+            listToUpdate.get(i).setImage(new StandardCard(cardForm));
+          }
+        }
+      }
     }
 
 
@@ -328,15 +359,16 @@ public class GameBoard {
   /**
    * Statically maps all players to a single image
    */
-  private void setupPlayerMap(){
-    if(gameBoardForm == null){
+  private void setupPlayerMap() {
+    if (gameBoardForm == null) {
       throw new InvalidParameterException("gameBoardForm is null");
     }
 
     int i = 0;
 
-    for(PlayerForm player : gameBoardForm.players()){
-      PLAYER_ID_MAP.put(player.uid(), User.class.getResource("images/" + DEFAULT_PLAYER_ICONS[i]).toString());
+    for (PlayerForm player : gameBoardForm.players()) {
+      PLAYER_ID_MAP.put(player.uid(),
+          User.class.getResource("images/" + DEFAULT_PLAYER_ICONS[i]).toString());
       i = (i + 1) % DEFAULT_PLAYER_ICONS.length;
     }
   }
@@ -345,8 +377,8 @@ public class GameBoard {
    * Refreshes displayed info for all player-related fields.
    * Current user will always be in position players.get(0)
    */
-  private void setupPlayers(){
-    if(gameBoardForm == null){
+  private void setupPlayers() {
+    if (gameBoardForm == null) {
       throw new InvalidParameterException("gameBoardForm is null");
     }
 
@@ -356,29 +388,33 @@ public class GameBoard {
     int i = 0;
 
     // Add all players to players list
-    for(PlayerForm playerForm : gameBoardForm.players()){
-      if(playerForm.uid().equals(LobbyServiceCaller.getCurrentUserid())){
+    for (PlayerForm playerForm : gameBoardForm.players()) {
+      if (playerForm.uid().equals(LobbyServiceCaller.getCurrentUserid())) {
         player = new Player(playerForm, PLAYER_ID_MAP.get(playerForm.uid()));
 
-        if(i != 0){
+        if (i != 0) {
           Player temp = players.get(0);
-          players.set(0,player);
+          players.set(0, player);
           players.add(temp);
-        } else{
+        } else {
           players.add(player);
         }
-      } else{
+      } else {
         players.add(new Player(playerForm, PLAYER_ID_MAP.get(playerForm.uid())));
       }
       i++;
     }
 
     // Place all players in their frames
-    for(i = 0;i<playerViews.size();i++){
-      if(i < players.size() && players.get(i) != null){
+    for (i = 0; i < playerViews.size(); i++) {
+      if (i < players.size() && players.get(i) != null) {
         ((ImageView) playerViews.get(i)).setImage(players.get(i));
-        Tooltip.install(((ImageView) playerViews.get(i)), new Tooltip(players.get(i).getUserId() + (player.getUserId().equals(players.get(i).getUserId()) ? " (you)":"")));
-      } else{
+        Tooltip.install(((ImageView) playerViews.get(i)), new Tooltip(players.get(i).getUserId() +
+                                                                      (player.getUserId().equals(
+                                                                          players.get(i)
+                                                                              .getUserId()) ?
+                                                                          " (you)" : "")));
+      } else {
         ((ImageView) playerViews.get(i)).imageProperty().set(null);
       }
     }
@@ -388,24 +424,25 @@ public class GameBoard {
 
     // Initialize the player's gems
     for (PlayerForm playerForm : gameBoardForm.players()) {
-      if(playerForm.uid().equals(LobbyServiceCaller.getCurrentUserid())){
-        for(i = 0;i<5;i++){
-          pGemLabels.get(i).textProperty().set("" + GemsForm.costHashToArray(playerForm.hand().gems())[i]);
+      if (playerForm.uid().equals(LobbyServiceCaller.getCurrentUserid())) {
+        for (i = 0; i < 5; i++) {
+          pGemLabels.get(i).textProperty()
+              .set("" + GemsForm.costHashToArray(playerForm.hand().gems())[i]);
         }
       }
     }
   }
 
-  private void displayCurrentPlayer(){
-    if(gameBoardForm == null || playerViews == null){
+  private void displayCurrentPlayer() {
+    if (gameBoardForm == null || playerViews == null) {
       throw new InvalidParameterException("gameBoardForm nor playerViews can be null");
     }
 
-    for(int i = 0;i<players.size();i++){
-      if(players.get(i).getUserId().equals(gameBoardForm.playerTurnid())){
-        currentPlayerTurnLabel.setText(players.get(i).getUserId()+"'s Turn");
+    for (int i = 0; i < players.size(); i++) {
+      if (players.get(i).getUserId().equals(gameBoardForm.playerTurnid())) {
+        currentPlayerTurnLabel.setText(players.get(i).getUserId() + "'s Turn");
         ((ImageView) playerViews.get(i)).setEffect(currentPlayerEffect);
-      } else{
+      } else {
         ((ImageView) playerViews.get(i)).setEffect(null);
       }
     }
@@ -414,8 +451,8 @@ public class GameBoard {
   /**
    * Refreshes displays for all gems in the bank
    */
-  private void setupBank(){
-    if(gameBoardForm == null || bank == null){
+  private void setupBank() {
+    if (gameBoardForm == null || bank == null) {
       throw new InvalidParameterException("gameBoardForm nor bank can be null");
     }
 
@@ -541,7 +578,7 @@ public class GameBoard {
   }
 
   public void handleTakeGreenGemButton() {
-    bank.takeGem( 0);
+    bank.takeGem(0);
   }
 
   public void handleReturnGreenGemButton() {
@@ -605,22 +642,22 @@ public class GameBoard {
 
   @FXML
   private void handleClickMenuPopupQuitButton() {
-    try{
-      refresherThread.interrupt();
+    try {
+      service.cancel();
       LobbyServiceCaller.deleteLaunchedSession();
       LobbyServiceCaller.setCurrentUserLobby(null);
-    } catch(TokenRefreshFailedException e){
-      try{
+    } catch (TokenRefreshFailedException e) {
+      try {
         MenuController.returnToLogin("Session timed out, retry login");
         stage.close();
-      } catch(IOException ioe){
+      } catch (IOException ioe) {
         ioe.printStackTrace();
       }
     }
 
-    try{
+    try {
       MenuController.goToWelcomeScreen();
-    } catch (IOException ioe){
+    } catch (IOException ioe) {
       ioe.printStackTrace();
     }
   }
@@ -657,6 +694,7 @@ public class GameBoard {
     }
     return cardImageGrid;
   }
+
   @FXML
   public void handlePurchasedPaneSelect(MouseEvent event) {
 
@@ -694,7 +732,7 @@ public class GameBoard {
     }
 
     // Set the purchased pane's content to the card image grid
-    reservedBorderPane.setCenter(generateCardGrid(reservedCardImages,new int[] {200, 260, 3}));
+    reservedBorderPane.setCenter(generateCardGrid(reservedCardImages, new int[] {200, 260, 3}));
 
     // Open purchased pane
     reservedCardsView.setVisible(true);
@@ -702,7 +740,7 @@ public class GameBoard {
 
   @FXML
   public void generateNobles() {
-    if(gameBoardForm == null){
+    if (gameBoardForm == null) {
       throw new InvalidParameterException("gameBoardForm is null");
     }
 

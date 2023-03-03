@@ -46,29 +46,51 @@ public final class ServerCaller {
    * @param lobby lobby to get info from
    * @return The game board form if successful, null otherwise.
    */
-  public static GameBoardForm getGameBoard(Lobby lobby) {
+  public static HttpResponse<String> getGameBoard(Lobby lobby) {
     String accessToken = null;
 
-    try{
+    try {
       accessToken = LobbyServiceCaller.getCurrentUserAccessToken();
-    } catch(TokenRefreshFailedException e){
-      try{
+    } catch (TokenRefreshFailedException e) {
+      try {
         MenuController.returnToLogin("Session timed out, retry login");
         return null;
-      } catch(IOException ioe){
+      } catch (IOException ioe) {
         ioe.printStackTrace();
       }
     }
 
-    HttpResponse<String> response = Unirest.get("%s/api/games/%s".formatted(lobby.getGameServiceLocation(), lobby.getSessionid()))
+    return Unirest.get(
+            "%s/api/games/%s".formatted(lobby.getGameServiceLocation(), lobby.getSessionid()))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("access_token", accessToken).asString();
+  }
 
-    if (response.getStatus() != 200) {
-      return null;
+  /**
+   * Overloaded get game board, uses a lobby object to get all session info.
+   *
+   * @param lobby lobby to get info from
+   * @return The game board form if successful, null otherwise.
+   */
+  public static HttpResponse<String> getGameBoard(Lobby lobby, String hash) {
+    String accessToken = null;
+
+    try {
+      accessToken = LobbyServiceCaller.getCurrentUserAccessToken();
+    } catch (TokenRefreshFailedException e) {
+      try {
+        MenuController.returnToLogin("Session timed out, retry login");
+        return null;
+      } catch (IOException ioe) {
+        ioe.printStackTrace();
+      }
     }
 
-    return Main.GSON.fromJson(response.getBody(), GameBoardForm.class);
+    return Unirest.get(
+            "%s/api/games/%s".formatted(lobby.getGameServiceLocation(), lobby.getSessionid()))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", accessToken)
+        .queryString("hash", hash == null || hash.isEmpty() ? "" : hash).asString();
   }
 
   /**
@@ -118,8 +140,10 @@ public final class ServerCaller {
    *
    * @return The response.
    */
-  public static HttpResponse<String> takeGems(Lobby lobby, String accessToken, TakeGemsForm takeGemsForm) {
-    final HttpResponse response = Unirest.put("%s/api/games/%s/gems".formatted(lobby.getGameServiceLocation(), lobby.getSessionid()))
+  public static HttpResponse<String> takeGems(Lobby lobby, String accessToken,
+                                              TakeGemsForm takeGemsForm) {
+    final HttpResponse response = Unirest.put(
+            "%s/api/games/%s/gems".formatted(lobby.getGameServiceLocation(), lobby.getSessionid()))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("access_token", accessToken).body(Main.GSON.toJson(takeGemsForm)).asString();
 
