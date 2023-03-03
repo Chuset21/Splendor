@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 public class RestLauncher {
-  public static String gsLocation;
 
   /**
    * Constructor.
@@ -23,7 +22,6 @@ public class RestLauncher {
    * @param args Arguments to be passed
    */
   public static void main(String[] args) {
-    gsLocation = (args.length > 0) ? args[0] : null;
     SpringApplication.run(RestLauncher.class, args);
   }
 }

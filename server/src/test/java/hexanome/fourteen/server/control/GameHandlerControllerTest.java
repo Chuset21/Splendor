@@ -2,11 +2,13 @@ package hexanome.fourteen.server.control;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.mock;
 
+import eu.kartoffelquadrat.asyncrestlib.BroadcastContentManager;
 import hexanome.fourteen.server.control.form.ClaimNobleForm;
 import hexanome.fourteen.server.control.form.LaunchGameForm;
 import hexanome.fourteen.server.control.form.PurchaseCardForm;
@@ -48,6 +50,7 @@ import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.context.request.async.DeferredResult;
 
 @TestInstance(PER_CLASS)
 public class GameHandlerControllerTest {
@@ -80,9 +83,10 @@ public class GameHandlerControllerTest {
     Mockito.when(lobbyService.getUsername("user1")).thenReturn(null);
     Mockito.when(lobbyService.getUsername("user2")).thenReturn("x");
 
-    gameHandlerController = new GameHandlerController(lobbyService, new UserPlayerMapper(),
-        new ServerToClientBoardGameMapper(), gsonInstance, saveGameManager,
-        new ServerService(gsonInstance, lobbyService, "", ""));
+    gameHandlerController =
+        new GameHandlerController(30000L, lobbyService, new UserPlayerMapper(), gsonInstance,
+            saveGameManager,
+            new ServerService(gsonInstance, lobbyService, "", ""));
   }
 
   @Test
@@ -112,9 +116,15 @@ public class GameHandlerControllerTest {
   @Test
   public void testDeleteGame() {
     final Map<String, GameBoard> gameManager = new HashMap<>();
-    gameManager.put("x",
+    final GameBoard board = gameManager.put("x",
         new GameBoard(new HashSet<>(), Set.of(new Player("test")), "x", null));
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
+    Map<String, BroadcastContentManager<GameBoard>> gameSpecificBroadcastManagers =
+        (Map<String, BroadcastContentManager<GameBoard>>) ReflectionTestUtils.getField(
+            gameHandlerController,
+            "gameSpecificBroadcastManagers");
+    assertNotNull(gameSpecificBroadcastManagers);
+    gameSpecificBroadcastManagers.put("x", new BroadcastContentManager<>(board));
 
     ResponseEntity<String> response = gameHandlerController.deleteGame("???");
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -130,20 +140,35 @@ public class GameHandlerControllerTest {
         new GameBoard(new HashSet<>(), Set.of(new Player("player2")), "x", null);
     gameManager.put("test", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
+    Map<String, BroadcastContentManager<GameBoard>> gameSpecificBroadcastManagers =
+        (Map<String, BroadcastContentManager<GameBoard>>) ReflectionTestUtils.getField(
+            gameHandlerController,
+            "gameSpecificBroadcastManagers");
+    assertNotNull(gameSpecificBroadcastManagers);
+    gameSpecificBroadcastManagers.put("test", new BroadcastContentManager<>(board));
 
-    ResponseEntity<String> response = gameHandlerController.retrieveGame("", "user1");
+    DeferredResult<ResponseEntity<String>> result =
+        gameHandlerController.retrieveGame("", "user1", null);
+    ResponseEntity<String> response = (ResponseEntity<String>) result.getResult();
+    assertNotNull(response);
     assertEquals("invalid access token", response.getBody());
     assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
 
-    response = gameHandlerController.retrieveGame("", "user2");
+    result = gameHandlerController.retrieveGame("", "user2", null);
+    response = (ResponseEntity<String>) result.getResult();
+    assertNotNull(response);
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
-    response = gameHandlerController.retrieveGame("test", "user2");
+    result = gameHandlerController.retrieveGame("test", "user2", null);
+    response = (ResponseEntity<String>) result.getResult();
+    assertNotNull(response);
     assertEquals("player is not part of this game", response.getBody());
     assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
 
     Mockito.when(lobbyService.getUsername("user2")).thenReturn("player2");
-    response = gameHandlerController.retrieveGame("test", "user2");
+    result = gameHandlerController.retrieveGame("test", "user2", null);
+    response = (ResponseEntity<String>) result.getResult();
+    assertNotNull(response);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(gsonInstance.gson.toJson(new ServerToClientBoardGameMapper().map(board)),
         response.getBody());
@@ -212,6 +237,12 @@ public class GameHandlerControllerTest {
             null);
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
+    Map<String, BroadcastContentManager<GameBoard>> gameSpecificBroadcastManagers =
+        (Map<String, BroadcastContentManager<GameBoard>>) ReflectionTestUtils.getField(
+            gameHandlerController,
+            "gameSpecificBroadcastManagers");
+    assertNotNull(gameSpecificBroadcastManagers);
+    gameSpecificBroadcastManagers.put("x", new BroadcastContentManager<>(board));
     Mockito.when(lobbyService.getUsername("token")).thenReturn("test");
 
     Card cardToPurchase = new StandardCard();
@@ -512,6 +543,12 @@ public class GameHandlerControllerTest {
             player.uid());
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
+    Map<String, BroadcastContentManager<GameBoard>> gameSpecificBroadcastManagers =
+        (Map<String, BroadcastContentManager<GameBoard>>) ReflectionTestUtils.getField(
+            gameHandlerController,
+            "gameSpecificBroadcastManagers");
+    assertNotNull(gameSpecificBroadcastManagers);
+    gameSpecificBroadcastManagers.put("x", new BroadcastContentManager<>(board));
     Mockito.when(lobbyService.getUsername("token")).thenReturn("test");
 
     Card cardToPurchase = new SacrificeCard();
@@ -664,6 +701,12 @@ public class GameHandlerControllerTest {
             player.uid());
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
+    Map<String, BroadcastContentManager<GameBoard>> gameSpecificBroadcastManagers =
+        (Map<String, BroadcastContentManager<GameBoard>>) ReflectionTestUtils.getField(
+            gameHandlerController,
+            "gameSpecificBroadcastManagers");
+    assertNotNull(gameSpecificBroadcastManagers);
+    gameSpecificBroadcastManagers.put("x", new BroadcastContentManager<>(board));
     Mockito.when(lobbyService.getUsername("token")).thenReturn("test");
     player.hand().gems().clear();
     board.availableGems().clear();
@@ -1467,6 +1510,12 @@ public class GameHandlerControllerTest {
     GameBoard board = new GameBoard(new HashSet<>(), Set.of(player), "x", null);
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
+    Map<String, BroadcastContentManager<GameBoard>> gameSpecificBroadcastManagers =
+        (Map<String, BroadcastContentManager<GameBoard>>) ReflectionTestUtils.getField(
+            gameHandlerController,
+            "gameSpecificBroadcastManagers");
+    assertNotNull(gameSpecificBroadcastManagers);
+    gameSpecificBroadcastManagers.put("x", new BroadcastContentManager<>(board));
 
     ResponseEntity<String> response = gameHandlerController.reserveCard("", "token", null);
     assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
@@ -1635,6 +1684,12 @@ public class GameHandlerControllerTest {
         "x", null);
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
+    Map<String, BroadcastContentManager<GameBoard>> gameSpecificBroadcastManagers =
+        (Map<String, BroadcastContentManager<GameBoard>>) ReflectionTestUtils.getField(
+            gameHandlerController,
+            "gameSpecificBroadcastManagers");
+    assertNotNull(gameSpecificBroadcastManagers);
+    gameSpecificBroadcastManagers.put("x", new BroadcastContentManager<>(board));
 
     ResponseEntity<String> response = gameHandlerController.takeGems("", "token", null);
     assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
