@@ -1,5 +1,7 @@
 hexanome.fourteen.server
 hexanome.fourteen.server.control
+hexanome.fourteen.server.control.form
+hexanome.fourteen.server.control.form.payment
 hexanome.fourteen.server.model
 hexanome.fourteen.server.model.board
 hexanome.fourteen.server.model.board.card
