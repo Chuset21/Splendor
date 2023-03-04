@@ -7,7 +7,22 @@ import java.util.Set;
  * Game service name.
  */
 public enum GameServiceName {
-  ALL, BASE, CITIES, TRADING_POSTS;
+  /**
+   * All expansions.
+   */
+  ALL,
+  /**
+   * Standard game and orient expansion.
+   */
+  BASE,
+  /**
+   * Standard game plus orient and cities expansions.
+   */
+  CITIES,
+  /**
+   * Standard game plus orient and trading posts expansions.
+   */
+  TRADING_POSTS;
 
   /**
    * Get the expansions from the game service name.

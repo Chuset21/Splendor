@@ -74,9 +74,12 @@ public class GameHandlerController {
   /**
    * Constructor.
    *
+   * @param longPollTimeout  the timeout for long polling
    * @param lobbyService     Lobby service
    * @param userPlayerMapper The User to Player Mapper
    * @param gsonInstance     The GSON we will be using
+   * @param saveGameManager  the save game manager
+   * @param serverService    the server service
    */
   public GameHandlerController(@Value("${long.poll.timeout}") long longPollTimeout,
                                @Autowired LobbyServiceCaller lobbyService,
@@ -94,6 +97,11 @@ public class GameHandlerController {
     gameSpecificBroadcastManagers = new LinkedHashMap<>();
   }
 
+  /**
+   * Endpoint to test if the api is running.
+   *
+   * @return string denoting that the game service is running
+   */
   @GetMapping()
   public ResponseEntity<String> testApi() {
     return ResponseEntity.status(HttpStatus.OK).body("game service running");
@@ -175,6 +183,7 @@ public class GameHandlerController {
    *
    * @param gameid      The game id corresponding to the game.
    * @param accessToken The access token belonging to the player getting the game.
+   * @param hash        The hash of the last response (optional).
    * @return The full response
    */
   @GetMapping(value = "{gameid}", produces = "application/json; charset=utf-8")

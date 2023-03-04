@@ -61,10 +61,19 @@ public final class ReserveNobleCard extends Card {
     return discountColor;
   }
 
+  /**
+   * Getter for noble to reserve.
+   *
+   * @return The noble to reserve.
+   */
   public Noble nobleToReserve() {
     return nobleToReserve;
   }
 
+  /**
+   * Remove the noble to reserve from this card.
+   * This is intended to be used after successfully reserving a noble.
+   */
   public void removeNobleToReserve() {
     nobleToReserve = null;
   }

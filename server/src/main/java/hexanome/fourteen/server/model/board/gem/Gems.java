@@ -24,6 +24,13 @@ public final class Gems extends HashMap<GemColor, Integer> {
     super(gems);
   }
 
+  /**
+   * Returns whether <b>this</b> has at least as many gems
+   * of the specific colours and values in gemsNeeded.
+   *
+   * @param gemsNeeded the gems needed.
+   * @return true if <b>this</b> has enough gems, false otherwise
+   */
   public boolean hasEnoughGems(Gems gemsNeeded) {
     return gemsNeeded.entrySet().stream()
         .noneMatch(entry -> this.getOrDefault(entry.getKey(), 0) < entry.getValue());

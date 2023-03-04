@@ -48,6 +48,11 @@ public final class PurchaseCardForm {
     return payment;
   }
 
+  /**
+   * Getter for whether the card is reserved.
+   *
+   * @return true if it is reserved, false otherwise.
+   */
   public boolean isReserved() {
     return isReserved;
   }

@@ -29,6 +29,8 @@ public class LobbyService implements LobbyServiceCaller {
    * @param gsonInstance common gson instance
    * @param port         The Port
    * @param lsLocation   The LobbyService Location
+   * @throws SocketException SocketException is thrown if there
+   *                         is an error getting the address of this device
    */
   public LobbyService(@Autowired GsonInstance gsonInstance,
                       @Value("${ls.location}") String lsLocation,

@@ -28,10 +28,20 @@ public final class Noble {
 
   }
 
+  /**
+   * Getter for prestige points.
+   *
+   * @return The prestige points the noble gives the player.
+   */
   public int prestigePoints() {
     return prestigePoints;
   }
 
+  /**
+   * Getter for cost.
+   *
+   * @return The cost of the noble.
+   */
   public Gems cost() {
     return cost;
   }

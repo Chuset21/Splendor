@@ -34,6 +34,7 @@ public class SaveGameManager implements SavedGamesService {
    * @param port           port number
    * @param dbName         database name
    * @param collectionName collection name
+   * @param gsonInstance   gson instance
    */
   public SaveGameManager(@Value("${db.port}") int port, @Value("${db.name}") String dbName,
                          @Value("${db.collection.name}") String collectionName,

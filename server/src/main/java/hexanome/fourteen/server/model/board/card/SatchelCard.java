@@ -62,14 +62,28 @@ public final class SatchelCard extends Card {
     super();
   }
 
+  /**
+   * Getter for card to attach.
+   *
+   * @return The card to attach to this satchel card.
+   */
   public Card cardToAttach() {
     return cardToAttach;
   }
 
+  /**
+   * Getter for free card to take.
+   *
+   * @return The free card to take (will be null unless this card is a level two card)
+   */
   public Card freeCardToTake() {
     return freeCardToTake;
   }
 
+  /**
+   * Remove the free card to take from this card.
+   * This is intended to be used after successfully taking a free card.
+   */
   public void removeFreeCardToTake() {
     freeCardToTake = null;
   }

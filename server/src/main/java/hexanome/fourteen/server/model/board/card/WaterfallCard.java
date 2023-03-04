@@ -59,10 +59,19 @@ public final class WaterfallCard extends Card {
     return discountColor;
   }
 
+  /**
+   * Getter for card to take.
+   *
+   * @return The card to take.
+   */
   public Card cardToTake() {
     return cardToTake;
   }
 
+  /**
+   * Remove the card to take from this card.
+   * This is intended to be used after successfully taking a free card.
+   */
   public void removeCardToTake() {
     cardToTake = null;
   }

@@ -1,7 +1,6 @@
 package hexanome.fourteen.server.control.form;
 
 import com.google.gson.annotations.SerializedName;
-import hexanome.fourteen.server.model.User;
 import java.util.List;
 
 /**
@@ -35,14 +34,29 @@ public final class SaveGameForm {
 
   }
 
+  /**
+   * Getter for the game name.
+   *
+   * @return The game name.
+   */
   public String gameName() {
     return gameName;
   }
 
+  /**
+   * Getter the players.
+   *
+   * @return The players.
+   */
   public List<String> players() {
     return players;
   }
 
+  /**
+   * Getter for the save game id. Will be empty if the game is not to be loaded from a saved game.
+   *
+   * @return The save game id.
+   */
   public String saveGameid() {
     return saveGameid;
   }

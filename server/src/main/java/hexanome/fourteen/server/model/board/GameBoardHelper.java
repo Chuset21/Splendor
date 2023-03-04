@@ -254,15 +254,18 @@ public final class GameBoardHelper {
 
   /**
    * Has a side effect of removing the face down card from the deck if successful.
+   *
+   * @param decks the decks
+   * @param card  the card to get
+   * @return the card that was removed from the deck if successful, null otherwise
    */
   public static Card getFaceDownCard(Set<List<Card>> decks, Card card) {
     for (List<Card> deck : decks) {
       if (!deck.isEmpty()) {
         final Card firstCard = deck.get(0);
-        if (firstCard.level() == card.level() && firstCard.expansion() == firstCard.expansion()) {
+        if (firstCard.level() == card.level() && firstCard.expansion() == card.expansion()) {
           final int cardIndex = firstCard.expansion() == Expansion.STANDARD ? 4 : 2;
           return deck.size() <= cardIndex ? null : deck.remove(cardIndex);
-
         }
       }
     }
@@ -287,6 +290,9 @@ public final class GameBoardHelper {
 
   /**
    * Add gems to other gems.
+   *
+   * @param gemsToAddTo the gems to add to
+   * @param gemsToAdd   the gems to add
    */
   public static void addGems(Gems gemsToAddTo, Gems gemsToAdd) {
     gemsToAdd.forEach((key, value) -> gemsToAddTo.merge(key, value, Integer::sum));
@@ -294,6 +300,9 @@ public final class GameBoardHelper {
 
   /**
    * Remove gems from other gems.
+   *
+   * @param gemsToRemoveFrom the gems to remove from
+   * @param gemsToRemove     the gems to remove
    */
   public static void removeGems(Gems gemsToRemoveFrom, Gems gemsToRemove) {
     gemsToRemove.forEach((key, amountToRemove) -> gemsToRemoveFrom.computeIfPresent(key,
@@ -337,6 +346,10 @@ public final class GameBoardHelper {
 
   /**
    * Returns whether a card is face up on the board or not.
+   *
+   * @param decks the decks of cards
+   * @param card  the card to check for
+   * @return true if the card is face up on the board, false otherwise
    */
   public static boolean isCardFaceUpOnBoard(Set<List<Card>> decks, Card card) {
     for (List<Card> cards : decks) {
@@ -354,6 +367,9 @@ public final class GameBoardHelper {
 
   /**
    * Count the total amount of gems in a gems object.
+   *
+   * @param gems gems to count
+   * @return the number of gems
    */
   public static int countGemAmount(Gems gems) {
     return gems.values().stream().mapToInt(value -> value).sum();

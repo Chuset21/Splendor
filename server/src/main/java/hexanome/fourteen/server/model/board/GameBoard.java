@@ -336,6 +336,11 @@ public final class GameBoard implements BroadcastContent {
     return gameid;
   }
 
+  /**
+   * Set the game id.
+   *
+   * @param gameid the value of game id to set.
+   */
   public void setGameid(String gameid) {
     this.gameid = gameid;
   }

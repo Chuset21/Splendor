@@ -23,6 +23,9 @@ public final class GameBoardSerializer extends JsonSerializer<GameBoard> {
 
   /**
    * Constructor.
+   *
+   * @param gsonInstance    gson instance
+   * @param gameBoardMapper game board mapper
    */
   public GameBoardSerializer(@Autowired GsonInstance gsonInstance,
                              @Autowired Mapper<GameBoard, SentGameBoard> gameBoardMapper) {
