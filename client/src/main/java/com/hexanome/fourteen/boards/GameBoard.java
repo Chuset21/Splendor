@@ -1,17 +1,13 @@
 package com.hexanome.fourteen.boards;
 
-import com.hexanome.fourteen.GameServiceName;
 import com.hexanome.fourteen.Main;
 import com.hexanome.fourteen.ServerCaller;
-import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
 import com.hexanome.fourteen.form.server.GameBoardForm;
 import com.hexanome.fourteen.form.server.GemsForm;
 import com.hexanome.fourteen.form.server.PlayerForm;
 import com.hexanome.fourteen.form.server.cardform.CardForm;
-import com.hexanome.fourteen.form.server.cardform.CardLevelForm;
 import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +41,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import com.hexanome.fourteen.lobbyui.*;
 import kong.unirest.HttpResponse;
@@ -146,7 +141,7 @@ public class GameBoard {
   }
 
   @FXML
-  private ImageView selectedCard;
+  private ImageView selectedCardView;
   @FXML
   private ImageView purchasedStack;
   @FXML
@@ -274,48 +269,6 @@ public class GameBoard {
 
     // Setup nobles CSV data and display on board
     generateNobles();
-  }
-
-  private void setupCards(String cardDatacsv) {
-    // Initialize a list of cards to use for the game
-    gameCards = null;
-    // Fill list with final cards
-    //TODO: THIS IS TAKING FOREVER PLEASE FIX (@KAI)
-    try {
-      gameCards = Card.setupCards(cardDatacsv);
-    } catch (IOException ioe) {
-      ioe.printStackTrace();
-    }
-
-    // Clear all card views
-    for (ArrayList<ImageView> cl : cardViews) {
-      for (ImageView iv : cl) {
-        iv.setImage(null);
-      }
-    }
-
-    gameDecks = new ArrayList<>();
-    gameDecks.add(level3Cards = new Deck(3, Expansion.STANDARD, level3CardViewsBase));
-    gameDecks.add(level2Cards = new Deck(2, Expansion.STANDARD, level2CardViewsBase));
-    gameDecks.add(level1Cards = new Deck(1, Expansion.STANDARD, level1CardViewsBase));
-    gameDecks.add(level3CardsOrient = new Deck(3, Expansion.ORIENT, level3CardViewsOrient));
-    gameDecks.add(level2CardsOrient = new Deck(2, Expansion.ORIENT, level2CardViewsOrient));
-    gameDecks.add(level1CardsOrient = new Deck(1, Expansion.ORIENT, level1CardViewsOrient));
-
-    for (Card c : gameCards) {
-      for (Deck d : gameDecks) {
-        if (d.getLevel() == c.getLevel() && d.getExpansions() == c.getExpansion()) {
-          d.push(c);
-        }
-      }
-    }
-
-    // This just prints the level 1 and 2 base game cards in their respective Decks
-    //System.out.println(level1Cards+"\n"+level2Cards);
-
-    for (int i = 0; i < 4; i++) {
-      ((ImageView) cardViews.get(0).get(i)).setImage(level1Cards.pop());
-    }
   }
 
   /**
@@ -467,24 +420,24 @@ public class GameBoard {
    */
   public void handleCardSelect(MouseEvent event) {
     // Get imageview
-    selectedCard = (ImageView) event.getSource();
+    selectedCardView = (ImageView) event.getSource();
 
 
     //Input validation for null spaces
-    if (selectedCard.getImage() == null) {
+    if (selectedCardView.getImage() == null) {
       return;
     }
 
     // Get id of imageview
-    selectedCardId = selectedCard.getId();
+    selectedCardId = selectedCardView.getId();
 
     // Set action pane image to the selected card
-    cardActionImage.setImage(selectedCard.getImage());
+    cardActionImage.setImage(selectedCardView.getImage());
 
     // Set values in action pane to the card's cost
-    for (int i = 0; i < ((Card) selectedCard.getImage()).getCost().length; i++) {
+    for (int i = 0; i < ((Card) selectedCardView.getImage()).getCost().length; i++) {
       // Set label string to the respective cost of the card
-      actionGemLabels.get(i).setText(((Card) selectedCard.getImage()).getCost()[i] + "");
+      actionGemLabels.get(i).setText(((Card) selectedCardView.getImage()).getCost()[i] + "");
     }
 
     // Set gold gems to 0 -> !!!can change this later when implementing gold purchases!!!
@@ -495,7 +448,7 @@ public class GameBoard {
 
     // get the player's hand and the cost of the card
     Hand hand = player.getHand();
-    int[] selectedCost = ((Card) selectedCard.getImage()).getCost();
+    int[] selectedCost = ((Card) selectedCardView.getImage()).getCost();
 
     for (int i = 0; i < 5; i++) {
       //if (selectedCost[i] > pHand.Gems[i] + pHand.gemDiscounts[i]) {
@@ -522,18 +475,18 @@ public class GameBoard {
   public void handlePurchase() {
 
     // Get card to be purchased
-    Card cardPurchased = (Card) selectedCard.getImage();
+    Card cardPurchased = (Card) selectedCardView.getImage();
 
     // Store image of purchased card in player's purchase stack
-    purchasedCardImages.add(selectedCard.getImage());
+    purchasedCardImages.add(selectedCardView.getImage());
 
     // Clear imageview of purchased card
-    selectedCard.setImage(null);
+    selectedCardView.setImage(null);
 
     // Refill imageview if a card is left in the deck
     for (Deck d : gameDecks) {
-      if (d.hasCardSlot(selectedCard) && !d.empty()) {
-        selectedCard.setImage(d.pop());
+      if (d.hasCardSlot(selectedCardView) && !d.empty()) {
+        selectedCardView.setImage(d.pop());
       }
     }
 
@@ -552,18 +505,18 @@ public class GameBoard {
    */
   public void handleReserve() {
     // Get card to be purchased
-    Card cardReserved = (Card) selectedCard.getImage();
+    Card cardReserved = (Card) selectedCardView.getImage();
 
     // Store image of purchased card in player's purchase stack
-    reservedCardImages.add(selectedCard.getImage());
+    reservedCardImages.add(selectedCardView.getImage());
 
     // Clear imageview of reserved card
-    selectedCard.setImage(null);
+    selectedCardView.setImage(null);
 
     // Refill imageview if a card is left in the deck
     for (Deck d : gameDecks) {
-      if (d.hasCardSlot(selectedCard) && !d.empty()) {
-        selectedCard.setImage(d.pop());
+      if (d.hasCardSlot(selectedCardView) && !d.empty()) {
+        selectedCardView.setImage(d.pop());
       }
     }
 
@@ -664,7 +617,7 @@ public class GameBoard {
 
   @FXML
   private void handleExitCardMenu() {
-    selectedCard = null;
+    selectedCardView = null;
     cardActionMenu.setVisible(false);
   }
 
