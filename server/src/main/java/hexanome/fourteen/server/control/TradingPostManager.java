@@ -20,8 +20,12 @@ public class TradingPostManager {
     checkTradingPost1(hand);
     checkTradingPost2(hand);
     checkTradingPost3(hand);
-    checkTradingPost4(hand);
-    checkTradingPost5(hand);
+    if (!hand.tradingPosts().get(TradingPostsEnum.FIVE_PRESETIGE_POINTS)) {
+      checkTradingPost4(hand);
+    }
+    if (!hand.tradingPosts().get(TradingPostsEnum.ONE_POINT_PER_POWER)) {
+      checkTradingPost5(hand);
+    }
   }
 
   /**
