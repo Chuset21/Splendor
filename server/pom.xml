@@ -216,7 +216,7 @@
                 <version>3.4.1</version>
                 <configuration>
                     <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
-                    <reportOutputDirectory>../docs
+                    <reportOutputDirectory>./../docs
                     </reportOutputDirectory>
                     <destDir>docs</destDir>
                     <release>${maven.compiler.release}</release>
