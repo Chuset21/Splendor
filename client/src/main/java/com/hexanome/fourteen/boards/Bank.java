@@ -210,7 +210,7 @@ public class Bank {
       // If (following 5 conditions) hold, 'add' should be enabled.
       //Otherwise, disable the 'add' button.
       if (bankGems[idx] == 0
-          || (bankGems[idx] < 4 && selectedGems.contains(idx))
+          || (bankGems[idx] < 3 && selectedGems.contains(idx))
           || handBucket.get(idx) > 0 && selectedGems.size() > 1
           || selectedGems.size() == 3
           || handBucket.containsValue(2)) {
