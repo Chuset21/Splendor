@@ -771,15 +771,26 @@ public class GameBoard {
 
   @FXML
   public void createPlayerSummary(MouseEvent event) {
-    Player requestedPlayer = (Player) ((ImageView) event.getSource()).getImage();
+    // Determines which player's information is being requested
+    String requestedUID = ((Player) ((ImageView) event.getSource()).getImage()).getUserId();
+    PlayerForm requestedPlayer = null;
+
+    // Fetches the requested player's information via UID
+    for (PlayerForm playerForm : gameBoardForm.players()) {
+      if (playerForm.uid() == requestedUID) {
+        requestedPlayer = playerForm;
+      }
+    }
+
+    // Aborts if no player data was found
     if (requestedPlayer == null) {
-      System.out.println("DEBUG: Requested player was null");
+      System.out.println("DEBUG: Requested player UID was null");
       return;
     }
 
     // Fetch and apply the user's discounts to the summary discount matrix
     int index = 0;
-    for (int discount : requestedPlayer.getHand().gemDiscounts) {
+    for (int discount : GemsForm.costHashToArray(requestedPlayer.hand().gemDiscounts())) {
       Label label = (Label) discountSummary.getChildren().get(index);
       label.setText(String.valueOf(discount));
       index++;
@@ -787,7 +798,7 @@ public class GameBoard {
 
     // Fetch and apply the user's gems to the summary gem matrix
     index = 0;
-    for (int gemAmt : requestedPlayer.getHand().gems) {
+    for (int gemAmt : GemsForm.costHashToArray(requestedPlayer.hand().gems())) {
       Label label = (Label) gemSummary.getChildren().get(index);
       label.setText(String.valueOf(gemAmt));
       index++;
@@ -795,8 +806,15 @@ public class GameBoard {
 
     // Fetch and apply the player's reserved cards as images
     List<Image> requestedPlayerReservedCardImages = new ArrayList<>();
-    for (Card c : requestedPlayer.getHand().reservedCards) {
-      requestedPlayerReservedCardImages.add(c);
+    Card cardToAdd = null;
+    for (CardForm c : requestedPlayer.hand().reservedCards()) {
+      if (c instanceof StandardCardForm) {
+        cardToAdd = new StandardCard((StandardCardForm) c);
+      }
+      // TODO Add instanceof Waterfall card and other card types if there are any
+      if (cardToAdd != null) {
+        requestedPlayerReservedCardImages.add(cardToAdd);
+      }
     }
     reservedSummary.getChildren().add(generateCardGrid(requestedPlayerReservedCardImages, new int[] {110, 160, 3}));
 
