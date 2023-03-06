@@ -866,7 +866,7 @@ public class GameBoard {
 
     // Fetch and apply the user's discounts to the summary discount matrix
     int index = 0;
-    for (int discount : GemsForm.costHashToArray(requestedPlayer.hand().gemDiscounts())) {
+    for (int discount : GemsForm.costHashToArrayWithGold(requestedPlayer.hand().gemDiscounts())) {
       Label label = (Label) discountSummary.getChildren().get(index);
       label.setText(String.valueOf(discount));
       index++;
@@ -874,7 +874,7 @@ public class GameBoard {
 
     // Fetch and apply the user's gems to the summary gem matrix
     index = 0;
-    for (int gemAmt : GemsForm.costHashToArray(requestedPlayer.hand().gems())) {
+    for (int gemAmt : GemsForm.costHashToArrayWithGold(requestedPlayer.hand().gems())) {
       Label label = (Label) gemSummary.getChildren().get(index);
       label.setText(String.valueOf(gemAmt));
       index++;

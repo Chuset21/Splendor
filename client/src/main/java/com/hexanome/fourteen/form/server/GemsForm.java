@@ -49,7 +49,7 @@ public final class GemsForm extends HashMap<GemColor, Integer> {
   }
 
   /**
-   * Converts a GemsForm representing cost (which excludes GOLD) into a 5-int array [0,0,0,0,0]
+   * Converts a GemsForm representing cost (which includes GOLD) into a 6-int array [0,0,0,0,0,0]
    *
    * @param gemsForm form to convert
    * @return array of cost values
