@@ -9,6 +9,7 @@ import com.hexanome.fourteen.form.server.PlayerForm;
 import com.hexanome.fourteen.form.server.ReserveCardForm;
 import com.hexanome.fourteen.form.server.cardform.CardForm;
 import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
+import com.hexanome.fourteen.form.server.cardform.WaterfallCardForm;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -942,15 +943,57 @@ public class GameBoard {
     cardMatrix.setDisable(true);
   }
 
+
+
   @FXML
   private void enableGameAlteringActions() {
     bankPane.setDisable(false);
     cardMatrix.setDisable(false);
   }
 
+  private List<CardForm> fetchWaterfallSelection() {
+    // Initialize free card selection list
+    List<CardForm> waterfallSelection = new ArrayList<>();
+
+    // Fetch user's free card choices and add to list
+    for (List<CardForm> decks : gameBoardForm.cards()) {
+      for (CardForm c : decks) {
+        if ((c.expansion().equals(Expansion.ORIENT)) && (c.level().equals(2))) {
+          waterfallSelection.add(c);
+        }
+      }
+    }
+    return waterfallSelection;
+  }
+
   @FXML
-  private void activateWaterfall() {
-    //waterfallVBox.getChildren().add(generateCardGrid())
+  private void displayWaterfallChoices() {
+    List<CardForm> waterfallSelection = fetchWaterfallSelection();
+
+    // Display the free card choices to user
+    List<Image> cardChoicesImages = new ArrayList<>();
+    waterfallSelection.forEach((c) -> cardChoicesImages.add((Image) new OrientCard(c)));
+    waterfallVBox.getChildren().add(generateCardGrid(cardChoicesImages, new int[] {120, 170}));
     waterfallPane.setVisible(true);
+  }
+
+  @FXML
+  private void handleWaterfallChoiceSelect(MouseEvent event, WaterfallCardForm wf) {
+    Card selectedCard = (Card) event.getSource();
+    CardForm selectedCardForm = null;
+
+    List<CardForm> waterfallSelection = fetchWaterfallSelection();
+    for (CardForm c : waterfallSelection) {
+      if (selectedCard.equals(c)) {
+        selectedCardForm = c;
+      }
+    }
+
+    if (selectedCardForm == null) {
+      System.out.println("DEBUG: Failed to fetch waterfall selection");
+      return;
+    }
+
+    WaterfallCardForm waterfallWithSelection = new WaterfallCardForm(wf, selectedCardForm);
   }
 }
