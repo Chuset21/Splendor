@@ -10,7 +10,6 @@ import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,17 +18,12 @@ import java.util.Random;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
@@ -49,7 +43,6 @@ import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import com.hexanome.fourteen.lobbyui.*;
-import javafx.util.Duration;
 import kong.unirest.HttpResponse;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -148,6 +141,10 @@ public class GameBoard {
   private Pane bankPane;
   @FXML
   private GridPane cardMatrix;
+  @FXML
+  private DialogPane waterfallPane;
+  @FXML
+  private VBox waterfallVBox;
 
 
   //CARD FIELDS
@@ -729,32 +726,51 @@ public class GameBoard {
       throw new InvalidParameterException("gameBoardForm is null");
     }
 
-    // Create noble objects from CSV data
-    gameNobles = Noble.interpretNobles(gameBoardForm);
+    // Clear Nobles from board
     publicNoblesVBox.getChildren().clear();
 
-    for (Noble n : gameNobles) {
-      // Select a random noble from the gameNobles
+    // Create list of available nobles
+    gameNobles = Noble.interpretNobles(gameBoardForm);
 
-      // Format the noble into a JavaFX Image
+    // Identify current player
+    PlayerForm currentPlayer = null;
+    for (PlayerForm p : gameBoardForm.players()) {
+      if (p.uid().equals(gameBoardForm.playerTurnid())) {
+        currentPlayer = p;
+      }
+    }
+
+    // Add the nobles to board
+    for (Noble n : gameNobles) {
       ImageView iv = new ImageView();
       iv.setFitHeight(100);
       iv.setFitWidth(100);
       iv.setImage(n);
 
-      // Add noble event handler
-      iv.setOnMouseClicked(e -> handleImageViewClick(iv));
-
-      // Add to board
-      publicNoblesVBox.getChildren().add(iv);
+      // Check if current player should be visited by a noble, else add it publicly
+      if (isValidNobleVisit(GemsForm.costHashToArray(currentPlayer.hand().gemDiscounts()), n.getCost())) {
+        activateAcquireNoblePrompt(iv);
+        // Only one noble can be acquired per turn
+        break;
+      } else {
+        publicNoblesVBox.getChildren().add(iv);
+      }
     }
   }
 
-  @FXML
-  public void handleImageViewClick(ImageView iv) {
-    System.out.println(iv.getImage());
+  private boolean isValidNobleVisit(int[] playerBonuses, int[] nobleCost) {
+    boolean isValid = true;
+    for (int i = 0; i < nobleCost.length; i++) {
+      if (playerBonuses[i] < nobleCost[i]) {
+        isValid = false;
+        break;
+      }
+    }
+    return isValid;
+  }
 
-    // TODO -> Move the below code to the noble application check at beginning of every turn
+  @FXML
+  public void activateAcquireNoblePrompt(ImageView iv) {
     VBox vb = new VBox();
     vb.setPadding(new Insets(10));
     vb.setSpacing(10);
@@ -763,7 +779,9 @@ public class GameBoard {
     Label notice = new Label("A noble has visited you! You gained 3 prestige points.");
     notice.setFont(new Font("Satoshi", 16));
 
+    // Noble Image
     vb.getChildren().add(iv);
+    // Textual Prompt
     vb.getChildren().add(notice);
 
     acquiredNobleAlertPane.setContent(vb);
@@ -772,7 +790,7 @@ public class GameBoard {
       acquiredNobleAlertPane.setVisible(false);
       // Update top of noble stack for player
       noblesStack.setImage(iv.getImage());
-      // Add image to full list of acquired nobles
+      // Add image to full list of player's acquired nobles
       acquiredNoblesImages.add(iv.getImage());
     });
   }
@@ -871,5 +889,11 @@ public class GameBoard {
   private void enableGameAlteringActions() {
     bankPane.setDisable(false);
     cardMatrix.setDisable(false);
+  }
+
+  @FXML
+  private void activateWaterfall() {
+    //waterfallVBox.getChildren().add(generateCardGrid())
+    waterfallPane.setVisible(true);
   }
 }
