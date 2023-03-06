@@ -42,6 +42,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import com.hexanome.fourteen.lobbyui.*;
 import kong.unirest.HttpResponse;
@@ -758,6 +759,14 @@ public class GameBoard {
         currentPlayer = p;
       }
     }
+
+    // Add Nobles Text Label
+    Label noblesTitleLabel = new Label("Nobles");
+    noblesTitleLabel.setFont(Font.font("Satoshi", FontWeight. BOLD, 24));
+    noblesTitleLabel.setTextFill(Color.rgb(114, 70, 91));
+    noblesTitleLabel.setPadding(new Insets(5));
+    publicNoblesVBox.getChildren().add(noblesTitleLabel);
+
 
     // Add the nobles to board
     for (Noble n : gameNobles) {
