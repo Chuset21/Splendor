@@ -12,11 +12,11 @@ import java.util.Map;
 import java.util.Objects;
 import javafx.scene.image.Image;
 
-public class StandardCard extends Card{
+public class StandardCard extends Card {
 
   private final StandardCardForm cardForm;
 
-  public StandardCard(StandardCardForm cardForm){
+  public StandardCard(StandardCardForm cardForm) {
     super(cardForm);
 
     this.cardForm = cardForm;
@@ -83,8 +83,10 @@ public class StandardCard extends Card{
    * @return Name of card image
    */
   public String toString() {
-    return "\nStandardCard, Level " + CardLevelForm.TO_INTEGER_CONVERSION_ARRAY.get(cardForm.level()).intValue()
-        + " card: [" + Arrays.toString(GemsForm.costHashToArray(cardForm.cost())) + "," + cardForm.discountColor()
-        + "]";
+    return "\nStandardCard, Level " +
+           CardLevelForm.TO_INTEGER_CONVERSION_ARRAY.get(cardForm.level())
+           + " card: [" + Arrays.toString(GemsForm.costHashToArray(cardForm.cost())) + "," +
+           cardForm.discountColor()
+           + "]";
   }
 }

@@ -150,7 +150,6 @@ public class GameBoard {
   private VBox waterfallVBox;
 
 
-
   //CARD FIELDS
   //2D Array with all card FX ID names.
   @FXML
@@ -308,29 +307,34 @@ public class GameBoard {
     for (List<CardForm> cardlist : gameBoardForm.cards()) {
 
       // Check to see that we have at least one card to assign
-      if (cardlist.size() > 0) {
+      if (!cardlist.isEmpty()) {
 
         // set listToUpdate (GUI list) according list's level
-        ArrayList<ImageView> listToUpdate;
+        final ArrayList<ImageView> listToUpdate;
 
-        switch (cardlist.get(0).level()) {
-          case ONE -> listToUpdate = level1CardViewsBase;
-          case TWO -> listToUpdate = level2CardViewsBase;
-          case THREE -> listToUpdate = level3CardViewsBase;
-          default -> throw new IllegalStateException("Invalid card level from gameBoardForm.");
-        }
-
-        // update listToUpdate's images according to the cardlist data.
-        if (!cardlist.isEmpty() && cardlist.get(0).expansion() == Expansion.STANDARD) {
+        if (cardlist.get(0).expansion() == Expansion.STANDARD) {
+          switch (cardlist.get(0).level()) {
+            case ONE -> listToUpdate = level1CardViewsBase;
+            case TWO -> listToUpdate = level2CardViewsBase;
+            case THREE -> listToUpdate = level3CardViewsBase;
+            default -> throw new IllegalStateException("Invalid card level from gameBoardForm.");
+          }
           for (int i = 0; i < cardlist.size(); i++) {
-            StandardCardForm cardForm = (StandardCardForm) cardlist.get(i);
-            listToUpdate.get(i).setImage(new StandardCard(cardForm));
+            listToUpdate.get(i).setImage(new StandardCard((StandardCardForm) cardlist.get(i)));
+          }
+        } else {
+          switch (cardlist.get(0).level()) {
+            case ONE -> listToUpdate = level1CardViewsOrient;
+            case TWO -> listToUpdate = level2CardViewsOrient;
+            case THREE -> listToUpdate = level3CardViewsOrient;
+            default -> throw new IllegalStateException("Invalid card level from gameBoardForm.");
+          }
+          for (int i = 0; i < cardlist.size(); i++) {
+            listToUpdate.get(i).setImage(new OrientCard(cardlist.get(i)));
           }
         }
       }
     }
-
-
   }
 
   /**
@@ -763,7 +767,8 @@ public class GameBoard {
       iv.setImage(n);
 
       // Check if current player should be visited by a noble, else add it publicly
-      if (isValidNobleVisit(GemsForm.costHashToArray(currentPlayer.hand().gemDiscounts()), n.getCost())) {
+      if (isValidNobleVisit(GemsForm.costHashToArray(currentPlayer.hand().gemDiscounts()),
+          n.getCost())) {
         activateAcquireNoblePrompt(iv);
         // Only one noble can be acquired per turn
         break;
@@ -878,7 +883,8 @@ public class GameBoard {
         requestedPlayerReservedCardImages.add(cardToAdd);
       }
     }
-    reservedSummary.getChildren().add(generateCardGrid(requestedPlayerReservedCardImages, new int[] {110, 160, 3}));
+    reservedSummary.getChildren()
+        .add(generateCardGrid(requestedPlayerReservedCardImages, new int[] {110, 160, 3}));
 
     // TODO: Fetch and apply the player's nobles as images
     List<Image> requestedPlayerNobleImages = new ArrayList<>();
@@ -895,11 +901,13 @@ public class GameBoard {
   public void closePlayerSummary() {
     playerSummaryPane.setVisible(false);
   }
+
   @FXML
   private void disableGameAlteringActions() {
     bankPane.setDisable(true);
     cardMatrix.setDisable(true);
   }
+
   @FXML
   private void enableGameAlteringActions() {
     bankPane.setDisable(false);
