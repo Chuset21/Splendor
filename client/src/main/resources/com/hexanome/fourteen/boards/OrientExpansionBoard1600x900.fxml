@@ -187,7 +187,7 @@
                   <Font name="Satoshi Bold" size="32.0" />
                </font>
             </Label>
-            <Button id="takeFromBankButton" fx:id="takeBankButton" layoutX="59.0" layoutY="361.0" mnemonicParsing="false" onAction="#handleClickTakeBankButton" prefHeight="40.0" prefWidth="84.0" style="-fx-background-color: #72465B; -fx-border-color: #72465B; -fx-background-radius: 10; -fx-border-radius: 10;" text="Open" textFill="#f8db85">
+            <Button id="takeFromBankButton" fx:id="openBankButton" layoutX="59.0" layoutY="361.0" mnemonicParsing="false" onAction="#handleClickOpenBankButton" prefHeight="40.0" prefWidth="84.0" style="-fx-background-color: #72465B; -fx-border-color: #72465B; -fx-background-radius: 10; -fx-border-radius: 10;" text="Open" textFill="#f8db85">
                <font>
                   <Font name="Satoshi Bold" size="18.0" />
                </font>
@@ -459,7 +459,7 @@
             </ImageView>
          </children>
       </GridPane>
-      <Pane id="bankPane" fx:id="takenTokenPane" layoutX="234.0" layoutY="187.0" prefHeight="340.0" prefWidth="101.0" style="-fx-background-color: #F8DB85; -fx-background-radius: 20;">
+      <Pane id="bankPane" fx:id="takenTokenPane" layoutX="234.0" layoutY="187.0" prefHeight="390.0" prefWidth="101.0" style="-fx-background-color: #F8DB85; -fx-background-radius: 20;">
          <children>
             <GridPane id="bankMatrix" fx:id="takenTokenMatrix" alignment="CENTER" layoutX="22.0" layoutY="75.0" prefHeight="300.0" prefWidth="49.0">
                <children>
@@ -506,6 +506,14 @@
                   <Font name="Satoshi Bold" size="24.0" />
                </font>
             </Label>
+            <Button id="takeFromBankButton" fx:id="takeBankButton" layoutX="13.0" layoutY="340.0" mnemonicParsing="false" onAction="#handleClickTakeBankButton" prefHeight="40.0" prefWidth="75.0" style="-fx-background-color: #72465B; -fx-border-color: #72465B; -fx-background-radius: 10; -fx-border-radius: 10;" text="Take" textFill="#f8db85">
+               <font>
+                  <Font name="Satoshi Bold" size="18.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
          </children>
       </Pane>
       <Button fx:id="menuButton" contentDisplay="RIGHT" layoutX="1465.0" layoutY="8.0" mnemonicParsing="false" onAction="#handleClickMenuButton" style="-fx-background-color: #F8DB85;" text="Menu" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
@@ -710,50 +718,6 @@
             </Button>
          </children>
       </AnchorPane>
-
-      <fx:define>
-         <java.util.ArrayList fx:id="pGemLabels">
-            <fx:reference source="pGreenGemLabel" />
-            <fx:reference source="pWhiteGemLabel" />
-            <fx:reference source="pBlueGemLabel" />
-            <fx:reference source="pBlackGemLabel" />
-            <fx:reference source="pRedGemLabel" />
-            <fx:reference source="pYellowGemLabel" />
-         </java.util.ArrayList>
-      </fx:define>
-
-      <fx:define>
-         <java.util.ArrayList fx:id="bGemLabels">
-            <fx:reference source="bGreenGemLabel" />
-            <fx:reference source="bWhiteGemLabel" />
-            <fx:reference source="bBlueGemLabel" />
-            <fx:reference source="bBlackGemLabel" />
-            <fx:reference source="bRedGemLabel" />
-            <fx:reference source="bYellowGemLabel" />
-         </java.util.ArrayList>
-      </fx:define>
-
-      <fx:define>
-         <java.util.ArrayList fx:id="actionGemLabels">
-            <fx:reference source="actionGreenGemLabel" />
-            <fx:reference source="actionWhiteGemLabel" />
-            <fx:reference source="actionBlueGemLabel" />
-            <fx:reference source="actionBlackGemLabel" />
-            <fx:reference source="actionRedGemLabel" />
-            <fx:reference source="actionYellowGemLabel" />
-         </java.util.ArrayList>
-      </fx:define>
-
-      <fx:define>
-         <java.util.ArrayList fx:id="removeGemButtons">
-            <fx:reference source="removeGreenButton" />
-            <fx:reference source="removeWhiteButton" />
-            <fx:reference source="removeBlueButton" />
-            <fx:reference source="removeBlackButton" />
-            <fx:reference source="removeRedButton" />
-            <fx:reference source="removeYellowButton" />
-         </java.util.ArrayList>
-      </fx:define>
       <BorderPane fx:id="acquiredNoblesView" layoutX="410.0" layoutY="178.0" prefHeight="563.0" prefWidth="772.0" style="-fx-background-color: #faecc0; -fx-border-color: #000000; -fx-border-width: 5;" visible="false">
          <top>
             <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="TOP_RIGHT">
@@ -784,70 +748,6 @@
                </children>
             </HBox>
          </top></BorderPane>
-
-      <fx:define>
-         <java.util.ArrayList fx:id="addGemButtons">
-            <fx:reference source="addGreenButton" />
-            <fx:reference source="addWhiteButton" />
-            <fx:reference source="addBlueButton" />
-            <fx:reference source="addBlackButton" />
-            <fx:reference source="addRedButton" />
-            <fx:reference source="addYellowButton" />
-         </java.util.ArrayList>
-      </fx:define>
-
-      <fx:define>
-         <java.util.ArrayList fx:id="level3CardViewsBase">
-            <fx:reference source="R3C1" />
-            <fx:reference source="R3C2" />
-            <fx:reference source="R3C3" />
-            <fx:reference source="R3C4" />
-         </java.util.ArrayList>
-      </fx:define>
-      <fx:define>
-         <java.util.ArrayList fx:id="level2CardViewsBase">
-            <fx:reference source="R2C1" />
-            <fx:reference source="R2C2" />
-            <fx:reference source="R2C3" />
-            <fx:reference source="R2C4" />
-         </java.util.ArrayList>
-      </fx:define>
-      <fx:define>
-         <java.util.ArrayList fx:id="level1CardViewsBase">
-            <fx:reference source="R1C1" />
-            <fx:reference source="R1C2" />
-            <fx:reference source="R1C3" />
-            <fx:reference source="R1C4" />
-         </java.util.ArrayList>
-      </fx:define>
-      <fx:define>
-         <java.util.ArrayList fx:id="level3CardViewsOrient">
-            <fx:reference source="R3C5" />
-            <fx:reference source="R3C6" />
-         </java.util.ArrayList>
-      </fx:define>
-      <fx:define>
-         <java.util.ArrayList fx:id="level2CardViewsOrient">
-            <fx:reference source="R2C5" />
-            <fx:reference source="R2C6" />
-         </java.util.ArrayList>
-      </fx:define>
-      <fx:define>
-         <java.util.ArrayList fx:id="level1CardViewsOrient">
-            <fx:reference source="R1C5" />
-            <fx:reference source="R1C6" />
-         </java.util.ArrayList>
-      </fx:define>
-      <fx:define>
-         <java.util.ArrayList fx:id="cardViews">
-            <fx:reference source="level1CardViewsBase" />
-            <fx:reference source="level2CardViewsBase" />
-            <fx:reference source="level3CardViewsBase" />
-            <fx:reference source="level1CardViewsOrient" />
-            <fx:reference source="level2CardViewsOrient" />
-            <fx:reference source="level3CardViewsOrient" />
-         </java.util.ArrayList>
-      </fx:define>
       <AnchorPane fx:id="purchasedCardsView" layoutX="159.0" layoutY="81.0" prefHeight="636.0" prefWidth="1240.0" visible="false">
          <children>
             <Pane layoutX="456.0" prefHeight="701.0" prefWidth="1240.0" style="-fx-background-color: #faecc0; -fx-border-color: #000000; -fx-border-width: 5;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -898,11 +798,9 @@
                </padding>
             </Label>
          </header>
-         <buttonTypes>
-            <ButtonType fx:constant="OK" />
-         </buttonTypes>
+         <ButtonType fx:constant="OK" />
       </DialogPane>
-      <BorderPane fx:id="playerSummaryPane" layoutX="490.0" layoutY="200.0" prefHeight="451.0" prefWidth="603.0" style="-fx-background-color: #faecc0; -fx-border-color: #000000; -fx-border-width: 5;" visible="false">
+      <BorderPane fx:id="playerSummaryPane" layoutX="468.0" layoutY="200.0" prefHeight="451.0" prefWidth="654.0" style="-fx-background-color: #faecc0; -fx-border-color: #000000; -fx-border-width: 5;" visible="false">
          <top>
             <Label fx:id="playerSummaryUserLabel" text="Player Info" textAlignment="CENTER" BorderPane.alignment="CENTER">
                <font>
@@ -1030,18 +928,20 @@
                         </GridPane>
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                      <children>
-                        <VBox fx:id="reservedSummary" alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
-                           <children>
-                              <Label text="Reserved Cards" />
-                           </children>
-                        </VBox>
-                        <VBox fx:id="noblesSummary" alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
-                           <children>
-                              <Label text="Acquired Nobles" />
-                           </children>
-                        </VBox>
+                        <Label text="Reserved Cards">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <HBox fx:id="reservedSummary" prefHeight="100.0" prefWidth="250.0" />
+                        <Label text="Acquired Nobles">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <HBox fx:id="noblesSummary" prefHeight="100.0" prefWidth="250.0" />
                      </children>
                   </VBox>
                </children>
@@ -1066,36 +966,10 @@
                </children>
             </VBox>
          </content>
-         <buttonTypes>
-            <ButtonType fx:constant="FINISH" />
-         </buttonTypes></DialogPane>
+         <ButtonType fx:constant="FINISH" />
+      </DialogPane>
    </children>
 
-   <fx:define>
-      <java.util.ArrayList fx:id="takenGemLabels">
-         <fx:reference source="takenGreenGemLabel" />
-         <fx:reference source="takenWhiteGemLabel" />
-         <fx:reference source="takenBlueGemLabel" />
-         <fx:reference source="takenBlackGemLabel" />
-         <fx:reference source="takenRedGemLabel" />
-      </java.util.ArrayList>
-   </fx:define>
-   <fx:define>
-      <java.util.ArrayList fx:id="playerViews">
-         <fx:reference source="playerView0" />
-         <fx:reference source="playerView1" />
-         <fx:reference source="playerView2" />
-         <fx:reference source="playerView3" />
-      </java.util.ArrayList>
-   </fx:define>
-   <fx:define>
-      <java.util.ArrayList fx:id="playerNameLabels">
-         <fx:reference source="playerName0" />
-         <fx:reference source="playerName1" />
-         <fx:reference source="playerName2" />
-         <fx:reference source="playerName3" />
-      </java.util.ArrayList>
-   </fx:define>
    <fx:define>
       <java.util.ArrayList fx:id="pGemLabels">
          <fx:reference source="pGreenGemLabel" />
@@ -1106,6 +980,7 @@
          <fx:reference source="pYellowGemLabel" />
       </java.util.ArrayList>
    </fx:define>
+
    <fx:define>
       <java.util.ArrayList fx:id="bGemLabels">
          <fx:reference source="bGreenGemLabel" />
@@ -1138,7 +1013,6 @@
          <fx:reference source="removeYellowButton" />
       </java.util.ArrayList>
    </fx:define>
-
    <fx:define>
       <java.util.ArrayList fx:id="addGemButtons">
          <fx:reference source="addGreenButton" />
@@ -1200,6 +1074,31 @@
          <fx:reference source="level1CardViewsOrient" />
          <fx:reference source="level2CardViewsOrient" />
          <fx:reference source="level3CardViewsOrient" />
+      </java.util.ArrayList>
+   </fx:define>
+   <fx:define>
+      <java.util.ArrayList fx:id="takenTokenLabels">
+         <fx:reference source="takenGreenGemLabel" />
+         <fx:reference source="takenWhiteGemLabel" />
+         <fx:reference source="takenBlueGemLabel" />
+         <fx:reference source="takenBlackGemLabel" />
+         <fx:reference source="takenRedGemLabel" />
+      </java.util.ArrayList>
+   </fx:define>
+   <fx:define>
+      <java.util.ArrayList fx:id="playerViews">
+         <fx:reference source="playerView0" />
+         <fx:reference source="playerView1" />
+         <fx:reference source="playerView2" />
+         <fx:reference source="playerView3" />
+      </java.util.ArrayList>
+   </fx:define>
+   <fx:define>
+      <java.util.ArrayList fx:id="playerNameLabels">
+         <fx:reference source="playerName0" />
+         <fx:reference source="playerName1" />
+         <fx:reference source="playerName2" />
+         <fx:reference source="playerName3" />
       </java.util.ArrayList>
    </fx:define>
 

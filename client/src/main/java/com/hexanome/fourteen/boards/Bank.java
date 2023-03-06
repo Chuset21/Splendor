@@ -32,6 +32,7 @@ public class Bank {
   List<Label> gemLabels;
   // Includes reference to the players gems labels so bank can just update it itself.
   List<Label> bankGemLabels;
+  Button openBankButton;
   Button takeBankButton;
   Pane takenTokenPane;
   GameBoard gameBoard;
@@ -44,13 +45,15 @@ public class Bank {
    * @param removeGemButtons The button to remove Gems
    * @param gemLabels        The labels displaying the number of each Gem
    * @param bankGemLabels    The labels displaying the number of each Gem the Bank uses
-   * @param takeBankButton   Button to allow you take Gems from the Bank
+   * @param openBankButton   Button to allow you open and close the Bank
+   * @param takeBankButton  Button that allows you to take tokens from the bank
    */
   public Bank(int numPlayers,
               List<Button> addGemButtons,
               List<Button> removeGemButtons,
               List<Label> gemLabels,
               List<Label> bankGemLabels,
+              Button openBankButton,
               Button takeBankButton,
               Pane takenTokenPane,
               GameBoard gameBoard) {
@@ -60,6 +63,7 @@ public class Bank {
     this.removeGemButtons = removeGemButtons;
     this.gemLabels = gemLabels;
     this.bankGemLabels = bankGemLabels;
+    this.openBankButton = openBankButton;
     this.takeBankButton = takeBankButton;
     this.selectedGems = new ArrayList<>();
     this.takenTokenPane = takenTokenPane;
@@ -75,7 +79,8 @@ public class Bank {
     }
 
     //Initialize Bank Button
-    takeBankButton.textProperty().set("Open");
+    openBankButton.textProperty().set("Open");
+    openBankButton.setPrefWidth(84);
   }
 
   public void updateGemCount(GemsForm bankGems){
@@ -97,7 +102,8 @@ public class Bank {
 
     if (isTaking) {
       selectedGems.clear();
-      takeBankButton.textProperty().set("Take");
+      openBankButton.textProperty().set("Cancel");
+      openBankButton.setPrefWidth(100);
       takenTokenPane.setVisible(true);
       for (int idx : GEM_INDEX) {
         removeGemButtons.get(idx).setVisible(true);
@@ -109,16 +115,29 @@ public class Bank {
       updateBankButtons();
 
     } else {
-      takeBankButton.textProperty().set("Open");
-      takenTokenPane.setVisible(false);
-      // Otherwise, just hide all the buttons!
-      for (int idx : GEM_INDEX) {
-        removeGemButtons.get(idx).setVisible(false);
-        addGemButtons.get(idx).setVisible(false);
-      }
+      close(null);
+    }
+  }
 
-      // Send take gems action to the server
-      sendTakeGems(selectedGems);
+  public void take(){
+    // Send take gems action to the server
+    sendTakeGems(selectedGems);
+  }
+
+  public void close(GemsForm gemsForm){
+    openBankButton.textProperty().set("Open");
+    openBankButton.setPrefWidth(84);
+    takenTokenPane.setVisible(false);
+
+    // Otherwise, just hide all the buttons!
+    for (int idx : GEM_INDEX) {
+      removeGemButtons.get(idx).setVisible(false);
+      addGemButtons.get(idx).setVisible(false);
+    }
+
+    isTaking = false;
+    if(gemsForm != null){
+      updateGemCount(gemsForm);
     }
   }
 
@@ -135,6 +154,7 @@ public class Bank {
       ServerCaller.takeGems(LobbyServiceCaller.getCurrentUserLobby(),
           LobbyServiceCaller.getCurrentUserAccessToken(), form);
 
+      gameBoard.closeAllActionWindows();
       gameBoard.updateBoard();
     } catch (TokenRefreshFailedException e){
       try{
