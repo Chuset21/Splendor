@@ -20,6 +20,7 @@ import java.util.Random;
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
 import java.util.Set;
+import java.util.stream.IntStream;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -785,14 +786,7 @@ public class GameBoard {
   }
 
   private boolean isValidNobleVisit(int[] playerBonuses, int[] nobleCost) {
-    boolean isValid = true;
-    for (int i = 0; i < nobleCost.length; i++) {
-      if (playerBonuses[i] < nobleCost[i]) {
-        isValid = false;
-        break;
-      }
-    }
-    return isValid;
+    return IntStream.range(0, nobleCost.length).noneMatch(i -> playerBonuses[i] < nobleCost[i]);
   }
 
   @FXML
@@ -847,7 +841,7 @@ public class GameBoard {
 
     // Fetches the requested player's information via UID
     for (PlayerForm playerForm : gameBoardForm.players()) {
-      if (playerForm.uid() == requestedUID) {
+      if (Objects.equals(playerForm.uid(), requestedUID)) {
         requestedPlayer = playerForm;
       }
     }
