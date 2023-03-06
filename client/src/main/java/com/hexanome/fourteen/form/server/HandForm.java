@@ -8,6 +8,7 @@ import java.util.Set;
  * Hand form.
  */
 public final class HandForm {
+  private int prestigePoints;
   private GemsForm gems;
   private List<CardForm> reservedCards;
   private List<CardForm> purchasedCards;
@@ -18,6 +19,7 @@ public final class HandForm {
   /**
    * Constructor.
    *
+   * @param prestigePoints the prestige points
    * @param gems           the amount of gems the owned
    * @param reservedCards  the reserved cards
    * @param purchasedCards the purchased cards
@@ -25,9 +27,11 @@ public final class HandForm {
    * @param reservedNobles the reserved nobles
    * @param gemDiscounts   the gem discounts
    */
-  public HandForm(GemsForm gems, List<CardForm> reservedCards, List<CardForm> purchasedCards,
+  public HandForm(int prestigePoints, GemsForm gems, List<CardForm> reservedCards,
+                  List<CardForm> purchasedCards,
                   Set<NobleForm> visitedNobles, Set<NobleForm> reservedNobles,
                   GemsForm gemDiscounts) {
+    this.prestigePoints = prestigePoints;
     this.gems = gems;
     this.reservedCards = reservedCards;
     this.purchasedCards = purchasedCards;
@@ -94,5 +98,14 @@ public final class HandForm {
    */
   public GemsForm gemDiscounts() {
     return gemDiscounts;
+  }
+
+  /**
+   * A Getter for the prestige points.
+   *
+   * @return Player's prestige points
+   */
+  public int prestigePoints() {
+    return prestigePoints;
   }
 }
