@@ -901,7 +901,7 @@
       </DialogPane>
       <BorderPane fx:id="playerSummaryPane" layoutX="490.0" layoutY="200.0" prefHeight="451.0" prefWidth="603.0" style="-fx-background-color: #faecc0; -fx-border-color: #000000; -fx-border-width: 5;" visible="false">
          <top>
-            <Label text="Player Info" textAlignment="CENTER" BorderPane.alignment="CENTER">
+            <Label fx:id="playerSummaryUserLabel" text="Player Info" textAlignment="CENTER" BorderPane.alignment="CENTER">
                <font>
                   <Font size="28.0" />
                </font>

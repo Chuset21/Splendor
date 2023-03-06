@@ -138,6 +138,8 @@ public class GameBoard {
   private VBox reservedSummary;
   @FXML
   private VBox noblesSummary;
+  @FXML
+  private Label playerSummaryUserLabel;
 
 
   //CARD FIELDS
@@ -771,9 +773,16 @@ public class GameBoard {
 
   @FXML
   public void createPlayerSummary(MouseEvent event) {
-    // Determines which player's information is being requested
-    String requestedUID = ((Player) ((ImageView) event.getSource()).getImage()).getUserId();
+    String requestedUID;
     PlayerForm requestedPlayer = null;
+
+    // Determines which player's information is being requested
+    try {
+      requestedUID = ((Player) ((ImageView) event.getSource()).getImage()).getUserId();
+    } catch (NullPointerException e) {
+      System.out.println("Failed to identify player");
+      return;
+    }
 
     // Fetches the requested player's information via UID
     for (PlayerForm playerForm : gameBoardForm.players()) {
@@ -784,9 +793,12 @@ public class GameBoard {
 
     // Aborts if no player data was found
     if (requestedPlayer == null) {
-      System.out.println("DEBUG: Requested player UID was null");
+      System.out.println("DEBUG: Requested player data was null");
       return;
     }
+
+    // Set summary label as player title
+    playerSummaryUserLabel.setText(requestedPlayer.uid() + "'s Board");
 
     // Fetch and apply the user's discounts to the summary discount matrix
     int index = 0;
