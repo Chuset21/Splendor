@@ -80,6 +80,7 @@ public class Bank {
 
     //Initialize Bank Button
     openBankButton.textProperty().set("Open");
+    openBankButton.setPrefWidth(84);
   }
 
   public void updateGemCount(GemsForm bankGems){
@@ -102,6 +103,7 @@ public class Bank {
     if (isTaking) {
       selectedGems.clear();
       openBankButton.textProperty().set("Cancel");
+      openBankButton.setPrefWidth(100);
       takenTokenPane.setVisible(true);
       for (int idx : GEM_INDEX) {
         removeGemButtons.get(idx).setVisible(true);
@@ -124,6 +126,7 @@ public class Bank {
 
   public void close(GemsForm gemsForm){
     openBankButton.textProperty().set("Open");
+    openBankButton.setPrefWidth(84);
     takenTokenPane.setVisible(false);
 
     // Otherwise, just hide all the buttons!
