@@ -5,6 +5,7 @@ import com.hexanome.fourteen.ServerCaller;
 import com.hexanome.fourteen.form.server.GameBoardForm;
 import com.hexanome.fourteen.form.server.GemsForm;
 import com.hexanome.fourteen.form.server.PlayerForm;
+import com.hexanome.fourteen.form.server.ReserveCardForm;
 import com.hexanome.fourteen.form.server.cardform.CardForm;
 import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
 import java.io.IOException;
@@ -544,27 +545,23 @@ public class GameBoard {
     // Get card to be purchased
     Card cardReserved = (Card) selectedCardView.getImage();
 
-    // Store image of purchased card in player's purchase stack
-    reservedCardImages.add(selectedCardView.getImage());
+    ReserveCardForm reserveCardForm = new ReserveCardForm(cardReserved.getCardForm(), null, false);
 
-    // Clear imageview of reserved card
-    selectedCardView.setImage(null);
+    try {
+      ServerCaller.reserveCard(LobbyServiceCaller.getCurrentUserLobby(),
+          LobbyServiceCaller.getCurrentUserAccessToken(), reserveCardForm);
 
-    // Refill imageview if a card is left in the deck
-    for (Deck d : gameDecks) {
-      if (d.hasCardSlot(selectedCardView) && !d.empty()) {
-        selectedCardView.setImage(d.pop());
+      // Close card menu
+      cardActionMenu.setVisible(false);
+
+      updateBoard();
+    } catch (TokenRefreshFailedException e){
+      try{
+        MenuController.returnToLogin("Session timed out, retry login");
+      } catch(IOException ioe){
+        ioe.printStackTrace();
       }
     }
-
-    // Put reserved card in inventory
-    reservedStack.setImage(cardReserved);
-
-    // Add the card to the player's hand
-    player.getHand().reservedCards.add(cardReserved);
-
-    // Close card menu
-    cardActionMenu.setVisible(false);
   }
 
   public void handleTakeGreenGemButton() {

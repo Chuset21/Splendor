@@ -1,6 +1,7 @@
 package com.hexanome.fourteen.boards;
 
 import com.hexanome.fourteen.form.server.GemsForm;
+import com.hexanome.fourteen.form.server.cardform.CardForm;
 import com.hexanome.fourteen.form.server.cardform.CardLevelForm;
 import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
 import java.io.BufferedReader;
@@ -75,6 +76,11 @@ public class StandardCard extends Card {
   @Override
   public int getDiscountAmount() {
     return 1;
+  }
+
+  @Override
+  public CardForm getCardForm(){
+    return cardForm;
   }
 
   /**
