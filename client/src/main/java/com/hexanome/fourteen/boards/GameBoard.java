@@ -4,6 +4,7 @@ import com.hexanome.fourteen.Main;
 import com.hexanome.fourteen.ServerCaller;
 import com.hexanome.fourteen.form.server.GameBoardForm;
 import com.hexanome.fourteen.form.server.GemsForm;
+import com.hexanome.fourteen.form.server.HandForm;
 import com.hexanome.fourteen.form.server.PlayerForm;
 import com.hexanome.fourteen.form.server.ReserveCardForm;
 import com.hexanome.fourteen.form.server.cardform.CardForm;
@@ -19,9 +20,7 @@ import java.util.Random;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
-import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.IntStream;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
@@ -489,26 +488,26 @@ public class GameBoard {
     cardPurchaseButton.setDisable(false);
 
     // get the player's hand and the cost of the card
-    Hand hand = player.getHand();
+    HandForm handForm = player.getHandForm();
     int[] selectedCost = ((Card) selectedCardView.getImage()).getCost();
 
+    // If player's gems cannot pay for card, disable purchase button
     for (int i = 0; i < 5; i++) {
-      //if (selectedCost[i] > pHand.Gems[i] + pHand.gemDiscounts[i]) {
-      if (selectedCost[i] > hand.gems[i]) {
+      if (selectedCost[i] > GemsForm.costHashToArray(handForm.gems())[i]) {
         cardPurchaseButton.setDisable(true);
         break;
       }
     }
     //// Handle Reserve Availability
-    if (hand.reservedCards.size() < 3 && !hand.reservedCards.contains(((Card)selectedCardView.getImage()).getCardForm())) {
+    if (handForm.reservedCards().size() < 3 && !handForm.reservedCards().contains(((Card)selectedCardView.getImage()).getCardForm())) {
       cardReserveButton.setDisable(false);
     } else {
       cardReserveButton.setDisable(true);
     }
 
     // Open menu
+    cardActionMenu.toFront();
     cardActionMenu.setVisible(true);
-
   }
 
   /**
@@ -622,6 +621,7 @@ public class GameBoard {
 
   @FXML
   private void handleClickMenuButton() {
+    menuPopupPane.toFront();
     menuPopupPane.setVisible(true);
   }
 
@@ -687,7 +687,7 @@ public class GameBoard {
 
   @FXML
   // viewParams = [cardWidth, cardHeight, numOfColumns]
-  public GridPane generateCardGrid(List<Image> imageList, int[] viewParams, Consumer<MouseEvent> mouseClickEvent) {
+  public GridPane generateCardGridForReserved(List<Image> imageList, int[] viewParams, Consumer<MouseEvent> mouseClickEvent) {
     // Create a GridPane to hold the images
     GridPane cardImageGrid = new GridPane();
     cardImageGrid.setHgap(10);
@@ -702,7 +702,9 @@ public class GameBoard {
       cardIV.setFitHeight(viewParams[1]);
       cardIV.setOnMouseClicked(e -> {mouseClickEvent.accept(e);});
 
+      // Add card and it's button
       cardImageGrid.add(cardIV, col, row);
+      cardImageGrid.add(createPurchaseButtonForReservedCard(cardIV), col, 1);
       col++;
 
       // Store 9 cards per row
@@ -739,15 +741,14 @@ public class GameBoard {
     acquiredNoblesView.setVisible(false);
   }
 
-  private Button createPurchaseButtonForReservedCard(Image image) {
+  private Button createPurchaseButtonForReservedCard(ImageView imageView) {
     // Create purchase button for each reserved card
     Button purchaseReservedCardButton = new Button("Purchase");
     purchaseReservedCardButton.setStyle("-fx-background-color: #5A9BD7;");
     purchaseReservedCardButton.setFont(new Font("Satoshi Black", 30.0));
     purchaseReservedCardButton.setTextFill(javafx.scene.paint.Color.WHITE);
 
-    // TODO -> Pass the appropriate reserved card to each purchase button
-    purchaseReservedCardButton.setOnAction(purchaseAction -> handlePurchase());
+    purchaseReservedCardButton.setOnMouseClicked(e -> {handleCardSelect(e.copyFor(imageView,e.getTarget()));});
 
     return purchaseReservedCardButton;
   }
@@ -755,19 +756,16 @@ public class GameBoard {
   @FXML
   public void handleReservedPaneSelect(MouseEvent event) {
     reservedCardImages.clear();
+
     for(CardForm cardForm : player.getHandForm().reservedCards()){
       reservedCardImages.add((cardForm instanceof StandardCardForm)? new StandardCard((StandardCardForm) cardForm) : new OrientCard(cardForm));
     }
 
     // Create image grid of reserved cards
-    GridPane imagePane = generateCardGrid(reservedCardImages, new int[] {200, 260, 3}, this::handleCardSelect);
+    GridPane imagePane = generateCardGridForReserved(reservedCardImages, new int[] {200, 260, reservedCardImages.size()}, this::handleCardSelect);
 
-    // Create a purchase button for each reserved card
-    for (int i = 0; i < reservedCardImages.size(); i++) {
-      imagePane.add(createPurchaseButtonForReservedCard(reservedCardImages.get(i)), i, 1);
-    }
-
-    // Add card grid to the pane
+    // Reset card grid and add images to the pane
+    reservedCardsVBox.getChildren().clear();
     reservedCardsVBox.getChildren().add(imagePane);
 
     // Open reserved cards pane
