@@ -464,7 +464,6 @@ public class GameBoard {
     // Get imageview
     selectedCardView = (ImageView) event.getSource();
 
-
     //Input validation for null spaces
     if (selectedCardView.getImage() == null) {
       return;
@@ -492,15 +491,20 @@ public class GameBoard {
     HandForm handForm = player.getHandForm();
     int[] selectedCost = ((Card) selectedCardView.getImage()).getCost();
 
-    // If player's gems cannot pay for card, disable purchase button
-    for (int i = 0; i < 5; i++) {
-      if (selectedCost[i] > GemsForm.costHashToArray(handForm.gems())[i]) {
-        cardPurchaseButton.setDisable(true);
-        break;
+    if(isYourTurn()){
+      // If player's gems cannot pay for card, disable purchase button
+      for (int i = 0; i < 5; i++) {
+        if (selectedCost[i] > GemsForm.costHashToArray(handForm.gems())[i]) {
+          cardPurchaseButton.setDisable(true);
+          break;
+        }
       }
+    } else {
+      cardPurchaseButton.setDisable(true);
     }
+
     //// Handle Reserve Availability
-    if (handForm.reservedCards().size() < 3 && !handForm.reservedCards().contains(((Card)selectedCardView.getImage()).getCardForm())) {
+    if (isYourTurn() && handForm.reservedCards().size() < 3 && !handForm.reservedCards().contains(((Card)selectedCardView.getImage()).getCardForm())) {
       cardReserveButton.setDisable(false);
     } else {
       cardReserveButton.setDisable(true);
@@ -565,6 +569,10 @@ public class GameBoard {
         ioe.printStackTrace();
       }
     }
+  }
+
+  private boolean isYourTurn(){
+    return gameBoardForm.playerTurnid().equals(player.getUserId());
   }
 
   public void handleTakeGreenGemButton() {
