@@ -81,6 +81,11 @@ public class OrientCard extends Card {
   }
 
   @Override
+  public CardForm getCardForm(){
+    return cardForm;
+  }
+
+  @Override
   public int getDiscountAmount() {
     return (cardForm instanceof DoubleBonusCardForm || cardForm instanceof SatchelCardForm) ? 2 : 1;
   }

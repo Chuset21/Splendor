@@ -124,6 +124,20 @@ public final class ServerCaller {
   }
 
   /**
+   * Reserve a card.
+   *
+   * @return The response.
+   */
+  public static HttpResponse<String> reserveCard(Lobby lobby,
+                                                 String accessToken,
+                                                 ReserveCardForm reserveCardForm) {
+    return Unirest.put("%s/api/games/%s/card/reserve".formatted(lobby.getGameServiceLocation(), lobby.getSessionid()))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", accessToken).body(Main.GSON.toJson(reserveCardForm))
+        .asString();
+  }
+
+  /**
    * Take gems.
    *
    * @return The response.
