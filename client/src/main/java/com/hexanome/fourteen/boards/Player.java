@@ -38,4 +38,7 @@ public class Player extends Image {
     return playerForm.uid();
   }
 
+  public PlayerForm getPlayerForm() {
+    return playerForm;
+  }
 }

@@ -863,23 +863,18 @@ public class GameBoard {
 
   @FXML
   public void createPlayerSummary(MouseEvent event) {
-    String requestedUID;
+    Player player;
     PlayerForm requestedPlayer = null;
 
     // Determines which player's information is being requested
     try {
-      requestedUID = ((Player) ((ImageView) event.getSource()).getImage()).getUserId();
+      player = ((Player) ((ImageView) event.getSource()).getImage());
     } catch (NullPointerException e) {
       System.out.println("Failed to identify player");
       return;
     }
 
-    // Fetches the requested player's information via UID
-    for (PlayerForm playerForm : gameBoardForm.players()) {
-      if (Objects.equals(playerForm.uid(), requestedUID)) {
-        requestedPlayer = playerForm;
-      }
-    }
+    requestedPlayer = player.getPlayerForm();
 
     // Aborts if no player data was found
     if (requestedPlayer == null) {
@@ -912,14 +907,16 @@ public class GameBoard {
     for (CardForm c : requestedPlayer.hand().reservedCards()) {
       if (c instanceof StandardCardForm) {
         cardToAdd = new StandardCard((StandardCardForm) c);
+      } else {
+        cardToAdd = new OrientCard(c);
       }
       // TODO Add instanceof Waterfall card and other card types if there are any
       if (cardToAdd != null) {
         requestedPlayerReservedCardImages.add(cardToAdd);
       }
     }
-    reservedSummary.getChildren()
-        .add(generateCardGrid(requestedPlayerReservedCardImages, new int[] {110, 160, 3}));
+    reservedSummary.getChildren().clear();
+    reservedSummary.getChildren().add(generateCardGrid(requestedPlayerReservedCardImages, new int[] {110, 160, 3}));
 
     // TODO: Fetch and apply the player's nobles as images
     List<Image> requestedPlayerNobleImages = new ArrayList<>();
@@ -929,6 +926,7 @@ public class GameBoard {
 //    noblesSummary.getChildren().add(generateCardGrid(requestedPlayerNoblesImages, new int[] {160, 160, 5}));
 
     // Display data
+    playerSummaryPane.toFront();
     playerSummaryPane.setVisible(true);
   }
 
