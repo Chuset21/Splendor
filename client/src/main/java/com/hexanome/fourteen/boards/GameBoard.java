@@ -294,7 +294,7 @@ public class GameBoard {
     generateNobles();
   }
 
-  public void closeAllActionWindows(){
+  public void closeAllActionWindows() {
     cardActionMenu.setVisible(false);
     selectedCardView.setVisible(false);
     reservedCardsView.setVisible(false);
@@ -399,10 +399,10 @@ public class GameBoard {
       if (i < players.size() && players.get(i) != null) {
         ((ImageView) playerViews.get(i)).setImage(players.get(i));
         Tooltip.install(((ImageView) playerViews.get(i)), new Tooltip(players.get(i).getUserId() +
-                                                                      (player.getUserId().equals(
-                                                                          players.get(i)
-                                                                              .getUserId()) ?
-                                                                          " (you)" : "")));
+            (player.getUserId().equals(
+                players.get(i)
+                    .getUserId()) ?
+                " (you)" : "")));
       } else {
         ((ImageView) playerViews.get(i)).imageProperty().set(null);
       }
@@ -491,7 +491,7 @@ public class GameBoard {
     HandForm handForm = player.getHandForm();
     int[] selectedCost = ((Card) selectedCardView.getImage()).getCost();
 
-    if(isYourTurn()){
+    if (isYourTurn()) {
       // If player's gems cannot pay for card, disable purchase button
       for (int i = 0; i < 5; i++) {
         if (selectedCost[i] > GemsForm.costHashToArray(handForm.gems())[i]) {
@@ -504,7 +504,8 @@ public class GameBoard {
     }
 
     //// Handle Reserve Availability
-    if (isYourTurn() && handForm.reservedCards().size() < 3 && !handForm.reservedCards().contains(((Card)selectedCardView.getImage()).getCardForm())) {
+    if (isYourTurn() && handForm.reservedCards().size() < 3 &&
+        !handForm.reservedCards().contains(((Card) selectedCardView.getImage()).getCardForm())) {
       cardReserveButton.setDisable(false);
     } else {
       cardReserveButton.setDisable(true);
@@ -522,11 +523,13 @@ public class GameBoard {
     // Get card to be purchased
     Card cardPurchased = (Card) selectedCardView.getImage();
 
-    if(!(cardPurchased.getCardForm() instanceof StandardCardForm)){
+    if (!(cardPurchased.getCardForm() instanceof StandardCardForm)) {
       return;
     }
 
-    PurchaseCardForm purchaseCardForm = new PurchaseCardForm(cardPurchased.getCardForm(), new GemPaymentForm(cardPurchased.getCardForm().cost(),null,0),player.getHandForm().reservedCards().contains(cardPurchased.getCardForm()));
+    PurchaseCardForm purchaseCardForm = new PurchaseCardForm(cardPurchased.getCardForm(),
+        new GemPaymentForm(cardPurchased.getCardForm().cost(), null, 0),
+        player.getHandForm().reservedCards().contains(cardPurchased.getCardForm()));
 
     try {
       ServerCaller.purchaseCard(LobbyServiceCaller.getCurrentUserLobby(),
@@ -537,10 +540,10 @@ public class GameBoard {
 
       closeAllActionWindows();
       updateBoard();
-    } catch (TokenRefreshFailedException e){
-      try{
+    } catch (TokenRefreshFailedException e) {
+      try {
         MenuController.returnToLogin("Session timed out, retry login");
-      } catch(IOException ioe){
+      } catch (IOException ioe) {
         ioe.printStackTrace();
       }
     }
@@ -564,16 +567,16 @@ public class GameBoard {
 
       closeAllActionWindows();
       updateBoard();
-    } catch (TokenRefreshFailedException e){
-      try{
+    } catch (TokenRefreshFailedException e) {
+      try {
         MenuController.returnToLogin("Session timed out, retry login");
-      } catch(IOException ioe){
+      } catch (IOException ioe) {
         ioe.printStackTrace();
       }
     }
   }
 
-  private boolean isYourTurn(){
+  private boolean isYourTurn() {
     return gameBoardForm.playerTurnid().equals(player.getUserId());
   }
 
@@ -631,7 +634,7 @@ public class GameBoard {
   }
 
   @FXML
-  private void handleClickTakeBankButton(){
+  private void handleClickTakeBankButton() {
     bank.take();
   }
 
@@ -703,7 +706,8 @@ public class GameBoard {
 
   @FXML
   // viewParams = [cardWidth, cardHeight, numOfColumns]
-  public GridPane generateCardGridForReserved(List<Image> imageList, int[] viewParams, Consumer<MouseEvent> mouseClickEvent) {
+  public GridPane generateCardGridForReserved(List<Image> imageList, int[] viewParams,
+                                              Consumer<MouseEvent> mouseClickEvent) {
     // Create a GridPane to hold the images
     GridPane cardImageGrid = new GridPane();
     cardImageGrid.setHgap(10);
@@ -716,7 +720,9 @@ public class GameBoard {
       ImageView cardIV = new ImageView(image);
       cardIV.setFitWidth(viewParams[0]);
       cardIV.setFitHeight(viewParams[1]);
-      cardIV.setOnMouseClicked(e -> {mouseClickEvent.accept(e);});
+      cardIV.setOnMouseClicked(e -> {
+        mouseClickEvent.accept(e);
+      });
 
       // Add card and it's button
       cardImageGrid.add(cardIV, col, row);
@@ -737,8 +743,10 @@ public class GameBoard {
 
     purchasedCardImages.clear();
 
-    for(CardForm cardForm : player.getHandForm().purchasedCards()){
-      purchasedCardImages.add((cardForm instanceof StandardCardForm)? new StandardCard((StandardCardForm) cardForm) : new OrientCard(cardForm));
+    for (CardForm cardForm : player.getHandForm().purchasedCards()) {
+      purchasedCardImages.add(
+          (cardForm instanceof StandardCardForm) ? new StandardCard((StandardCardForm) cardForm) :
+              new OrientCard(cardForm));
     }
 
     // Reset pane and set the purchased pane's content to the card image grid
@@ -763,7 +771,9 @@ public class GameBoard {
     purchaseReservedCardButton.setFont(new Font("Satoshi Black", 30.0));
     purchaseReservedCardButton.setTextFill(javafx.scene.paint.Color.WHITE);
 
-    purchaseReservedCardButton.setOnMouseClicked(e -> {handleCardSelect(e.copyFor(imageView,e.getTarget()));});
+    purchaseReservedCardButton.setOnMouseClicked(e -> {
+      handleCardSelect(e.copyFor(imageView, e.getTarget()));
+    });
 
     return purchaseReservedCardButton;
   }
@@ -772,12 +782,15 @@ public class GameBoard {
   public void handleReservedPaneSelect(MouseEvent event) {
     reservedCardImages.clear();
 
-    for(CardForm cardForm : player.getHandForm().reservedCards()){
-      reservedCardImages.add((cardForm instanceof StandardCardForm)? new StandardCard((StandardCardForm) cardForm) : new OrientCard(cardForm));
+    for (CardForm cardForm : player.getHandForm().reservedCards()) {
+      reservedCardImages.add(
+          (cardForm instanceof StandardCardForm) ? new StandardCard((StandardCardForm) cardForm) :
+              new OrientCard(cardForm));
     }
 
     // Create image grid of reserved cards
-    GridPane imagePane = generateCardGridForReserved(reservedCardImages, new int[] {200, 260, reservedCardImages.size()}, this::handleCardSelect);
+    GridPane imagePane = generateCardGridForReserved(reservedCardImages,
+        new int[] {200, 260, reservedCardImages.size()}, this::handleCardSelect);
 
     // Reset card grid and add images to the pane
     reservedCardsVBox.getChildren().clear();
@@ -810,7 +823,7 @@ public class GameBoard {
 
     // Add Nobles Text Label
     Label noblesTitleLabel = new Label("Nobles");
-    noblesTitleLabel.setFont(Font.font("Satoshi", FontWeight. BOLD, 24));
+    noblesTitleLabel.setFont(Font.font("Satoshi", FontWeight.BOLD, 24));
     noblesTitleLabel.setTextFill(Color.rgb(114, 70, 91));
     noblesTitleLabel.setPadding(new Insets(5));
     publicNoblesVBox.getChildren().add(noblesTitleLabel);
@@ -935,7 +948,8 @@ public class GameBoard {
       }
     }
     reservedSummary.getChildren().clear();
-    reservedSummary.getChildren().add(generateCardGrid(requestedPlayerReservedCardImages, new int[] {110, 160, 3}));
+    reservedSummary.getChildren()
+        .add(generateCardGrid(requestedPlayerReservedCardImages, new int[] {110, 160, 3}));
 
     // TODO: Fetch and apply the player's nobles as images
     List<Image> requestedPlayerNobleImages = new ArrayList<>();
@@ -959,7 +973,6 @@ public class GameBoard {
     bankPane.setDisable(true);
     cardMatrix.setDisable(true);
   }
-
 
 
   @FXML
