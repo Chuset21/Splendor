@@ -6,6 +6,7 @@ import com.hexanome.fourteen.form.lobbyservice.SessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
 import java.io.IOException;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -59,10 +60,13 @@ public class LobbySelectScreenController implements ScreenController {
 
               if (responseCode == 200) {
                 hashedResponse = DigestUtils.md5Hex(longPollResponse.getBody());
-                final SessionsForm sessions =
-                    Main.GSON.fromJson(longPollResponse.getBody(), SessionsForm.class);
+                final SessionsForm notLaunchedSessions = new SessionsForm(
+                    Main.GSON.fromJson(longPollResponse.getBody(), SessionsForm.class).sessions()
+                        .entrySet().stream().filter(e -> !e.getValue().launched())
+                        .collect(
+                            Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
                 Platform.runLater(() -> {
-                  lobbyForm = sessions;
+                  lobbyForm = notLaunchedSessions;
                   updateLobbies();
                 });
               } else {
