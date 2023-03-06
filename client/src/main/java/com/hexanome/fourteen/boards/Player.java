@@ -1,5 +1,6 @@
 package com.hexanome.fourteen.boards;
 
+import com.hexanome.fourteen.form.server.HandForm;
 import com.hexanome.fourteen.form.server.PlayerForm;
 import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
 import java.io.IOException;
@@ -30,6 +31,8 @@ public class Player extends Image {
   public Hand getHand() {
     return new Hand();
   }
+
+  public HandForm getHandForm(){return playerForm.hand();}
 
   public String getUserId() {
     return playerForm.uid();
