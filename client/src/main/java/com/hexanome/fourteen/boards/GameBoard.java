@@ -19,6 +19,9 @@ import java.util.Random;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
@@ -46,6 +49,7 @@ import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import com.hexanome.fourteen.lobbyui.*;
+import javafx.util.Duration;
 import kong.unirest.HttpResponse;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -140,6 +144,10 @@ public class GameBoard {
   private VBox noblesSummary;
   @FXML
   private Label playerSummaryUserLabel;
+  @FXML
+  private Pane bankPane;
+  @FXML
+  private GridPane cardMatrix;
 
 
   //CARD FIELDS
@@ -409,10 +417,19 @@ public class GameBoard {
     for (int i = 0; i < players.size(); i++) {
       if (players.get(i).getUserId().equals(gameBoardForm.playerTurnid())) {
         currentPlayerTurnLabel.setText(players.get(i).getUserId() + "'s Turn");
+        currentPlayerTurnLabel.setPadding(new Insets(5));
         ((ImageView) playerViews.get(i)).setEffect(currentPlayerEffect);
       } else {
         ((ImageView) playerViews.get(i)).setEffect(null);
       }
+    }
+
+    // Only allow the current player to alter the game (i.e. open bank or open card action menu)
+    if (LobbyServiceCaller.getCurrentUserid().equals(gameBoardForm.playerTurnid())) {
+      currentPlayerTurnLabel.setText("YOUR Turn");
+      enableGameAlteringActions();
+    } else {
+      disableGameAlteringActions();
     }
   }
 
@@ -844,5 +861,15 @@ public class GameBoard {
   @FXML
   public void closePlayerSummary() {
     playerSummaryPane.setVisible(false);
+  }
+  @FXML
+  private void disableGameAlteringActions() {
+    bankPane.setDisable(true);
+    cardMatrix.setDisable(true);
+  }
+  @FXML
+  private void enableGameAlteringActions() {
+    bankPane.setDisable(false);
+    cardMatrix.setDisable(false);
   }
 }
