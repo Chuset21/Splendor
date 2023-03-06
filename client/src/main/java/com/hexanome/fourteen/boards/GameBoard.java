@@ -18,6 +18,7 @@ import java.util.Random;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
+import java.util.Set;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -111,6 +112,8 @@ public class GameBoard {
   // RESERVED CARDS PANE
   @FXML
   private Pane reservedCardsView;
+  @FXML
+  private VBox reservedCardsVBox;
   private List<Image> reservedCardImages = new ArrayList<Image>();
 
   // ACQUIRED NOBLES PANE
@@ -145,6 +148,7 @@ public class GameBoard {
   private DialogPane waterfallPane;
   @FXML
   private VBox waterfallVBox;
+
 
 
   //CARD FIELDS
@@ -502,7 +506,6 @@ public class GameBoard {
    * Performs all necessary UI changes when a player purchases a card.
    */
   public void handlePurchase() {
-
     // Get card to be purchased
     Card cardPurchased = (Card) selectedCardView.getImage();
 
@@ -702,21 +705,33 @@ public class GameBoard {
     acquiredNoblesView.setVisible(false);
   }
 
+  private Button createPurchaseButtonForReservedCard(Image image) {
+    // Create purchase button for each reserved card
+    Button purchaseReservedCardButton = new Button("Purchase");
+    purchaseReservedCardButton.setStyle("-fx-background-color: #5A9BD7;");
+    purchaseReservedCardButton.setFont(new Font("Satoshi Black", 30.0));
+    purchaseReservedCardButton.setTextFill(javafx.scene.paint.Color.WHITE);
+
+    // TODO -> Pass the appropriate reserved card to each purchase button
+    purchaseReservedCardButton.setOnAction(purchaseAction -> handlePurchase());
+
+    return purchaseReservedCardButton;
+  }
+
   @FXML
   public void handleReservedPaneSelect(MouseEvent event) {
+    // Create image grid of reserved cards
+    GridPane imagePane = generateCardGrid(reservedCardImages, new int[] {200, 260, 3});
 
-    //Print to console all the player's purchased cards
-    System.out.println("DEBUG: USER'S RESERVED CARDS");
-    Hand hand = player.getHand();
-    for (int i = 0; i < hand.reservedCards.size(); i++) {
-      Card current = hand.reservedCards.get(i);
-      System.out.println(current.toString());
+    // Create a purchase button for each reserved card
+    for (int i = 0; i < reservedCardImages.size(); i++) {
+      imagePane.add(createPurchaseButtonForReservedCard(reservedCardImages.get(i)), i, 1);
     }
 
-    // Set the purchased pane's content to the card image grid
-    reservedBorderPane.setCenter(generateCardGrid(reservedCardImages, new int[] {200, 260, 3}));
+    // Add card grid to the pane
+    reservedCardsVBox.getChildren().add(imagePane);
 
-    // Open purchased pane
+    // Open reserved cards pane
     reservedCardsView.setVisible(true);
   }
 
