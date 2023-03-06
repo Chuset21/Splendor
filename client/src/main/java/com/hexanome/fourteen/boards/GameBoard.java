@@ -20,6 +20,8 @@ import java.util.Random;
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
@@ -498,7 +500,7 @@ public class GameBoard {
       }
     }
     //// Handle Reserve Availability
-    if (hand.reservedCards.size() < 3) {
+    if (hand.reservedCards.size() < 3 && !hand.reservedCards.contains(((Card)selectedCardView.getImage()).getCardForm())) {
       cardReserveButton.setDisable(false);
     } else {
       cardReserveButton.setDisable(true);
@@ -684,6 +686,35 @@ public class GameBoard {
   }
 
   @FXML
+  // viewParams = [cardWidth, cardHeight, numOfColumns]
+  public GridPane generateCardGrid(List<Image> imageList, int[] viewParams, Consumer<MouseEvent> mouseClickEvent) {
+    // Create a GridPane to hold the images
+    GridPane cardImageGrid = new GridPane();
+    cardImageGrid.setHgap(10);
+    cardImageGrid.setVgap(10);
+
+    // Loop through the images and add them to the GridPane
+    int row = 0;
+    int col = 0;
+    for (Image image : imageList) {
+      ImageView cardIV = new ImageView(image);
+      cardIV.setFitWidth(viewParams[0]);
+      cardIV.setFitHeight(viewParams[1]);
+      cardIV.setOnMouseClicked(e -> {mouseClickEvent.accept(e);});
+
+      cardImageGrid.add(cardIV, col, row);
+      col++;
+
+      // Store 9 cards per row
+      if (col == viewParams[2]) {
+        col = 0;
+        row++;
+      }
+    }
+    return cardImageGrid;
+  }
+
+  @FXML
   public void handlePurchasedPaneSelect(MouseEvent event) {
 
     //Print to console all the player's purchased cards
@@ -723,8 +754,13 @@ public class GameBoard {
 
   @FXML
   public void handleReservedPaneSelect(MouseEvent event) {
+    reservedCardImages.clear();
+    for(CardForm cardForm : player.getHandForm().reservedCards()){
+      reservedCardImages.add((cardForm instanceof StandardCardForm)? new StandardCard((StandardCardForm) cardForm) : new OrientCard(cardForm));
+    }
+
     // Create image grid of reserved cards
-    GridPane imagePane = generateCardGrid(reservedCardImages, new int[] {200, 260, 3});
+    GridPane imagePane = generateCardGrid(reservedCardImages, new int[] {200, 260, 3}, this::handleCardSelect);
 
     // Create a purchase button for each reserved card
     for (int i = 0; i < reservedCardImages.size(); i++) {
