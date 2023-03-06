@@ -110,6 +110,22 @@ public final class ServerCaller {
   }
 
   /**
+   * Purchase a card.
+   * Returns null as the string if successful,
+   * however if a noble can be reserved, it returns the list of nobles that can be reserved
+   *
+   * @return The response.
+   */
+  public static HttpResponse<String> purchaseCard(Lobby lobby,
+                                                  String accessToken,
+                                                  PurchaseCardForm purchaseCardForm) {
+    return Unirest.put("%s/api/games/%s/card/purchase".formatted(lobby.getGameServiceLocation(), lobby.getSessionid()))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", accessToken).body(Main.GSON.toJson(purchaseCardForm))
+        .asString();
+  }
+
+  /**
    * Reserve a card.
    *
    * @return The response.
