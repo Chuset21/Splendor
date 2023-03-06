@@ -10,6 +10,7 @@ import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,11 +20,13 @@ import java.util.Random;
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
@@ -125,6 +128,16 @@ public class GameBoard {
   private DialogPane acquiredNobleAlertPane;
   @FXML
   private ImageView noblesStack;
+  @FXML
+  private GridPane discountSummary;
+  @FXML
+  private GridPane gemSummary;
+  @FXML
+  private BorderPane playerSummaryPane;
+  @FXML
+  private VBox reservedSummary;
+  @FXML
+  private VBox noblesSummary;
 
 
   //CARD FIELDS
@@ -754,5 +767,52 @@ public class GameBoard {
 
     // Open purchased pane
     acquiredNoblesView.setVisible(true);
+  }
+
+  @FXML
+  public void createPlayerSummary(MouseEvent event) {
+    Player requestedPlayer = (Player) ((ImageView) event.getSource()).getImage();
+    if (requestedPlayer == null) {
+      System.out.println("DEBUG: Requested player was null");
+      return;
+    }
+
+    // Fetch and apply the user's discounts to the summary discount matrix
+    int index = 0;
+    for (int discount : requestedPlayer.getHand().gemDiscounts) {
+      Label label = (Label) discountSummary.getChildren().get(index);
+      label.setText(String.valueOf(discount));
+      index++;
+    }
+
+    // Fetch and apply the user's gems to the summary gem matrix
+    index = 0;
+    for (int gemAmt : requestedPlayer.getHand().gems) {
+      Label label = (Label) gemSummary.getChildren().get(index);
+      label.setText(String.valueOf(gemAmt));
+      index++;
+    }
+
+    // Fetch and apply the player's reserved cards as images
+    List<Image> requestedPlayerReservedCardImages = new ArrayList<>();
+    for (Card c : requestedPlayer.getHand().reservedCards) {
+      requestedPlayerReservedCardImages.add(c);
+    }
+    reservedSummary.getChildren().add(generateCardGrid(requestedPlayerReservedCardImages, new int[] {110, 160, 3}));
+
+    // TODO: Fetch and apply the player's nobles as images
+    List<Image> requestedPlayerNobleImages = new ArrayList<>();
+//    for (Noble n : requestedPlayer.getHand().nobles) {
+//      requestedPlayerNobleImages.add(n);
+//    }
+//    noblesSummary.getChildren().add(generateCardGrid(requestedPlayerNoblesImages, new int[] {160, 160, 5}));
+
+    // Display data
+    playerSummaryPane.setVisible(true);
+  }
+
+  @FXML
+  public void closePlayerSummary() {
+    playerSummaryPane.setVisible(false);
   }
 }

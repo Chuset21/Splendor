@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.net.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.effect.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
-<?import javafx.scene.shape.*?>
-<?import javafx.scene.text.*?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
@@ -30,11 +19,10 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.paint.Color?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="backgroundPane" minHeight="0.0" minWidth="0.0" prefHeight="900.0" prefWidth="1600.0" styleClass="anchor" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.boards.GameBoard">
+<AnchorPane fx:id="backgroundPane" minHeight="0.0" minWidth="0.0" prefHeight="900.0" prefWidth="1600.0" styleClass="anchor" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.boards.GameBoard">
    <stylesheets>
       <URL value="@appStyling.css" />
    </stylesheets>
@@ -68,7 +56,7 @@
                <children>
                   <Pane prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 10;">
                      <children>
-                        <ImageView fx:id="playerView0" fitHeight="74.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="playerView0" fitHeight="74.0" fitWidth="76.0" onMouseEntered="#createPlayerSummary" onMouseExited="#closePlayerSummary" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@images/profile1.png" />
                            </image>
@@ -78,21 +66,21 @@
                      </children></Pane>
                   <Pane layoutX="10.0" layoutY="10.0" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 10;">
                      <children>
-                        <ImageView fx:id="playerView1" fitHeight="74.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="playerView1" fitHeight="74.0" fitWidth="76.0" onMouseEntered="#createPlayerSummary" onMouseExited="#closePlayerSummary" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@images/profile2.png" />
                            </image></ImageView>
                      </children></Pane>
                   <Pane layoutX="110.0" layoutY="10.0" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 10;">
                      <children>
-                        <ImageView fx:id="playerView2" fitHeight="74.0" fitWidth="76.0" layoutX="1.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="playerView2" fitHeight="74.0" fitWidth="76.0" layoutX="1.0" onMouseEntered="#createPlayerSummary" onMouseExited="#closePlayerSummary" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@images/profile3.png" />
                            </image></ImageView>
                      </children></Pane>
                   <Pane layoutX="210.0" layoutY="10.0" prefHeight="90.0" prefWidth="90.0" style="-fx-background-color: #E79DB3; -fx-background-radius: 10;">
                      <children>
-                        <ImageView fx:id="playerView3" fitHeight="80.0" fitWidth="76.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fx:id="playerView3" fitHeight="80.0" fitWidth="76.0" layoutY="-1.0" onMouseEntered="#createPlayerSummary" onMouseExited="#closePlayerSummary" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@images/profile4.png" />
                            </image></ImageView>
@@ -911,6 +899,152 @@
             <ButtonType fx:constant="OK" />
          </buttonTypes>
       </DialogPane>
+      <BorderPane fx:id="playerSummaryPane" layoutX="490.0" layoutY="200.0" prefHeight="451.0" prefWidth="603.0" style="-fx-background-color: #faecc0; -fx-border-color: #000000; -fx-border-width: 5;" visible="false">
+         <top>
+            <Label text="Player Info" textAlignment="CENTER" BorderPane.alignment="CENTER">
+               <font>
+                  <Font size="28.0" />
+               </font>
+            </Label>
+         </top>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+         <center>
+            <HBox fx:id="playerSummaryHBox" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <children>
+                  <VBox fx:id="discountVBox" alignment="CENTER" prefHeight="304.0" prefWidth="160.0">
+                     <children>
+                        <Label text="Discounts/Bonuses" />
+                        <GridPane id="bankMatrix" fx:id="discountSummary" alignment="CENTER" prefHeight="300.0" prefWidth="200.0">
+                           <children>
+                              <Label fx:id="summaryGreenAmt" alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Satoshi Black" size="24.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="summaryWhiteAmt" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font name="Satoshi Black" size="24.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="summaryBlueAmt" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="7" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font name="Satoshi Black" size="24.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="summaryBlackAmt" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                                 <font>
+                                    <Font name="Satoshi Black" size="24.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="summaryRedAmt" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+                                 <font>
+                                    <Font name="Satoshi Black" size="24.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="summaryGoldAmt" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="5">
+                                 <font>
+                                    <Font name="Satoshi Black" size="24.0" />
+                                 </font>
+                              </Label>
+                              <Circle fill="#17ae4c" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                              <Circle fill="#dfe8e2" layoutX="93.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                              <Circle fill="#3d91ff" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                              <Circle fill="#323232" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+                              <Circle fill="#fc6060" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+                              <Circle fill="#fce410" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="69.0" minWidth="10.0" prefWidth="33.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                        </GridPane>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="gemVBox" alignment="CENTER" prefHeight="304.0" prefWidth="160.0">
+                     <children>
+                        <Label text="Current Gems" />
+                        <GridPane id="bankMatrix" fx:id="gemSummary" alignment="CENTER" prefHeight="300.0" prefWidth="200.0">
+                           <children>
+                              <Label fx:id="summaryGreenAmt1" alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER">
+                                 <font>
+                                    <Font name="Satoshi Black" size="24.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="summaryWhiteAmt1" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font name="Satoshi Black" size="24.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="summaryBlueAmt1" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="7" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font name="Satoshi Black" size="24.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="summaryBlackAmt1" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                                 <font>
+                                    <Font name="Satoshi Black" size="24.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="summaryRedAmt1" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+                                 <font>
+                                    <Font name="Satoshi Black" size="24.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="summaryGoldAmt1" alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="5">
+                                 <font>
+                                    <Font name="Satoshi Black" size="24.0" />
+                                 </font>
+                              </Label>
+                              <Circle fill="#17ae4c" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                              <Circle fill="#dfe8e2" layoutX="93.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                              <Circle fill="#3d91ff" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                              <Circle fill="#323232" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+                              <Circle fill="#fc6060" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+                              <Circle fill="#fce410" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+                           </children>
+                           <columnConstraints>
+                              <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="69.0" minWidth="10.0" prefWidth="33.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                        </GridPane>
+                     </children>
+                  </VBox>
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <VBox fx:id="reservedSummary" alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Label text="Reserved Cards" />
+                           </children>
+                        </VBox>
+                        <VBox fx:id="noblesSummary" alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <Label text="Acquired Nobles" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </center>
+      </BorderPane>
    </children>
 
    <fx:define>
