@@ -296,7 +296,6 @@ public class GameBoard {
 
   public void closeAllActionWindows() {
     cardActionMenu.setVisible(false);
-    selectedCardView.setVisible(false);
     reservedCardsView.setVisible(false);
     purchasedCardsView.setVisible(false);
     bank.close(gameBoardForm.availableGems());
