@@ -202,14 +202,15 @@ public class Bank {
 
       // If we have the gem colour in our hand, 'remove' should be enabled;
       // Otherwise, disable the 'remove' button.
-      if (!selectedGems.contains(idx)) {
+      if (!selectedGems.contains(idx) || idx == 5 /*Gem is gold*/) {
         removeGemButtons.get(idx).setDisable(true);
       } else {
         removeGemButtons.get(idx).setDisable(false);
       }
       // If (following 5 conditions) hold, 'add' should be enabled.
       //Otherwise, disable the 'add' button.
-      if (bankGems[idx] == 0
+      if (idx == 5 /*Gem is gold*/
+          || bankGems[idx] == 0
           || (bankGems[idx] < 3 && selectedGems.contains(idx))
           || handBucket.get(idx) > 0 && selectedGems.size() > 1
           || selectedGems.size() == 3
