@@ -43,6 +43,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -141,9 +142,9 @@ public class GameBoard {
   @FXML
   private BorderPane playerSummaryPane;
   @FXML
-  private VBox reservedSummary;
+  private HBox reservedSummary;
   @FXML
-  private VBox noblesSummary;
+  private HBox noblesSummary;
   @FXML
   private Label playerSummaryUserLabel;
   @FXML
@@ -908,6 +909,10 @@ public class GameBoard {
       index++;
     }
 
+    // Reset content before updating it
+    reservedSummary.getChildren().clear();
+    noblesSummary.getChildren().clear();
+
     // Fetch and apply the player's reserved cards as images
     List<Image> requestedPlayerReservedCardImages = new ArrayList<>();
     Card cardToAdd = null;
@@ -981,21 +986,7 @@ public class GameBoard {
 
   @FXML
   private void handleWaterfallChoiceSelect(MouseEvent event, WaterfallCardForm wf) {
-    Card selectedCard = (Card) event.getSource();
-    CardForm selectedCardForm = null;
-
-    List<CardForm> waterfallSelection = fetchWaterfallSelection();
-    for (CardForm c : waterfallSelection) {
-      if (selectedCard.equals(c)) {
-        selectedCardForm = c;
-      }
-    }
-
-    if (selectedCardForm == null) {
-      System.out.println("DEBUG: Failed to fetch waterfall selection");
-      return;
-    }
-
-    WaterfallCardForm waterfallWithSelection = new WaterfallCardForm(wf, selectedCardForm);
+    CardForm selectedCard = ((Card) event.getSource()).getCardForm();
+    WaterfallCardForm waterfallWithSelection = new WaterfallCardForm(wf, selectedCard);
   }
 }
