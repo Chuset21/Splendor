@@ -935,13 +935,13 @@
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <HBox fx:id="reservedSummary" prefHeight="100.0" prefWidth="200.0" />
+                        <HBox fx:id="reservedSummary" prefHeight="100.0" prefWidth="250.0" />
                         <Label text="Acquired Nobles">
                            <font>
                               <Font size="16.0" />
                            </font>
                         </Label>
-                        <HBox fx:id="noblesSummary" prefHeight="100.0" prefWidth="200.0" />
+                        <HBox fx:id="noblesSummary" prefHeight="100.0" prefWidth="250.0" />
                      </children>
                   </VBox>
                </children>
