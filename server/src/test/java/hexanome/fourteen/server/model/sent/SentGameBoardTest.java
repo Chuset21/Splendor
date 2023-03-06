@@ -76,7 +76,7 @@ public class SentGameBoardTest {
         players.add(player4);
 
         sentGameBoard = new SentGameBoard(playerTurnid, availableNobles, availableGems,
-                cards, expansions, leadingPlayer, players, gameid, creator);
+                cards, expansions, leadingPlayer, players, gameid, creator, false, false);
 
     }
 

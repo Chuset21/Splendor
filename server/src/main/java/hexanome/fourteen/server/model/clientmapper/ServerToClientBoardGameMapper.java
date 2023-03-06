@@ -45,6 +45,8 @@ public class ServerToClientBoardGameMapper implements Mapper<GameBoard, SentGame
 
     return new SentGameBoard(playerTurnMap.get(gameBoard.playerTurn()).uid(),
         gameBoard.availableNobles(), gameBoard.availableGems(), sentCards, gameBoard.expansions(),
-        gameBoard.leadingPlayer(), gameBoard.players(), gameBoard.gameid(), gameBoard.creator());
+        gameBoard.leadingPlayer(), gameBoard.players(), gameBoard.gameid(), gameBoard.creator(),
+        gameBoard.isLastRound(),
+        gameBoard.isGameOver());
   }
 }

@@ -107,6 +107,7 @@ public abstract class Card extends Image {
   public abstract int[] getCost();
   public abstract GemColor getDiscountColor();
   public abstract int getDiscountAmount();
+  public abstract CardForm getCardForm();
 
   /**
    * Converts card object into text.

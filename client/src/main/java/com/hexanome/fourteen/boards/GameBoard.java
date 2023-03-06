@@ -5,6 +5,7 @@ import com.hexanome.fourteen.ServerCaller;
 import com.hexanome.fourteen.form.server.GameBoardForm;
 import com.hexanome.fourteen.form.server.GemsForm;
 import com.hexanome.fourteen.form.server.PlayerForm;
+import com.hexanome.fourteen.form.server.ReserveCardForm;
 import com.hexanome.fourteen.form.server.cardform.CardForm;
 import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
 import com.hexanome.fourteen.form.server.cardform.WaterfallCardForm;
@@ -19,6 +20,10 @@ import java.util.Random;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.IntStream;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -496,7 +501,7 @@ public class GameBoard {
       }
     }
     //// Handle Reserve Availability
-    if (hand.reservedCards.size() < 3) {
+    if (hand.reservedCards.size() < 3 && !hand.reservedCards.contains(((Card)selectedCardView.getImage()).getCardForm())) {
       cardReserveButton.setDisable(false);
     } else {
       cardReserveButton.setDisable(true);
@@ -544,27 +549,23 @@ public class GameBoard {
     // Get card to be purchased
     Card cardReserved = (Card) selectedCardView.getImage();
 
-    // Store image of purchased card in player's purchase stack
-    reservedCardImages.add(selectedCardView.getImage());
+    ReserveCardForm reserveCardForm = new ReserveCardForm(cardReserved.getCardForm(), null, false);
 
-    // Clear imageview of reserved card
-    selectedCardView.setImage(null);
+    try {
+      ServerCaller.reserveCard(LobbyServiceCaller.getCurrentUserLobby(),
+          LobbyServiceCaller.getCurrentUserAccessToken(), reserveCardForm);
 
-    // Refill imageview if a card is left in the deck
-    for (Deck d : gameDecks) {
-      if (d.hasCardSlot(selectedCardView) && !d.empty()) {
-        selectedCardView.setImage(d.pop());
+      // Close card menu
+      cardActionMenu.setVisible(false);
+
+      updateBoard();
+    } catch (TokenRefreshFailedException e){
+      try{
+        MenuController.returnToLogin("Session timed out, retry login");
+      } catch(IOException ioe){
+        ioe.printStackTrace();
       }
     }
-
-    // Put reserved card in inventory
-    reservedStack.setImage(cardReserved);
-
-    // Add the card to the player's hand
-    player.getHand().reservedCards.add(cardReserved);
-
-    // Close card menu
-    cardActionMenu.setVisible(false);
   }
 
   public void handleTakeGreenGemButton() {
@@ -686,6 +687,35 @@ public class GameBoard {
   }
 
   @FXML
+  // viewParams = [cardWidth, cardHeight, numOfColumns]
+  public GridPane generateCardGrid(List<Image> imageList, int[] viewParams, Consumer<MouseEvent> mouseClickEvent) {
+    // Create a GridPane to hold the images
+    GridPane cardImageGrid = new GridPane();
+    cardImageGrid.setHgap(10);
+    cardImageGrid.setVgap(10);
+
+    // Loop through the images and add them to the GridPane
+    int row = 0;
+    int col = 0;
+    for (Image image : imageList) {
+      ImageView cardIV = new ImageView(image);
+      cardIV.setFitWidth(viewParams[0]);
+      cardIV.setFitHeight(viewParams[1]);
+      cardIV.setOnMouseClicked(e -> {mouseClickEvent.accept(e);});
+
+      cardImageGrid.add(cardIV, col, row);
+      col++;
+
+      // Store 9 cards per row
+      if (col == viewParams[2]) {
+        col = 0;
+        row++;
+      }
+    }
+    return cardImageGrid;
+  }
+
+  @FXML
   public void handlePurchasedPaneSelect(MouseEvent event) {
 
     //Print to console all the player's purchased cards
@@ -725,8 +755,13 @@ public class GameBoard {
 
   @FXML
   public void handleReservedPaneSelect(MouseEvent event) {
+    reservedCardImages.clear();
+    for(CardForm cardForm : player.getHandForm().reservedCards()){
+      reservedCardImages.add((cardForm instanceof StandardCardForm)? new StandardCard((StandardCardForm) cardForm) : new OrientCard(cardForm));
+    }
+
     // Create image grid of reserved cards
-    GridPane imagePane = generateCardGrid(reservedCardImages, new int[] {200, 260, 3});
+    GridPane imagePane = generateCardGrid(reservedCardImages, new int[] {200, 260, 3}, this::handleCardSelect);
 
     // Create a purchase button for each reserved card
     for (int i = 0; i < reservedCardImages.size(); i++) {
@@ -788,14 +823,7 @@ public class GameBoard {
   }
 
   private boolean isValidNobleVisit(int[] playerBonuses, int[] nobleCost) {
-    boolean isValid = true;
-    for (int i = 0; i < nobleCost.length; i++) {
-      if (playerBonuses[i] < nobleCost[i]) {
-        isValid = false;
-        break;
-      }
-    }
-    return isValid;
+    return IntStream.range(0, nobleCost.length).noneMatch(i -> playerBonuses[i] < nobleCost[i]);
   }
 
   @FXML
@@ -850,7 +878,7 @@ public class GameBoard {
 
     // Fetches the requested player's information via UID
     for (PlayerForm playerForm : gameBoardForm.players()) {
-      if (playerForm.uid() == requestedUID) {
+      if (Objects.equals(playerForm.uid(), requestedUID)) {
         requestedPlayer = playerForm;
       }
     }

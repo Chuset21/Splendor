@@ -698,13 +698,7 @@ public class GameHandlerController {
   }
 
   private static ResponseEntity<String> getStringResponseEntity(GameBoard gameBoard) {
-    final boolean isLastRound = gameBoard.nextTurn();
-
-    if (gameBoard.isGameOver()) {
-      return ResponseEntity.status(HttpStatus.OK).body("game is over");
-    } else if (isLastRound) {
-      return ResponseEntity.status(HttpStatus.OK).body("last round");
-    }
+    gameBoard.nextTurn();
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 

@@ -3,21 +3,12 @@ package com.hexanome.fourteen.lobbyui;
 import com.hexanome.fourteen.GameServiceName;
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
-import com.hexanome.fourteen.boards.Expansion;
 import com.hexanome.fourteen.form.lobbyservice.CreateSessionForm;
-import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
-import java.util.ResourceBundle;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -31,19 +22,9 @@ public class CreateGameScreenController implements ScreenController {
   @FXML
   private Button backButton;
   @FXML
-  private TextField createLobbyPasswordField;
-  @FXML
   private ToggleButton selectOrientToggle;
   @FXML
   private ToggleButton selectExtraToggle;
-  @FXML
-  private ToggleButton maxPlayerToggleTwo;
-  @FXML
-  private ToggleButton maxPlayerToggleThree;
-  @FXML
-  private ToggleButton maxPlayerToggleFour;
-  @FXML
-  private final ToggleGroup maxPlayersSetting = new ToggleGroup();
   @FXML
   private final ToggleGroup expansionSetting = new ToggleGroup();
   @FXML
@@ -62,13 +43,6 @@ public class CreateGameScreenController implements ScreenController {
     this.stage = stage;
 
     // Post init
-    //Initialize ToggleGroup and Toggles for selecting max players in the create game menu
-    ArrayList<ToggleButton> maxPlayersToggles = new ArrayList<>(
-        Arrays.asList(maxPlayerToggleTwo, maxPlayerToggleThree, maxPlayerToggleFour));
-    for (Toggle toggle : maxPlayersToggles) {
-      toggle.setToggleGroup(maxPlayersSetting);
-    }
-
     //Initialize ToggleGroup and Toggles for selecting an expansion in the create game menu
     ArrayList<ToggleButton> expansionToggles =
         new ArrayList<>(Arrays.asList(selectExtraToggle, selectOrientToggle));
@@ -109,9 +83,7 @@ public class CreateGameScreenController implements ScreenController {
     if (sessionid != null) {
       try {
         System.out.println(
-            "Expansion toggle: " + (expansionSetting.getSelectedToggle().getUserData()).toString()
-            + "\nPlayer count toggle: " + maxPlayersSetting.getSelectedToggle().toString());
-
+            "Expansion toggle: " + (expansionSetting.getSelectedToggle().getUserData()).toString());
         MenuController.goToInLobbyScreen(new Lobby(sessionid));
       } catch (Exception ioe) {
         LobbyServiceCaller.setCurrentUserLobby(null);
