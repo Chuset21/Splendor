@@ -29,6 +29,10 @@ public final class WaterfallCardForm extends CardForm {
     this.cardToTake = cardToTake;
   }
 
+  public WaterfallCardForm(WaterfallCardForm wf, CardForm cardToTake) {
+    this(wf.prestigePoints, wf.cost, wf.level, wf.expansion, wf.discountColor, cardToTake);
+  }
+
   /**
    * Constructor.
    *
