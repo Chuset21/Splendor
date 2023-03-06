@@ -142,12 +142,10 @@ public final class ServerCaller {
    */
   public static HttpResponse<String> takeGems(Lobby lobby, String accessToken,
                                               TakeGemsForm takeGemsForm) {
-    final HttpResponse response = Unirest.put(
+    return Unirest.put(
             "%s/api/games/%s/gems".formatted(lobby.getGameServiceLocation(), lobby.getSessionid()))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("access_token", accessToken).body(Main.GSON.toJson(takeGemsForm)).asString();
-
-    return response;
   }
 
   /**
