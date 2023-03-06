@@ -6,10 +6,12 @@ import com.hexanome.fourteen.form.server.GameBoardForm;
 import com.hexanome.fourteen.form.server.GemsForm;
 import com.hexanome.fourteen.form.server.HandForm;
 import com.hexanome.fourteen.form.server.PlayerForm;
+import com.hexanome.fourteen.form.server.PurchaseCardForm;
 import com.hexanome.fourteen.form.server.ReserveCardForm;
 import com.hexanome.fourteen.form.server.cardform.CardForm;
 import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
 import com.hexanome.fourteen.form.server.cardform.WaterfallCardForm;
+import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -67,7 +69,6 @@ public class GameBoard {
       {"cat.jpg", "dog.jpg", "squirrel.jpg", "chameleon.jpg"};
 
   Bank bank;
-  public int numPlayers = 4;
 
   public static final int[] GEM_INDEX = {0, 1, 2, 3, 4, 5};
 
@@ -85,19 +86,10 @@ public class GameBoard {
   private static final Effect currentPlayerEffect =
       new DropShadow(BlurType.GAUSSIAN, Color.web("#0048ff"), 24.5, 0, 0, 0);
 
-  private ArrayList<Card> gameCards;
   private ArrayList<Noble> gameNobles;
-  private Deck level3Cards;
-  private Deck level2Cards;
-  private Deck level1Cards;
-  private Deck level3CardsOrient;
-  private Deck level2CardsOrient;
-  private Deck level1CardsOrient;
-  private ArrayList<Deck> gameDecks;
-  private String selectedCardId;
 
   @FXML
-  private Button takeBankButton;
+  private Button openBankButton;
   @FXML
   private Pane menuPopupPane;
   @FXML
@@ -205,7 +197,9 @@ public class GameBoard {
   @FXML
   private Pane takenTokenPane;
   @FXML
-  private ArrayList<Label> takenGemLabels;
+  private ArrayList<Label> takenTokenLabels;
+  @FXML
+  private Button takeBankButton;
   private Service<Void> service;
 
   /**
@@ -226,8 +220,8 @@ public class GameBoard {
     setupPlayers();
 
     // Set up bank
-    bank = new Bank(players.size(), addGemButtons, removeGemButtons, takenGemLabels, bGemLabels,
-        takeBankButton, takenTokenPane, this);
+    bank = new Bank(players.size(), addGemButtons, removeGemButtons, takenTokenLabels, bGemLabels,
+        openBankButton, takeBankButton, takenTokenPane, this);
 
     // Initialize the player's gems
     for (int idx : GEM_INDEX) {
@@ -297,6 +291,14 @@ public class GameBoard {
 
     // Setup nobles CSV data and display on board
     generateNobles();
+  }
+
+  public void closeAllActionWindows(){
+    cardActionMenu.setVisible(false);
+    selectedCardView.setVisible(false);
+    reservedCardsView.setVisible(false);
+    purchasedCardsView.setVisible(false);
+    bank.close(gameBoardForm.availableGems());
   }
 
   /**
@@ -436,7 +438,7 @@ public class GameBoard {
 
     // Only allow the current player to alter the game (i.e. open bank or open card action menu)
     if (LobbyServiceCaller.getCurrentUserid().equals(gameBoardForm.playerTurnid())) {
-      currentPlayerTurnLabel.setText("YOUR Turn");
+      currentPlayerTurnLabel.setText("Your Turn");
       enableGameAlteringActions();
     } else {
       disableGameAlteringActions();
@@ -468,9 +470,6 @@ public class GameBoard {
     if (selectedCardView.getImage() == null) {
       return;
     }
-
-    // Get id of imageview
-    selectedCardId = selectedCardView.getId();
 
     // Set action pane image to the selected card
     cardActionImage.setImage(selectedCardView.getImage());
@@ -522,27 +521,28 @@ public class GameBoard {
     // Get card to be purchased
     Card cardPurchased = (Card) selectedCardView.getImage();
 
-    // Store image of purchased card in player's purchase stack
-    purchasedCardImages.add(selectedCardView.getImage());
-
-    // Clear imageview of purchased card
-    selectedCardView.setImage(null);
-
-    // Refill imageview if a card is left in the deck
-    for (Deck d : gameDecks) {
-      if (d.hasCardSlot(selectedCardView) && !d.empty()) {
-        selectedCardView.setImage(d.pop());
-      }
+    if(!(cardPurchased.getCardForm() instanceof StandardCardForm)){
+      return;
     }
 
-    // Put purchased card in inventory
-    purchasedStack.setImage(cardPurchased);
+    PurchaseCardForm purchaseCardForm = new PurchaseCardForm(cardPurchased.getCardForm(), new GemPaymentForm(cardPurchased.getCardForm().cost(),null,0),player.getHandForm().reservedCards().contains(cardPurchased.getCardForm()));
 
-    // Add purchased card to player's hand
-    player.getHand().purchasedCards.add(cardPurchased);
+    try {
+      ServerCaller.purchaseCard(LobbyServiceCaller.getCurrentUserLobby(),
+          LobbyServiceCaller.getCurrentUserAccessToken(), purchaseCardForm);
 
-    // Close card menu
-    cardActionMenu.setVisible(false);
+      // Close card menu
+      cardActionMenu.setVisible(false);
+
+      closeAllActionWindows();
+      updateBoard();
+    } catch (TokenRefreshFailedException e){
+      try{
+        MenuController.returnToLogin("Session timed out, retry login");
+      } catch(IOException ioe){
+        ioe.printStackTrace();
+      }
+    }
   }
 
   /**
@@ -561,6 +561,7 @@ public class GameBoard {
       // Close card menu
       cardActionMenu.setVisible(false);
 
+      closeAllActionWindows();
       updateBoard();
     } catch (TokenRefreshFailedException e){
       try{
@@ -624,8 +625,13 @@ public class GameBoard {
   }
 
   @FXML
-  private void handleClickTakeBankButton() {
+  private void handleClickOpenBankButton() {
     bank.toggle();
+  }
+
+  @FXML
+  private void handleClickTakeBankButton(){
+    bank.take();
   }
 
   @FXML
@@ -728,18 +734,17 @@ public class GameBoard {
   @FXML
   public void handlePurchasedPaneSelect(MouseEvent event) {
 
-    //Print to console all the player's purchased cards
-    System.out.println("DEBUG: USER'S PURCHASED CARDS");
-    Hand hand = player.getHand();
-    for (int i = 0; i < hand.purchasedCards.size(); i++) {
-      Card current = hand.purchasedCards.get(i);
-      System.out.println(current.toString());
+    purchasedCardImages.clear();
+
+    for(CardForm cardForm : player.getHandForm().purchasedCards()){
+      purchasedCardImages.add((cardForm instanceof StandardCardForm)? new StandardCard((StandardCardForm) cardForm) : new OrientCard(cardForm));
     }
 
-    // Set the purchased pane's content to the card image grid
+    // Reset pane and set the purchased pane's content to the card image grid
     purchasedBorderPane.setCenter(generateCardGrid(purchasedCardImages, new int[] {120, 170, 9}));
 
     // Open purchased pane
+    purchasedCardsView.toFront();
     purchasedCardsView.setVisible(true);
   }
 
@@ -778,6 +783,7 @@ public class GameBoard {
     reservedCardsVBox.getChildren().add(imagePane);
 
     // Open reserved cards pane
+    reservedCardsView.toFront();
     reservedCardsView.setVisible(true);
   }
 

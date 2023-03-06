@@ -187,7 +187,7 @@
                   <Font name="Satoshi Bold" size="32.0" />
                </font>
             </Label>
-            <Button id="takeFromBankButton" fx:id="takeBankButton" layoutX="59.0" layoutY="361.0" mnemonicParsing="false" onAction="#handleClickTakeBankButton" prefHeight="40.0" prefWidth="84.0" style="-fx-background-color: #72465B; -fx-border-color: #72465B; -fx-background-radius: 10; -fx-border-radius: 10;" text="Open" textFill="#f8db85">
+            <Button id="takeFromBankButton" fx:id="openBankButton" layoutX="59.0" layoutY="361.0" mnemonicParsing="false" onAction="#handleClickOpenBankButton" prefHeight="40.0" prefWidth="84.0" style="-fx-background-color: #72465B; -fx-border-color: #72465B; -fx-background-radius: 10; -fx-border-radius: 10;" text="Open" textFill="#f8db85">
                <font>
                   <Font name="Satoshi Bold" size="18.0" />
                </font>
@@ -459,7 +459,7 @@
             </ImageView>
          </children>
       </GridPane>
-      <Pane id="bankPane" fx:id="takenTokenPane" layoutX="234.0" layoutY="187.0" prefHeight="340.0" prefWidth="101.0" style="-fx-background-color: #F8DB85; -fx-background-radius: 20;">
+      <Pane id="bankPane" fx:id="takenTokenPane" layoutX="234.0" layoutY="187.0" prefHeight="390.0" prefWidth="101.0" style="-fx-background-color: #F8DB85; -fx-background-radius: 20;">
          <children>
             <GridPane id="bankMatrix" fx:id="takenTokenMatrix" alignment="CENTER" layoutX="22.0" layoutY="75.0" prefHeight="300.0" prefWidth="49.0">
                <children>
@@ -506,6 +506,14 @@
                   <Font name="Satoshi Bold" size="24.0" />
                </font>
             </Label>
+            <Button id="takeFromBankButton" fx:id="takeBankButton" layoutX="59.0" layoutY="361.0" mnemonicParsing="false" onAction="#handleClickTakeBankButton" prefHeight="40.0" prefWidth="75.0" style="-fx-background-color: #72465B; -fx-border-color: #72465B; -fx-background-radius: 10; -fx-border-radius: 10;" text="Take" textFill="#f8db85">
+               <font>
+                  <Font name="Satoshi Bold" size="18.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
          </children>
       </Pane>
       <Button fx:id="menuButton" contentDisplay="RIGHT" layoutX="1465.0" layoutY="8.0" mnemonicParsing="false" onAction="#handleClickMenuButton" style="-fx-background-color: #F8DB85;" text="Menu" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
@@ -1067,7 +1075,7 @@
       </java.util.ArrayList>
    </fx:define>
    <fx:define>
-      <java.util.ArrayList fx:id="takenGemLabels">
+      <java.util.ArrayList fx:id="takenTokenLabels">
          <fx:reference source="takenGreenGemLabel" />
          <fx:reference source="takenWhiteGemLabel" />
          <fx:reference source="takenBlueGemLabel" />
