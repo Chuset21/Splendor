@@ -125,12 +125,8 @@ public class Bank {
   public void sendTakeGems(List<Integer> takenGems){
     GemsForm convertedForm = new GemsForm();
 
-    for(int i = 0; i<5;i++){
-      convertedForm.put(GemColor.INT_CONVERSION_ARRAY.get(i), 0);
-    }
-
     for(Integer i : takenGems){
-      convertedForm.put(GemColor.INT_CONVERSION_ARRAY.get(i),convertedForm.get(GemColor.INT_CONVERSION_ARRAY.get(i)).intValue() + 1);
+      convertedForm.put(GemColor.INT_CONVERSION_ARRAY.get(i),convertedForm.getOrDefault(GemColor.INT_CONVERSION_ARRAY.get(i),0).intValue() + 1);
     }
 
     TakeGemsForm form = new TakeGemsForm(convertedForm, null);
