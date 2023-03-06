@@ -384,6 +384,7 @@ public final class GameBoard implements BroadcastContent {
       isLastRound = true;
     }
     playerTurn = (playerTurn + 1) % players.size();
+    System.out.println(playerTurn);
   }
 
   /**
@@ -421,5 +422,15 @@ public final class GameBoard implements BroadcastContent {
   @Override
   public boolean isEmpty() {
     return false;
+  }
+
+  /**
+   * Checks whether it's the player's turn.
+   *
+   * @param username The player's username.
+   * @return true if it's the player's turn, false otherwise.
+   */
+  public boolean isPlayerTurn(String username) {
+    return playerTurnMap.get(playerTurn).uid().equals(username);
   }
 }

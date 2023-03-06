@@ -293,6 +293,9 @@ public class GameHandlerController {
     final Hand hand = GameBoardHelper.getHand(gameBoard.players(), username);
     if (hand == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
+    } else if (!gameBoard.isPlayerTurn(username)) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+          .body("cannot take an action outside of your turn");
     }
 
     final Card card = purchaseCardForm.card();
@@ -628,6 +631,9 @@ public class GameHandlerController {
     final Hand hand = GameBoardHelper.getHand(gameBoard.players(), username);
     if (hand == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
+    } else if (!gameBoard.isPlayerTurn(username)) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+          .body("cannot take an action outside of your turn");
     }
 
     if (hand.reservedCards().size() >= 3) {
@@ -729,6 +735,9 @@ public class GameHandlerController {
     final Hand hand = GameBoardHelper.getHand(gameBoard.players(), username);
     if (hand == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
+    } else if (!gameBoard.isPlayerTurn(username)) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+          .body("cannot take an action outside of your turn");
     }
 
     final TakeGemsForm takeGemsForm =
@@ -836,6 +845,9 @@ public class GameHandlerController {
     final Hand hand = GameBoardHelper.getHand(gameBoard.players(), username);
     if (hand == null) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
+    } else if (!gameBoard.isPlayerTurn(username)) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+          .body("cannot take an action outside of your turn");
     }
 
     final ClaimNobleForm claimNobleForm =
