@@ -302,6 +302,10 @@ public class GameBoard {
     bank.close(gameBoardForm.availableGems());
   }
 
+  public GameBoardForm getGameBoardForm(){
+    return gameBoardForm;
+  }
+
   /**
    * Puts all visible cards on the board
    */

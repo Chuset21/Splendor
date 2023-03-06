@@ -115,7 +115,7 @@ public class Bank {
       updateBankButtons();
 
     } else {
-      close(null);
+      close(gameBoard.getGameBoardForm().availableGems());
     }
   }
 
