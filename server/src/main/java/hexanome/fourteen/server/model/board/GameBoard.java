@@ -79,6 +79,7 @@ public final class GameBoard implements BroadcastContent {
   private String gameid;
   private boolean isLastRound;
   private final String creator;
+  private boolean isActionTaken;
 
   /**
    * Constructor.
@@ -113,6 +114,7 @@ public final class GameBoard implements BroadcastContent {
     this.players = players;
     this.gameid = gameid;
     this.creator = creator;
+    isActionTaken = false;
   }
 
   /**
@@ -384,6 +386,15 @@ public final class GameBoard implements BroadcastContent {
       isLastRound = true;
     }
     playerTurn = (playerTurn + 1) % players.size();
+    isActionTaken = false;
+  }
+
+  public boolean isActionTaken() {
+    return isActionTaken;
+  }
+
+  public void takeAction() {
+    isActionTaken = true;
   }
 
   /**

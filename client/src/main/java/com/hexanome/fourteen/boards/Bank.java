@@ -13,7 +13,9 @@ import java.util.Hashtable;
 import java.util.List;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import kong.unirest.HttpResponse;
 
 /**
  * A Bank Class to allow handling of Gems.
@@ -120,8 +122,29 @@ public class Bank {
   }
 
   public void take(){
-    // Send take gems action to the server
-    sendTakeGems(selectedGems);
+
+    int[] gemsInHand = GemsForm.costHashToArrayWithGold(gameBoard.player.getHandForm().gems());
+    int totalGemsInHand = 0;
+
+    for(int i : gemsInHand){
+      totalGemsInHand += i;
+    }
+
+    // If taking gems would result in more than 10, go to tokenDiscarder
+    if(selectedGems.size() + totalGemsInHand > 10){
+      openTokenDiscarder(selectedGems.size() + totalGemsInHand - 10);
+    } else{
+      // Send take gems action to the server
+      sendTakeGems(selectedGems, null);
+    }
+  }
+
+  /**
+   * Send take gems action with gemsToRemove
+   * @param gemsToRemove
+   */
+  public void take(GemsForm gemsToRemove){
+    sendTakeGems(selectedGems, gemsToRemove);
   }
 
   public void close(GemsForm gemsForm){
@@ -141,20 +164,27 @@ public class Bank {
     }
   }
 
-  public void sendTakeGems(List<Integer> takenGems){
+  private void openTokenDiscarder(int tokensToDiscard){
+    gameBoard.tokenDiscarder = new TokenDiscarder(gameBoard, tokensToDiscard, this::take);
+    gameBoard.tokenDiscarder.open();
+  }
+
+  public void sendTakeGems(List<Integer> takenGems, GemsForm gemsToRemove){
     GemsForm convertedForm = new GemsForm();
 
     for(Integer i : takenGems){
       convertedForm.put(GemColor.INT_CONVERSION_ARRAY.get(i),convertedForm.getOrDefault(GemColor.INT_CONVERSION_ARRAY.get(i),0).intValue() + 1);
     }
 
-    TakeGemsForm form = new TakeGemsForm(convertedForm, null);
+    TakeGemsForm form = new TakeGemsForm(convertedForm, gemsToRemove);
 
-    ServerCaller.takeGems(LobbyServiceCaller.getCurrentUserLobby(),
-        LobbyServiceCaller.getCurrentUserAccessToken(), form);
+    HttpResponse<String> response =
+        ServerCaller.takeGems(LobbyServiceCaller.getCurrentUserLobby(),
+            LobbyServiceCaller.getCurrentUserAccessToken(), form);
 
     gameBoard.closeAllActionWindows();
     gameBoard.updateBoard();
+    gameBoard.acquireNobleCheck(response);
   }
 
   /**

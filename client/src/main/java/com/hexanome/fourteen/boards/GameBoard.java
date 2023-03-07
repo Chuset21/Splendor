@@ -1,10 +1,13 @@
 package com.hexanome.fourteen.boards;
 
+import com.google.gson.reflect.TypeToken;
 import com.hexanome.fourteen.Main;
 import com.hexanome.fourteen.ServerCaller;
+import com.hexanome.fourteen.form.server.ClaimNobleForm;
 import com.hexanome.fourteen.form.server.GameBoardForm;
 import com.hexanome.fourteen.form.server.GemsForm;
 import com.hexanome.fourteen.form.server.HandForm;
+import com.hexanome.fourteen.form.server.NobleForm;
 import com.hexanome.fourteen.form.server.PlayerForm;
 import com.hexanome.fourteen.form.server.PurchaseCardForm;
 import com.hexanome.fourteen.form.server.ReserveCardForm;
@@ -14,10 +17,12 @@ import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
 import com.hexanome.fourteen.form.server.cardform.WaterfallCardForm;
 import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,6 +30,7 @@ import java.util.Random;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import javafx.application.Platform;
@@ -79,7 +85,7 @@ public class GameBoard {
   private static Random random = new Random();
 
   // Player's Info
-  private Player player;
+  public Player player;
   private List<Player> players;
   @FXML
   private ArrayList<ImageView> playerViews;
@@ -120,7 +126,6 @@ public class GameBoard {
   // ACQUIRED NOBLES PANE
   @FXML
   private BorderPane acquiredNoblesView;
-  private List<Image> acquiredNoblesImages = new ArrayList<Image>();
   @FXML
   private BorderPane reservedBorderPane;
   @FXML
@@ -150,7 +155,10 @@ public class GameBoard {
   @FXML
   private VBox waterfallVBox;
 
-  private Card tentativeSelection;
+  private Card tentativeCardSelection;
+  private Noble tentativeNobleSelection;
+  @FXML
+  private VBox nobleAcquiredLabelVBox;
 
 
   //CARD FIELDS
@@ -207,6 +215,13 @@ public class GameBoard {
   @FXML
   private Button takeBankButton;
   private Service<Void> service;
+  @FXML
+  public DialogPane discardTokenPane;
+  @FXML
+  public GridPane discardTokenGrid;
+  @FXML
+  public Label discardTokenLabel;
+  public TokenDiscarder tokenDiscarder;
 
   /**
    * A call to this method displays the game on screen by initializing the scene with the gameboard.
@@ -303,6 +318,9 @@ public class GameBoard {
     cardActionMenu.setVisible(false);
     reservedCardsView.setVisible(false);
     purchasedCardsView.setVisible(false);
+    if(tokenDiscarder != null){
+      tokenDiscarder.close();
+    }
     bank.close(gameBoardForm.availableGems());
   }
 
@@ -407,10 +425,10 @@ public class GameBoard {
       if (i < players.size() && players.get(i) != null) {
         ((ImageView) playerViews.get(i)).setImage(players.get(i));
         Tooltip.install(((ImageView) playerViews.get(i)), new Tooltip(players.get(i).getUserId() +
-                                                                      (player.getUserId().equals(
-                                                                          players.get(i)
-                                                                              .getUserId()) ?
-                                                                          " (you)" : "")));
+            (player.getUserId().equals(
+                players.get(i)
+                    .getUserId()) ?
+                " (you)" : "")));
       } else {
         ((ImageView) playerViews.get(i)).imageProperty().set(null);
       }
@@ -555,25 +573,68 @@ public class GameBoard {
    * @param purchaseCardForm form of purchase card
    */
   private void purchaseCard(PurchaseCardForm purchaseCardForm) {
-    ServerCaller.purchaseCard(LobbyServiceCaller.getCurrentUserLobby(),
+    HttpResponse<String> response =
+        ServerCaller.purchaseCard(LobbyServiceCaller.getCurrentUserLobby(),
             LobbyServiceCaller.getCurrentUserAccessToken(), purchaseCardForm);
 
     // Close card menu
     cardActionMenu.setVisible(false);
 
     closeAllActionWindows();
-    updateBoard();
+    //updateBoard();
+    acquireNobleCheck(response);
   }
 
   /**
    * Performs all necessary UI changes when a player reserves a card.
    */
   public void handleReserve() {
-    // Get card to be purchased
+    // Get card to be reserved
     Card cardReserved = (Card) selectedCardView.getImage();
+
+    int[] gemsInHand = GemsForm.costHashToArrayWithGold(player.getHandForm().gems());
+    int totalGemsInHand = 0;
+
+    for(int i : gemsInHand){
+      totalGemsInHand += i;
+    }
+
+    if(totalGemsInHand + 1 > 10){
+      closeAllActionWindows();
+      tokenDiscarder = new TokenDiscarder(this, 1, this::handleReserve);
+      tokenDiscarder.open();
+      cardMatrix.setDisable(true);
+      return;
+    }
 
     ReserveCardForm reserveCardForm = new ReserveCardForm(cardReserved.getCardForm(), null, false);
 
+    HttpResponse<String> response =
+        ServerCaller.reserveCard(LobbyServiceCaller.getCurrentUserLobby(),
+            LobbyServiceCaller.getCurrentUserAccessToken(), reserveCardForm);
+
+    // Close card menu
+    cardActionMenu.setVisible(false);
+
+    closeAllActionWindows();
+    //updateBoard();
+    acquireNobleCheck(response);
+  }
+
+  public void handleReserve(GemsForm gemsToRemove){
+    // Get card to be reserved
+    Card cardReserved = (Card) selectedCardView.getImage();
+
+    ReserveCardForm reserveCardForm = null;
+
+    for (int i = 0;i<6;i++) {
+      if(gemsToRemove.getOrDefault(GemColor.INT_CONVERSION_ARRAY.get(i),null) != null){
+        reserveCardForm = new ReserveCardForm(cardReserved.getCardForm(), GemColor.INT_CONVERSION_ARRAY.get(i), false);
+        break;
+      }
+    }
+
+    cardMatrix.setDisable(false);
     ServerCaller.reserveCard(LobbyServiceCaller.getCurrentUserLobby(),
         LobbyServiceCaller.getCurrentUserAccessToken(), reserveCardForm);
 
@@ -644,6 +705,11 @@ public class GameBoard {
   @FXML
   private void handleClickTakeBankButton() {
     bank.take();
+  }
+
+  @FXML
+  private void handleDiscardGems(MouseEvent e){
+    tokenDiscarder.handleClick(e);
   }
 
   @FXML
@@ -890,14 +956,14 @@ public class GameBoard {
       iv.setImage(n);
 
       // Check if current player should be visited by a noble, else add it publicly
-      if (isValidNobleVisit(GemsForm.costHashToArray(currentPlayer.hand().gemDiscounts()),
-          n.getCost())) {
-        activateAcquireNoblePrompt(iv);
-        // Only one noble can be acquired per turn
-        break;
-      } else {
+//      if (isValidNobleVisit(GemsForm.costHashToArray(currentPlayer.hand().gemDiscounts()),
+//          n.getCost())) {
+//        activateAcquireNoblePrompt(iv);
+//        // Only one noble can be acquired per turn
+//        break;
+//      } else {
         publicNoblesVBox.getChildren().add(iv);
-      }
+//      }
     }
   }
 
@@ -906,35 +972,32 @@ public class GameBoard {
   }
 
   @FXML
-  public void activateAcquireNoblePrompt(ImageView iv) {
-    VBox vb = new VBox();
-    vb.setPadding(new Insets(10));
-    vb.setSpacing(10);
-    vb.setAlignment(Pos.CENTER);
-
-    Label notice = new Label("A noble has visited you! You gained 3 prestige points.");
-    notice.setFont(new Font("Satoshi", 16));
-
-    // Noble Image
-    vb.getChildren().add(iv);
-    // Textual Prompt
-    vb.getChildren().add(notice);
-
-    acquiredNobleAlertPane.setContent(vb);
-    acquiredNobleAlertPane.setVisible(true);
-    acquiredNobleAlertPane.lookupButton(ButtonType.OK).setOnMouseClicked(event -> {
-      acquiredNobleAlertPane.setVisible(false);
-      // Update top of noble stack for player
-      noblesStack.setImage(iv.getImage());
-      // Add image to full list of player's acquired nobles
-      acquiredNoblesImages.add(iv.getImage());
-    });
-  }
-
-  @FXML
   public void handleAcquiredNoblesViewSelect(MouseEvent event) {
+    PlayerForm requestedPlayer = null;
+
+    // Determines which player's information is being requested
+    try {
+      for (PlayerForm p : gameBoardForm.players()) {
+        if (LobbyServiceCaller.getCurrentUserid().equals(p.uid())) {
+          requestedPlayer = p;
+        }
+      }
+    } catch (NullPointerException e) {
+      System.out.println("DEBUG: Failed to identify player");
+      return;
+    }
+
+    if (requestedPlayer == null) {
+      return;
+    }
+
+    List<Image> nobleImages = new ArrayList<Image>();
+    for (NobleForm n : requestedPlayer.hand().visitedNobles()) {
+      nobleImages.add(new Noble(n));
+    }
+
     // Set the purchased pane's content to the card image grid
-    GridPane nobleGrid = generateCardGrid(acquiredNoblesImages, new int[] {180, 180, 3});
+    GridPane nobleGrid = generateCardGrid(nobleImages, new int[] {180, 180, 3});
     nobleGrid.setPadding(new Insets(0, 70, 0, 70));
     acquiredNoblesView.setCenter(nobleGrid);
 
@@ -963,7 +1026,8 @@ public class GameBoard {
     }
 
     // Set summary label as player title
-    playerSummaryUserLabel.setText(requestedPlayer.uid() + "'s Board");
+    playerSummaryUserLabel.setText(
+        requestedPlayer.uid() + "'s Board\nPrestige points: " + requestedPlayer.hand().prestigePoints());
 
     // Fetch and apply the user's discounts to the summary discount matrix
     int index = 0;
@@ -994,7 +1058,7 @@ public class GameBoard {
       } else {
         cardToAdd = new OrientCard(c);
       }
-      // TODO Add instanceof Waterfall card and other card types if there are any
+
       if (cardToAdd != null) {
         requestedPlayerReservedCardImages.add(cardToAdd);
       }
@@ -1004,11 +1068,11 @@ public class GameBoard {
         .add(generateCardGrid(requestedPlayerReservedCardImages, new int[] {110, 160, 3}));
 
     // TODO: Fetch and apply the player's nobles as images
-    List<Image> requestedPlayerNobleImages = new ArrayList<>();
-//    for (Noble n : requestedPlayer.getHand().nobles) {
-//      requestedPlayerNobleImages.add(n);
-//    }
-//    noblesSummary.getChildren().add(generateCardGrid(requestedPlayerNoblesImages, new int[] {160, 160, 5}));
+    List<Image> requestedPlayerNoblesImages = new ArrayList<>();
+    for (NobleForm n : requestedPlayer.hand().visitedNobles()) {
+      requestedPlayerNoblesImages.add(new Noble(n));
+    }
+    noblesSummary.getChildren().add(generateCardGrid(requestedPlayerNoblesImages, new int[] {140, 140, 5}));
 
     // Display data
     playerSummaryPane.toFront();
@@ -1067,7 +1131,7 @@ public class GameBoard {
 
       // Apply event handler to each card in choices
       iv.setOnMouseClicked(event -> {
-        tentativeSelection = (Card) ((ImageView) event.getSource()).getImage();
+        tentativeCardSelection = (Card) ((ImageView) event.getSource()).getImage();
         choicesHBox.getChildren().forEach((child) -> child.setEffect(null));
         ((ImageView) event.getSource()).setEffect(BLUE_GLOW_EFFECT);
       });
@@ -1078,7 +1142,7 @@ public class GameBoard {
     closeAllActionWindows();
     waterfallPane.setContent(choicesHBox);
     waterfallPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
-      handleWaterfallChoiceSelect(tentativeSelection, rootCard);
+      handleWaterfallChoiceSelect(tentativeCardSelection, rootCard);
     });
     waterfallPane.setVisible(true);
     waterfallPane.setDisable(false);
@@ -1099,5 +1163,57 @@ public class GameBoard {
     purchaseCard(purchaseCardForm);
     waterfallPane.setVisible(false);
     waterfallPane.setDisable(true);
+  }
+
+  public void acquireNobleCheck(HttpResponse<String> response) {
+    final Set<NobleForm> validNobles;
+
+    // Fetch valid noble choices
+    if (response.getBody() != null && response.getStatus() == HttpStatus.OK) {
+      final Type type = new TypeToken<HashSet<NobleForm>>() {
+      }.getType();
+      validNobles = Main.GSON.fromJson(response.getBody(), type);
+    } else {
+      System.out.println("DEBUG: Failed to get available nobles");
+      return;
+    }
+
+    // Generate HBox to display the choices
+    HBox choicesHBox = new HBox();
+    choicesHBox.setSpacing(20);
+    choicesHBox.setPadding(new Insets(10));
+
+    // Generate ImageView for each selectable noble
+    for (NobleForm n : validNobles) {
+      ImageView iv = new ImageView();
+      iv.setImage(new Noble(n));
+      iv.setFitHeight(150);
+      iv.setFitWidth(150);
+
+      // Apply event handler to each card in choices
+      iv.setOnMouseClicked(event -> {
+        tentativeNobleSelection = (Noble) ((ImageView) event.getSource()).getImage();
+        choicesHBox.getChildren().forEach((child) -> child.setEffect(null));
+        ((ImageView) event.getSource()).setEffect(BLUE_GLOW_EFFECT);
+      });
+
+      choicesHBox.getChildren().add(iv);
+    }
+
+    closeAllActionWindows();
+    acquiredNobleAlertPane.setContent(choicesHBox);
+    acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
+      // Acquire the noble via the server
+      HttpResponse<String> response1 =
+          ServerCaller.claimNoble(LobbyServiceCaller.getCurrentUserLobby(),
+              LobbyServiceCaller.getCurrentUserAccessToken(),
+              new ClaimNobleForm(tentativeNobleSelection.nobleForm));
+      System.out.println(response1.getBody());
+      // Close noble select screen
+      acquiredNobleAlertPane.setVisible(false);
+    });
+    acquiredNobleAlertPane.setVisible(true);
+    acquiredNobleAlertPane.setDisable(false);
+
   }
 }
