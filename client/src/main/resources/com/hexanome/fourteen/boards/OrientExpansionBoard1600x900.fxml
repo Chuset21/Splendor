@@ -800,6 +800,7 @@
       </AnchorPane>
 
       <DialogPane fx:id="acquiredNobleAlertPane" layoutX="500.0" layoutY="300.0" prefHeight="143.0" prefWidth="584.0" style="-fx-background-color: #faecc0; -fx-border-width: 5; -fx-border-color: #000000;" visible="false">
+         <ButtonType fx:constant="FINISH" />
          <header>
             <Label alignment="TOP_CENTER" text="Noble Acquired!" textAlignment="CENTER" textFill="#72465b">
                <font>
@@ -810,7 +811,6 @@
                </padding>
             </Label>
          </header>
-         <ButtonType fx:constant="OK" />
       </DialogPane>
       <BorderPane fx:id="playerSummaryPane" layoutX="468.0" layoutY="200.0" prefHeight="451.0" prefWidth="654.0" style="-fx-background-color: #faecc0; -fx-border-color: #000000; -fx-border-width: 5;" visible="false">
          <top>

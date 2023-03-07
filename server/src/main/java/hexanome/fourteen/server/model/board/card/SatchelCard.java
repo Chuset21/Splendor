@@ -98,8 +98,6 @@ public final class SatchelCard extends Card {
     }
     SatchelCard card = (SatchelCard) obj;
     return super.prestigePoints == card.prestigePoints && Objects.equals(super.cost, card.cost)
-           && super.level == card.level && super.expansion == card.expansion
-           && Objects.equals(cardToAttach, card.cardToAttach)
-           && Objects.equals(freeCardToTake, card.freeCardToTake);
+           && super.level == card.level && super.expansion == card.expansion;
   }
 }

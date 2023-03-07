@@ -87,6 +87,6 @@ public final class WaterfallCard extends Card {
     WaterfallCard card = (WaterfallCard) obj;
     return super.prestigePoints == card.prestigePoints && Objects.equals(super.cost, card.cost)
            && super.level == card.level && super.expansion == card.expansion
-           && discountColor == card.discountColor && Objects.equals(cardToTake, card.cardToTake);
+           && discountColor == card.discountColor;
   }
 }

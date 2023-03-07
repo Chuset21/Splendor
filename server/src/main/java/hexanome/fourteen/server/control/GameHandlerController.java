@@ -695,16 +695,17 @@ public class GameHandlerController {
 
   private ResponseEntity<String> getStringResponseEntity(GameBoard gameBoard, Hand hand) {
     final Set<Noble> nobles = gameBoard.computeClaimableNobles(hand);
-    gameSpecificBroadcastManagers.get(gameBoard.gameid()).touch();
     if (!nobles.isEmpty()) {
+      gameSpecificBroadcastManagers.get(gameBoard.gameid()).touch();
       return ResponseEntity.status(HttpStatus.OK).body(gsonInstance.gson.toJson(nobles));
     } else {
       return getStringResponseEntity(gameBoard);
     }
   }
 
-  private static ResponseEntity<String> getStringResponseEntity(GameBoard gameBoard) {
+  private ResponseEntity<String> getStringResponseEntity(GameBoard gameBoard) {
     gameBoard.nextTurn();
+    gameSpecificBroadcastManagers.get(gameBoard.gameid()).touch();
     return ResponseEntity.status(HttpStatus.OK).body(null);
   }
 

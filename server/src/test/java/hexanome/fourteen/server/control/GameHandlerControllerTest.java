@@ -189,6 +189,9 @@ public class GameHandlerControllerTest {
     assertEquals("invalid access token", response.getBody());
 
     Mockito.when(lobbyService.getUsername("token")).thenReturn("x");
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
 
     response = gameHandlerController.purchaseCard("x", "token", null);
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -250,6 +253,9 @@ public class GameHandlerControllerTest {
     Payment payment = new CardPayment();
     PurchaseCardForm purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     ResponseEntity<String> response =
         gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -353,6 +359,9 @@ public class GameHandlerControllerTest {
     payment = new CardPayment(cardToSacrifice1, null);
     purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     response =
         gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -396,6 +405,9 @@ public class GameHandlerControllerTest {
     player.hand().gemDiscounts().put(GemColor.BLUE, 4);
     player.hand().setPrestigePoints(cardToAttach.prestigePoints());
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     response =
         gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -418,6 +430,9 @@ public class GameHandlerControllerTest {
     payment = new CardPayment(cardToSacrifice1, cardToSacrifice2);
     purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     response =
         gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -551,6 +566,9 @@ public class GameHandlerControllerTest {
     gameSpecificBroadcastManagers.put("x", new BroadcastContentManager<>(board));
     Mockito.when(lobbyService.getUsername("token")).thenReturn("test");
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     Card cardToPurchase = new SacrificeCard();
     player.hand().reservedCards().add(cardToPurchase);
     Payment payment = new GemPayment();
@@ -711,6 +729,9 @@ public class GameHandlerControllerTest {
     player.hand().gems().clear();
     board.availableGems().clear();
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     // Test double bonus card
     final Gems substitutedGems = new Gems();
     final Gems chosenGems = new Gems();
@@ -776,6 +797,9 @@ public class GameHandlerControllerTest {
     payment = new GemPayment(chosenGems, substitutedGems, 0);
     purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, false);
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     response =
         gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -885,6 +909,9 @@ public class GameHandlerControllerTest {
     payment = new GemPayment(chosenGems, substitutedGems, 0);
     purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, false);
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     response =
         gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -930,6 +957,9 @@ public class GameHandlerControllerTest {
     payment = new GemPayment(chosenGems, substitutedGems, 0);
     purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, false);
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     response =
         gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -1138,6 +1168,9 @@ public class GameHandlerControllerTest {
     payment = new GemPayment(chosenGems, substitutedGems, 0);
     purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, false);
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     response =
         gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -1225,6 +1258,9 @@ public class GameHandlerControllerTest {
     payment = new GemPayment(chosenGems, substitutedGems, 0);
     purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, false);
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     response =
         gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -1353,6 +1389,9 @@ public class GameHandlerControllerTest {
     payment = new GemPayment(chosenGems, substitutedGems, 0);
     purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, false);
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     response =
         gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -1523,6 +1562,9 @@ public class GameHandlerControllerTest {
 
     Mockito.when(lobbyService.getUsername("token")).thenReturn("x");
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     response = gameHandlerController.reserveCard("x", "token", null);
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
@@ -1620,6 +1662,9 @@ public class GameHandlerControllerTest {
     reserveCardForm = new ReserveCardForm(card, null, false);
     addCardToDeck(board.cards(), card);
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     response =
         gameHandlerController.reserveCard("", "token", gsonInstance.gson.toJson(reserveCardForm));
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -1638,6 +1683,9 @@ public class GameHandlerControllerTest {
     player.hand().gems().put(GemColor.BLUE, 8);
     reserveCardForm = new ReserveCardForm(null, null, false);
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     response =
         gameHandlerController.reserveCard("", "token", gsonInstance.gson.toJson(reserveCardForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -1697,6 +1745,9 @@ public class GameHandlerControllerTest {
 
     Mockito.when(lobbyService.getUsername("token")).thenReturn("x");
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     response = gameHandlerController.takeGems("x", "token", null);
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
 
@@ -1846,6 +1897,9 @@ public class GameHandlerControllerTest {
     previousOwnedGems = new Gems(player.hand().gems());
     previousBank = new Gems(board.availableGems());
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(previousOwnedGems.getOrDefault(GemColor.WHITE, 0) + 2,
@@ -1862,6 +1916,9 @@ public class GameHandlerControllerTest {
     previousOwnedGems = new Gems(player.hand().gems());
     previousBank = new Gems(board.availableGems());
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(previousOwnedGems.getOrDefault(GemColor.WHITE, 0) + 1,
@@ -1882,6 +1939,9 @@ public class GameHandlerControllerTest {
     previousOwnedGems = new Gems(player.hand().gems());
     previousBank = new Gems(board.availableGems());
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(previousOwnedGems.getOrDefault(GemColor.WHITE, 0) + 1,
@@ -1910,6 +1970,9 @@ public class GameHandlerControllerTest {
     previousBank = new Gems(board.availableGems());
     takeGemsForm = new TakeGemsForm(gemsToTake, gemsToRemove);
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(previousOwnedGems.getOrDefault(GemColor.WHITE, 0),
@@ -1935,6 +1998,9 @@ public class GameHandlerControllerTest {
     previousOwnedGems = new Gems(player.hand().gems());
     previousBank = new Gems(board.availableGems());
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals(previousOwnedGems.getOrDefault(GemColor.WHITE, 0) + 1,
@@ -1968,6 +2034,12 @@ public class GameHandlerControllerTest {
             null);
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
+    Map<String, BroadcastContentManager<GameBoard>> gameSpecificBroadcastManagers =
+        (Map<String, BroadcastContentManager<GameBoard>>) ReflectionTestUtils.getField(
+            gameHandlerController,
+            "gameSpecificBroadcastManagers");
+    assertNotNull(gameSpecificBroadcastManagers);
+    gameSpecificBroadcastManagers.put("x", new BroadcastContentManager<>(board));
 
     ResponseEntity<String> response = gameHandlerController.claimNoble("", "token", null);
     assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
@@ -1986,6 +2058,9 @@ public class GameHandlerControllerTest {
 
     ClaimNobleForm claimNobleForm = new ClaimNobleForm(null);
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     response =
         gameHandlerController.claimNoble("", "token", gsonInstance.gson.toJson(claimNobleForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -2032,6 +2107,9 @@ public class GameHandlerControllerTest {
     board.availableNobles().add(nobleToClaim);
     prevPrestigePoints = player.hand().prestigePoints();
 
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
     response =
         gameHandlerController.claimNoble("", "token", gsonInstance.gson.toJson(claimNobleForm));
     assertEquals(HttpStatus.OK, response.getStatusCode());

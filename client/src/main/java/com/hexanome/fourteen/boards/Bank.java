@@ -15,6 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import kong.unirest.HttpResponse;
 
 /**
  * A Bank Class to allow handling of Gems.
@@ -177,19 +178,13 @@ public class Bank {
 
     TakeGemsForm form = new TakeGemsForm(convertedForm, gemsToRemove);
 
-    try {
-      ServerCaller.takeGems(LobbyServiceCaller.getCurrentUserLobby(),
-          LobbyServiceCaller.getCurrentUserAccessToken(), form);
+    HttpResponse<String> response =
+        ServerCaller.takeGems(LobbyServiceCaller.getCurrentUserLobby(),
+            LobbyServiceCaller.getCurrentUserAccessToken(), form);
 
-      gameBoard.closeAllActionWindows();
-      gameBoard.updateBoard();
-    } catch (TokenRefreshFailedException e){
-      try{
-        MenuController.returnToLogin("Session timed out, retry login");
-      } catch(IOException ioe){
-        ioe.printStackTrace();
-      }
-    }
+    gameBoard.closeAllActionWindows();
+    gameBoard.updateBoard();
+    gameBoard.acquireNobleCheck(response);
   }
 
   /**

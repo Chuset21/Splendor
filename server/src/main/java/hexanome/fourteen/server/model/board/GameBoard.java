@@ -384,7 +384,6 @@ public final class GameBoard implements BroadcastContent {
       isLastRound = true;
     }
     playerTurn = (playerTurn + 1) % players.size();
-    System.out.println(playerTurn);
   }
 
   /**
