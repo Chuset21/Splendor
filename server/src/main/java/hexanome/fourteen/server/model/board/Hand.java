@@ -21,7 +21,7 @@ public final class Hand {
   private final List<Card> purchasedCards;
   private final Set<Noble> visitedNobles;
   private final Set<Noble> reservedNobles;
-  private final Gems gemDiscounts;
+  private Gems gemDiscounts;
   private TradingPosts tradingPosts;
 
   /**
@@ -145,6 +145,16 @@ public final class Hand {
   public void setPrestigePoints(int prestigePoints) {
     this.prestigePoints = prestigePoints;
   }
+
+  /**
+   * A Setter for the Gem Discounts
+   *
+   * @param gemDiscounts the Gem discount object to set
+   */
+  public void setGemDiscounts(Gems gemDiscounts){
+    this.gemDiscounts = gemDiscounts;
+  }
+
 
   /**
    * a Setter for the Trading Posts.
