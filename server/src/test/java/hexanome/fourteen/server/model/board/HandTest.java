@@ -17,7 +17,7 @@ public class HandTest {
 
   @Test
   public void testConstructor() {
-    Hand handToTest = new Hand(0, null, null, null, null, null, null);
+    Hand handToTest = new Hand(0, null, null, null, null, null, null, null);
     assertEquals(0, handToTest.prestigePoints());
     assertNull(handToTest.gems());
     assertNull(handToTest.reservedCards());
@@ -52,8 +52,8 @@ public class HandTest {
 
   @Test
   public void testEquals() {
-    Hand handToTest = new Hand(0, null, null, null, null, null, null);
-    Hand equalHand = new Hand(0, null, null, null, null, null, null);
+    Hand handToTest = new Hand(0, null, null, null, null, null, null, null);
+    Hand equalHand = new Hand(0, null, null, null, null, null, null, null);
     assertNotEquals(null, handToTest);
     assertNotEquals(handToTest, new Object());
     assertNotEquals(handToTest, new Object());
