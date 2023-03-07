@@ -85,7 +85,7 @@ public class GameBoard {
   private static Random random = new Random();
 
   // Player's Info
-  private Player player;
+  public Player player;
   private List<Player> players;
   @FXML
   private ArrayList<ImageView> playerViews;
@@ -215,6 +215,13 @@ public class GameBoard {
   @FXML
   private Button takeBankButton;
   private Service<Void> service;
+  @FXML
+  public DialogPane discardTokenPane;
+  @FXML
+  public GridPane discardTokenGrid;
+  @FXML
+  public Label discardTokenLabel;
+  public TokenDiscarder tokenDiscarder;
 
   /**
    * A call to this method displays the game on screen by initializing the scene with the gameboard.
@@ -311,6 +318,9 @@ public class GameBoard {
     cardActionMenu.setVisible(false);
     reservedCardsView.setVisible(false);
     purchasedCardsView.setVisible(false);
+    if(tokenDiscarder != null){
+      tokenDiscarder.close();
+    }
     bank.close(gameBoardForm.availableGems());
   }
 
@@ -579,8 +589,23 @@ public class GameBoard {
    * Performs all necessary UI changes when a player reserves a card.
    */
   public void handleReserve() {
-    // Get card to be purchased
+    // Get card to be reserved
     Card cardReserved = (Card) selectedCardView.getImage();
+
+    int[] gemsInHand = GemsForm.costHashToArrayWithGold(player.getHandForm().gems());
+    int totalGemsInHand = 0;
+
+    for(int i : gemsInHand){
+      totalGemsInHand += i;
+    }
+
+    if(totalGemsInHand + 1 > 10){
+      closeAllActionWindows();
+      tokenDiscarder = new TokenDiscarder(this, 1, this::handleReserve);
+      tokenDiscarder.open();
+      cardMatrix.setDisable(true);
+      return;
+    }
 
     ReserveCardForm reserveCardForm = new ReserveCardForm(cardReserved.getCardForm(), null, false);
 
@@ -594,6 +619,30 @@ public class GameBoard {
     closeAllActionWindows();
     //updateBoard();
     acquireNobleCheck(response);
+  }
+
+  public void handleReserve(GemsForm gemsToRemove){
+    // Get card to be reserved
+    Card cardReserved = (Card) selectedCardView.getImage();
+
+    ReserveCardForm reserveCardForm = null;
+
+    for (int i = 0;i<6;i++) {
+      if(gemsToRemove.getOrDefault(GemColor.INT_CONVERSION_ARRAY.get(i),null) != null){
+        reserveCardForm = new ReserveCardForm(cardReserved.getCardForm(), GemColor.INT_CONVERSION_ARRAY.get(i), false);
+        break;
+      }
+    }
+
+    cardMatrix.setDisable(false);
+    ServerCaller.reserveCard(LobbyServiceCaller.getCurrentUserLobby(),
+        LobbyServiceCaller.getCurrentUserAccessToken(), reserveCardForm);
+
+    // Close card menu
+    cardActionMenu.setVisible(false);
+
+    closeAllActionWindows();
+    updateBoard();
   }
 
   private boolean isYourTurn() {
@@ -656,6 +705,11 @@ public class GameBoard {
   @FXML
   private void handleClickTakeBankButton() {
     bank.take();
+  }
+
+  @FXML
+  private void handleDiscardGems(MouseEvent e){
+    tokenDiscarder.handleClick(e);
   }
 
   @FXML
