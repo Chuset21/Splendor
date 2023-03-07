@@ -963,7 +963,8 @@ public class GameBoard {
     }
 
     // Set summary label as player title
-    playerSummaryUserLabel.setText(requestedPlayer.uid() + "'s Board");
+    playerSummaryUserLabel.setText(
+        requestedPlayer.uid() + "'s Board\nPrestige points: " + requestedPlayer.hand().prestigePoints());
 
     // Fetch and apply the user's discounts to the summary discount matrix
     int index = 0;
