@@ -8,5 +8,6 @@ hexanome.fourteen.server.model.board.card
 hexanome.fourteen.server.model.board.expansion
 hexanome.fourteen.server.model.board.gem
 hexanome.fourteen.server.model.board.player
+hexanome.fourteen.server.model.board.tradingposts
 hexanome.fourteen.server.model.clientmapper
 hexanome.fourteen.server.model.sent

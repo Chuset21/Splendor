@@ -11,6 +11,14 @@ import hexanome.fourteen.server.model.board.tradingposts.TradingPostsEnum;
  * claiming a noble.
  */
 public class TradingPostManager {
+
+  /**
+   * Private no args constructor to stop instantiation.
+   */
+  private TradingPostManager() {
+
+  }
+
   /**
    * This method will call all trading posts that can be acquired after purchasing a card.
    *
