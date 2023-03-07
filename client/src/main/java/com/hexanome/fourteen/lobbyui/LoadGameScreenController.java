@@ -142,7 +142,6 @@ public class LoadGameScreenController implements ScreenController {
   }
 
   private void displaySavedGames() {
-
     // Clear the VBox
     savedGamesVBox.getChildren().clear();
 
@@ -152,29 +151,23 @@ public class LoadGameScreenController implements ScreenController {
         LobbyServiceCaller.getSavedGames().stream().filter(e -> e.players().contains(username))
             .toList();
 
-    if (savedGamesList != null) {
+    for (SaveGameForm sg : savedGamesList) {
+      // Add our saved game to our list
+      savedGames.put(sg.saveGameid(), sg);
 
-      for (SaveGameForm sg : savedGamesList) {
+      // Make a toggle button for the game
+      DisplaySavedGame displayGame = null;
 
-        // Add our saved game to our list
-        savedGames.put(sg.saveGameid(), sg);
+      try {
+        displayGame = new DisplaySavedGame(sg, this);
+      } catch (IOException ioe) {
+        ioe.printStackTrace();
+      }
 
-        // Make a toggle button for the game
-        DisplaySavedGame displayGame = null;
-
-        try {
-          displayGame = new DisplaySavedGame(sg, this);
-        } catch (IOException ioe) {
-          ioe.printStackTrace();
-        }
-
-        if (displayGame != null) {
-          displayGame.setToggleGroup(loadSetting);
-          savedGamesVBox.getChildren().add(displayGame);
-        }
-
+      if (displayGame != null) {
+        displayGame.setToggleGroup(loadSetting);
+        savedGamesVBox.getChildren().add(displayGame);
       }
     }
-
   }
 }

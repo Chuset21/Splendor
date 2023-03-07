@@ -37,8 +37,10 @@ public class DisplaySavedGame extends Pane implements Initializable {
 
   private LoadGameScreenController controller;
 
-  public DisplaySavedGame(SaveGameForm savedGame, LoadGameScreenController controller) throws IOException {
-    FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(Lobby.class.getResource("displaySavedGame.fxml")));
+  public DisplaySavedGame(SaveGameForm savedGame, LoadGameScreenController controller)
+      throws IOException {
+    FXMLLoader loader =
+        new FXMLLoader(Objects.requireNonNull(Lobby.class.getResource("displaySavedGame.fxml")));
 
     // Apply the UI to this class
     loader.setRoot(this);
@@ -56,9 +58,6 @@ public class DisplaySavedGame extends Pane implements Initializable {
     gameidText.setText(savedGame.saveGameid());
 
     this.controller = controller;
-
-
-
   }
 
   public void setToggleGroup(ToggleGroup toggleGroup) {
@@ -69,6 +68,5 @@ public class DisplaySavedGame extends Pane implements Initializable {
   // Temp items to use for making lobbies
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
-
   }
 }
