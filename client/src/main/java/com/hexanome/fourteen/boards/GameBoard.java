@@ -55,6 +55,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import com.hexanome.fourteen.lobbyui.*;
 import kong.unirest.HttpResponse;
+import kong.unirest.HttpStatus;
 import org.apache.commons.codec.digest.DigestUtils;
 
 /**
@@ -421,9 +422,9 @@ public class GameBoard {
     // Initialize the player's gems
     for (PlayerForm playerForm : gameBoardForm.players()) {
       if (playerForm.uid().equals(LobbyServiceCaller.getCurrentUserid())) {
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < 6; i++) {
           pGemLabels.get(i).textProperty()
-              .set("" + GemsForm.costHashToArray(playerForm.hand().gems())[i]);
+              .set("" + GemsForm.costHashToArrayWithGold(playerForm.hand().gems())[i]);
         }
       }
     }
@@ -695,6 +696,26 @@ public class GameBoard {
       MenuController.goToWelcomeScreen();
     } catch (IOException ioe) {
       ioe.printStackTrace();
+    }
+  }
+
+  @FXML
+  private void handleClickMenuPopupSaveButton() {
+    try {
+      final HttpResponse<String> response =
+          ServerCaller.saveGame(LobbyServiceCaller.getCurrentUserLobby(),
+              LobbyServiceCaller.getCurrentUserAccessToken());
+      if (response.getStatus() == HttpStatus.OK) {
+        System.out.printf("Saved game successfully with save game id: %s%n", response.getBody());
+      } else {
+        System.err.printf("Unable to save game\n%s%n", response.getBody());
+      }
+    } catch (TokenRefreshFailedException ignored) {
+      try {
+        MenuController.returnToLogin("Session timed out, retry login");
+      } catch (IOException ioe) {
+        ioe.printStackTrace();
+      }
     }
   }
 
