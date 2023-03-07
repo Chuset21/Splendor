@@ -389,10 +389,18 @@ public final class GameBoard implements BroadcastContent {
     isActionTaken = false;
   }
 
+  /**
+   * Getter for isActionTaken.
+   *
+   * @return isActionTaken
+   */
   public boolean isActionTaken() {
     return isActionTaken;
   }
 
+  /**
+   * Register that the player has taken an action.
+   */
   public void takeAction() {
     isActionTaken = true;
   }
