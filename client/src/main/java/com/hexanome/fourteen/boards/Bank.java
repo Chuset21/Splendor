@@ -265,7 +265,7 @@ public class Bank {
       }
 
       // If not enough gems are taken
-      if (getNumGemTypesTakeable() >= 3 && (selectedGems.size() < 2) || (selectedGems.size() == 2 && !hasDoubleColour())) {
+      if (getNumGemTypesTakeable() >= 3 && ((selectedGems.size() < 2) || (selectedGems.size() == 2 && !hasDoubleColour()))) {
         takeBankButton.setDisable(true);
       } else if(getNumGemTypesTakeable() == 2 && !(selectedGems.size() == 2)){
         takeBankButton.setDisable(true);
