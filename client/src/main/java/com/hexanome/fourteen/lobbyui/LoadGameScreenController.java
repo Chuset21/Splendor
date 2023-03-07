@@ -71,41 +71,26 @@ public class LoadGameScreenController implements ScreenController {
     // Information Variables about our session/savegame
     String sessionID = null;
     String saveGameID = (String) loadSetting.getSelectedToggle().getUserData();
-    SaveGameForm saveGame = savedGames.get(saveGameID);
 
     // Print to console our next step
     System.out.println("Loading game:" + saveGameID);
 
-    // Check if any of the current sessions already have the savegameID.
-    var currentSessions =
-        Main.GSON.fromJson(LobbyServiceCaller.getSessions().getBody(), SessionsForm.class)
-            .sessions();
-    for (var session : currentSessions.entrySet()) {
-      if (session.getValue().saveGameid().equals(saveGameID)) {
-        sessionID = session.getKey();
-        System.out.println("Session already exists! Loading existing session's data...");
-      }
-    }
-
     // Otherwise, we create a new session
-    if (sessionID == null) {
-      System.out.println("Creating a session...");
+    System.out.println("Creating a session...");
 
-      // Creates template for session with current user's ID and the selected expansion
-      CreateSessionForm session = new CreateSessionForm(LobbyServiceCaller.getCurrentUserid(),
-          savedGames.get(saveGameID).gameName(), saveGameID);
+    // Creates template for session with current user's ID and the selected expansion
+    CreateSessionForm session = new CreateSessionForm(LobbyServiceCaller.getCurrentUserid(),
+        savedGames.get(saveGameID).gameName(), saveGameID);
 
-      // Get the session
+    // Get the session
+    try {
+      sessionID = LobbyServiceCaller.createSession(session);
+    } catch (TokenRefreshFailedException e) {
       try {
-        sessionID = LobbyServiceCaller.createSession(session);
-      } catch (TokenRefreshFailedException e) {
-        try {
-          MenuController.returnToLogin("Session timed out, retry login");
-        } catch (IOException ioe) {
-          ioe.printStackTrace();
-        }
+        MenuController.returnToLogin("Session timed out, retry login");
+      } catch (IOException ioe) {
+        ioe.printStackTrace();
       }
-
     }
 
     System.out.println("Session ID: " + sessionID);
