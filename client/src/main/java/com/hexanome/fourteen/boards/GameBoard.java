@@ -304,6 +304,10 @@ public class GameBoard {
   }
 
   public void updateBoard() {
+    /*if(!LobbyServiceCaller.isSessionActive(LobbyServiceCaller.getCurrentUserLobby().getSessionid())){
+      handleKickedFromGame();
+    }*/
+
     setupPlayers();
 
     // Set up cards
@@ -746,6 +750,16 @@ public class GameBoard {
     }
 
     try {
+      MenuController.goToWelcomeScreen();
+    } catch (IOException ioe) {
+      ioe.printStackTrace();
+    }
+  }
+
+  private void handleKickedFromGame(){
+    try {
+      service.cancel();
+      LobbyServiceCaller.setCurrentUserLobby(null);
       MenuController.goToWelcomeScreen();
     } catch (IOException ioe) {
       ioe.printStackTrace();
