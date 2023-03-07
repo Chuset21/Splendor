@@ -296,7 +296,7 @@ public class Bank {
     int numTypes = 0;
 
     for (int i = 0; i < 5; i++) {
-      numTypes += (bankGems[i] > 0) ? 1 : 0;
+      numTypes += (bankGems[i] > 0 || selectedGems.contains(i)) ? 1 : 0;
     }
 
     return numTypes;
