@@ -421,9 +421,9 @@ public class GameBoard {
     // Initialize the player's gems
     for (PlayerForm playerForm : gameBoardForm.players()) {
       if (playerForm.uid().equals(LobbyServiceCaller.getCurrentUserid())) {
-        for (i = 0; i < 5; i++) {
+        for (i = 0; i < 6; i++) {
           pGemLabels.get(i).textProperty()
-              .set("" + GemsForm.costHashToArray(playerForm.hand().gems())[i]);
+              .set("" + GemsForm.costHashToArrayWithGold(playerForm.hand().gems())[i]);
         }
       }
     }
