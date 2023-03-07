@@ -702,6 +702,7 @@ public class GameBoard {
   @FXML
   private void handleClickMenuPopupSaveButton() {
     try {
+      menuPopupPane.setDisable(true);
       final HttpResponse<String> response =
           ServerCaller.saveGame(LobbyServiceCaller.getCurrentUserLobby(),
               LobbyServiceCaller.getCurrentUserAccessToken());
@@ -717,6 +718,7 @@ public class GameBoard {
         ioe.printStackTrace();
       }
     }
+    menuPopupPane.setDisable(false);
   }
 
   @FXML
