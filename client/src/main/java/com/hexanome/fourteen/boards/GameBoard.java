@@ -530,9 +530,17 @@ public class GameBoard {
       return;
     }
 
-    PurchaseCardForm purchaseCardForm = new PurchaseCardForm(cardPurchased.getCardForm(),
-        new GemPaymentForm(cardPurchased.getCardForm().cost(), null, 0),
-        player.getHandForm().reservedCards().contains(cardPurchased.getCardForm()));
+    PurchaseCardForm purchaseCardForm = null;
+
+    if (cardPurchased.getCardForm() instanceof StandardCardForm) {
+      purchaseCardForm = new PurchaseCardForm(cardPurchased.getCardForm(),
+          new GemPaymentForm(cardPurchased.getCardForm().cost(), null, 0),
+          player.getHandForm().reservedCards().contains(cardPurchased.getCardForm()));
+//    } else if (cardPurchased.getCardForm() instanceof WaterfallCardForm) {
+//      purchaseCardForm = new PurchaseCardForm(,
+//          new GemPaymentForm(cardPurchased.getCardForm().cost(), null, 0),
+//          player.getHandForm().reservedCards().contains(cardPurchased.getCardForm()));
+    }
 
     try {
       ServerCaller.purchaseCard(LobbyServiceCaller.getCurrentUserLobby(),
@@ -730,6 +738,37 @@ public class GameBoard {
       // Add card and it's button
       cardImageGrid.add(cardIV, col, row);
       cardImageGrid.add(createPurchaseButtonForReservedCard(cardIV), col, 1);
+      col++;
+
+      // Store 9 cards per row
+      if (col == viewParams[2]) {
+        col = 0;
+        row++;
+      }
+    }
+    return cardImageGrid;
+  }
+
+  public GridPane generateCardGridForWaterfall(List<Image> imageList, int[] viewParams,
+                                              Consumer<MouseEvent> mouseClickEvent) {
+    // Create a GridPane to hold the images
+    GridPane cardImageGrid = new GridPane();
+    cardImageGrid.setHgap(10);
+    cardImageGrid.setVgap(10);
+
+    // Loop through the images and add them to the GridPane
+    int row = 0;
+    int col = 0;
+    for (Image image : imageList) {
+      ImageView cardIV = new ImageView(image);
+      cardIV.setFitWidth(viewParams[0]);
+      cardIV.setFitHeight(viewParams[1]);
+      cardIV.setOnMouseClicked(e -> {
+        mouseClickEvent.accept(e);
+      });
+
+      // Add card and it's button
+      cardImageGrid.add(cardIV, col, row);
       col++;
 
       // Store 9 cards per row
@@ -1006,12 +1045,16 @@ public class GameBoard {
     // Display the free card choices to user
     List<Image> cardChoicesImages = new ArrayList<>();
     waterfallSelection.forEach((c) -> cardChoicesImages.add((Image) new OrientCard(c)));
-    waterfallVBox.getChildren().add(generateCardGrid(cardChoicesImages, new int[] {120, 170}));
+
+    // Apply event handler to each card in choices
+    //cardChoicesImages.forEach((c) -> c);
+
+    //waterfallVBox.getChildren().add(generateCardGridForWaterfall(cardChoicesImages, new int[] {120, 170}, this::handleWaterfallChoiceSelect));
     waterfallPane.setVisible(true);
   }
 
   @FXML
-  private void handleWaterfallChoiceSelect(MouseEvent event, WaterfallCardForm wf) {
+  public void handleWaterfallChoiceSelect(MouseEvent event, WaterfallCardForm wf) {
     CardForm selectedCard = ((Card) event.getSource()).getCardForm();
     WaterfallCardForm waterfallWithSelection = new WaterfallCardForm(wf, selectedCard);
   }
