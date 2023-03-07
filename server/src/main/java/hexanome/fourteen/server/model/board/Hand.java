@@ -147,11 +147,11 @@ public final class Hand {
   }
 
   /**
-   * A Setter for the Gem Discounts
+   * A Setter for the Gem Discounts.
    *
    * @param gemDiscounts the Gem discount object to set
    */
-  public void setGemDiscounts(Gems gemDiscounts){
+  public void setGemDiscounts(Gems gemDiscounts) {
     this.gemDiscounts = gemDiscounts;
   }
 
