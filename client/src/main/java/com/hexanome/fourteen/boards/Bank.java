@@ -295,7 +295,7 @@ public class Bank {
   private int getNumGemTypesTakeable() {
     int numTypes = 0;
 
-    for (int i = 0; i < bankGems.length; i++) {
+    for (int i = 0; i < 5; i++) {
       numTypes += (bankGems[i] > 0) ? 1 : 0;
     }
 
