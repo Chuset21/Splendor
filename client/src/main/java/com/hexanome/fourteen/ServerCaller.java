@@ -167,6 +167,17 @@ public final class ServerCaller {
   }
 
   /**
+   * Claim a noble.
+   *
+   * @return The response.
+   */
+  public static HttpResponse<String> claimNoble(Lobby lobby,
+                                                String accessToken, ClaimNobleForm claimNobleForm) {
+    return claimNoble(lobby.getGameServiceLocation(), lobby.getSessionid(), accessToken,
+        claimNobleForm);
+  }
+
+  /**
    * Save a game.
    *
    * @return The response.

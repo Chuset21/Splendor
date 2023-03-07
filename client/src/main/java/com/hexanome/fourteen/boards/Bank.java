@@ -14,6 +14,7 @@ import java.util.List;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
+import kong.unirest.HttpResponse;
 
 /**
  * A Bank Class to allow handling of Gems.
@@ -150,11 +151,13 @@ public class Bank {
 
     TakeGemsForm form = new TakeGemsForm(convertedForm, null);
 
-    ServerCaller.takeGems(LobbyServiceCaller.getCurrentUserLobby(),
-        LobbyServiceCaller.getCurrentUserAccessToken(), form);
+    HttpResponse<String> response =
+        ServerCaller.takeGems(LobbyServiceCaller.getCurrentUserLobby(),
+            LobbyServiceCaller.getCurrentUserAccessToken(), form);
 
     gameBoard.closeAllActionWindows();
-    gameBoard.updateBoard();
+    //gameBoard.updateBoard();
+    gameBoard.acquireNobleCheck(response);
   }
 
   /**

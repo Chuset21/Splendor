@@ -27,14 +27,14 @@ public class Noble extends Image {
     }
   }
 
-  private final NobleForm nobleForm;
+  public final NobleForm nobleForm;
 
   /**
    * Constructor.
    *
    * @param nobleForm form to construct into Noble
    */
-  private Noble(NobleForm nobleForm) {
+  public Noble(NobleForm nobleForm) {
     super(NOBLE_FORM_MAP.get(nobleForm));
 
     this.nobleForm = nobleForm;
