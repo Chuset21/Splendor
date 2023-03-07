@@ -89,7 +89,6 @@ public final class ReserveNobleCard extends Card {
     ReserveNobleCard card = (ReserveNobleCard) obj;
     return super.prestigePoints == card.prestigePoints && Objects.equals(super.cost, card.cost)
            && super.level == card.level && super.expansion == card.expansion
-           && discountColor == card.discountColor
-           && Objects.equals(nobleToReserve, card.nobleToReserve);
+           && discountColor == card.discountColor;
   }
 }
