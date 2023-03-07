@@ -407,10 +407,10 @@ public class GameBoard {
       if (i < players.size() && players.get(i) != null) {
         ((ImageView) playerViews.get(i)).setImage(players.get(i));
         Tooltip.install(((ImageView) playerViews.get(i)), new Tooltip(players.get(i).getUserId() +
-            (player.getUserId().equals(
-                players.get(i)
-                    .getUserId()) ?
-                " (you)" : "")));
+                                                                      (player.getUserId().equals(
+                                                                          players.get(i)
+                                                                              .getUserId()) ?
+                                                                          " (you)" : "")));
       } else {
         ((ImageView) playerViews.get(i)).imageProperty().set(null);
       }
@@ -482,9 +482,9 @@ public class GameBoard {
 
     // Set action pane image to the selected card
     cardActionImage.setImage(selectedCardView.getImage());
-    final int[] gemsCost = GemsForm.costHashToArray(
-        ((Card) selectedCardView.getImage()).getCardForm().cost()
-            .getDiscountedCost(player.getHandForm().gemDiscounts()));
+    GemsForm cost = ((Card) selectedCardView.getImage()).getCardForm().cost();
+    final int[] gemsCost = cost == null ? new int[] {0, 0, 0, 0, 0, 0} : GemsForm.costHashToArray(
+        cost.getDiscountedCost(player.getHandForm().gemDiscounts()));
 
     // Set values in action pane to the card's cost
     for (int i = 0; i < gemsCost.length; i++) {
@@ -534,10 +534,6 @@ public class GameBoard {
     // Get card to be purchased
     Card cardPurchased = (Card) selectedCardView.getImage();
 
-    if (!(cardPurchased.getCardForm() instanceof StandardCardForm)) {
-      return;
-    }
-
     PurchaseCardForm purchaseCardForm = null;
 
     if (cardPurchased.getCardForm() instanceof StandardCardForm) {
@@ -559,22 +555,14 @@ public class GameBoard {
    * @param purchaseCardForm form of purchase card
    */
   private void purchaseCard(PurchaseCardForm purchaseCardForm) {
-    try {
-      ServerCaller.purchaseCard(LobbyServiceCaller.getCurrentUserLobby(),
-          LobbyServiceCaller.getCurrentUserAccessToken(), purchaseCardForm);
+    ServerCaller.purchaseCard(LobbyServiceCaller.getCurrentUserLobby(),
+            LobbyServiceCaller.getCurrentUserAccessToken(), purchaseCardForm);
 
-      // Close card menu
-      cardActionMenu.setVisible(false);
+    // Close card menu
+    cardActionMenu.setVisible(false);
 
-      closeAllActionWindows();
-      updateBoard();
-    } catch (TokenRefreshFailedException e) {
-      try {
-        MenuController.returnToLogin("Session timed out, retry login");
-      } catch (IOException ioe) {
-        ioe.printStackTrace();
-      }
-    }
+    closeAllActionWindows();
+    updateBoard();
   }
 
   /**
@@ -586,22 +574,14 @@ public class GameBoard {
 
     ReserveCardForm reserveCardForm = new ReserveCardForm(cardReserved.getCardForm(), null, false);
 
-    try {
-      ServerCaller.reserveCard(LobbyServiceCaller.getCurrentUserLobby(),
-          LobbyServiceCaller.getCurrentUserAccessToken(), reserveCardForm);
+    ServerCaller.reserveCard(LobbyServiceCaller.getCurrentUserLobby(),
+        LobbyServiceCaller.getCurrentUserAccessToken(), reserveCardForm);
 
-      // Close card menu
-      cardActionMenu.setVisible(false);
+    // Close card menu
+    cardActionMenu.setVisible(false);
 
-      closeAllActionWindows();
-      updateBoard();
-    } catch (TokenRefreshFailedException e) {
-      try {
-        MenuController.returnToLogin("Session timed out, retry login");
-      } catch (IOException ioe) {
-        ioe.printStackTrace();
-      }
-    }
+    closeAllActionWindows();
+    updateBoard();
   }
 
   private boolean isYourTurn() {
@@ -701,22 +681,14 @@ public class GameBoard {
 
   @FXML
   private void handleClickMenuPopupSaveButton() {
-    try {
-      menuPopupPane.setDisable(true);
-      final HttpResponse<String> response =
-          ServerCaller.saveGame(LobbyServiceCaller.getCurrentUserLobby(),
-              LobbyServiceCaller.getCurrentUserAccessToken());
-      if (response.getStatus() == HttpStatus.OK) {
-        System.out.printf("Saved game successfully with save game id: %s%n", response.getBody());
-      } else {
-        System.err.printf("Unable to save game\n%s%n", response.getBody());
-      }
-    } catch (TokenRefreshFailedException ignored) {
-      try {
-        MenuController.returnToLogin("Session timed out, retry login");
-      } catch (IOException ioe) {
-        ioe.printStackTrace();
-      }
+    menuPopupPane.setDisable(true);
+    final HttpResponse<String> response =
+        ServerCaller.saveGame(LobbyServiceCaller.getCurrentUserLobby(),
+            LobbyServiceCaller.getCurrentUserAccessToken());
+    if (response.getStatus() == HttpStatus.OK) {
+      System.out.printf("Saved game successfully with save game id: %s%n", response.getBody());
+    } else {
+      System.err.printf("Unable to save game\n%s%n", response.getBody());
     }
     menuPopupPane.setDisable(false);
   }
@@ -1109,6 +1081,7 @@ public class GameBoard {
       handleWaterfallChoiceSelect(tentativeSelection, rootCard);
     });
     waterfallPane.setVisible(true);
+    waterfallPane.setDisable(false);
   }
 
   @FXML
@@ -1124,5 +1097,7 @@ public class GameBoard {
         player.getHandForm().reservedCards().contains(new OrientCard(wf).getCardForm()));
 
     purchaseCard(purchaseCardForm);
+    waterfallPane.setVisible(false);
+    waterfallPane.setDisable(true);
   }
 }

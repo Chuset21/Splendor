@@ -4,20 +4,23 @@ public class User {
 
   private String accessToken;
   private String refreshToken;
-  private String userid;
+  private final String userid;
+  private final String password;
   private Lobby currentLobby;
 
-  public User(String userid) {
+  public User(String userid, String password) {
     this.userid = userid;
     accessToken = "";
     refreshToken = "";
     currentLobby = null;
+    this.password = password;
   }
 
-  public User(String accessToken, String refreshToken, String userid) {
+  public User(String accessToken, String refreshToken, String userid, String password) {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
     this.userid = userid;
+    this.password = password;
   }
 
   public String getAccessToken() {
@@ -34,6 +37,10 @@ public class User {
 
   public Lobby getCurrentLobby() {
     return currentLobby;
+  }
+
+  public String getPassword() {
+    return password;
   }
 
   public void setAccessToken(String accessToken) {

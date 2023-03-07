@@ -150,19 +150,11 @@ public class Bank {
 
     TakeGemsForm form = new TakeGemsForm(convertedForm, null);
 
-    try {
-      ServerCaller.takeGems(LobbyServiceCaller.getCurrentUserLobby(),
-          LobbyServiceCaller.getCurrentUserAccessToken(), form);
+    ServerCaller.takeGems(LobbyServiceCaller.getCurrentUserLobby(),
+        LobbyServiceCaller.getCurrentUserAccessToken(), form);
 
-      gameBoard.closeAllActionWindows();
-      gameBoard.updateBoard();
-    } catch (TokenRefreshFailedException e){
-      try{
-        MenuController.returnToLogin("Session timed out, retry login");
-      } catch(IOException ioe){
-        ioe.printStackTrace();
-      }
-    }
+    gameBoard.closeAllActionWindows();
+    gameBoard.updateBoard();
   }
 
   /**
