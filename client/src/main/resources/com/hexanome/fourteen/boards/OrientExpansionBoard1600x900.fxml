@@ -799,7 +799,7 @@
          </children>
       </AnchorPane>
 
-      <DialogPane fx:id="acquiredNobleAlertPane" layoutX="500.0" layoutY="300.0" prefHeight="143.0" prefWidth="584.0" style="-fx-background-color: #faecc0; -fx-border-width: 5; -fx-border-color: #000000;">
+      <DialogPane fx:id="acquiredNobleAlertPane" layoutX="500.0" layoutY="300.0" prefHeight="143.0" prefWidth="584.0" style="-fx-background-color: #faecc0; -fx-border-width: 5; -fx-border-color: #000000;" visible="false">
          <ButtonType fx:constant="FINISH" />
          <header>
             <VBox fx:id="nobleAcquiredLabelVBox" alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">

@@ -126,7 +126,6 @@ public class GameBoard {
   // ACQUIRED NOBLES PANE
   @FXML
   private BorderPane acquiredNoblesView;
-  private List<Image> acquiredNoblesImages = new ArrayList<Image>();
   @FXML
   private BorderPane reservedBorderPane;
   @FXML
@@ -920,8 +919,32 @@ public class GameBoard {
 
   @FXML
   public void handleAcquiredNoblesViewSelect(MouseEvent event) {
+    String currentUser = LobbyServiceCaller.getCurrentUserid();
+    PlayerForm requestedPlayer = null;
+
+    // Determines which player's information is being requested
+    try {
+      for (PlayerForm p : gameBoardForm.players()) {
+        if (p.uid() == currentUser) {
+          requestedPlayer = p;
+        }
+      }
+    } catch (NullPointerException e) {
+      System.out.println("DEBUG: Failed to identify player");
+      return;
+    }
+
+    if (requestedPlayer == null) {
+      return;
+    }
+
+    List<Image> nobleImages = new ArrayList<Image>();
+    for (NobleForm n : requestedPlayer.hand().visitedNobles()) {
+      nobleImages.add(new Noble(n));
+    }
+
     // Set the purchased pane's content to the card image grid
-    GridPane nobleGrid = generateCardGrid(acquiredNoblesImages, new int[] {180, 180, 3});
+    GridPane nobleGrid = generateCardGrid(nobleImages, new int[] {180, 180, 3});
     nobleGrid.setPadding(new Insets(0, 70, 0, 70));
     acquiredNoblesView.setCenter(nobleGrid);
 
@@ -981,7 +1004,7 @@ public class GameBoard {
       } else {
         cardToAdd = new OrientCard(c);
       }
-      // TODO Add instanceof Waterfall card and other card types if there are any
+
       if (cardToAdd != null) {
         requestedPlayerReservedCardImages.add(cardToAdd);
       }
@@ -991,11 +1014,11 @@ public class GameBoard {
         .add(generateCardGrid(requestedPlayerReservedCardImages, new int[] {110, 160, 3}));
 
     // TODO: Fetch and apply the player's nobles as images
-    List<Image> requestedPlayerNobleImages = new ArrayList<>();
-//    for (Noble n : requestedPlayer.getHand().nobles) {
-//      requestedPlayerNobleImages.add(n);
-//    }
-//    noblesSummary.getChildren().add(generateCardGrid(requestedPlayerNoblesImages, new int[] {160, 160, 5}));
+    List<Image> requestedPlayerNoblesImages = new ArrayList<>();
+    for (NobleForm n : requestedPlayer.hand().visitedNobles()) {
+      requestedPlayerNoblesImages.add(new Noble(n));
+    }
+    noblesSummary.getChildren().add(generateCardGrid(requestedPlayerNoblesImages, new int[] {140, 140, 5}));
 
     // Display data
     playerSummaryPane.toFront();
@@ -1133,8 +1156,8 @@ public class GameBoard {
       // Acquire the noble via the server
       ServerCaller.claimNoble(LobbyServiceCaller.getCurrentUserLobby(),
           LobbyServiceCaller.getCurrentUserAccessToken(), new ClaimNobleForm(tentativeNobleSelection.nobleForm));
-      // Add noble image to noble stack
-      noblesStack.setImage(tentativeNobleSelection);
+      // Close noble select screen
+      acquiredNobleAlertPane.setVisible(false);
     });
     acquiredNobleAlertPane.setVisible(true);
     acquiredNobleAlertPane.setDisable(false);
