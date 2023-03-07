@@ -9,6 +9,7 @@ import com.hexanome.fourteen.form.server.PlayerForm;
 import com.hexanome.fourteen.form.server.PurchaseCardForm;
 import com.hexanome.fourteen.form.server.ReserveCardForm;
 import com.hexanome.fourteen.form.server.cardform.CardForm;
+import com.hexanome.fourteen.form.server.cardform.CardLevelForm;
 import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
 import com.hexanome.fourteen.form.server.cardform.WaterfallCardForm;
 import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
@@ -84,7 +85,7 @@ public class GameBoard {
   private ArrayList<Label> playerNameLabels;
   @FXML
   private Label currentPlayerTurnLabel;
-  private static final Effect currentPlayerEffect =
+  private static final Effect BLUE_GLOW_EFFECT =
       new DropShadow(BlurType.GAUSSIAN, Color.web("#0048ff"), 24.5, 0, 0, 0);
 
   private ArrayList<Noble> gameNobles;
@@ -146,6 +147,8 @@ public class GameBoard {
   private DialogPane waterfallPane;
   @FXML
   private VBox waterfallVBox;
+
+  private Card tentativeSelection;
 
 
   //CARD FIELDS
@@ -301,7 +304,7 @@ public class GameBoard {
     bank.close(gameBoardForm.availableGems());
   }
 
-  public GameBoardForm getGameBoardForm(){
+  public GameBoardForm getGameBoardForm() {
     return gameBoardForm;
   }
 
@@ -434,7 +437,7 @@ public class GameBoard {
       if (players.get(i).getUserId().equals(gameBoardForm.playerTurnid())) {
         currentPlayerTurnLabel.setText(players.get(i).getUserId() + "'s Turn");
         currentPlayerTurnLabel.setPadding(new Insets(5));
-        ((ImageView) playerViews.get(i)).setEffect(currentPlayerEffect);
+        ((ImageView) playerViews.get(i)).setEffect(BLUE_GLOW_EFFECT);
       } else {
         ((ImageView) playerViews.get(i)).setEffect(null);
       }
@@ -536,12 +539,20 @@ public class GameBoard {
       purchaseCardForm = new PurchaseCardForm(cardPurchased.getCardForm(),
           new GemPaymentForm(cardPurchased.getCardForm().cost(), null, 0),
           player.getHandForm().reservedCards().contains(cardPurchased.getCardForm()));
-//    } else if (cardPurchased.getCardForm() instanceof WaterfallCardForm) {
-//      purchaseCardForm = new PurchaseCardForm(,
-//          new GemPaymentForm(cardPurchased.getCardForm().cost(), null, 0),
-//          player.getHandForm().reservedCards().contains(cardPurchased.getCardForm()));
+    } else if (cardPurchased.getCardForm() instanceof WaterfallCardForm) {
+      displayWaterfallChoices((WaterfallCardForm) cardPurchased.getCardForm());
+      return;
     }
 
+    purchaseCard(purchaseCardForm);
+  }
+
+  /**
+   * Sends a request to the server to purchase a card
+   *
+   * @param purchaseCardForm form of purchase card
+   */
+  private void purchaseCard(PurchaseCardForm purchaseCardForm) {
     try {
       ServerCaller.purchaseCard(LobbyServiceCaller.getCurrentUserLobby(),
           LobbyServiceCaller.getCurrentUserAccessToken(), purchaseCardForm);
@@ -750,7 +761,7 @@ public class GameBoard {
   }
 
   public GridPane generateCardGridForWaterfall(List<Image> imageList, int[] viewParams,
-                                              Consumer<MouseEvent> mouseClickEvent) {
+                                               Consumer<MouseEvent> mouseClickEvent) {
     // Create a GridPane to hold the images
     GridPane cardImageGrid = new GridPane();
     cardImageGrid.setHgap(10);
@@ -1023,14 +1034,14 @@ public class GameBoard {
     cardMatrix.setDisable(false);
   }
 
-  private List<CardForm> fetchWaterfallSelection() {
+  private List<CardForm> fetchWaterfallSelection(CardLevelForm level) {
     // Initialize free card selection list
     List<CardForm> waterfallSelection = new ArrayList<>();
 
     // Fetch user's free card choices and add to list
     for (List<CardForm> decks : gameBoardForm.cards()) {
       for (CardForm c : decks) {
-        if ((c.expansion().equals(Expansion.ORIENT)) && (c.level().equals(2))) {
+        if ((c.level().equals(level))) {
           waterfallSelection.add(c);
         }
       }
@@ -1039,23 +1050,53 @@ public class GameBoard {
   }
 
   @FXML
-  private void displayWaterfallChoices() {
-    List<CardForm> waterfallSelection = fetchWaterfallSelection();
+  private void displayWaterfallChoices(WaterfallCardForm rootCard) {
+    List<CardForm> waterfallSelection = fetchWaterfallSelection(CardLevelForm.TWO);
 
-    // Display the free card choices to user
-    List<Image> cardChoicesImages = new ArrayList<>();
-    waterfallSelection.forEach((c) -> cardChoicesImages.add((Image) new OrientCard(c)));
+    // Generate HBox to display the free card choices to user
+    HBox choicesHBox = new HBox();
+    choicesHBox.setSpacing(5);
+    choicesHBox.setPadding(new Insets(5));
 
-    // Apply event handler to each card in choices
-    //cardChoicesImages.forEach((c) -> c);
+    // Generate ImageView for each selectable card form
+    for (CardForm c : waterfallSelection) {
+      ImageView iv = new ImageView();
+      iv.setImage((c instanceof StandardCardForm) ? new StandardCard((StandardCardForm) c) :
+          new OrientCard(c));
+      iv.setFitHeight(140);
+      iv.setFitWidth(100);
 
-    //waterfallVBox.getChildren().add(generateCardGridForWaterfall(cardChoicesImages, new int[] {120, 170}, this::handleWaterfallChoiceSelect));
+      // Apply event handler to each card in choices
+      iv.setOnMouseClicked(event -> {
+        tentativeSelection = (Card) ((ImageView) event.getSource()).getImage();
+        choicesHBox.getChildren().forEach((child) -> child.setEffect(null));
+        ((ImageView) event.getSource()).setEffect(BLUE_GLOW_EFFECT);
+      });
+
+      choicesHBox.getChildren().add(iv);
+    }
+
+    closeAllActionWindows();
+    waterfallPane.setContent(choicesHBox);
+    waterfallPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
+      handleWaterfallChoiceSelect(tentativeSelection, rootCard);
+    });
     waterfallPane.setVisible(true);
   }
 
   @FXML
-  public void handleWaterfallChoiceSelect(MouseEvent event, WaterfallCardForm wf) {
-    CardForm selectedCard = ((Card) event.getSource()).getCardForm();
+  public void handleWaterfallChoiceSelect(Card selection, WaterfallCardForm wf) {
+    CardForm selectedCard = selection.getCardForm();
     WaterfallCardForm waterfallWithSelection = new WaterfallCardForm(wf, selectedCard);
+
+
+    PurchaseCardForm purchaseCardForm = new PurchaseCardForm(waterfallWithSelection,
+        new GemPaymentForm(waterfallWithSelection.cost(), null, 0),
+        player.getHandForm().reservedCards().contains(new OrientCard(wf).getCardForm()));
+
+    purchaseCard(purchaseCardForm);
   }
+
+  /*// await reply from user
+  */
 }
