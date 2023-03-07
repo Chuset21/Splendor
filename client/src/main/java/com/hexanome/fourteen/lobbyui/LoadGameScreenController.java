@@ -67,16 +67,12 @@ public class LoadGameScreenController implements ScreenController {
 
   @FXML
   public void handleCreateLobbyButton() {
-
     // Information Variables about our session/savegame
     String sessionID = null;
     String saveGameID = (String) loadSetting.getSelectedToggle().getUserData();
 
     // Print to console our next step
     System.out.println("Loading game:" + saveGameID);
-
-    // Otherwise, we create a new session
-    System.out.println("Creating a session...");
 
     // Creates template for session with current user's ID and the selected expansion
     CreateSessionForm session = new CreateSessionForm(LobbyServiceCaller.getCurrentUserid(),
@@ -97,24 +93,14 @@ public class LoadGameScreenController implements ScreenController {
 
     // Create the lobby for the session
     if (sessionID != null) {
-
-      // Get the Session Information
-      SessionForm sf =
-          Main.GSON.fromJson(LobbyServiceCaller.getSessions().getBody(), SessionsForm.class)
-              .sessions().get(sessionID);
-
       try {
-
         // Go to Lobby
         MenuController.goToInLobbyScreen(new Lobby(sessionID));
-
       } catch (IOException ioe) {
         LobbyServiceCaller.setCurrentUserLobby(null);
         ioe.printStackTrace();
       }
     }
-
-
   }
 
   @FXML
