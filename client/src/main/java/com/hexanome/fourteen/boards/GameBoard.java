@@ -571,7 +571,7 @@ public class GameBoard {
     cardActionMenu.setVisible(false);
 
     closeAllActionWindows();
-    //updateBoard();
+    updateBoard();
     acquireNobleCheck(response);
   }
 
@@ -592,7 +592,7 @@ public class GameBoard {
     cardActionMenu.setVisible(false);
 
     closeAllActionWindows();
-    //updateBoard();
+    updateBoard();
     acquireNobleCheck(response);
   }
 
@@ -919,13 +919,12 @@ public class GameBoard {
 
   @FXML
   public void handleAcquiredNoblesViewSelect(MouseEvent event) {
-    String currentUser = LobbyServiceCaller.getCurrentUserid();
     PlayerForm requestedPlayer = null;
 
     // Determines which player's information is being requested
     try {
       for (PlayerForm p : gameBoardForm.players()) {
-        if (p.uid() == currentUser) {
+        if (LobbyServiceCaller.getCurrentUserid() == p.uid()) {
           requestedPlayer = p;
         }
       }
@@ -1127,7 +1126,7 @@ public class GameBoard {
 
     // Generate HBox to display the choices
     HBox choicesHBox = new HBox();
-    choicesHBox.setSpacing(5);
+    choicesHBox.setSpacing(10);
     choicesHBox.setPadding(new Insets(5));
 
     Label notice = new Label("There are nobles that want to visit you! Select one.");

@@ -156,7 +156,7 @@ public class Bank {
             LobbyServiceCaller.getCurrentUserAccessToken(), form);
 
     gameBoard.closeAllActionWindows();
-    //gameBoard.updateBoard();
+    gameBoard.updateBoard();
     gameBoard.acquireNobleCheck(response);
   }
 
