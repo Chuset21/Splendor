@@ -531,29 +531,41 @@
             <Cursor fx:constant="OPEN_HAND" />
          </cursor>
       </Button>
-      <Pane fx:id="menuPopupPane" prefHeight="900.0" prefWidth="1600.0" style="-fx-background-color: #F8DB85; -fx-opacity: 1;" visible="false" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <Pane fx:id="menuPopupPane" prefHeight="900.0" prefWidth="1600.0" style="-fx-background-color: #F8DB85; -fx-opacity: 1;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Label layoutX="731.0" layoutY="238.0" text="Menu">
-               <font>
-                  <Font name="Satoshi Black" size="70.0" />
-               </font>
-            </Label>
-            <Button fx:id="menuPopupBackButton" layoutX="693.0" layoutY="342.0" mnemonicParsing="false" onAction="#handleClickMenuPopupBackButton" style="-fx-background-color: #72465B;" text="Return to Game" textFill="#f8db85">
-               <font>
-                  <Font name="Satoshi Black" size="30.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
-            <Button fx:id="menuPopupQuitButton" layoutX="778.0" layoutY="426.0" mnemonicParsing="false" onAction="#handleClickMenuPopupQuitButton" style="-fx-background-color: #b82e70;" text="Quit" textFill="#f8db85">
-               <font>
-                  <Font name="Satoshi Black" size="30.0" />
-               </font>
-               <cursor>
-                  <Cursor fx:constant="HAND" />
-               </cursor>
-            </Button>
+            <VBox alignment="CENTER" layoutX="612.0" layoutY="283.0" prefHeight="270.0" prefWidth="378.0" spacing="25.0">
+               <children>
+                  <Label text="Menu">
+                     <font>
+                        <Font name="Satoshi Black" size="70.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="menuPopupBackButton" mnemonicParsing="false" onAction="#handleClickMenuPopupBackButton" style="-fx-background-color: #72465B;" text="Return to Game" textFill="#f8db85">
+                     <font>
+                        <Font name="Satoshi Black" size="30.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Button fx:id="menuPopupSaveButton" mnemonicParsing="false" onAction="#handleClickMenuPopupSaveButton" style="-fx-background-color: #2b71d9;" text="Save" textFill="#f8db85">
+                     <font>
+                        <Font name="Satoshi Black" size="30.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Button fx:id="menuPopupQuitButton" mnemonicParsing="false" onAction="#handleClickMenuPopupQuitButton" style="-fx-background-color: #b82e70;" text="Quit" textFill="#f8db85">
+                     <font>
+                        <Font name="Satoshi Black" size="30.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+               </children>
+            </VBox>
          </children>
 
       </Pane>

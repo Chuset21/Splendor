@@ -697,6 +697,11 @@ public class GameBoard {
       ioe.printStackTrace();
     }
   }
+  
+  @FXML
+  private void handleClickMenuPopupSaveButton(){
+    // Code zone
+  }
 
   @FXML
   private void handleExitCardMenu() {
