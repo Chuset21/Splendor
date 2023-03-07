@@ -20,8 +20,11 @@ import java.util.Set;
  * @param players         The players.
  * @param gameid          The game ID.
  * @param creator         The creator.
+ * @param isLastRound     Is it the last round of the game.
+ * @param isGameOver      Is the game over.
  */
 public record SentGameBoard(String playerTurnid, Set<Noble> availableNobles, Gems availableGems,
                             Set<List<Card>> cards, Set<Expansion> expansions, Player leadingPlayer,
-                            Set<Player> players, String gameid, String creator) {
+                            Set<Player> players, String gameid, String creator, boolean isLastRound,
+                            boolean isGameOver) {
 }

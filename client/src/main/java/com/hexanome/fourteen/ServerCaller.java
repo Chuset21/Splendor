@@ -47,23 +47,10 @@ public final class ServerCaller {
    * @return The game board form if successful, null otherwise.
    */
   public static HttpResponse<String> getGameBoard(Lobby lobby) {
-    String accessToken = null;
-
-    try {
-      accessToken = LobbyServiceCaller.getCurrentUserAccessToken();
-    } catch (TokenRefreshFailedException e) {
-      try {
-        MenuController.returnToLogin("Session timed out, retry login");
-        return null;
-      } catch (IOException ioe) {
-        ioe.printStackTrace();
-      }
-    }
-
     return Unirest.get(
             "%s/api/games/%s".formatted(lobby.getGameServiceLocation(), lobby.getSessionid()))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-        .queryString("access_token", accessToken).asString();
+        .queryString("access_token", LobbyServiceCaller.getCurrentUserAccessToken()).asString();
   }
 
   /**
@@ -73,23 +60,10 @@ public final class ServerCaller {
    * @return The game board form if successful, null otherwise.
    */
   public static HttpResponse<String> getGameBoard(Lobby lobby, String hash) {
-    String accessToken = null;
-
-    try {
-      accessToken = LobbyServiceCaller.getCurrentUserAccessToken();
-    } catch (TokenRefreshFailedException e) {
-      try {
-        MenuController.returnToLogin("Session timed out, retry login");
-        return null;
-      } catch (IOException ioe) {
-        ioe.printStackTrace();
-      }
-    }
-
     return Unirest.get(
             "%s/api/games/%s".formatted(lobby.getGameServiceLocation(), lobby.getSessionid()))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-        .queryString("access_token", accessToken)
+        .queryString("access_token", LobbyServiceCaller.getCurrentUserAccessToken())
         .queryString("hash", hash == null || hash.isEmpty() ? "" : hash).asString();
   }
 
@@ -110,6 +84,23 @@ public final class ServerCaller {
   }
 
   /**
+   * Purchase a card.
+   * Returns null as the string if successful,
+   * however if a noble can be reserved, it returns the list of nobles that can be reserved
+   *
+   * @return The response.
+   */
+  public static HttpResponse<String> purchaseCard(Lobby lobby,
+                                                  String accessToken,
+                                                  PurchaseCardForm purchaseCardForm) {
+    return Unirest.put("%s/api/games/%s/card/purchase".formatted(lobby.getGameServiceLocation(),
+            lobby.getSessionid()))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", accessToken).body(Main.GSON.toJson(purchaseCardForm))
+        .asString();
+  }
+
+  /**
    * Reserve a card.
    *
    * @return The response.
@@ -118,6 +109,21 @@ public final class ServerCaller {
                                                  String accessToken,
                                                  ReserveCardForm reserveCardForm) {
     return Unirest.put("%s/api/games/%s/card/reserve".formatted(serverLocation, gameid))
+        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
+        .queryString("access_token", accessToken).body(Main.GSON.toJson(reserveCardForm))
+        .asString();
+  }
+
+  /**
+   * Reserve a card.
+   *
+   * @return The response.
+   */
+  public static HttpResponse<String> reserveCard(Lobby lobby,
+                                                 String accessToken,
+                                                 ReserveCardForm reserveCardForm) {
+    return Unirest.put("%s/api/games/%s/card/reserve".formatted(lobby.getGameServiceLocation(),
+            lobby.getSessionid()))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("access_token", accessToken).body(Main.GSON.toJson(reserveCardForm))
         .asString();
@@ -142,12 +148,10 @@ public final class ServerCaller {
    */
   public static HttpResponse<String> takeGems(Lobby lobby, String accessToken,
                                               TakeGemsForm takeGemsForm) {
-    final HttpResponse response = Unirest.put(
+    return Unirest.put(
             "%s/api/games/%s/gems".formatted(lobby.getGameServiceLocation(), lobby.getSessionid()))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("access_token", accessToken).body(Main.GSON.toJson(takeGemsForm)).asString();
-
-    return response;
   }
 
   /**
@@ -172,5 +176,14 @@ public final class ServerCaller {
     return Unirest.post("%s/api/games/%s".formatted(serverLocation, gameid))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("access_token", accessToken).asString();
+  }
+
+  /**
+   * Save a game.
+   *
+   * @return The response.
+   */
+  public static HttpResponse<String> saveGame(Lobby lobby, String accessToken) {
+    return saveGame(lobby.getGameServiceLocation(), lobby.getSessionid(), accessToken);
   }
 }

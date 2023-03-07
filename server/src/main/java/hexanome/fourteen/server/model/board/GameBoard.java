@@ -77,7 +77,7 @@ public final class GameBoard implements BroadcastContent {
   private Player leadingPlayer;
   private final Set<Player> players;
   private String gameid;
-  private boolean lastRound;
+  private boolean isLastRound;
   private final String creator;
 
   /**
@@ -96,7 +96,7 @@ public final class GameBoard implements BroadcastContent {
     }
     playerTurn = new Random().nextInt(0, count);
     startingPlayerTurn = playerTurn;
-    lastRound = false;
+    isLastRound = false;
     leadingPlayer = playerTurnMap.get(0);
 
     availableGems = new Gems();
@@ -377,19 +377,22 @@ public final class GameBoard implements BroadcastContent {
 
   /**
    * Go to the next turn.
-   *
-   * @return true if it's just now the last round of the game, false otherwise.
    */
-  public boolean nextTurn() {
-    boolean wasLastRound = lastRound;
-    if (!lastRound) {
-      computeLeadingPlayer();
-      if (leadingPlayer.hand().prestigePoints() >= WINNING_POINTS) {
-        lastRound = true;
-      }
+  public void nextTurn() {
+    computeLeadingPlayer();
+    if (leadingPlayer.hand().prestigePoints() >= WINNING_POINTS) {
+      isLastRound = true;
     }
     playerTurn = (playerTurn + 1) % players.size();
-    return wasLastRound != lastRound;
+  }
+
+  /**
+   * Returns whether it is the last round.
+   *
+   * @return true if it is the last round, false otherwise.
+   */
+  public boolean isLastRound() {
+    return isLastRound;
   }
 
   /**
@@ -398,7 +401,7 @@ public final class GameBoard implements BroadcastContent {
    * @return true if the game is over, false otherwise.
    */
   public boolean isGameOver() {
-    return lastRound && playerTurn == startingPlayerTurn;
+    return isLastRound && playerTurn == startingPlayerTurn;
   }
 
   /**
@@ -418,5 +421,15 @@ public final class GameBoard implements BroadcastContent {
   @Override
   public boolean isEmpty() {
     return false;
+  }
+
+  /**
+   * Checks whether it's the player's turn.
+   *
+   * @param username The player's username.
+   * @return true if it's the player's turn, false otherwise.
+   */
+  public boolean isPlayerTurn(String username) {
+    return playerTurnMap.get(playerTurn).uid().equals(username);
   }
 }

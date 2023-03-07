@@ -59,7 +59,7 @@ public final class LoginScreenController implements ScreenController {
       return;
     }
 
-    User user = new User(username);
+    User user = new User(username, password);
 
     if (LobbyServiceCaller.login(username, password)) {
       launchGame();

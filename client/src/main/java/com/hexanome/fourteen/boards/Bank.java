@@ -32,6 +32,7 @@ public class Bank {
   List<Label> gemLabels;
   // Includes reference to the players gems labels so bank can just update it itself.
   List<Label> bankGemLabels;
+  Button openBankButton;
   Button takeBankButton;
   Pane takenTokenPane;
   GameBoard gameBoard;
@@ -44,13 +45,15 @@ public class Bank {
    * @param removeGemButtons The button to remove Gems
    * @param gemLabels        The labels displaying the number of each Gem
    * @param bankGemLabels    The labels displaying the number of each Gem the Bank uses
-   * @param takeBankButton   Button to allow you take Gems from the Bank
+   * @param openBankButton   Button to allow you open and close the Bank
+   * @param takeBankButton  Button that allows you to take tokens from the bank
    */
   public Bank(int numPlayers,
               List<Button> addGemButtons,
               List<Button> removeGemButtons,
               List<Label> gemLabels,
               List<Label> bankGemLabels,
+              Button openBankButton,
               Button takeBankButton,
               Pane takenTokenPane,
               GameBoard gameBoard) {
@@ -60,6 +63,7 @@ public class Bank {
     this.removeGemButtons = removeGemButtons;
     this.gemLabels = gemLabels;
     this.bankGemLabels = bankGemLabels;
+    this.openBankButton = openBankButton;
     this.takeBankButton = takeBankButton;
     this.selectedGems = new ArrayList<>();
     this.takenTokenPane = takenTokenPane;
@@ -75,7 +79,8 @@ public class Bank {
     }
 
     //Initialize Bank Button
-    takeBankButton.textProperty().set("Open");
+    openBankButton.textProperty().set("Open");
+    openBankButton.setPrefWidth(84);
   }
 
   public void updateGemCount(GemsForm bankGems){
@@ -97,7 +102,8 @@ public class Bank {
 
     if (isTaking) {
       selectedGems.clear();
-      takeBankButton.textProperty().set("Take");
+      openBankButton.textProperty().set("Cancel");
+      openBankButton.setPrefWidth(100);
       takenTokenPane.setVisible(true);
       for (int idx : GEM_INDEX) {
         removeGemButtons.get(idx).setVisible(true);
@@ -109,44 +115,46 @@ public class Bank {
       updateBankButtons();
 
     } else {
-      takeBankButton.textProperty().set("Open");
-      takenTokenPane.setVisible(false);
-      // Otherwise, just hide all the buttons!
-      for (int idx : GEM_INDEX) {
-        removeGemButtons.get(idx).setVisible(false);
-        addGemButtons.get(idx).setVisible(false);
-      }
+      close(gameBoard.getGameBoardForm().availableGems());
+    }
+  }
 
-      // Send take gems action to the server
-      sendTakeGems(selectedGems);
+  public void take(){
+    // Send take gems action to the server
+    sendTakeGems(selectedGems);
+  }
+
+  public void close(GemsForm gemsForm){
+    openBankButton.textProperty().set("Open");
+    openBankButton.setPrefWidth(84);
+    takenTokenPane.setVisible(false);
+
+    // Otherwise, just hide all the buttons!
+    for (int idx : GEM_INDEX) {
+      removeGemButtons.get(idx).setVisible(false);
+      addGemButtons.get(idx).setVisible(false);
+    }
+
+    isTaking = false;
+    if(gemsForm != null){
+      updateGemCount(gemsForm);
     }
   }
 
   public void sendTakeGems(List<Integer> takenGems){
     GemsForm convertedForm = new GemsForm();
 
-    for(int i = 0; i<5;i++){
-      convertedForm.put(GemColor.INT_CONVERSION_ARRAY.get(i), 0);
-    }
-
     for(Integer i : takenGems){
-      convertedForm.put(GemColor.INT_CONVERSION_ARRAY.get(i),convertedForm.get(GemColor.INT_CONVERSION_ARRAY.get(i)).intValue() + 1);
+      convertedForm.put(GemColor.INT_CONVERSION_ARRAY.get(i),convertedForm.getOrDefault(GemColor.INT_CONVERSION_ARRAY.get(i),0).intValue() + 1);
     }
 
     TakeGemsForm form = new TakeGemsForm(convertedForm, null);
 
-    try {
-      ServerCaller.takeGems(LobbyServiceCaller.getCurrentUserLobby(),
-          LobbyServiceCaller.getCurrentUserAccessToken(), form);
+    ServerCaller.takeGems(LobbyServiceCaller.getCurrentUserLobby(),
+        LobbyServiceCaller.getCurrentUserAccessToken(), form);
 
-      gameBoard.updateBoard();
-    } catch (TokenRefreshFailedException e){
-      try{
-        MenuController.returnToLogin("Session timed out, retry login");
-      } catch(IOException ioe){
-        ioe.printStackTrace();
-      }
-    }
+    gameBoard.closeAllActionWindows();
+    gameBoard.updateBoard();
   }
 
   /**
@@ -206,15 +214,16 @@ public class Bank {
 
       // If we have the gem colour in our hand, 'remove' should be enabled;
       // Otherwise, disable the 'remove' button.
-      if (!selectedGems.contains(idx)) {
+      if (!selectedGems.contains(idx) || idx == 5 /*Gem is gold*/) {
         removeGemButtons.get(idx).setDisable(true);
       } else {
         removeGemButtons.get(idx).setDisable(false);
       }
       // If (following 5 conditions) hold, 'add' should be enabled.
       //Otherwise, disable the 'add' button.
-      if (bankGems[idx] == 0
-          || (bankGems[idx] < 4 && selectedGems.contains(idx))
+      if (idx == 5 /*Gem is gold*/
+          || bankGems[idx] == 0
+          || (bankGems[idx] < 3 && selectedGems.contains(idx))
           || handBucket.get(idx) > 0 && selectedGems.size() > 1
           || selectedGems.size() == 3
           || handBucket.containsValue(2)) {

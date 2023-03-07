@@ -19,6 +19,8 @@ public final class GameBoardForm {
   private Set<PlayerForm> players;
   private String gameid;
   private String creator;
+  private boolean isLastRound;
+  private boolean isGameOver;
 
   /**
    * Constructor.
@@ -32,11 +34,14 @@ public final class GameBoardForm {
    * @param players         The players.
    * @param gameid          The game ID.
    * @param creator         The creator.
+   * @param isLastRound     Is it the last round of the game.
+   * @param isGameOver      Is the game over.
    */
   public GameBoardForm(String playerTurnid, Set<NobleForm> availableNobles, GemsForm availableGems,
                        Set<List<CardForm>> cards, Set<Expansion> expansions,
-                       PlayerForm leadingPlayer, Set<PlayerForm> players, String gameid,
-                       String creator) {
+                       PlayerForm leadingPlayer,
+                       Set<PlayerForm> players, String gameid, String creator, boolean isLastRound,
+                       boolean isGameOver) {
     this.playerTurnid = playerTurnid;
     this.availableNobles = availableNobles;
     this.availableGems = availableGems;
@@ -46,6 +51,8 @@ public final class GameBoardForm {
     this.players = players;
     this.gameid = gameid;
     this.creator = creator;
+    this.isLastRound = isLastRound;
+    this.isGameOver = isGameOver;
   }
 
   /**
@@ -91,23 +98,55 @@ public final class GameBoardForm {
     return creator;
   }
 
+  public boolean isLastRound() {
+    return isLastRound;
+  }
+
+  public boolean isGameOver() {
+    return isGameOver;
+  }
+
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
+  public boolean equals(Object obj) {
+    if (obj == this) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (obj == null || obj.getClass() != this.getClass()) {
       return false;
     }
-    GameBoardForm that = (GameBoardForm) o;
-    return Objects.equals(playerTurnid, that.playerTurnid)
-           && Objects.equals(availableNobles, that.availableNobles)
-           && Objects.equals(availableGems, that.availableGems)
-           && Objects.equals(cards, that.cards)
-           && Objects.equals(expansions, that.expansions)
-           && Objects.equals(leadingPlayer, that.leadingPlayer)
-           && Objects.equals(players, that.players)
-           && Objects.equals(gameid, that.gameid)
-           && Objects.equals(creator, that.creator);
+    GameBoardForm that = (GameBoardForm) obj;
+    return Objects.equals(this.playerTurnid, that.playerTurnid)
+           && Objects.equals(this.availableNobles, that.availableNobles)
+           && Objects.equals(this.availableGems, that.availableGems)
+           && Objects.equals(this.cards, that.cards)
+           && Objects.equals(this.expansions, that.expansions)
+           && Objects.equals(this.leadingPlayer, that.leadingPlayer)
+           && Objects.equals(this.players, that.players)
+           && Objects.equals(this.gameid, that.gameid)
+           && Objects.equals(this.creator, that.creator)
+           && this.isLastRound == that.isLastRound
+           && this.isGameOver == that.isGameOver;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(playerTurnid, availableNobles, availableGems, cards, expansions,
+        leadingPlayer, players, gameid, creator, isLastRound, isGameOver);
+  }
+
+  @Override
+  public String toString() {
+    return "GameBoardForm[" +
+           "playerTurnid=" + playerTurnid + ", " +
+           "availableNobles=" + availableNobles + ", " +
+           "availableGems=" + availableGems + ", " +
+           "cards=" + cards + ", " +
+           "expansions=" + expansions + ", " +
+           "leadingPlayer=" + leadingPlayer + ", " +
+           "players=" + players + ", " +
+           "gameid=" + gameid + ", " +
+           "creator=" + creator + ", " +
+           "isLastRound=" + isLastRound + ", " +
+           "isGameOver=" + isGameOver + ']';
   }
 }

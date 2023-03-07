@@ -95,7 +95,7 @@ public final class LobbyServiceCaller {
         .asString();
 
     // Resets current user (it's okay if login fails, it will just recreate a new user)
-    currentUser = new User(username);
+    currentUser = new User(username, password);
 
     return getTokens(response);
   }
@@ -117,7 +117,7 @@ public final class LobbyServiceCaller {
   /**
    * Updates the user's access token and sends it in the return.
    */
-  public static String getCurrentUserAccessToken() throws TokenRefreshFailedException {
+  public static String getCurrentUserAccessToken() {
     HttpResponse<String> response = Unirest.post("%soauth/token".formatted(Main.lsLocation))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("grant_type", "refresh_token")
@@ -126,7 +126,7 @@ public final class LobbyServiceCaller {
         .asString();
 
     if (!getTokens(response)) {
-      throw new TokenRefreshFailedException();
+      login(currentUser.getUserid(), currentUser.getPassword());
     }
 
     return currentUser.getAccessToken();
