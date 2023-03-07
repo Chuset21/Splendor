@@ -571,7 +571,7 @@ public class GameBoard {
     cardActionMenu.setVisible(false);
 
     closeAllActionWindows();
-    updateBoard();
+    //updateBoard();
     acquireNobleCheck(response);
   }
 
@@ -592,7 +592,7 @@ public class GameBoard {
     cardActionMenu.setVisible(false);
 
     closeAllActionWindows();
-    updateBoard();
+    //updateBoard();
     acquireNobleCheck(response);
   }
 
@@ -908,7 +908,7 @@ public class GameBoard {
 //        // Only one noble can be acquired per turn
 //        break;
 //      } else {
-//        publicNoblesVBox.getChildren().add(iv);
+        publicNoblesVBox.getChildren().add(iv);
 //      }
     }
   }
@@ -924,7 +924,7 @@ public class GameBoard {
     // Determines which player's information is being requested
     try {
       for (PlayerForm p : gameBoardForm.players()) {
-        if (LobbyServiceCaller.getCurrentUserid() == p.uid()) {
+        if (LobbyServiceCaller.getCurrentUserid().equals(p.uid())) {
           requestedPlayer = p;
         }
       }
@@ -1126,19 +1126,15 @@ public class GameBoard {
 
     // Generate HBox to display the choices
     HBox choicesHBox = new HBox();
-    choicesHBox.setSpacing(10);
-    choicesHBox.setPadding(new Insets(5));
-
-    Label notice = new Label("There are nobles that want to visit you! Select one.");
-    notice.setFont(new Font("Satoshi", 16));
-    nobleAcquiredLabelVBox.getChildren().add(notice);
+    choicesHBox.setSpacing(20);
+    choicesHBox.setPadding(new Insets(10));
 
     // Generate ImageView for each selectable noble
     for (NobleForm n : validNobles) {
       ImageView iv = new ImageView();
       iv.setImage(new Noble(n));
-      iv.setFitHeight(120);
-      iv.setFitWidth(120);
+      iv.setFitHeight(150);
+      iv.setFitWidth(150);
 
       // Apply event handler to each card in choices
       iv.setOnMouseClicked(event -> {
@@ -1154,8 +1150,11 @@ public class GameBoard {
     acquiredNobleAlertPane.setContent(choicesHBox);
     acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
       // Acquire the noble via the server
-      ServerCaller.claimNoble(LobbyServiceCaller.getCurrentUserLobby(),
-          LobbyServiceCaller.getCurrentUserAccessToken(), new ClaimNobleForm(tentativeNobleSelection.nobleForm));
+      HttpResponse<String> response1 =
+          ServerCaller.claimNoble(LobbyServiceCaller.getCurrentUserLobby(),
+              LobbyServiceCaller.getCurrentUserAccessToken(),
+              new ClaimNobleForm(tentativeNobleSelection.nobleForm));
+      System.out.println(response1.getBody());
       // Close noble select screen
       acquiredNobleAlertPane.setVisible(false);
     });
