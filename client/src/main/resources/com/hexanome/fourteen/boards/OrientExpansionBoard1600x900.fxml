@@ -531,7 +531,7 @@
             <Cursor fx:constant="OPEN_HAND" />
          </cursor>
       </Button>
-      <Pane fx:id="menuPopupPane" prefHeight="900.0" prefWidth="1600.0" style="-fx-background-color: #F8DB85; -fx-opacity: 1;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <Pane fx:id="menuPopupPane" prefHeight="900.0" prefWidth="1600.0" style="-fx-background-color: #F8DB85; -fx-opacity: 1;" visible="false" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <VBox alignment="CENTER" layoutX="612.0" layoutY="283.0" prefHeight="270.0" prefWidth="378.0" spacing="25.0">
                <children>
