@@ -792,7 +792,9 @@ public class GameHandlerControllerTest {
     chosenGems.put(GemColor.RED, 2);
     chosenGems.put(GemColor.BLACK, 2);
     chosenGems.put(GemColor.BLUE, 2);
-    board.availableNobles().add(new Noble(100, new Gems()));
+    final Gems nobleCost = new Gems();
+    nobleCost.put(GemColor.RED, 100);
+    board.availableNobles().add(new Noble(100, nobleCost));
     addCardToDeck(board.cards(), cardToPurchase);
     payment = new GemPayment(chosenGems, substitutedGems, 0);
     purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, false);
@@ -849,7 +851,7 @@ public class GameHandlerControllerTest {
     cardCost.put(GemColor.BLUE, 2);
     cardToPurchase =
         new ReserveNobleCard(1, cardCost, CardLevel.TWO, Expansion.ORIENT, GemColor.WHITE,
-            new Noble(100, new Gems()));
+            new Noble(100, nobleCost));
     player.hand().gems().put(GemColor.WHITE, 2);
     player.hand().gems().put(GemColor.RED, 2);
     player.hand().gems().put(GemColor.BLACK, 2);
@@ -868,7 +870,7 @@ public class GameHandlerControllerTest {
     assertEquals(1, player.hand().purchasedCards().size());
     assertTrue(player.hand().purchasedCards().contains(
         new ReserveNobleCard(1, cardCost, CardLevel.TWO, Expansion.ORIENT, GemColor.WHITE)));
-    assertTrue(player.hand().reservedNobles().contains(new Noble(100, new Gems())));
+    assertTrue(player.hand().reservedNobles().contains(new Noble(100, nobleCost)));
     assertEquals(cardToPurchase.prestigePoints(), player.hand().prestigePoints());
     assertEquals(Bonus.SINGLE.getValue(),
         player.hand().gemDiscounts().get(((ReserveNobleCard) cardToPurchase).discountColor()));
@@ -910,9 +912,6 @@ public class GameHandlerControllerTest {
     purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, false);
 
     if (!board.isPlayerTurn("test")) {
-      board.nextTurn();
-    } else if (board.isActionTaken()) {
-      board.nextTurn();
       board.nextTurn();
     }
     response =
