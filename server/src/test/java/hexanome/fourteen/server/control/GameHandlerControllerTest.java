@@ -911,6 +911,9 @@ public class GameHandlerControllerTest {
 
     if (!board.isPlayerTurn("test")) {
       board.nextTurn();
+    } else if (board.isActionTaken()) {
+      board.nextTurn();
+      board.nextTurn();
     }
     response =
         gameHandlerController.purchaseCard("", "token", gsonInstance.gson.toJson(purchaseCardForm));
