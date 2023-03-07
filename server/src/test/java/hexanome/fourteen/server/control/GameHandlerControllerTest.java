@@ -2034,6 +2034,12 @@ public class GameHandlerControllerTest {
             null);
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
+    Map<String, BroadcastContentManager<GameBoard>> gameSpecificBroadcastManagers =
+        (Map<String, BroadcastContentManager<GameBoard>>) ReflectionTestUtils.getField(
+            gameHandlerController,
+            "gameSpecificBroadcastManagers");
+    assertNotNull(gameSpecificBroadcastManagers);
+    gameSpecificBroadcastManagers.put("x", new BroadcastContentManager<>(board));
 
     ResponseEntity<String> response = gameHandlerController.claimNoble("", "token", null);
     assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
