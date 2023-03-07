@@ -406,10 +406,10 @@ public class GameBoard {
       if (i < players.size() && players.get(i) != null) {
         ((ImageView) playerViews.get(i)).setImage(players.get(i));
         Tooltip.install(((ImageView) playerViews.get(i)), new Tooltip(players.get(i).getUserId() +
-                                                                      (player.getUserId().equals(
-                                                                          players.get(i)
-                                                                              .getUserId()) ?
-                                                                          " (you)" : "")));
+            (player.getUserId().equals(
+                players.get(i)
+                    .getUserId()) ?
+                " (you)" : "")));
       } else {
         ((ImageView) playerViews.get(i)).imageProperty().set(null);
       }
@@ -955,12 +955,11 @@ public class GameBoard {
     // Determines which player's information is being requested
     try {
       player = ((Player) ((ImageView) event.getSource()).getImage());
+      requestedPlayer = player.getPlayerForm();
     } catch (NullPointerException e) {
-      System.out.println("Failed to identify player");
+      System.out.println("DEBUG: Failed to identify player");
       return;
     }
-
-    requestedPlayer = player.getPlayerForm();
 
     // Aborts if no player data was found
     if (requestedPlayer == null) {
@@ -1096,12 +1095,11 @@ public class GameBoard {
 
 
     PurchaseCardForm purchaseCardForm = new PurchaseCardForm(waterfallWithSelection,
-        new GemPaymentForm(waterfallWithSelection.cost(), null, 0),
+        new GemPaymentForm(
+            waterfallWithSelection.cost().getDiscountedCost(player.getHandForm().gemDiscounts()),
+            null, 0),
         player.getHandForm().reservedCards().contains(new OrientCard(wf).getCardForm()));
 
     purchaseCard(purchaseCardForm);
   }
-
-  /*// await reply from user
-  */
 }
