@@ -16,6 +16,7 @@ import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -405,10 +406,10 @@ public class GameBoard {
       if (i < players.size() && players.get(i) != null) {
         ((ImageView) playerViews.get(i)).setImage(players.get(i));
         Tooltip.install(((ImageView) playerViews.get(i)), new Tooltip(players.get(i).getUserId() +
-            (player.getUserId().equals(
-                players.get(i)
-                    .getUserId()) ?
-                " (you)" : "")));
+                                                                      (player.getUserId().equals(
+                                                                          players.get(i)
+                                                                              .getUserId()) ?
+                                                                          " (you)" : "")));
       } else {
         ((ImageView) playerViews.get(i)).imageProperty().set(null);
       }
@@ -480,11 +481,14 @@ public class GameBoard {
 
     // Set action pane image to the selected card
     cardActionImage.setImage(selectedCardView.getImage());
+    final int[] gemsCost = GemsForm.costHashToArray(
+        ((Card) selectedCardView.getImage()).getCardForm().cost()
+            .getDiscountedCost(player.getHandForm().gemDiscounts()));
 
     // Set values in action pane to the card's cost
-    for (int i = 0; i < ((Card) selectedCardView.getImage()).getCost().length; i++) {
+    for (int i = 0; i < gemsCost.length; i++) {
       // Set label string to the respective cost of the card
-      actionGemLabels.get(i).setText(((Card) selectedCardView.getImage()).getCost()[i] + "");
+      actionGemLabels.get(i).setText(String.valueOf(gemsCost[i]));
     }
 
     // Set gold gems to 0 -> !!!can change this later when implementing gold purchases!!!
@@ -495,7 +499,7 @@ public class GameBoard {
 
     // get the player's hand and the cost of the card
     HandForm handForm = player.getHandForm();
-    int[] selectedCost = ((Card) selectedCardView.getImage()).getCost();
+    int[] selectedCost = Arrays.copyOf(gemsCost, gemsCost.length);
 
     if (isYourTurn()) {
       // If player's gems cannot pay for card, disable purchase button
@@ -537,7 +541,8 @@ public class GameBoard {
 
     if (cardPurchased.getCardForm() instanceof StandardCardForm) {
       purchaseCardForm = new PurchaseCardForm(cardPurchased.getCardForm(),
-          new GemPaymentForm(cardPurchased.getCardForm().cost(), null, 0),
+          new GemPaymentForm(cardPurchased.getCardForm().cost()
+              .getDiscountedCost(player.getHandForm().gemDiscounts()), null, 0),
           player.getHandForm().reservedCards().contains(cardPurchased.getCardForm()));
     } else if (cardPurchased.getCardForm() instanceof WaterfallCardForm) {
       displayWaterfallChoices((WaterfallCardForm) cardPurchased.getCardForm());

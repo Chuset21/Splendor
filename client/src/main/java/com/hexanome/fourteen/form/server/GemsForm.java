@@ -92,4 +92,28 @@ public final class GemsForm extends HashMap<GemColor, Integer> {
     return convertedForm;
   }
 
+  /**
+   * Get the discounted cost from a card's cost.
+   *
+   * @param gemDiscounts the player's gem discounts
+   * @return The discounted cost
+   */
+  public GemsForm getDiscountedCost(GemsForm gemDiscounts) {
+    final GemsForm result = new GemsForm(this);
+
+    // Remove the gem discounts from the cost of the card to get the cost for this specific player
+    result.removeGems(gemDiscounts);
+
+    return result;
+  }
+
+  /**
+   * Remove gems from other gems.
+   *
+   * @param gemsToRemove     the gems to remove
+   */
+  public void removeGems(GemsForm gemsToRemove) {
+    gemsToRemove.forEach((key, amountToRemove) -> this.computeIfPresent(key,
+        (k, v) -> amountToRemove >= v ? null : v - amountToRemove));
+  }
 }
