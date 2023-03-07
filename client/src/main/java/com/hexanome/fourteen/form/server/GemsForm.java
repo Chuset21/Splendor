@@ -69,7 +69,7 @@ public final class GemsForm extends HashMap<GemColor, Integer> {
   }
 
   /**
-   * Converts an array representing cost (which excludes GOLD) into a GemsForm
+   * Converts an array representing cost into a GemsForm
    *
    * @param cost array to convert
    * @return GemsForm object with converted cost values
@@ -78,13 +78,13 @@ public final class GemsForm extends HashMap<GemColor, Integer> {
     if(cost == null){
       throw new InvalidParameterException("cost cannot be null");
     }
-    if(cost.length != 5){
-      throw new InvalidParameterException("Cost array must be of size 5, must exclude GOLD tokens");
+    if(cost.length < 6){
+      throw new InvalidParameterException("Cost array must be less than 7 long");
     }
 
     GemsForm convertedForm = new GemsForm();
 
-    for(int i = 0; i<5;i++){
+    for(int i = 0; i<cost.length;i++){
       final int curCost = cost[i];
       convertedForm.computeIfAbsent(CONVERSION_ARRAY[i], k -> curCost > 0 ? curCost : null);
     }
