@@ -577,6 +577,8 @@ public class GameBoard {
         ServerCaller.purchaseCard(LobbyServiceCaller.getCurrentUserLobby(),
             LobbyServiceCaller.getCurrentUserAccessToken(), purchaseCardForm);
 
+    System.out.println(response.getBody());
+
     // Close card menu
     cardActionMenu.setVisible(false);
 
@@ -613,6 +615,8 @@ public class GameBoard {
         ServerCaller.reserveCard(LobbyServiceCaller.getCurrentUserLobby(),
             LobbyServiceCaller.getCurrentUserAccessToken(), reserveCardForm);
 
+    System.out.println(response.getBody());
+
     // Close card menu
     cardActionMenu.setVisible(false);
 
@@ -635,8 +639,11 @@ public class GameBoard {
     }
 
     cardMatrix.setDisable(false);
-    ServerCaller.reserveCard(LobbyServiceCaller.getCurrentUserLobby(),
-        LobbyServiceCaller.getCurrentUserAccessToken(), reserveCardForm);
+    HttpResponse<String> response =
+        ServerCaller.reserveCard(LobbyServiceCaller.getCurrentUserLobby(),
+            LobbyServiceCaller.getCurrentUserAccessToken(), reserveCardForm);
+
+    System.out.println(response.getBody());
 
     // Close card menu
     cardActionMenu.setVisible(false);
@@ -1182,6 +1189,10 @@ public class GameBoard {
     HBox choicesHBox = new HBox();
     choicesHBox.setSpacing(20);
     choicesHBox.setPadding(new Insets(10));
+
+    if (validNobles != null) {
+      return;
+    }
 
     // Generate ImageView for each selectable noble
     for (NobleForm n : validNobles) {
