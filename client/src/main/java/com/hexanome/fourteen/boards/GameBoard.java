@@ -55,6 +55,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import com.hexanome.fourteen.lobbyui.*;
 import kong.unirest.HttpResponse;
+import kong.unirest.HttpStatus;
 import org.apache.commons.codec.digest.DigestUtils;
 
 /**
@@ -697,10 +698,25 @@ public class GameBoard {
       ioe.printStackTrace();
     }
   }
-  
+
   @FXML
-  private void handleClickMenuPopupSaveButton(){
-    // Code zone
+  private void handleClickMenuPopupSaveButton() {
+    try {
+      final HttpResponse<String> response =
+          ServerCaller.saveGame(LobbyServiceCaller.getCurrentUserLobby(),
+              LobbyServiceCaller.getCurrentUserAccessToken());
+      if (response.getStatus() == HttpStatus.OK) {
+        System.out.printf("Saved game successfully with save game id: %s%n", response.getBody());
+      } else {
+        System.err.printf("Unable to save game\n%s%n", response.getBody());
+      }
+    } catch (TokenRefreshFailedException ignored) {
+      try {
+        MenuController.returnToLogin("Session timed out, retry login");
+      } catch (IOException ioe) {
+        ioe.printStackTrace();
+      }
+    }
   }
 
   @FXML
@@ -1108,5 +1124,5 @@ public class GameBoard {
   }
 
   /*// await reply from user
-  */
+   */
 }
