@@ -288,6 +288,8 @@ public class GameHandlerController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
     } else if (gameBoard.isGameOver()) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("game is over");
+    } else if (gameBoard.isActionTaken()) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("action already taken");
     }
 
     final Hand hand = GameBoardHelper.getHand(gameBoard.players(), username);
@@ -626,6 +628,8 @@ public class GameHandlerController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
     } else if (gameBoard.isGameOver()) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("game is over");
+    } else if (gameBoard.isActionTaken()) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("action already taken");
     }
 
     final Hand hand = GameBoardHelper.getHand(gameBoard.players(), username);
@@ -695,6 +699,7 @@ public class GameHandlerController {
 
   private ResponseEntity<String> getStringResponseEntity(GameBoard gameBoard, Hand hand) {
     final Set<Noble> nobles = gameBoard.computeClaimableNobles(hand);
+    gameBoard.takeAction();
     if (!nobles.isEmpty()) {
       gameSpecificBroadcastManagers.get(gameBoard.gameid()).touch();
       return ResponseEntity.status(HttpStatus.OK).body(gsonInstance.gson.toJson(nobles));
@@ -731,6 +736,8 @@ public class GameHandlerController {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
     } else if (gameBoard.isGameOver()) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("game is over");
+    } else if (gameBoard.isActionTaken()) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("action already taken");
     }
 
     final Hand hand = GameBoardHelper.getHand(gameBoard.players(), username);
