@@ -1,11 +1,9 @@
 package hexanome.fourteen.server.model.board;
 
 import hexanome.fourteen.server.model.board.card.Card;
-import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import hexanome.fourteen.server.model.board.tradingposts.TradingPosts;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -51,18 +49,10 @@ public final class Hand {
 
   /**
    * Default constructor.
-   * For the demo we start with 3 of each gem.
    */
   public Hand() {
-    prestigePoints = 0;
-    gems = new Gems();
-    Arrays.stream(GemColor.values()).forEach(e -> gems.put(e, 3));
-    reservedCards = new ArrayList<>();
-    purchasedCards = new ArrayList<>();
-    visitedNobles = new HashSet<>();
-    reservedNobles = new HashSet<>();
-    gemDiscounts = new Gems();
-    tradingPosts = new TradingPosts();
+    this(0, new Gems(), new ArrayList<>(), new ArrayList<>(), new HashSet<>(), new HashSet<>(),
+        new Gems(), new TradingPosts());
   }
 
   /**
