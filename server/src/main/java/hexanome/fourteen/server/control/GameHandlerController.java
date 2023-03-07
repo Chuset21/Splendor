@@ -466,6 +466,9 @@ public class GameHandlerController {
     hand.gemDiscounts().merge(cardToPurchase.discountColor(),
         Bonus.SINGLE.getValue(), Integer::sum);
 
+    TradingPostManager.checkCardTradingPosts(hand);
+    TradingPostManager.checkLoseCardTradingPosts(hand);
+
     return getStringResponseEntity(gameBoard, hand);
   }
 
@@ -594,6 +597,8 @@ public class GameHandlerController {
     hand.incrementPrestigePoints(card.prestigePoints());
     // Add the card to the player's hand
     hand.purchasedCards().add(card);
+    // Check if any trading posts should be awarded
+    TradingPostManager.checkCardTradingPosts(hand);
 
     return getStringResponseEntity(gameBoard, hand);
   }
@@ -865,6 +870,8 @@ public class GameHandlerController {
     }
     hand.visitedNobles().add(nobleToClaim);
     hand.incrementPrestigePoints(nobleToClaim.prestigePoints());
+
+    TradingPostManager.checkNobleTradingPosts(hand);
 
     return getStringResponseEntity(gameBoard);
   }
