@@ -634,23 +634,15 @@ public class GameBoard {
       }
     }
 
-    try {
-      cardMatrix.setDisable(false);
-      ServerCaller.reserveCard(LobbyServiceCaller.getCurrentUserLobby(),
-          LobbyServiceCaller.getCurrentUserAccessToken(), reserveCardForm);
+    cardMatrix.setDisable(false);
+    ServerCaller.reserveCard(LobbyServiceCaller.getCurrentUserLobby(),
+        LobbyServiceCaller.getCurrentUserAccessToken(), reserveCardForm);
 
-      // Close card menu
-      cardActionMenu.setVisible(false);
+    // Close card menu
+    cardActionMenu.setVisible(false);
 
-      closeAllActionWindows();
-      updateBoard();
-    } catch (TokenRefreshFailedException e) {
-      try {
-        MenuController.returnToLogin("Session timed out, retry login");
-      } catch (IOException ioe) {
-        ioe.printStackTrace();
-      }
-    }
+    closeAllActionWindows();
+    updateBoard();
   }
 
   private boolean isYourTurn() {
