@@ -81,31 +81,31 @@ public class TradingPostManagerTest {
   @Test
   public void testCheckTradingPost4WithCard() {
     player.hand().visitedNobles().add(new Noble());
-    assertFalse(player.hand().tradingPosts().get(TradingPostsEnum.FIVE_PRESETIGE_POINTS));
+    assertFalse(player.hand().tradingPosts().get(TradingPostsEnum.FIVE_PRESTIGE_POINTS));
     int prestigePoints = player.hand().prestigePoints();
     player.hand().gemDiscounts().replace(GemColor.GREEN, 5);
     TradingPostManager.checkCardTradingPosts(player.hand());
-    assertTrue(player.hand().tradingPosts().get(TradingPostsEnum.FIVE_PRESETIGE_POINTS));
+    assertTrue(player.hand().tradingPosts().get(TradingPostsEnum.FIVE_PRESTIGE_POINTS));
     assertEquals(prestigePoints + 5, player.hand().prestigePoints());
   }
 
   @Test
   public void testCheckLoseTradingPost4() {
     player.hand().setPrestigePoints(5);
-    player.hand().tradingPosts().replace(TradingPostsEnum.FIVE_PRESETIGE_POINTS, true);
+    player.hand().tradingPosts().replace(TradingPostsEnum.FIVE_PRESTIGE_POINTS, true);
     TradingPostManager.checkLoseCardTradingPosts(player.hand());
-    assertFalse(player.hand().tradingPosts().get(TradingPostsEnum.FIVE_PRESETIGE_POINTS));
+    assertFalse(player.hand().tradingPosts().get(TradingPostsEnum.FIVE_PRESTIGE_POINTS));
     assertEquals(0, player.hand().prestigePoints());
   }
 
   @Test
   public void testCheckTradingPost4WithNoble() {
     player.hand().gemDiscounts().replace(GemColor.GREEN, 5);
-    assertFalse(player.hand().tradingPosts().get(TradingPostsEnum.FIVE_PRESETIGE_POINTS));
+    assertFalse(player.hand().tradingPosts().get(TradingPostsEnum.FIVE_PRESTIGE_POINTS));
     player.hand().visitedNobles().add(new Noble());
     int prestigePoints = player.hand().prestigePoints();
     TradingPostManager.checkNobleTradingPosts(player.hand());
-    assertTrue(player.hand().tradingPosts().get(TradingPostsEnum.FIVE_PRESETIGE_POINTS));
+    assertTrue(player.hand().tradingPosts().get(TradingPostsEnum.FIVE_PRESTIGE_POINTS));
     assertEquals(prestigePoints + 5, player.hand().prestigePoints());
   }
 

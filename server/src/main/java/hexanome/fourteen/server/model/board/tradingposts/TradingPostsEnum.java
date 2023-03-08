@@ -22,7 +22,7 @@ public enum TradingPostsEnum {
   /**
    * 5 prestige points.
    */
-  FIVE_PRESETIGE_POINTS,
+  FIVE_PRESTIGE_POINTS,
 
   /**
    * 1 prestige point for each of your coats of arms on the board.
