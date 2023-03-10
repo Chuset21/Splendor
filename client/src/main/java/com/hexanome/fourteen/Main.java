@@ -15,9 +15,6 @@ import com.hexanome.fourteen.form.server.cardform.WaterfallCardForm;
 import com.hexanome.fourteen.form.server.payment.CardPaymentForm;
 import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
 import com.hexanome.fourteen.form.server.payment.PaymentForm;
-import com.hexanome.fourteen.lobbyui.MenuController;
-import javafx.application.Application;
-import javafx.stage.Stage;
 
 /**
  * Main class that launches the application.
@@ -25,7 +22,7 @@ import javafx.stage.Stage;
  * If the user enters no command line arguments then it will be assumed that the lobby service is
  * running on localhost.
  */
-public class Main extends Application {
+public class Main {
 
   public static final Gson GSON =
       new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
@@ -54,21 +51,6 @@ public class Main extends Application {
 
   public static void main(String[] args) {
     parseArgs(args);
-    Application.launch(Main.class, args);
-  }
-
-  /**
-   * Run on startup of application. Sends user to login screen
-   *
-   * @param stage active stage passed by application
-   */
-  @Override
-  public void start(Stage stage) throws Exception {
-
-    // Save this window's stage for future use
-    MenuController.setStage(stage);
-
-    // Start login
-    MenuController.returnToLogin("");
+    Launcher.main(args);
   }
 }

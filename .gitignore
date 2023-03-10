@@ -26,7 +26,6 @@ target/
 *.zip
 *.tar.gz
 *.rar
-client/dependency-reduce-pom.xml
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
@@ -136,3 +135,4 @@ client/splendor.iml
 *.iml
 server/docs/
 client/docs/
+client/dependency-reduced-pom.xml
