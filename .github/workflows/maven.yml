@@ -29,5 +29,7 @@ jobs:
         # Java distribution. See the list of supported distributions in README file
         distribution: 'oracle'
         cache: maven
-    - name: Build with Maven
+    - name: Build server
       run: mvn -B clean package --file server/pom.xml
+    - name: Build client
+      run: mvn -B clean package --file client/pom.xml
