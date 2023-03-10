@@ -1,4 +1,5 @@
-To run the client:
+# Running the client
+
 First run this command to build the jar:
 ```bash
 mvn clean package 
