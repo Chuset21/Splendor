@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>hexanome14</groupId>
     <artifactId>splendor_backend</artifactId>
-    <packaging>jar</packaging>
+    <packaging>${packaging.type}</packaging>
     <version>0.1.0-SNAPSHOT</version>
     <name>splendor_backend</name>
     <url>https://maven.apache.org</url>
@@ -235,4 +235,27 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!--dev profile is intended for native deployment of server-->
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <activatedProperties>dev</activatedProperties>
+                <packaging.type>jar</packaging.type>
+            </properties>
+        </profile>
+
+        <!--debug profile is intended for native deployment of server. Adds logging-->
+        <profile>
+            <id>debug</id>
+            <properties>
+                <activatedProperties>debug</activatedProperties>
+                <packaging.type>jar</packaging.type>
+            </properties>
+        </profile>
+    </profiles>
 </project>
