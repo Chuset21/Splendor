@@ -9,3 +9,8 @@ Then to run:
 ```bash
 java --add-exports=com.google.gson/com.google.gson.internal=gson.extras -jar target/splendor-client.jar
 ```
+
+If you would like to give the IP of lobby service through command line arguments (127.0.0.1 by default):
+```bash
+java --add-exports=com.google.gson/com.google.gson.internal=gson.extras -jar target/splendor-client.jar <lobby-service-ip>
+```
