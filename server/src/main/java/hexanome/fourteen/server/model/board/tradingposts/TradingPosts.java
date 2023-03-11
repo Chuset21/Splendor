@@ -11,10 +11,20 @@ public class TradingPosts extends HashMap<TradingPostsEnum, Boolean> {
    */
   public TradingPosts() {
     super();
-    this.put(TradingPostsEnum.BONUS_GEM_WITH_CARD, false);
-    this.put(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO, false);
-    this.put(TradingPostsEnum.DOUBLE_GOLD_GEMS, false);
-    this.put(TradingPostsEnum.FIVE_PRESTIGE_POINTS, false);
-    this.put(TradingPostsEnum.ONE_POINT_PER_POWER, false);
+  }
+
+  /**
+   * Default creation of trading posts.
+   *
+   * @return A trading posts object initialised with the default values.
+   */
+  public static TradingPosts createDefault() {
+    final TradingPosts result = new TradingPosts();
+    result.put(TradingPostsEnum.BONUS_GEM_WITH_CARD, false);
+    result.put(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO, false);
+    result.put(TradingPostsEnum.DOUBLE_GOLD_GEMS, false);
+    result.put(TradingPostsEnum.FIVE_PRESTIGE_POINTS, false);
+    result.put(TradingPostsEnum.ONE_POINT_PER_POWER, false);
+    return result;
   }
 }
