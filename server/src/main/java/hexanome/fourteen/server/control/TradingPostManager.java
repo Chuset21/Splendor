@@ -28,10 +28,10 @@ public class TradingPostManager {
     checkTradingPost1(hand);
     checkTradingPost2(hand);
     checkTradingPost3(hand);
-    if (!hand.tradingPosts().get(TradingPostsEnum.FIVE_PRESTIGE_POINTS)) {
+    if (!hand.tradingPosts().getOrDefault(TradingPostsEnum.FIVE_PRESTIGE_POINTS, true)) {
       checkTradingPost4(hand);
     }
-    if (!hand.tradingPosts().get(TradingPostsEnum.ONE_POINT_PER_POWER)) {
+    if (!hand.tradingPosts().getOrDefault(TradingPostsEnum.ONE_POINT_PER_POWER, true)) {
       checkTradingPost5(hand);
     }
   }
@@ -46,10 +46,10 @@ public class TradingPostManager {
     checkLoseTradingPost1(hand);
     checkLoseTradingPost2(hand);
     checkLoseTradingPost3(hand);
-    if (hand.tradingPosts().get(TradingPostsEnum.FIVE_PRESTIGE_POINTS)) {
+    if (hand.tradingPosts().getOrDefault(TradingPostsEnum.FIVE_PRESTIGE_POINTS, false)) {
       checkLoseTradingPost4(hand);
     }
-    if (hand.tradingPosts().get(TradingPostsEnum.ONE_POINT_PER_POWER)) {
+    if (hand.tradingPosts().getOrDefault(TradingPostsEnum.ONE_POINT_PER_POWER, false)) {
       checkLoseTradingPost5(hand);
     }
   }
@@ -199,7 +199,7 @@ public class TradingPostManager {
       TradingPosts tp = hand.tradingPosts();
       tp.replace(TradingPostsEnum.FIVE_PRESTIGE_POINTS, false);
       hand.setTradingPosts(tp);
-      hand.setPrestigePoints(hand.prestigePoints() - 5);
+      hand.decrementPrestigePoints(5);
     }
   }
 
@@ -222,7 +222,7 @@ public class TradingPostManager {
           numPosts++;
         }
       }
-      hand.setPrestigePoints(hand.prestigePoints() + numPosts);
+      hand.incrementPrestigePoints(numPosts);
     }
   }
 
@@ -245,7 +245,7 @@ public class TradingPostManager {
       }
       tp.replace(TradingPostsEnum.ONE_POINT_PER_POWER, false);
       hand.setTradingPosts(tp);
-      hand.setPrestigePoints(hand.prestigePoints() - numPosts);
+      hand.decrementPrestigePoints(numPosts);
     }
   }
 }
