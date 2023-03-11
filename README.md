@@ -128,6 +128,14 @@ Depending on your host-os, install docker-compose with one of the links below:
     * Windows:  
       ```.\updatesubmodules.ps1```
 
+#### Java and maven
+
+Install [java](https://www.oracle.com/java/technologies/downloads/) version 19
+and [maven](https://maven.apache.org/install.html) to run the client.  
+Here are some good instructions by Baeldung on how to install
+maven: https://www.baeldung.com/install-maven-on-windows-linux-mac  
+This is also necessary if the server is being deployed natively.
+
 ### Deployment
 
 * If you're on a Mac with M1 chip, set these environment variables:
@@ -143,7 +151,8 @@ export COMPOSE_DOCKER_CLI_BUILD=0
 
 * Test the platform:
     * Run the client with the these [instructions](client/README.md)
-    * In the running client login with a user, such as ```maex```, ```linus```, ```khabiir``` or ```marianick```, with the
+    * In the running client login with a user, such as ```maex```, ```linus```, ```khabiir``` or ```marianick```, with
+      the
       password: ```abc123_ABC123```
     * Create a session
     * Launch another instance of the client
