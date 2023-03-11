@@ -44,8 +44,6 @@ public final class ServerCaller {
    * @return The game board form if successful, null otherwise.
    */
   public static HttpResponse<String> getGameBoard(Lobby lobby) {
-    String x = lobby.getGameServiceLocation();
-    String h = "%s/api/games/%s".formatted(x, lobby.getSessionid());
     return Unirest.get(
             "%s/api/games/%s".formatted(lobby.getGameServiceLocation(), lobby.getSessionid()))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
