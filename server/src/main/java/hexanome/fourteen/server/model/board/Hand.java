@@ -52,7 +52,7 @@ public final class Hand {
    */
   public Hand() {
     this(0, new Gems(), new ArrayList<>(), new ArrayList<>(), new HashSet<>(), new HashSet<>(),
-        new Gems(), new TradingPosts());
+        new Gems(), TradingPosts.createDefault());
   }
 
   /**
@@ -145,7 +145,6 @@ public final class Hand {
     this.gemDiscounts = gemDiscounts;
   }
 
-
   /**
    * a Setter for the Trading Posts.
    *
@@ -187,6 +186,7 @@ public final class Hand {
            && Objects.equals(purchasedCards, hand.purchasedCards)
            && Objects.equals(visitedNobles, hand.visitedNobles)
            && Objects.equals(reservedNobles, hand.reservedNobles)
-           && Objects.equals(gemDiscounts, hand.gemDiscounts);
+           && Objects.equals(gemDiscounts, hand.gemDiscounts)
+           && Objects.equals(tradingPosts, hand.tradingPosts);
   }
 }

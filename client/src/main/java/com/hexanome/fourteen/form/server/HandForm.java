@@ -1,7 +1,9 @@
 package com.hexanome.fourteen.form.server;
 
 import com.hexanome.fourteen.form.server.cardform.CardForm;
+import com.hexanome.fourteen.form.server.tradingposts.TradingPosts;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -15,6 +17,7 @@ public final class HandForm {
   private Set<NobleForm> visitedNobles;
   private Set<NobleForm> reservedNobles;
   private GemsForm gemDiscounts;
+  private TradingPosts tradingPosts;
 
   /**
    * Constructor.
@@ -30,7 +33,7 @@ public final class HandForm {
   public HandForm(int prestigePoints, GemsForm gems, List<CardForm> reservedCards,
                   List<CardForm> purchasedCards,
                   Set<NobleForm> visitedNobles, Set<NobleForm> reservedNobles,
-                  GemsForm gemDiscounts) {
+                  GemsForm gemDiscounts, TradingPosts tradingPosts) {
     this.prestigePoints = prestigePoints;
     this.gems = gems;
     this.reservedCards = reservedCards;
@@ -38,6 +41,7 @@ public final class HandForm {
     this.visitedNobles = visitedNobles;
     this.reservedNobles = reservedNobles;
     this.gemDiscounts = gemDiscounts;
+    this.tradingPosts = tradingPosts;
   }
 
   /**
@@ -53,6 +57,15 @@ public final class HandForm {
    */
   public GemsForm gems() {
     return gems;
+  }
+
+  /**
+   * A Getter for the Trading Post powers a Player currently has.
+   *
+   * @return The Trading Post powers a Player currently has.
+   */
+  public TradingPosts tradingPosts() {
+    return tradingPosts;
   }
 
   /**
@@ -107,5 +120,23 @@ public final class HandForm {
    */
   public int prestigePoints() {
     return prestigePoints;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    HandForm hand = (HandForm) o;
+    return prestigePoints == hand.prestigePoints && Objects.equals(gems, hand.gems)
+           && Objects.equals(reservedCards, hand.reservedCards)
+           && Objects.equals(purchasedCards, hand.purchasedCards)
+           && Objects.equals(visitedNobles, hand.visitedNobles)
+           && Objects.equals(reservedNobles, hand.reservedNobles)
+           && Objects.equals(gemDiscounts, hand.gemDiscounts)
+           && Objects.equals(tradingPosts, hand.tradingPosts);
   }
 }

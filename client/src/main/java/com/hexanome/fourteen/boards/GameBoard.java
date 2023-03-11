@@ -232,9 +232,10 @@ public class GameBoard {
   public void goToGame(Stage stage) throws IOException {
     this.stage = stage;
 
+    HttpResponse<String> s = ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby());
     // Get gameBoardForm
     gameBoardForm = Main.GSON.fromJson(
-        Objects.requireNonNull(ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby()))
+        Objects.requireNonNull(s)
             .getBody(), GameBoardForm.class);
 
     setupPlayerMap();

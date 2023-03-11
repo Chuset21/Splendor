@@ -1,0 +1,21 @@
+FROM arm64v8/maven:3.9.0-amazoncorretto-17 AS splendorbuild
+MAINTAINER miguel arrieta
+COPY server/src /usr/src/app/src
+COPY server/pom.xml /usr/src/app
+RUN mvn -f /usr/src/app/pom.xml clean package -P prod
+
+## Discard Maven, run JAR file using JRE
+FROM amazoncorretto:17-alpine3.17-jdk
+
+## Wait for the LobbyService to be ready (which in its turn waits for the DB)
+ENV WAIT_VERSION 2.7.2
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/$WAIT_VERSION/wait /wait
+RUN chmod +x /wait
+
+# copy the jar from the build stage, expose the required port and run it.
+COPY --from=splendorbuild /usr/src/app/target/splendor_backend.jar /usr/app/splendor_backend.jar
+EXPOSE 4243
+#ENTRYPOINT ["java","-jar","/usr/app/splendor_backend.jar"]
+
+# allow debug if startup fails, with: docker run -it --entrypoint /bin/bash ls-xox -s
+RUN apk add --no-cache bash coreutils grep sed

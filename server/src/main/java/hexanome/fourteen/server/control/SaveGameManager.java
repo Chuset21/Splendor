@@ -23,6 +23,7 @@ public class SaveGameManager implements SavedGamesService {
 
   private final int port;
   private final String dbName;
+  private final String host;
   private final String collectionName;
   private final GsonInstance gsonInstance;
   private MongoClient mongoClient;
@@ -33,21 +34,25 @@ public class SaveGameManager implements SavedGamesService {
    *
    * @param port           port number
    * @param dbName         database name
+   * @param host           the host name
    * @param collectionName collection name
    * @param gsonInstance   gson instance
    */
-  public SaveGameManager(@Value("${db.port}") int port, @Value("${db.name}") String dbName,
+  public SaveGameManager(@Value("${spring.data.mongodb.port}") int port,
+                         @Value("${spring.data.mongodb.database}") String dbName,
+                         @Value("${spring.data.mongodb.host}") String host,
                          @Value("${db.collection.name}") String collectionName,
                          @Autowired GsonInstance gsonInstance) {
     this.port = port;
     this.dbName = dbName;
+    this.host = host;
     this.collectionName = collectionName;
     this.gsonInstance = gsonInstance;
   }
 
   @PostConstruct
   private void initialiseDatabase() {
-    mongoClient = new MongoClient(new ServerAddress("localhost", port),
+    mongoClient = new MongoClient(new ServerAddress(host, port),
         new MongoClientOptions.Builder().maxConnectionIdleTime(600000).build());
     final MongoDatabase db = mongoClient.getDatabase(dbName);
     savedDocuments = db.getCollection(collectionName);

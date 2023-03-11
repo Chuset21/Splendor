@@ -41,12 +41,17 @@ public class Main {
                   .registerSubtype(CardPaymentForm.class, "CardPayment"))
           .serializeNulls().create();
   private static final String HTTP_STRING = "http://%s:%s/";
+  private static final String SERVER_HTTP_STRING = "http://%s:%s/splendor";
   private static final String LOBBY_SERVICE_PORT = "4242";
+  private static final String SERVER_PORT = "4243";
   private static final String DEFAULT_IP = "127.0.0.1";
   public static String lsLocation;
+  public static String serverLocation;
 
   private static void parseArgs(String[] args) {
     lsLocation = HTTP_STRING.formatted(args.length > 0 ? args[0] : DEFAULT_IP, LOBBY_SERVICE_PORT);
+    serverLocation =
+        SERVER_HTTP_STRING.formatted(args.length > 0 ? args[0] : DEFAULT_IP, SERVER_PORT);
   }
 
   public static void main(String[] args) {

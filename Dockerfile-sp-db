@@ -1,0 +1,3 @@
+FROM mongo:6.0.4-jammy as sp-database
+MAINTAINER miguel arrieta
+EXPOSE 27017

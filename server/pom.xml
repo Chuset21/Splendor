@@ -257,5 +257,14 @@
                 <packaging.type>jar</packaging.type>
             </properties>
         </profile>
+
+        <!--prod profile is intended for dockerized deployment of server. (server in container, DB in container)-->
+        <profile>
+            <id>prod</id>
+            <properties>
+                <activatedProperties>prod</activatedProperties>
+                <packaging.type>jar</packaging.type>
+            </properties>
+        </profile>
     </profiles>
 </project>

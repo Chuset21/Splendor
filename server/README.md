@@ -25,5 +25,5 @@ mvn clean package spring-boot:run
 To run the server in debug mode use :
 
 ```bash
-mvn clean package spring-boot:run -Pdebug  
+mvn clean package spring-boot:run -P debug  
 ```

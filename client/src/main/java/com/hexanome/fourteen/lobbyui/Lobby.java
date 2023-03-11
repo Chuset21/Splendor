@@ -13,6 +13,7 @@ public class Lobby {
   private String sessionid;
   private SessionForm session;
   private Expansion expansion;
+
   public Lobby(String sessionid) {
 
     // Get settings for session
@@ -53,7 +54,8 @@ public class Lobby {
   }
 
   public String getGameServiceLocation() {
-    return session.gameParameters().location();
+    return session.gameParameters().location().contains("server") ? Main.serverLocation :
+        session.gameParameters().location();
   }
 
   public void setSession(SessionForm session) {

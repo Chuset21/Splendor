@@ -29,16 +29,22 @@ public class LobbyService implements LobbyServiceCaller {
    * @param gsonInstance common gson instance
    * @param port         The Port
    * @param lsLocation   The LobbyService Location
+   * @param serverName   The server name (null) if not running in prod
    * @throws SocketException SocketException is thrown if there
    *                         is an error getting the address of this device
    */
   public LobbyService(@Autowired GsonInstance gsonInstance,
                       @Value("${ls.location}") String lsLocation,
-                      @Value("${server.port}") String port) throws SocketException {
+                      @Value("${server.port}") String port,
+                      @Value("${server.location.name:#{null}}") String serverName)
+      throws SocketException {
     this.gsonInstance = gsonInstance;
     this.lsLocation = lsLocation;
-    gameServiceLocation =
-        "http://%s:%s/splendor".formatted(getAddress().getHostAddress(), port);
+    // Check if we're running in a container
+    final String address =
+        serverName == null || serverName.contains("null") ? getAddress().getHostAddress() :
+            serverName;
+    gameServiceLocation = "http://%s:%s/splendor".formatted(address, port);
   }
 
   private static Inet4Address getAddress() throws SocketException {
@@ -81,7 +87,6 @@ public class LobbyService implements LobbyServiceCaller {
     return Unirest.get("%sapi/gameservices".formatted(lsLocation))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=").asString()
         .getBody();
-
   }
 
   @Override
