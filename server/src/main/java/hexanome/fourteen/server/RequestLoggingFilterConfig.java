@@ -12,6 +12,13 @@ import org.springframework.web.filter.CommonsRequestLoggingFilter;
 public class RequestLoggingFilterConfig {
 
   /**
+   * Default no args constructor.
+   */
+  public RequestLoggingFilterConfig() {
+
+  }
+
+  /**
    * Configure the log filter.
    *
    * @return The CommonsRequestLoggingFilter
