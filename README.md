@@ -72,7 +72,7 @@ Fill e.g. names + link to github profiles in list below.
 
 ## How to run
 
-### Running each service individually
+### Native deployment
 
 Run the services in the following order:
 
