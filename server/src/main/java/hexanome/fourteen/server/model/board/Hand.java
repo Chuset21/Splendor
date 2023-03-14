@@ -33,7 +33,8 @@ public final class Hand {
    * @param visitedNobles  the owned nobles
    * @param reservedNobles the reserved nobles
    * @param gemDiscounts   the gem discounts
-   * @param tradingPosts   the trading post powers a playes has
+   * @param tradingPosts   the trading post powers a player has
+   * @param city           the city that a player has
    */
   public Hand(int prestigePoints, Gems gems, List<Card> reservedCards, List<Card> purchasedCards,
               Set<Noble> visitedNobles, Set<Noble> reservedNobles, Gems gemDiscounts,

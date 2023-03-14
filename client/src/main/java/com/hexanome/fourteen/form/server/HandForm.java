@@ -30,7 +30,8 @@ public final class HandForm {
    * @param visitedNobles  the owned nobles
    * @param reservedNobles the reserved nobles
    * @param gemDiscounts   the gem discounts
-   * @param tradingPosts   the trading post powers a playes has
+   * @param tradingPosts   the trading post powers a player has
+   * @param city           the city that a player has
    */
   public HandForm(int prestigePoints, GemsForm gems, List<CardForm> reservedCards,
                   List<CardForm> purchasedCards,
