@@ -59,6 +59,7 @@ public final class GameBoard implements BroadcastContent {
    */
   private final Map<Integer, Player> playerTurnMap;
   private final Set<Noble> availableNobles;
+  private final Set<City> availableCities;
   /**
    * The gems in the bank.
    */
@@ -108,6 +109,8 @@ public final class GameBoard implements BroadcastContent {
     availableGems.put(GemColor.GOLD, 5);
 
     this.availableNobles = createNobles(count + 1);
+    this.availableCities =
+        expansions.contains(Expansion.CITIES) ? createCities() : Collections.emptySet();
     this.cards = createDecks(expansions);
     cards.forEach(Collections::shuffle);
     this.expansions = expansions;
@@ -115,6 +118,12 @@ public final class GameBoard implements BroadcastContent {
     this.gameid = gameid;
     this.creator = creator;
     isActionTaken = false;
+  }
+
+  private static Set<City> createCities() {
+    final Set<City> result = new HashSet<>();
+    // TODO implement
+    return result;
   }
 
   /**
@@ -282,6 +291,15 @@ public final class GameBoard implements BroadcastContent {
    */
   public Set<Noble> availableNobles() {
     return availableNobles;
+  }
+
+  /**
+   * Getter for available cities.
+   *
+   * @return The available cities.
+   */
+  public Set<City> availableCities() {
+    return availableCities;
   }
 
   /**

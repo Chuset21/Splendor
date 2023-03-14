@@ -75,6 +75,7 @@ public class ServerToClientBoardGameMapperTest {
     assertEquals(sentGameBoard.playerTurnid(),
         gameBoard.playerTurnMap().get(gameBoard.playerTurn()).uid());
     assertEquals(sentGameBoard.availableNobles(), gameBoard.availableNobles());
+    assertEquals(sentGameBoard.availableCities(), gameBoard.availableCities());
     assertEquals(sentGameBoard.availableGems(), gameBoard.availableGems());
     assertEquals(sentGameBoard.expansions(), gameBoard.expansions());
     assertEquals(sentGameBoard.leadingPlayer(), gameBoard.leadingPlayer());
