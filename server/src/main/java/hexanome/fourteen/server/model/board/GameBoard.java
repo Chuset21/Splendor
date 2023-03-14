@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -378,9 +379,30 @@ public final class GameBoard implements BroadcastContent {
    * Compute the leading player.
    */
   public void computeLeadingPlayer() {
-    final int leadingCount = leadingPlayer.hand().prestigePoints();
+    final List<Player> playersWithCities =
+        players.stream().filter(p -> p.hand().city() != null).toList();
+
+    // This will be true when the cities expansion isn't being used, and when no players have cities
+    if (playersWithCities.isEmpty()) {
+      final int leadingCount = leadingPlayer.hand().prestigePoints();
+      computeLeadingPlayer(leadingCount, players);
+    } else {
+      if (playersWithCities.size() == 1) {
+        leadingPlayer = playersWithCities.get(0);
+      } else {
+        final long leadingCount =
+            playersWithCities.stream().map(p -> p.hand().prestigePoints())
+                .max(Comparator.comparingInt(p -> p))
+                .orElse(playersWithCities.get(0).hand().prestigePoints());
+        computeLeadingPlayer(leadingCount, playersWithCities);
+      }
+    }
+  }
+
+  private void computeLeadingPlayer(long leadingCount, Collection<Player> players) {
     final List<Player> playersWithHigherCount =
-        players.stream().filter(p -> p.hand().prestigePoints() > leadingCount).toList();
+        players.stream().filter(p -> p.hand().prestigePoints() > leadingCount)
+            .toList();
 
     if (playersWithHigherCount.isEmpty()) {
       final List<Player> playersWithEqualCount =
@@ -400,7 +422,9 @@ public final class GameBoard implements BroadcastContent {
    */
   public void nextTurn() {
     computeLeadingPlayer();
-    if (leadingPlayer.hand().prestigePoints() >= WINNING_POINTS) {
+    if ((expansions.contains(Expansion.CITIES) && leadingPlayer.hand().city() != null)
+        || (!expansions.contains(Expansion.CITIES)
+            && leadingPlayer.hand().prestigePoints() >= WINNING_POINTS)) {
       isLastRound = true;
     }
     playerTurn = (playerTurn + 1) % players.size();
