@@ -21,6 +21,7 @@ public final class Hand {
   private final Set<Noble> reservedNobles;
   private Gems gemDiscounts;
   private TradingPosts tradingPosts;
+  private City city;
 
   /**
    * Constructor.
@@ -36,7 +37,7 @@ public final class Hand {
    */
   public Hand(int prestigePoints, Gems gems, List<Card> reservedCards, List<Card> purchasedCards,
               Set<Noble> visitedNobles, Set<Noble> reservedNobles, Gems gemDiscounts,
-              TradingPosts tradingPosts) {
+              TradingPosts tradingPosts, City city) {
     this.prestigePoints = prestigePoints;
     this.gems = gems;
     this.reservedCards = reservedCards;
@@ -45,6 +46,7 @@ public final class Hand {
     this.reservedNobles = reservedNobles;
     this.gemDiscounts = gemDiscounts;
     this.tradingPosts = tradingPosts;
+    this.city = city;
   }
 
   /**
@@ -52,7 +54,7 @@ public final class Hand {
    */
   public Hand() {
     this(0, new Gems(), new ArrayList<>(), new ArrayList<>(), new HashSet<>(), new HashSet<>(),
-        new Gems(), TradingPosts.createDefault());
+        new Gems(), TradingPosts.createDefault(), null);
   }
 
   /**
@@ -172,6 +174,24 @@ public final class Hand {
     this.prestigePoints -= prestigePoints;
   }
 
+  /**
+   * Getter for city.
+   *
+   * @return The city that the player owns, null if the player doesn't own one.
+   */
+  public City city() {
+    return city;
+  }
+
+  /**
+   * Set the city.
+   *
+   * @param city The city that the player now owns.
+   */
+  public void setCity(City city) {
+    this.city = city;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -187,6 +207,7 @@ public final class Hand {
            && Objects.equals(visitedNobles, hand.visitedNobles)
            && Objects.equals(reservedNobles, hand.reservedNobles)
            && Objects.equals(gemDiscounts, hand.gemDiscounts)
-           && Objects.equals(tradingPosts, hand.tradingPosts);
+           && Objects.equals(tradingPosts, hand.tradingPosts)
+           && Objects.equals(city, hand.city);
   }
 }

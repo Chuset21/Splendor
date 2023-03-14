@@ -1,5 +1,7 @@
 package com.hexanome.fourteen.form.server;
 
+import java.util.Objects;
+
 /**
  * Class to represent a city.
  */
@@ -42,6 +44,18 @@ public class CityForm {
    */
   public GemsForm getGemDiscounts() {
     return gemDiscounts;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    CityForm city = (CityForm) o;
+    return prestigePoints == city.prestigePoints && Objects.equals(gemDiscounts, city.gemDiscounts);
   }
 }
 

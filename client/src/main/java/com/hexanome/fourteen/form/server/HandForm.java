@@ -18,22 +18,24 @@ public final class HandForm {
   private Set<NobleForm> reservedNobles;
   private GemsForm gemDiscounts;
   private TradingPosts tradingPosts;
+  private CityForm city;
 
   /**
    * Constructor.
    *
-   * @param prestigePoints the prestige points
+   * @param prestigePoints the amount of prestige points the player has
    * @param gems           the amount of gems the owned
    * @param reservedCards  the reserved cards
    * @param purchasedCards the purchased cards
    * @param visitedNobles  the owned nobles
    * @param reservedNobles the reserved nobles
    * @param gemDiscounts   the gem discounts
+   * @param tradingPosts   the trading post powers a playes has
    */
   public HandForm(int prestigePoints, GemsForm gems, List<CardForm> reservedCards,
                   List<CardForm> purchasedCards,
                   Set<NobleForm> visitedNobles, Set<NobleForm> reservedNobles,
-                  GemsForm gemDiscounts, TradingPosts tradingPosts) {
+                  GemsForm gemDiscounts, TradingPosts tradingPosts, CityForm city) {
     this.prestigePoints = prestigePoints;
     this.gems = gems;
     this.reservedCards = reservedCards;
@@ -42,6 +44,7 @@ public final class HandForm {
     this.reservedNobles = reservedNobles;
     this.gemDiscounts = gemDiscounts;
     this.tradingPosts = tradingPosts;
+    this.city = city;
   }
 
   /**
@@ -122,6 +125,15 @@ public final class HandForm {
     return prestigePoints;
   }
 
+  /**
+   * Getter for city.
+   *
+   * @return The city that the player owns, null if the player doesn't own one.
+   */
+  public CityForm city() {
+    return city;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -137,6 +149,7 @@ public final class HandForm {
            && Objects.equals(visitedNobles, hand.visitedNobles)
            && Objects.equals(reservedNobles, hand.reservedNobles)
            && Objects.equals(gemDiscounts, hand.gemDiscounts)
-           && Objects.equals(tradingPosts, hand.tradingPosts);
+           && Objects.equals(tradingPosts, hand.tradingPosts)
+           && Objects.equals(city, hand.city);
   }
 }

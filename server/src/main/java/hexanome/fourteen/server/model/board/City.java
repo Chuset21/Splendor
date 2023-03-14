@@ -1,6 +1,7 @@
 package hexanome.fourteen.server.model.board;
 
 import hexanome.fourteen.server.model.board.gem.Gems;
+import java.util.Objects;
 
 /**
  * Class to represent a city.
@@ -44,5 +45,17 @@ public class City {
    */
   public Gems getGemDiscounts() {
     return gemDiscounts;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    City city = (City) o;
+    return prestigePoints == city.prestigePoints && Objects.equals(gemDiscounts, city.gemDiscounts);
   }
 }
