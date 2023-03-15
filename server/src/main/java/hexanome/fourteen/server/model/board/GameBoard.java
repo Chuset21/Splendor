@@ -485,13 +485,13 @@ public final class GameBoard implements BroadcastContent {
    * @param hand the player's hand
    * @return The cities that this player can claim.
    */
-  public Set<City> computeClaimableCities(Hand hand) { // TODO change when we know how cities work
+  public Set<City> computeClaimableCities(Hand hand) {
+    // TODO maybe change when we have exact game assets for city tiles
     return availableCities.stream().filter(c -> hand.prestigePoints() >= c.getPrestigePoints()
                                                 && (hand.gemDiscounts()
                                                         .hasEnoughGems(c.getGemDiscounts())
-                                                    || hand.gemDiscounts().count()
-                                                       >= c.getGemDiscounts()
-                                                           .getOrDefault(GemColor.GOLD, 0)))
+                                                    || GameBoardHelper.hasAmountOfSingleGem(
+            c.getGemDiscounts().getOrDefault(GemColor.GOLD, 0), hand.gemDiscounts())))
         .collect(Collectors.toSet());
   }
 

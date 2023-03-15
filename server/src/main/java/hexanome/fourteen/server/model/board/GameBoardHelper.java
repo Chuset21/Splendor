@@ -376,4 +376,15 @@ public final class GameBoardHelper {
     return players.stream().filter(p -> p.uid().equals(username)).findFirst().map(Player::hand)
         .orElse(null);
   }
+
+  /**
+   * Determine whether a player has at least a number of gems of one single color.
+   *
+   * @param amount The amount of gems they must have of a single color
+   * @param gems   The player's gems
+   * @return True if the player has enough gems of a single color, false otherwise.
+   */
+  public static boolean hasAmountOfSingleGem(int amount, Gems gems) {
+    return gems.values().stream().anyMatch(c -> c >= amount);
+  }
 }
