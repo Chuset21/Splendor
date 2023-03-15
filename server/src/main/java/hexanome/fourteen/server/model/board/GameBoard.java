@@ -122,9 +122,13 @@ public final class GameBoard implements BroadcastContent {
   }
 
   private static Set<City> createCities() {
-    final Set<City> result = new HashSet<>();
-    // TODO implement
-    return result;
+    final Type mapType = new TypeToken<Map<String, City>>(){}.getType();
+    final Map<String, City> map = GSON.gson.fromJson(new Scanner(
+        Objects.requireNonNull(GameBoard.class.getResourceAsStream("Cities.json")),
+        StandardCharsets.UTF_8).useDelimiter("\\A").next(), mapType);
+    final List<City> result = new ArrayList<>(map.values());
+    Collections.shuffle(result);
+    return new HashSet<>(result.subList(0, 3));
   }
 
   /**
