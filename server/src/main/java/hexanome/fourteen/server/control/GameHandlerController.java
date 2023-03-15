@@ -512,7 +512,7 @@ public class GameHandlerController {
           .body("cannot substitute gold gems for gold gems");
     }
 
-    final int substitutedGemsCount = GameBoardHelper.countGemAmount(substitutedGems);
+    final int substitutedGemsCount = substitutedGems.count();
     if ((substitutedGemsCount != gemsWithExtraGoldGems.getOrDefault(GemColor.GOLD, 0)
          && numGoldGemCards == 0)
         || (numGoldGemCards != 0
@@ -660,7 +660,7 @@ public class GameHandlerController {
     }
 
     final Gems availableGems = gameBoard.availableGems();
-    final int gemAmount = GameBoardHelper.countGemAmount(hand.gems());
+    final int gemAmount = hand.gems().count();
     final GemColor gemColor = reserveCardForm.gemColor();
 
     if (gemAmount < 10 && gemColor != null) {
@@ -763,8 +763,8 @@ public class GameHandlerController {
     }
 
     final Gems gemsToRemove = takeGemsForm.gemsToRemove();
-    final int amountOfGemsToTake = GameBoardHelper.countGemAmount(gemsToTake);
-    final int amountOfGemsInHand = GameBoardHelper.countGemAmount(hand.gems());
+    final int amountOfGemsToTake = gemsToTake.count();
+    final int amountOfGemsInHand = hand.gems().count();
     if (amountOfGemsToTake > 3) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("cannot take more than 3 gems");
     } else if (!gameBoard.availableGems().hasEnoughGems(gemsToTake)) {
@@ -778,13 +778,13 @@ public class GameHandlerController {
       }
       final int total = amountOfGemsToTake + amountOfGemsInHand;
       if (total > 10 && (gemsToRemove == null
-                         || (total - GameBoardHelper.countGemAmount(gemsToRemove) > 10))) {
+                         || (total - gemsToRemove.count() > 10))) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("can only have a maximum of 10 gems");
       } else if (total <= 10 && gemsToRemove != null) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("cannot remove gems if not necessary");
-      } else if (total > 10 && total - GameBoardHelper.countGemAmount(gemsToRemove) < 10) {
+      } else if (total > 10 && total - gemsToRemove.count() < 10) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("cannot remove gems and be left with less than 10");
       }

@@ -35,4 +35,13 @@ public final class Gems extends HashMap<GemColor, Integer> {
     return gemsNeeded.entrySet().stream()
         .noneMatch(entry -> this.getOrDefault(entry.getKey(), 0) < entry.getValue());
   }
+
+  /**
+   * Count the total amount of gems.
+   *
+   * @return the number of gems.
+   */
+  public int count() {
+    return this.values().stream().mapToInt(value -> value).sum();
+  }
 }

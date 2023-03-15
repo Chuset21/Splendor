@@ -366,16 +366,6 @@ public final class GameBoardHelper {
   }
 
   /**
-   * Count the total amount of gems in a gems object.
-   *
-   * @param gems gems to count
-   * @return the number of gems
-   */
-  public static int countGemAmount(Gems gems) {
-    return gems.values().stream().mapToInt(value -> value).sum();
-  }
-
-  /**
    * Get a player's hand if their username matches.
    *
    * @param players  a collection of players
