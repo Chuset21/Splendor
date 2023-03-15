@@ -2209,5 +2209,89 @@ public class GameHandlerControllerTest {
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertFalse(board.availableCities().contains(cityToClaim));
     assertEquals(cityToClaim, player.hand().city());
+    assertFalse(board.isPlayerTurn("test"));
+    assertTrue(board.isLastRound());
+
+    player.hand().gemDiscounts().clear();
+    player.hand().gemDiscounts().put(GemColor.RED, 3);
+    gemDiscounts.clear();
+    gemDiscounts.put(GemColor.RED, 3);
+    cityToClaim = new City(3, gemDiscounts);
+    claimCityForm = new ClaimCityForm(cityToClaim);
+    board.availableCities().add(cityToClaim);
+    board.nextTurn();
+    if (board.isLastRound() && !board.isGameOver()) {
+      board.nextTurn();
+      Mockito.when(lobbyService.getUsername("token")).thenReturn("test2");
+    }
+    player.hand().setCity(null);
+    response =
+        gameHandlerController.claimCity("", "token", gsonInstance.gson.toJson(claimCityForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("game is over", response.getBody());
+    assertTrue(board.availableCities().contains(cityToClaim));
+  }
+
+  @Test
+  public void testClaimCityWithGold() {
+    final Map<String, GameBoard> gameManager = new HashMap<>();
+    final Player player = new Player("test");
+    GameBoard board =
+        new GameBoard(Set.of(Expansion.CITIES, Expansion.ORIENT),
+            Set.of(player, new Player("test2")), "x",
+            null);
+    gameManager.put("", board);
+    ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
+    Map<String, BroadcastContentManager<GameBoard>> gameSpecificBroadcastManagers =
+        (Map<String, BroadcastContentManager<GameBoard>>) ReflectionTestUtils.getField(
+            gameHandlerController,
+            "gameSpecificBroadcastManagers");
+    assertNotNull(gameSpecificBroadcastManagers);
+    gameSpecificBroadcastManagers.put("x", new BroadcastContentManager<>(board));
+
+    Mockito.when(lobbyService.getUsername("token")).thenReturn("test");
+
+    final Gems gemDiscounts = new Gems();
+    gemDiscounts.put(GemColor.RED, 2);
+    gemDiscounts.put(GemColor.BLACK, 1);
+    City cityToClaim = new City(3, gemDiscounts);
+    player.hand().gemDiscounts().clear();
+    ClaimCityForm claimCityForm = new ClaimCityForm(cityToClaim);
+
+    player.hand().setPrestigePoints(3);
+    player.hand().gemDiscounts().clear();
+    player.hand().gemDiscounts().put(GemColor.BLACK, 1);
+    player.hand().gemDiscounts().put(GemColor.RED, 3);
+    player.hand().setCity(null);
+    gemDiscounts.clear();
+    gemDiscounts.put(GemColor.RED, 3);
+    gemDiscounts.put(GemColor.GOLD, 3);
+    cityToClaim = new City(3, gemDiscounts);
+    claimCityForm = new ClaimCityForm(cityToClaim);
+    board.availableCities().add(cityToClaim);
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
+
+    ResponseEntity<String> response =
+        gameHandlerController.claimCity("", "token", gsonInstance.gson.toJson(claimCityForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("player does not qualify to claim this city", response.getBody());
+    assertTrue(board.availableCities().contains(cityToClaim));
+
+    gemDiscounts.clear();
+    gemDiscounts.put(GemColor.RED, 3);
+    gemDiscounts.put(GemColor.GOLD, 1);
+    cityToClaim = new City(3, gemDiscounts);
+    claimCityForm = new ClaimCityForm(cityToClaim);
+    board.availableCities().add(cityToClaim);
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
+    response =
+        gameHandlerController.claimCity("", "token", gsonInstance.gson.toJson(claimCityForm));
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertFalse(board.availableCities().contains(cityToClaim));
+    assertEquals(cityToClaim, player.hand().city());
   }
 }

@@ -488,10 +488,8 @@ public final class GameBoard implements BroadcastContent {
   public Set<City> computeClaimableCities(Hand hand) {
     // TODO maybe change when we have exact game assets for city tiles
     return availableCities.stream().filter(c -> hand.prestigePoints() >= c.getPrestigePoints()
-                                                && (hand.gemDiscounts()
-                                                        .hasEnoughGems(c.getGemDiscounts())
-                                                    || GameBoardHelper.hasAmountOfSingleGem(
-            c.getGemDiscounts().getOrDefault(GemColor.GOLD, 0), hand.gemDiscounts())))
+                                                && GameBoardHelper.hasEnoughDiscountsForCity(
+            hand.gemDiscounts(), c.getGemDiscounts()))
         .collect(Collectors.toSet());
   }
 

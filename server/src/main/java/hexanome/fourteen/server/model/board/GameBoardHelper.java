@@ -387,4 +387,27 @@ public final class GameBoardHelper {
   public static boolean hasAmountOfSingleGem(int amount, Gems gems) {
     return gems.values().stream().anyMatch(c -> c >= amount);
   }
+
+  /**
+   * Determine whether a player has enough gem discounts to acquire a city.
+   *
+   * @param gemDiscounts      The player's gem discounts.
+   * @param requiredDiscounts The required discounts to acquire the city.
+   * @return True if the player has enough gem discounts, false otherwise.
+   */
+  public static boolean hasEnoughDiscountsForCity(Gems gemDiscounts, Gems requiredDiscounts) {
+    if (requiredDiscounts.containsKey(GemColor.GOLD)) {
+      final Gems requiredWithoutGold = new Gems(requiredDiscounts);
+      requiredWithoutGold.remove(GemColor.GOLD);
+      final Gems gemDiscountsWithoutRequired = new Gems(gemDiscounts);
+      requiredWithoutGold.keySet().forEach(gemDiscountsWithoutRequired::remove);
+      return gemDiscounts.hasEnoughGems(requiredWithoutGold)
+             && hasAmountOfSingleGem(requiredDiscounts.get(GemColor.GOLD),
+          gemDiscountsWithoutRequired);
+    } else {
+      return gemDiscounts.hasEnoughGems(requiredDiscounts);
+    }
+
+
+  }
 }
