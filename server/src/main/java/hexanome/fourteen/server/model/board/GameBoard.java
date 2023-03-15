@@ -479,6 +479,22 @@ public final class GameBoard implements BroadcastContent {
         .collect(Collectors.toSet());
   }
 
+  /**
+   * Compute the claimable cities.
+   *
+   * @param hand the player's hand
+   * @return The cities that this player can claim.
+   */
+  public Set<City> computeClaimableCities(Hand hand) {
+    return availableCities.stream().filter(c -> hand.prestigePoints() >= c.getPrestigePoints()
+                                                && (hand.gemDiscounts()
+                                                        .hasEnoughGems(c.getGemDiscounts())
+                                                    || hand.gemDiscounts().count()
+                                                       >= c.getGemDiscounts()
+                                                           .getOrDefault(GemColor.GOLD, 0)))
+        .collect(Collectors.toSet());
+  }
+
   @Override
   public boolean isEmpty() {
     return false;
