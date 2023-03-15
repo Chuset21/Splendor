@@ -2,18 +2,14 @@ package com.hexanome.fourteen.boards;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.ServerCaller;
-import com.hexanome.fourteen.TokenRefreshFailedException;
 import com.hexanome.fourteen.form.server.GemsForm;
 import com.hexanome.fourteen.form.server.TakeGemsForm;
-import com.hexanome.fourteen.lobbyui.MenuController;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import kong.unirest.HttpResponse;
 
@@ -184,7 +180,7 @@ public class Bank {
 
     gameBoard.closeAllActionWindows();
     gameBoard.updateBoard();
-    gameBoard.acquireNobleCheck(response);
+    gameBoard.acquireNobleAndCityCheck(response);
   }
 
   /**

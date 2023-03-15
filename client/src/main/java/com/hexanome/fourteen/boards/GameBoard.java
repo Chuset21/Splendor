@@ -3,6 +3,7 @@ package com.hexanome.fourteen.boards;
 import com.google.gson.reflect.TypeToken;
 import com.hexanome.fourteen.Main;
 import com.hexanome.fourteen.ServerCaller;
+import com.hexanome.fourteen.form.server.CityForm;
 import com.hexanome.fourteen.form.server.ClaimNobleForm;
 import com.hexanome.fourteen.form.server.GameBoardForm;
 import com.hexanome.fourteen.form.server.GemsForm;
@@ -22,7 +23,6 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -38,7 +38,6 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
@@ -319,7 +318,7 @@ public class GameBoard {
     cardActionMenu.setVisible(false);
     reservedCardsView.setVisible(false);
     purchasedCardsView.setVisible(false);
-    if(tokenDiscarder != null){
+    if (tokenDiscarder != null) {
       tokenDiscarder.close();
     }
     bank.close(gameBoardForm.availableGems());
@@ -426,10 +425,10 @@ public class GameBoard {
       if (i < players.size() && players.get(i) != null) {
         ((ImageView) playerViews.get(i)).setImage(players.get(i));
         Tooltip.install(((ImageView) playerViews.get(i)), new Tooltip(players.get(i).getUserId() +
-            (player.getUserId().equals(
-                players.get(i)
-                    .getUserId()) ?
-                " (you)" : "")));
+                                                                      (player.getUserId().equals(
+                                                                          players.get(i)
+                                                                              .getUserId()) ?
+                                                                          " (you)" : "")));
       } else {
         ((ImageView) playerViews.get(i)).imageProperty().set(null);
       }
@@ -585,7 +584,7 @@ public class GameBoard {
 
     closeAllActionWindows();
     //updateBoard();
-    acquireNobleCheck(response);
+    acquireNobleAndCityCheck(response);
   }
 
   /**
@@ -598,11 +597,11 @@ public class GameBoard {
     int[] gemsInHand = GemsForm.costHashToArrayWithGold(player.getHandForm().gems());
     int totalGemsInHand = 0;
 
-    for(int i : gemsInHand){
+    for (int i : gemsInHand) {
       totalGemsInHand += i;
     }
 
-    if(totalGemsInHand + 1 > 10 && gameBoardForm.availableGems().get(GemColor.GOLD) > 0){
+    if (totalGemsInHand + 1 > 10 && gameBoardForm.availableGems().get(GemColor.GOLD) > 0) {
       closeAllActionWindows();
       tokenDiscarder = new TokenDiscarder(this, 1, this::handleReserve);
       tokenDiscarder.open();
@@ -623,18 +622,20 @@ public class GameBoard {
 
     closeAllActionWindows();
     //updateBoard();
-    acquireNobleCheck(response);
+    acquireNobleAndCityCheck(response);
   }
 
-  public void handleReserve(GemsForm gemsToRemove){
+  public void handleReserve(GemsForm gemsToRemove) {
     // Get card to be reserved
     Card cardReserved = (Card) selectedCardView.getImage();
 
     ReserveCardForm reserveCardForm = null;
 
-    for (int i = 0;i<6;i++) {
-      if(gemsToRemove.getOrDefault(GemColor.INT_CONVERSION_ARRAY.get(i),null) != null){
-        reserveCardForm = new ReserveCardForm(cardReserved.getCardForm(), GemColor.INT_CONVERSION_ARRAY.get(i), false);
+    for (int i = 0; i < 6; i++) {
+      if (gemsToRemove.getOrDefault(GemColor.INT_CONVERSION_ARRAY.get(i), null) != null) {
+        reserveCardForm =
+            new ReserveCardForm(cardReserved.getCardForm(), GemColor.INT_CONVERSION_ARRAY.get(i),
+                false);
         break;
       }
     }
@@ -716,7 +717,7 @@ public class GameBoard {
   }
 
   @FXML
-  private void handleDiscardGems(MouseEvent e){
+  private void handleDiscardGems(MouseEvent e) {
     tokenDiscarder.handleClick(e);
   }
 
@@ -970,7 +971,7 @@ public class GameBoard {
 //        // Only one noble can be acquired per turn
 //        break;
 //      } else {
-        publicNoblesVBox.getChildren().add(iv);
+      publicNoblesVBox.getChildren().add(iv);
 //      }
     }
   }
@@ -1035,7 +1036,8 @@ public class GameBoard {
 
     // Set summary label as player title
     playerSummaryUserLabel.setText(
-        requestedPlayer.uid() + "'s Board\nPrestige points: " + requestedPlayer.hand().prestigePoints());
+        requestedPlayer.uid() + "'s Board\nPrestige points: " +
+        requestedPlayer.hand().prestigePoints());
 
     // Fetch and apply the user's discounts to the summary discount matrix
     int index = 0;
@@ -1080,7 +1082,8 @@ public class GameBoard {
     for (NobleForm n : requestedPlayer.hand().visitedNobles()) {
       requestedPlayerNoblesImages.add(new Noble(n));
     }
-    noblesSummary.getChildren().add(generateCardGrid(requestedPlayerNoblesImages, new int[] {140, 140, 5}));
+    noblesSummary.getChildren()
+        .add(generateCardGrid(requestedPlayerNoblesImages, new int[] {140, 140, 5}));
 
     // Display data
     playerSummaryPane.toFront();
@@ -1173,16 +1176,28 @@ public class GameBoard {
     waterfallPane.setDisable(true);
   }
 
-  public void acquireNobleCheck(HttpResponse<String> response) {
+  public void acquireNobleAndCityCheck(HttpResponse<String> response) {
     final Set<NobleForm> validNobles;
+    final Set<CityForm> validCities;
 
-    // Fetch valid noble choices
+    // Fetch valid noble or cities choices
     if (response.getBody() != null && response.getStatus() == HttpStatus.OK) {
-      final Type type = new TypeToken<HashSet<NobleForm>>() {
-      }.getType();
-      validNobles = Main.GSON.fromJson(response.getBody(), type);
+      if (response.getBody().contains("cost")) { // They're nobles
+        final Type type = new TypeToken<Set<NobleForm>>() {
+        }.getType();
+        validNobles = Main.GSON.fromJson(response.getBody(), type);
+        validCities = null;
+      } else { // They're cities that can be claimed
+        final Type type = new TypeToken<Set<CityForm>>() {
+        }.getType();
+        validCities = Main.GSON.fromJson(response.getBody(), type);
+        validNobles = null;
+      }
     } else {
-      System.out.println("DEBUG: Failed to get available nobles");
+      if (response.getBody() != null && response.getStatus() != HttpStatus.OK) {
+        System.out.printf("DEBUG: Failed to get available nobles or cities\n\tResponse body: %s\n",
+            response.getBody());
+      }
       return;
     }
 
@@ -1196,6 +1211,7 @@ public class GameBoard {
     }
 
     // Generate ImageView for each selectable noble
+    // TODO won't this always be null?
     for (NobleForm n : validNobles) {
       ImageView iv = new ImageView();
       iv.setImage(new Noble(n));
@@ -1216,16 +1232,17 @@ public class GameBoard {
     acquiredNobleAlertPane.setContent(choicesHBox);
     acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
       // Acquire the noble via the server
-      HttpResponse<String> response1 =
+      final HttpResponse<String> nobleResponse =
           ServerCaller.claimNoble(LobbyServiceCaller.getCurrentUserLobby(),
               LobbyServiceCaller.getCurrentUserAccessToken(),
               new ClaimNobleForm(tentativeNobleSelection.nobleForm));
-      System.out.println(response1.getBody());
+      System.out.println(nobleResponse.getBody());
+      // Call this method again to check for claimable cities
+      acquireNobleAndCityCheck(response);
       // Close noble select screen
       acquiredNobleAlertPane.setVisible(false);
     });
     acquiredNobleAlertPane.setVisible(true);
     acquiredNobleAlertPane.setDisable(false);
-
   }
 }
