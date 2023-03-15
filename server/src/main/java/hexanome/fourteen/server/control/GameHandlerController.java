@@ -13,6 +13,7 @@ import hexanome.fourteen.server.control.form.payment.CardPayment;
 import hexanome.fourteen.server.control.form.payment.GemPayment;
 import hexanome.fourteen.server.control.form.payment.Payment;
 import hexanome.fourteen.server.model.User;
+import hexanome.fourteen.server.model.board.City;
 import hexanome.fourteen.server.model.board.GameBoard;
 import hexanome.fourteen.server.model.board.GameBoardHelper;
 import hexanome.fourteen.server.model.board.Hand;
@@ -708,15 +709,24 @@ public class GameHandlerController {
     if (!nobles.isEmpty()) {
       gameSpecificBroadcastManagers.get(gameBoard.gameid()).touch();
       return ResponseEntity.status(HttpStatus.OK).body(gsonInstance.gson.toJson(nobles));
-    } else {
-      return getStringResponseEntity(gameBoard);
     }
+    return getStringResponseEntityAndComputeCities(gameBoard, hand);
   }
 
   private ResponseEntity<String> getStringResponseEntity(GameBoard gameBoard) {
     gameBoard.nextTurn();
     gameSpecificBroadcastManagers.get(gameBoard.gameid()).touch();
     return ResponseEntity.status(HttpStatus.OK).body(null);
+  }
+
+  private ResponseEntity<String> getStringResponseEntityAndComputeCities(GameBoard gameBoard,
+                                                                         Hand hand) {
+    final Set<City> cities = gameBoard.computeClaimableCities(hand);
+    if (!cities.isEmpty()) {
+      return ResponseEntity.status(HttpStatus.OK).body(gsonInstance.gson.toJson(cities));
+    } else {
+      return getStringResponseEntity(gameBoard);
+    }
   }
 
   /**
@@ -887,6 +897,6 @@ public class GameHandlerController {
 
     TradingPostManager.checkNobleTradingPosts(hand);
 
-    return getStringResponseEntity(gameBoard);
+    return getStringResponseEntityAndComputeCities(gameBoard, hand);
   }
 }
