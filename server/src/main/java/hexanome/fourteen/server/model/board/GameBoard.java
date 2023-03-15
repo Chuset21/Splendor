@@ -485,7 +485,7 @@ public final class GameBoard implements BroadcastContent {
    * @param hand the player's hand
    * @return The cities that this player can claim.
    */
-  public Set<City> computeClaimableCities(Hand hand) {
+  public Set<City> computeClaimableCities(Hand hand) { // TODO change when we know how cities work
     return availableCities.stream().filter(c -> hand.prestigePoints() >= c.getPrestigePoints()
                                                 && (hand.gemDiscounts()
                                                         .hasEnoughGems(c.getGemDiscounts())
