@@ -944,14 +944,13 @@ public class GameHandlerController {
     }
 
     if (gameBoard.availableCities().contains(cityToClaim)) {
+      if (!gameBoard.computeClaimableCities(hand).contains(cityToClaim)) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("player does not qualify to claim this city");
+      }
       gameBoard.availableCities().remove(cityToClaim);
     } else {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("city to claim is not available");
-    }
-
-    if (!gameBoard.computeClaimableCities(hand).contains(cityToClaim)) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-          .body("player does not qualify to claim this city");
     }
     hand.setCity(cityToClaim);
 

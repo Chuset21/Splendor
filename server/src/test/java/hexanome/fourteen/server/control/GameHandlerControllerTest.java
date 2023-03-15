@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static org.mockito.Mockito.mock;
 
 import eu.kartoffelquadrat.asyncrestlib.BroadcastContentManager;
+import hexanome.fourteen.server.control.form.ClaimCityForm;
 import hexanome.fourteen.server.control.form.ClaimNobleForm;
 import hexanome.fourteen.server.control.form.LaunchGameForm;
 import hexanome.fourteen.server.control.form.PurchaseCardForm;
@@ -18,6 +19,7 @@ import hexanome.fourteen.server.control.form.payment.CardPayment;
 import hexanome.fourteen.server.control.form.payment.GemPayment;
 import hexanome.fourteen.server.control.form.payment.Payment;
 import hexanome.fourteen.server.model.User;
+import hexanome.fourteen.server.model.board.City;
 import hexanome.fourteen.server.model.board.GameBoard;
 import hexanome.fourteen.server.model.board.Noble;
 import hexanome.fourteen.server.model.board.card.Bonus;
@@ -2122,5 +2124,90 @@ public class GameHandlerControllerTest {
 
     player.hand().visitedNobles().remove(nobleToClaim);
     assertTrue(player.hand().visitedNobles().isEmpty());
+  }
+
+  @Test
+  public void testClaimCity() {
+    final Map<String, GameBoard> gameManager = new HashMap<>();
+    final Player player = new Player("test");
+    GameBoard board =
+        new GameBoard(Set.of(Expansion.CITIES, Expansion.ORIENT),
+            Set.of(player, new Player("test2")), "x",
+            null);
+    gameManager.put("", board);
+    ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
+    Map<String, BroadcastContentManager<GameBoard>> gameSpecificBroadcastManagers =
+        (Map<String, BroadcastContentManager<GameBoard>>) ReflectionTestUtils.getField(
+            gameHandlerController,
+            "gameSpecificBroadcastManagers");
+    assertNotNull(gameSpecificBroadcastManagers);
+    gameSpecificBroadcastManagers.put("x", new BroadcastContentManager<>(board));
+
+    ResponseEntity<String> response = gameHandlerController.claimCity("", "token", null);
+    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    assertEquals("invalid access token", response.getBody());
+
+    Mockito.when(lobbyService.getUsername("token")).thenReturn("x");
+
+    response = gameHandlerController.claimCity("x", "token", null);
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+
+    response = gameHandlerController.claimCity("", "token", null);
+    assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    assertEquals("player is not part of this game", response.getBody());
+
+    Mockito.when(lobbyService.getUsername("token")).thenReturn("test");
+
+    ClaimCityForm claimCityForm = new ClaimCityForm(null);
+
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
+    response =
+        gameHandlerController.claimCity("", "token", gsonInstance.gson.toJson(claimCityForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("city to claim cannot be null", response.getBody());
+
+    final Gems gemDiscounts = new Gems();
+    gemDiscounts.put(GemColor.RED, 2);
+    gemDiscounts.put(GemColor.BLACK, 1);
+    City cityToClaim = new City(3, gemDiscounts);
+    player.hand().gemDiscounts().clear();
+    claimCityForm = new ClaimCityForm(cityToClaim);
+
+    response =
+        gameHandlerController.claimCity("", "token", gsonInstance.gson.toJson(claimCityForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("city to claim is not available", response.getBody());
+
+    player.hand().gemDiscounts().put(GemColor.BLUE, 1);
+    player.hand().gemDiscounts().put(GemColor.BLACK, 1);
+    player.hand().gemDiscounts().put(GemColor.RED, 3);
+    claimCityForm = new ClaimCityForm(cityToClaim);
+    board.availableCities().add(cityToClaim);
+
+    response =
+        gameHandlerController.claimCity("", "token", gsonInstance.gson.toJson(claimCityForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("player does not qualify to claim this city", response.getBody());
+
+    player.hand().setCity(cityToClaim);
+
+    response =
+        gameHandlerController.claimCity("", "token", gsonInstance.gson.toJson(claimCityForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("cannot own two cities", response.getBody());
+
+    player.hand().setCity(null);
+    player.hand().setPrestigePoints(3);
+
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
+    response =
+        gameHandlerController.claimCity("", "token", gsonInstance.gson.toJson(claimCityForm));
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertFalse(board.availableCities().contains(cityToClaim));
+    assertEquals(cityToClaim, player.hand().city());
   }
 }
