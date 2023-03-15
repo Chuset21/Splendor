@@ -1,0 +1,109 @@
+{
+  "city-1.png": {
+    "prestige_points": 13,
+    "gem_discounts": {
+      "RED": 4,
+      "BLACK": 3
+    }
+  },
+  "city-2.png": {
+    "prestige_points": 13,
+    "gem_discounts": {
+      "BLUE": 4,
+      "WHITE": 3
+    }
+  },
+  "city-3.png": {
+    "prestige_points": 17,
+    "gem_discounts": {
+    }
+  },
+  "city-4.png": {
+    "prestige_points": 13,
+    "gem_discounts": {
+      "BLACK": 4,
+      "GREEN": 3
+    }
+  },
+  "city-5.png": {
+    "prestige_points": 13,
+    "gem_discounts": {
+      "WHITE": 4,
+      "RED": 3
+    }
+  },
+  "city-6.png": {
+    "prestige_points": 16,
+    "gem_discounts": {
+      "WHITE": 1,
+      "RED": 1,
+      "BLUE": 1,
+      "BLACK": 1,
+      "GREEN": 1
+    }
+  },
+  "city-7.png": {
+    "prestige_points": 11,
+    "gem_discounts": {
+      "WHITE": 3,
+      "RED": 3,
+      "BLUE": 3,
+      "BLACK": 3
+    }
+  },
+  "city-8.png": {
+    "prestige_points": 12,
+    "gem_discounts": {
+      "GOLD": 6
+    }
+  },
+  "city-9.png": {
+    "prestige_points": 14,
+    "gem_discounts": {
+      "GOLD": 4,
+      "GREEN": 4
+    }
+  },
+  "city-10.png": {
+    "prestige_points": 14,
+    "gem_discounts": {
+      "WHITE": 2,
+      "GREEN": 1,
+      "BLUE": 1,
+      "RED": 2,
+      "BLACK": 2
+    }
+  },
+  "city-11.png": {
+    "prestige_points": 13,
+    "gem_discounts": {
+      "GREEN": 4,
+      "BLUE": 3
+    }
+  },
+  "city-12.png": {
+    "prestige_points": 15,
+    "gem_discounts": {
+      "GOLD": 5
+    }
+  },
+  "city-13.png": {
+    "prestige_points": 11,
+    "gem_discounts": {
+      "WHITE": 3,
+      "GREEN": 3,
+      "RED": 3,
+      "BLACK": 3
+    }
+  },
+  "city-14.png": {
+    "prestige_points": 13,
+    "gem_discounts": {
+      "WHITE": 2,
+      "GREEN": 2,
+      "RED": 2,
+      "BLACK": 2,
+      "BLUE": 2
+    }
+  }
+}
