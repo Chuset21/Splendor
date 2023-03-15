@@ -3,6 +3,7 @@ package hexanome.fourteen.server.control;
 import eu.kartoffelquadrat.asyncrestlib.BroadcastContentManager;
 import eu.kartoffelquadrat.asyncrestlib.ResponseGenerator;
 import hexanome.fourteen.server.Mapper;
+import hexanome.fourteen.server.control.form.ClaimCityForm;
 import hexanome.fourteen.server.control.form.ClaimNobleForm;
 import hexanome.fourteen.server.control.form.LaunchGameForm;
 import hexanome.fourteen.server.control.form.PurchaseCardForm;
@@ -723,6 +724,7 @@ public class GameHandlerController {
                                                                          Hand hand) {
     final Set<City> cities = gameBoard.computeClaimableCities(hand);
     if (!cities.isEmpty()) {
+      gameSpecificBroadcastManagers.get(gameBoard.gameid()).touch();
       return ResponseEntity.status(HttpStatus.OK).body(gsonInstance.gson.toJson(cities));
     } else {
       return getStringResponseEntity(gameBoard);
@@ -845,7 +847,7 @@ public class GameHandlerController {
    * Claim a noble.
    *
    * @param gameid               The game id corresponding to the game.
-   * @param accessToken          The access token belonging to the player reserving the card.
+   * @param accessToken          The access token belonging to the player claiming the noble.
    * @param claimNobleFormString The claim noble form.
    * @return The response.
    */
@@ -898,5 +900,61 @@ public class GameHandlerController {
     TradingPostManager.checkNobleTradingPosts(hand);
 
     return getStringResponseEntityAndComputeCities(gameBoard, hand);
+  }
+
+  /**
+   * Claim a city.
+   *
+   * @param gameid              The game id corresponding to the game.
+   * @param accessToken         The access token belonging to the player claiming the city.
+   * @param claimCityFormString The claim city form.
+   * @return The response.
+   */
+  @PutMapping(value = "{gameid}/city", consumes = MediaType.ALL_VALUE)
+  public ResponseEntity<String> claimCity(@PathVariable String gameid,
+                                          @RequestParam("access_token") String accessToken,
+                                          @RequestBody String claimCityFormString) {
+    final String username = getUsername(accessToken);
+    if (username == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("invalid access token");
+    }
+
+    final GameBoard gameBoard = getGame(gameid);
+    if (gameBoard == null) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
+    } else if (gameBoard.isGameOver()) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("game is over");
+    }
+
+    final Hand hand = GameBoardHelper.getHand(gameBoard.players(), username);
+    if (hand == null) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("player is not part of this game");
+    } else if (!gameBoard.isPlayerTurn(username)) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+          .body("cannot take an action outside of your turn");
+    } else if (hand.city() != null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("cannot own two cities");
+    }
+
+    final ClaimCityForm claimCityForm =
+        gsonInstance.gson.fromJson(claimCityFormString, ClaimCityForm.class);
+    final City cityToClaim = claimCityForm.cityToClaim();
+    if (cityToClaim == null) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("city to claim cannot be null");
+    }
+
+    if (gameBoard.availableCities().contains(cityToClaim)) {
+      gameBoard.availableCities().remove(cityToClaim);
+    } else {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("city to claim is not available");
+    }
+
+    if (!gameBoard.computeClaimableCities(hand).contains(cityToClaim)) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("player does not qualify to claim this city");
+    }
+    hand.setCity(cityToClaim);
+
+    return getStringResponseEntity(gameBoard);
   }
 }
