@@ -58,4 +58,9 @@ public class City {
     City city = (City) o;
     return prestigePoints == city.prestigePoints && Objects.equals(gemDiscounts, city.gemDiscounts);
   }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(prestigePoints, gemDiscounts);
+  }
 }
