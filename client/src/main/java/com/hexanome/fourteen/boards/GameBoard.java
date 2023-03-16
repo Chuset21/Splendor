@@ -1214,7 +1214,6 @@ public class GameBoard {
 
     if (validNobles != null) {
       // Generate ImageView for each selectable noble
-      // TODO won't this always be null?
       for (NobleForm n : validNobles) {
         ImageView iv = new ImageView();
         iv.setImage(new Noble(n));
