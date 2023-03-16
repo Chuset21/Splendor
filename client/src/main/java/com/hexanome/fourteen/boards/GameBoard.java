@@ -1212,7 +1212,8 @@ public class GameBoard {
     choicesHBox.setSpacing(20);
     choicesHBox.setPadding(new Insets(10));
 
-    if (validNobles != null) {
+    // TODO check if ensuring nullness make the code break (used to be != null)
+    if (validNobles == null) {
       return;
     }
 

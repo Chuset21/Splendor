@@ -3,6 +3,7 @@ package com.hexanome.fourteen.lobbyui;
 import com.hexanome.fourteen.GameServiceName;
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
+import com.hexanome.fourteen.boards.Expansion;
 import com.hexanome.fourteen.form.lobbyservice.CreateSessionForm;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,11 +23,9 @@ public class CreateGameScreenController implements ScreenController {
   @FXML
   private Button backButton;
   @FXML
-  private ToggleButton selectOrientToggle;
+  private ToggleButton selectCitiesToggle;
   @FXML
-  private ToggleButton selectExtraToggle;
-  @FXML
-  private final ToggleGroup expansionSetting = new ToggleGroup();
+  private ToggleButton selectTradeRoutesToggle;
   @FXML
   private Button createLobbyButton;
 
@@ -45,14 +44,11 @@ public class CreateGameScreenController implements ScreenController {
     // Post init
     //Initialize ToggleGroup and Toggles for selecting an expansion in the create game menu
     ArrayList<ToggleButton> expansionToggles =
-        new ArrayList<>(Arrays.asList(selectExtraToggle, selectOrientToggle));
-    for (Toggle toggle : expansionToggles) {
-      toggle.setToggleGroup(expansionSetting);
-    }
+        new ArrayList<>(Arrays.asList(selectTradeRoutesToggle, selectCitiesToggle));
 
     // Set toggle values to their respective enums
-    selectOrientToggle.setUserData(GameServiceName.BASE);
-    selectExtraToggle.setUserData(GameServiceName.ALL);
+    selectCitiesToggle.setUserData(Expansion.CITIES);
+    selectTradeRoutesToggle.setUserData(Expansion.TRADING_POSTS);
   }
 
   /**
@@ -61,6 +57,8 @@ public class CreateGameScreenController implements ScreenController {
    */
   @FXML
   public void handleCreateLobbyButton() {
+
+
     // Create template for session with current user's ID and the selected expansion
     CreateSessionForm session = new CreateSessionForm(LobbyServiceCaller.getCurrentUserid(),
         (expansionSetting.getSelectedToggle().getUserData()).toString());

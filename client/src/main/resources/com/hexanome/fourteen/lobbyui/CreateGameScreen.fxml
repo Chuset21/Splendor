@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="anchorPane" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.CreateGameScreenController">
+<AnchorPane fx:id="anchorPane" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.CreateGameScreenController">
    <children>
       <Button fx:id="backButton" layoutX="20.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleBackButton" text="Back">
          <font>
@@ -21,12 +21,12 @@
                </font>
             </Text>
          </children></Pane>
-      <ToggleButton fx:id="selectOrientToggle" layoutX="70.0" layoutY="336.0" mnemonicParsing="false" text="Orient">
+      <ToggleButton fx:id="selectCitiesToggle" layoutX="77.0" layoutY="331.0" mnemonicParsing="false" text="Cities">
          <font>
             <Font name="Satoshi Regular" size="24.0" />
          </font>
       </ToggleButton>
-      <ToggleButton fx:id="selectExtraToggle" layoutX="205.0" layoutY="336.0" mnemonicParsing="false" text="Extra">
+      <ToggleButton fx:id="selectTradeRoutesToggle" layoutX="206.0" layoutY="331.0" mnemonicParsing="false" text="Trade Routes">
          <font>
             <Font name="Satoshi Regular" size="24.0" />
          </font>
