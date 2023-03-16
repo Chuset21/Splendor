@@ -259,7 +259,11 @@ public class Bank {
       }
 
       // If not enough gems are taken
-      if ((selectedGems.size() < 2) || (selectedGems.size() == 2 && !hasDoubleColour())) {
+      if (getNumGemTypesTakeable() >= 3 && ((selectedGems.size() < 2) || (selectedGems.size() == 2 && !hasDoubleColour()))) {
+        takeBankButton.setDisable(true);
+      } else if(getNumGemTypesTakeable() == 2 && !(selectedGems.size() == 2)) {
+         takeBankButton.setDisable(true);
+      } else if(getNumGemTypesTakeable() == 1 && !((selectedGems.size() == 1 && !hasDoubleColour()) || (selectedGems.size() == 2 && hasDoubleColour()))) {
         takeBankButton.setDisable(true);
       } else {
         takeBankButton.setDisable(false);
@@ -279,5 +283,15 @@ public class Bank {
       handBucket.add(gem);
     }
     return false;
+  }
+
+  private int getNumGemTypesTakeable(){
+    int numTypes = 0;
+
+    for (int i = 0; i < 5; i++) {
+      numTypes += (bankGems[i] > 0 || selectedGems.contains(i)) ? 1 : 0;
+    }
+
+    return numTypes;
   }
 }
