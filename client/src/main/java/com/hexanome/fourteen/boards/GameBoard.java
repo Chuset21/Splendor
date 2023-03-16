@@ -81,7 +81,7 @@ public class GameBoard {
 
   public static final int[] GEM_INDEX = {0, 1, 2, 3, 4, 5};
 
-  private static Random random = new Random();
+  private static final Random random = new Random();
 
   // Player's Info
   public Player player;
@@ -111,7 +111,7 @@ public class GameBoard {
   // PURCHASED CARDS PANE
   @FXML
   private Pane purchasedCardsView;
-  private List<Image> purchasedCardImages = new ArrayList<Image>();
+  private final List<Image> purchasedCardImages = new ArrayList<Image>();
   @FXML
   private BorderPane purchasedBorderPane;
 
@@ -120,7 +120,7 @@ public class GameBoard {
   private Pane reservedCardsView;
   @FXML
   private VBox reservedCardsVBox;
-  private List<Image> reservedCardImages = new ArrayList<Image>();
+  private final List<Image> reservedCardImages = new ArrayList<Image>();
 
   // ACQUIRED NOBLES PANE
   @FXML
@@ -312,6 +312,17 @@ public class GameBoard {
 
     // Setup nobles CSV data and display on board
     generateNobles();
+
+    if (gameBoardForm.isGameOver()) {
+      final String winner = gameBoardForm.leadingPlayer().uid();
+      // TODO show the player that won
+      closeAllActionWindows();
+    } else if (gameBoardForm.isLastRound()) {
+      System.out.println("Last round of the game!!"); // TODO show a last round message instead
+    } else {
+      final String leadingPlayer = gameBoardForm.leadingPlayer().uid();
+      // TODO show the leading player??
+    }
   }
 
   public void closeAllActionWindows() {
@@ -398,7 +409,7 @@ public class GameBoard {
     }
 
     // Reset list of players
-    players = new ArrayList<Player>();
+    players = new ArrayList<>();
 
     int i = 0;
 
@@ -423,14 +434,13 @@ public class GameBoard {
     // Place all players in their frames
     for (i = 0; i < playerViews.size(); i++) {
       if (i < players.size() && players.get(i) != null) {
-        ((ImageView) playerViews.get(i)).setImage(players.get(i));
-        Tooltip.install(((ImageView) playerViews.get(i)), new Tooltip(players.get(i).getUserId() +
-                                                                      (player.getUserId().equals(
-                                                                          players.get(i)
-                                                                              .getUserId()) ?
-                                                                          " (you)" : "")));
+        playerViews.get(i).setImage(players.get(i));
+        Tooltip.install(playerViews.get(i), new Tooltip(players.get(i).getUserId()
+                                                        + (player.getUserId().equals(
+            players.get(i).getUserId())
+            ? " (you)" : "")));
       } else {
-        ((ImageView) playerViews.get(i)).imageProperty().set(null);
+        playerViews.get(i).imageProperty().set(null);
       }
     }
 
@@ -450,16 +460,16 @@ public class GameBoard {
 
   private void displayCurrentPlayer() {
     if (gameBoardForm == null || playerViews == null) {
-      throw new InvalidParameterException("gameBoardForm nor playerViews can be null");
+      throw new InvalidParameterException("neither gameBoardForm nor playerViews can be null");
     }
 
     for (int i = 0; i < players.size(); i++) {
       if (players.get(i).getUserId().equals(gameBoardForm.playerTurnid())) {
         currentPlayerTurnLabel.setText(players.get(i).getUserId() + "'s Turn");
         currentPlayerTurnLabel.setPadding(new Insets(5));
-        ((ImageView) playerViews.get(i)).setEffect(BLUE_GLOW_EFFECT);
+        playerViews.get(i).setEffect(BLUE_GLOW_EFFECT);
       } else {
-        ((ImageView) playerViews.get(i)).setEffect(null);
+        playerViews.get(i).setEffect(null);
       }
     }
 
@@ -533,12 +543,9 @@ public class GameBoard {
     }
 
     //// Handle Reserve Availability
-    if (isYourTurn() && handForm.reservedCards().size() < 3 &&
-        !handForm.reservedCards().contains(((Card) selectedCardView.getImage()).getCardForm())) {
-      cardReserveButton.setDisable(false);
-    } else {
-      cardReserveButton.setDisable(true);
-    }
+    cardReserveButton.setDisable(!isYourTurn() || handForm.reservedCards().size() >= 3 ||
+                                 handForm.reservedCards()
+                                     .contains(((Card) selectedCardView.getImage()).getCardForm()));
 
     // Open menu
     cardActionMenu.toFront();
