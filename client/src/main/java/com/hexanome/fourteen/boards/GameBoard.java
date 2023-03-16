@@ -226,9 +226,8 @@ public class GameBoard {
    * A call to this method displays the game on screen by initializing the scene with the gameboard.
    *
    * @param stage the stage currently being used to hold JavaFX UI items
-   * @throws IOException throw an exception if an illegal UI action is executed
    */
-  public void goToGame(Stage stage) throws IOException {
+  public void goToGame(Stage stage) {
     this.stage = stage;
 
     HttpResponse<String> s = ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby());
@@ -314,9 +313,9 @@ public class GameBoard {
     generateNobles();
 
     if (gameBoardForm.isGameOver()) {
+      closeAllActionWindows();
       final String winner = gameBoardForm.leadingPlayer().uid();
       // TODO show the player that won
-      closeAllActionWindows();
     } else if (gameBoardForm.isLastRound()) {
       System.out.println("Last round of the game!!"); // TODO show a last round message instead
     } else {
