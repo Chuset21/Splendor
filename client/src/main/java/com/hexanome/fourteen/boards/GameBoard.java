@@ -4,6 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import com.hexanome.fourteen.Main;
 import com.hexanome.fourteen.ServerCaller;
 import com.hexanome.fourteen.form.server.CityForm;
+import com.hexanome.fourteen.form.server.ClaimCityForm;
 import com.hexanome.fourteen.form.server.ClaimNobleForm;
 import com.hexanome.fourteen.form.server.GameBoardForm;
 import com.hexanome.fourteen.form.server.GemsForm;
@@ -31,6 +32,7 @@ import java.util.Random;
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import javafx.application.Platform;
@@ -156,6 +158,7 @@ public class GameBoard {
 
   private Card tentativeCardSelection;
   private Noble tentativeNobleSelection;
+  private City tentativeCitySelection;
   @FXML
   private VBox nobleAcquiredLabelVBox;
 
@@ -1247,7 +1250,39 @@ public class GameBoard {
       acquiredNobleAlertPane.setVisible(true);
       acquiredNobleAlertPane.setDisable(false);
     } else if (validCities != null) {
-      // TODO acquire city, basically same menu as acquiring a noble
+      // Generate ImageView for each selectable noble
+      for (CityForm c : validCities) {
+        ImageView iv = new ImageView();
+        iv.setImage(new City(c));
+        iv.setFitHeight(200);
+        iv.setFitWidth(200);
+
+        // Apply event handler to each city in choices
+        iv.setOnMouseClicked(event -> {
+          tentativeCitySelection = (City) ((ImageView) event.getSource()).getImage();
+          choicesHBox.getChildren().forEach((child) -> child.setEffect(null));
+          ((ImageView) event.getSource()).setEffect(BLUE_GLOW_EFFECT);
+        });
+
+        choicesHBox.getChildren().add(iv);
+      }
     }
+
+    // TODO acquire city, basically same menu as acquiring a noble,
+    //  change from acquiredNobleAlertPane to something else
+    closeAllActionWindows();
+    acquiredNobleAlertPane.setContent(choicesHBox);
+    acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
+      // Acquire the city via the server
+      final HttpResponse<String> cityResponse =
+          ServerCaller.claimCity(LobbyServiceCaller.getCurrentUserLobby(),
+              LobbyServiceCaller.getCurrentUserAccessToken(),
+              new ClaimCityForm(tentativeCitySelection.cityForm));
+      System.out.println(cityResponse.getBody());
+      // Close city select screen
+      acquiredNobleAlertPane.setVisible(false);
+    });
+    acquiredNobleAlertPane.setVisible(true);
+    acquiredNobleAlertPane.setDisable(false);
   }
 }
