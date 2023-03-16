@@ -317,8 +317,10 @@ public class GameBoard {
 
     if (gameBoardForm.isGameOver()) {
       closeAllActionWindows();
+      disableGameAlteringActions();
       final String winner = gameBoardForm.leadingPlayer().uid();
       // TODO show the player that won
+      System.out.printf("Game is over, winner: %s%n", winner);
     } else if (gameBoardForm.isLastRound()) {
       System.out.println("Last round of the game!!"); // TODO show a last round message instead
     } else {
@@ -1070,7 +1072,7 @@ public class GameBoard {
 
     // Fetch and apply the player's reserved cards as images
     List<Image> requestedPlayerReservedCardImages = new ArrayList<>();
-    Card cardToAdd = null;
+    Card cardToAdd;
     for (CardForm c : requestedPlayer.hand().reservedCards()) {
       if (c instanceof StandardCardForm) {
         cardToAdd = new StandardCard((StandardCardForm) c);
@@ -1078,9 +1080,7 @@ public class GameBoard {
         cardToAdd = new OrientCard(c);
       }
 
-      if (cardToAdd != null) {
-        requestedPlayerReservedCardImages.add(cardToAdd);
-      }
+      requestedPlayerReservedCardImages.add(cardToAdd);
     }
     reservedSummary.getChildren().clear();
     reservedSummary.getChildren()
@@ -1211,7 +1211,7 @@ public class GameBoard {
     }
 
     // Generate HBox to display the choices
-    HBox choicesHBox = new HBox();
+    final HBox choicesHBox = new HBox();
     choicesHBox.setSpacing(20);
     choicesHBox.setPadding(new Insets(10));
 
@@ -1241,11 +1241,10 @@ public class GameBoard {
             ServerCaller.claimNoble(LobbyServiceCaller.getCurrentUserLobby(),
                 LobbyServiceCaller.getCurrentUserAccessToken(),
                 new ClaimNobleForm(tentativeNobleSelection.nobleForm));
-        System.out.println(nobleResponse.getBody());
-        // Call this method again to check for claimable cities
-        acquireNobleAndCityCheck(response);
         // Close noble select screen
         acquiredNobleAlertPane.setVisible(false);
+        // Call this method again to check for claimable cities
+        acquireNobleAndCityCheck(nobleResponse);
       });
       acquiredNobleAlertPane.setVisible(true);
       acquiredNobleAlertPane.setDisable(false);
@@ -1255,7 +1254,7 @@ public class GameBoard {
         ImageView iv = new ImageView();
         iv.setImage(new City(c));
         iv.setFitHeight(200);
-        iv.setFitWidth(200);
+        iv.setFitWidth(300);
 
         // Apply event handler to each city in choices
         iv.setOnMouseClicked(event -> {
@@ -1266,23 +1265,22 @@ public class GameBoard {
 
         choicesHBox.getChildren().add(iv);
       }
-    }
 
-    // TODO acquire city, basically same menu as acquiring a noble,
-    //  change from acquiredNobleAlertPane to something else
-    closeAllActionWindows();
-    acquiredNobleAlertPane.setContent(choicesHBox);
-    acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
-      // Acquire the city via the server
-      final HttpResponse<String> cityResponse =
-          ServerCaller.claimCity(LobbyServiceCaller.getCurrentUserLobby(),
-              LobbyServiceCaller.getCurrentUserAccessToken(),
-              new ClaimCityForm(tentativeCitySelection.cityForm));
-      System.out.println(cityResponse.getBody());
-      // Close city select screen
-      acquiredNobleAlertPane.setVisible(false);
-    });
-    acquiredNobleAlertPane.setVisible(true);
-    acquiredNobleAlertPane.setDisable(false);
+      // TODO acquire city, basically same menu as acquiring a noble,
+      //  change from acquiredNobleAlertPane to something else
+      closeAllActionWindows();
+      acquiredNobleAlertPane.setContent(choicesHBox);
+      acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
+        // Acquire the city via the server
+        final HttpResponse<String> cityResponse =
+            ServerCaller.claimCity(LobbyServiceCaller.getCurrentUserLobby(),
+                LobbyServiceCaller.getCurrentUserAccessToken(),
+                new ClaimCityForm(tentativeCitySelection.cityForm));
+        // Close city select screen
+        acquiredNobleAlertPane.setVisible(false);
+      });
+      acquiredNobleAlertPane.setVisible(true);
+      acquiredNobleAlertPane.setDisable(false);
+    }
   }
 }
