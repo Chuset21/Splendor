@@ -4,6 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import com.hexanome.fourteen.Main;
 import com.hexanome.fourteen.ServerCaller;
 import com.hexanome.fourteen.form.server.CityForm;
+import com.hexanome.fourteen.form.server.ClaimCityForm;
 import com.hexanome.fourteen.form.server.ClaimNobleForm;
 import com.hexanome.fourteen.form.server.GameBoardForm;
 import com.hexanome.fourteen.form.server.GemsForm;
@@ -31,6 +32,7 @@ import java.util.Random;
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import javafx.application.Platform;
@@ -156,6 +158,7 @@ public class GameBoard {
 
   private Card tentativeCardSelection;
   private Noble tentativeNobleSelection;
+  private City tentativeCitySelection;
   @FXML
   private VBox nobleAcquiredLabelVBox;
 
@@ -1212,41 +1215,71 @@ public class GameBoard {
     choicesHBox.setSpacing(20);
     choicesHBox.setPadding(new Insets(10));
 
-    // TODO check if ensuring nullness make the code break (used to be != null)
-    if (validNobles == null) {
-      return;
-    }
+    if (validNobles != null) {
+      // Generate ImageView for each selectable noble
+      for (NobleForm n : validNobles) {
+        ImageView iv = new ImageView();
+        iv.setImage(new Noble(n));
+        iv.setFitHeight(150);
+        iv.setFitWidth(150);
 
-    // Generate ImageView for each selectable noble
-    // TODO won't this always be null?
-    for (NobleForm n : validNobles) {
-      ImageView iv = new ImageView();
-      iv.setImage(new Noble(n));
-      iv.setFitHeight(150);
-      iv.setFitWidth(150);
+        // Apply event handler to each card in choices
+        iv.setOnMouseClicked(event -> {
+          tentativeNobleSelection = (Noble) ((ImageView) event.getSource()).getImage();
+          choicesHBox.getChildren().forEach((child) -> child.setEffect(null));
+          ((ImageView) event.getSource()).setEffect(BLUE_GLOW_EFFECT);
+        });
 
-      // Apply event handler to each card in choices
-      iv.setOnMouseClicked(event -> {
-        tentativeNobleSelection = (Noble) ((ImageView) event.getSource()).getImage();
-        choicesHBox.getChildren().forEach((child) -> child.setEffect(null));
-        ((ImageView) event.getSource()).setEffect(BLUE_GLOW_EFFECT);
+        choicesHBox.getChildren().add(iv);
+      }
+
+      closeAllActionWindows();
+      acquiredNobleAlertPane.setContent(choicesHBox);
+      acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
+        // Acquire the noble via the server
+        final HttpResponse<String> nobleResponse =
+            ServerCaller.claimNoble(LobbyServiceCaller.getCurrentUserLobby(),
+                LobbyServiceCaller.getCurrentUserAccessToken(),
+                new ClaimNobleForm(tentativeNobleSelection.nobleForm));
+        System.out.println(nobleResponse.getBody());
+        // Call this method again to check for claimable cities
+        acquireNobleAndCityCheck(response);
+        // Close noble select screen
+        acquiredNobleAlertPane.setVisible(false);
       });
+      acquiredNobleAlertPane.setVisible(true);
+      acquiredNobleAlertPane.setDisable(false);
+    } else if (validCities != null) {
+      // Generate ImageView for each selectable city
+      for (CityForm c : validCities) {
+        ImageView iv = new ImageView();
+        iv.setImage(new City(c));
+        iv.setFitHeight(200);
+        iv.setFitWidth(200);
 
-      choicesHBox.getChildren().add(iv);
+        // Apply event handler to each city in choices
+        iv.setOnMouseClicked(event -> {
+          tentativeCitySelection = (City) ((ImageView) event.getSource()).getImage();
+          choicesHBox.getChildren().forEach((child) -> child.setEffect(null));
+          ((ImageView) event.getSource()).setEffect(BLUE_GLOW_EFFECT);
+        });
+
+        choicesHBox.getChildren().add(iv);
+      }
     }
 
+    // TODO acquire city, basically same menu as acquiring a noble,
+    //  change from acquiredNobleAlertPane to something else
     closeAllActionWindows();
     acquiredNobleAlertPane.setContent(choicesHBox);
     acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
-      // Acquire the noble via the server
-      final HttpResponse<String> nobleResponse =
-          ServerCaller.claimNoble(LobbyServiceCaller.getCurrentUserLobby(),
+      // Acquire the city via the server
+      final HttpResponse<String> cityResponse =
+          ServerCaller.claimCity(LobbyServiceCaller.getCurrentUserLobby(),
               LobbyServiceCaller.getCurrentUserAccessToken(),
-              new ClaimNobleForm(tentativeNobleSelection.nobleForm));
-      System.out.println(nobleResponse.getBody());
-      // Call this method again to check for claimable cities
-      acquireNobleAndCityCheck(response);
-      // Close noble select screen
+              new ClaimCityForm(tentativeCitySelection.cityForm));
+      System.out.println(cityResponse.getBody());
+      // Close city select screen
       acquiredNobleAlertPane.setVisible(false);
     });
     acquiredNobleAlertPane.setVisible(true);
