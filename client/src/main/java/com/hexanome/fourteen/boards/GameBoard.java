@@ -1250,7 +1250,7 @@ public class GameBoard {
       acquiredNobleAlertPane.setVisible(true);
       acquiredNobleAlertPane.setDisable(false);
     } else if (validCities != null) {
-      // Generate ImageView for each selectable noble
+      // Generate ImageView for each selectable city
       for (CityForm c : validCities) {
         ImageView iv = new ImageView();
         iv.setImage(new City(c));
