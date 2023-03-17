@@ -36,7 +36,6 @@ import hexanome.fourteen.server.model.board.expansion.Expansion;
 import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import hexanome.fourteen.server.model.board.player.Player;
-import hexanome.fourteen.server.model.board.player.UserPlayerMapper;
 import hexanome.fourteen.server.model.clientmapper.ServerToClientBoardGameMapper;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -86,7 +85,7 @@ public class GameHandlerControllerTest {
     Mockito.when(lobbyService.getUsername("user2")).thenReturn("x");
 
     gameHandlerController =
-        new GameHandlerController(30000L, lobbyService, new UserPlayerMapper(), gsonInstance,
+        new GameHandlerController(30000L, lobbyService, gsonInstance,
             saveGameManager,
             new ServerService(gsonInstance, lobbyService, "", ""));
   }
@@ -107,7 +106,7 @@ public class GameHandlerControllerTest {
 
     final String saveGame = "XYZ45";
     Mockito.when(saveGameManager.getGame(saveGame)).thenReturn(
-        new GameBoard(Set.of(Expansion.STANDARD), Set.of(new Player("user1")), "gameid", ""));
+        new GameBoard(Set.of(Expansion.STANDARD), Set.of(new User("user1")), "gameid", ""));
 
     response = gameHandlerController.launchGame("gameid", gsonInstance.gson.toJson(launchGameForm));
 
@@ -119,7 +118,7 @@ public class GameHandlerControllerTest {
   public void testDeleteGame() {
     final Map<String, GameBoard> gameManager = new HashMap<>();
     final GameBoard board = gameManager.put("x",
-        new GameBoard(new HashSet<>(), Set.of(new Player("test")), "x", null));
+        new GameBoard(new HashSet<>(), Set.of(new User("test")), "x", null));
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
     Map<String, BroadcastContentManager<GameBoard>> gameSpecificBroadcastManagers =
         (Map<String, BroadcastContentManager<GameBoard>>) ReflectionTestUtils.getField(
@@ -139,7 +138,7 @@ public class GameHandlerControllerTest {
   public void testRetrieveGame() {
     final Map<String, GameBoard> gameManager = new HashMap<>();
     final GameBoard board =
-        new GameBoard(new HashSet<>(), Set.of(new Player("player2")), "x", null);
+        new GameBoard(new HashSet<>(), Set.of(new User("player2")), "x", null);
     gameManager.put("test", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
     Map<String, BroadcastContentManager<GameBoard>> gameSpecificBroadcastManagers =
@@ -179,9 +178,10 @@ public class GameHandlerControllerTest {
   @Test
   public void testPurchaseCard() {
     final Map<String, GameBoard> gameManager = new HashMap<>();
-    final Player player = new Player("test");
+    final Set<Expansion> expansions = GameServiceName.getExpansions(GameServiceName.ALL);
+    final Player player = new Player("test", expansions);
     GameBoard board =
-        new GameBoard(new HashSet<>(), Set.of(player, new Player("test2")), "x",
+        new GameBoard(expansions, Set.of(player, new Player("test2", expansions)), "x",
             null);
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
@@ -236,9 +236,10 @@ public class GameHandlerControllerTest {
   @Test
   public void testPurchaseCardWithCardPayment() {
     final Map<String, GameBoard> gameManager = new HashMap<>();
-    final Player player = new Player("test");
+    final Set<Expansion> expansions = GameServiceName.getExpansions(GameServiceName.ALL);
+    final Player player = new Player("test", expansions);
     GameBoard board =
-        new GameBoard(new HashSet<>(), Set.of(player, new Player("test2")), "x",
+        new GameBoard(expansions, Set.of(player, new Player("test2", expansions)), "x",
             null);
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
@@ -554,10 +555,11 @@ public class GameHandlerControllerTest {
   @Test
   public void testPurchaseCardWithSimpleGemPayment() {
     final Map<String, GameBoard> gameManager = new HashMap<>();
-    final Player player = new Player("test");
+    final Set<Expansion> expansions = GameServiceName.getExpansions(GameServiceName.ALL);
+    final Player player = new Player("test", expansions);
     GameBoard board =
-        new GameBoard(new HashSet<>(), Set.of(player, new Player("test2")), "x",
-            player.uid());
+        new GameBoard(expansions, Set.of(player, new Player("test2", expansions)), "x",
+            null);
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
     Map<String, BroadcastContentManager<GameBoard>> gameSpecificBroadcastManagers =
@@ -715,10 +717,11 @@ public class GameHandlerControllerTest {
   @Test
   public void testPurchaseCardWithComplexGemPayment() {
     final Map<String, GameBoard> gameManager = new HashMap<>();
-    final Player player = new Player("test");
+    final Set<Expansion> expansions = GameServiceName.getExpansions(GameServiceName.ALL);
+    final Player player = new Player("test", expansions);
     GameBoard board =
-        new GameBoard(new HashSet<>(), Set.of(player, new Player("test2")), "x",
-            player.uid());
+        new GameBoard(expansions, Set.of(player, new Player("test2", expansions)), "x",
+            null);
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
     Map<String, BroadcastContentManager<GameBoard>> gameSpecificBroadcastManagers =
@@ -1549,8 +1552,9 @@ public class GameHandlerControllerTest {
   @Test
   public void testReserveCard() {
     final Map<String, GameBoard> gameManager = new HashMap<>();
-    final Player player = new Player("test");
-    GameBoard board = new GameBoard(new HashSet<>(), Set.of(player), "x", null);
+    final Set<Expansion> expansions = GameServiceName.getExpansions(GameServiceName.ALL);
+    final Player player = new Player("test", expansions);
+    GameBoard board = new GameBoard(expansions, Set.of(player), "x", null);
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
     Map<String, BroadcastContentManager<GameBoard>> gameSpecificBroadcastManagers =
@@ -1731,9 +1735,11 @@ public class GameHandlerControllerTest {
   @Test
   public void testTakeGems() {
     final Map<String, GameBoard> gameManager = new HashMap<>();
-    final Player player = new Player("test");
-    GameBoard board = new GameBoard(new HashSet<>(), Set.of(player, new Player("test2")),
-        "x", null);
+    final Set<Expansion> expansions = GameServiceName.getExpansions(GameServiceName.ALL);
+    final Player player = new Player("test", expansions);
+    GameBoard board =
+        new GameBoard(expansions, Set.of(player, new Player("test2", expansions)), "x",
+            null);
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
     Map<String, BroadcastContentManager<GameBoard>> gameSpecificBroadcastManagers =
@@ -2032,9 +2038,10 @@ public class GameHandlerControllerTest {
   @Test
   public void testClaimNoble() {
     final Map<String, GameBoard> gameManager = new HashMap<>();
-    final Player player = new Player("test");
+    final Set<Expansion> expansions = GameServiceName.getExpansions(GameServiceName.ALL);
+    final Player player = new Player("test", expansions);
     GameBoard board =
-        new GameBoard(new HashSet<>(), Set.of(player, new Player("test2")), "x",
+        new GameBoard(expansions, Set.of(player, new Player("test2", expansions)), "x",
             null);
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
@@ -2129,10 +2136,10 @@ public class GameHandlerControllerTest {
   @Test
   public void testClaimCity() {
     final Map<String, GameBoard> gameManager = new HashMap<>();
-    final Player player = new Player("test");
+    final Set<Expansion> expansions = GameServiceName.getExpansions(GameServiceName.ALL);
+    final Player player = new Player("test", expansions);
     GameBoard board =
-        new GameBoard(Set.of(Expansion.CITIES, Expansion.ORIENT),
-            Set.of(player, new Player("test2")), "x",
+        new GameBoard(expansions, Set.of(player, new Player("test2", expansions)), "x",
             null);
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
@@ -2235,10 +2242,10 @@ public class GameHandlerControllerTest {
   @Test
   public void testClaimCityWithGold() {
     final Map<String, GameBoard> gameManager = new HashMap<>();
-    final Player player = new Player("test");
+    final Set<Expansion> expansions = GameServiceName.getExpansions(GameServiceName.ALL);
+    final Player player = new Player("test", expansions);
     GameBoard board =
-        new GameBoard(Set.of(Expansion.CITIES, Expansion.ORIENT),
-            Set.of(player, new Player("test2")), "x",
+        new GameBoard(expansions, Set.of(player, new Player("test2", expansions)), "x",
             null);
     gameManager.put("", board);
     ReflectionTestUtils.setField(gameHandlerController, "gameManager", gameManager);
@@ -2251,23 +2258,17 @@ public class GameHandlerControllerTest {
 
     Mockito.when(lobbyService.getUsername("token")).thenReturn("test");
 
-    final Gems gemDiscounts = new Gems();
-    gemDiscounts.put(GemColor.RED, 2);
-    gemDiscounts.put(GemColor.BLACK, 1);
-    City cityToClaim = new City(3, gemDiscounts);
-    player.hand().gemDiscounts().clear();
-    ClaimCityForm claimCityForm = new ClaimCityForm(cityToClaim);
-
     player.hand().setPrestigePoints(3);
     player.hand().gemDiscounts().clear();
     player.hand().gemDiscounts().put(GemColor.BLACK, 1);
     player.hand().gemDiscounts().put(GemColor.RED, 3);
     player.hand().setCity(null);
-    gemDiscounts.clear();
+
+    final Gems gemDiscounts = new Gems();
     gemDiscounts.put(GemColor.RED, 3);
     gemDiscounts.put(GemColor.GOLD, 3);
-    cityToClaim = new City(3, gemDiscounts);
-    claimCityForm = new ClaimCityForm(cityToClaim);
+    City cityToClaim = new City(3, gemDiscounts);
+    ClaimCityForm claimCityForm = new ClaimCityForm(cityToClaim);
     board.availableCities().add(cityToClaim);
     if (!board.isPlayerTurn("test")) {
       board.nextTurn();

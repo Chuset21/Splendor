@@ -2,7 +2,6 @@ package hexanome.fourteen.server.control;
 
 import eu.kartoffelquadrat.asyncrestlib.BroadcastContentManager;
 import eu.kartoffelquadrat.asyncrestlib.ResponseGenerator;
-import hexanome.fourteen.server.Mapper;
 import hexanome.fourteen.server.control.form.ClaimCityForm;
 import hexanome.fourteen.server.control.form.ClaimNobleForm;
 import hexanome.fourteen.server.control.form.LaunchGameForm;
@@ -13,7 +12,6 @@ import hexanome.fourteen.server.control.form.TakeGemsForm;
 import hexanome.fourteen.server.control.form.payment.CardPayment;
 import hexanome.fourteen.server.control.form.payment.GemPayment;
 import hexanome.fourteen.server.control.form.payment.Payment;
-import hexanome.fourteen.server.model.User;
 import hexanome.fourteen.server.model.board.City;
 import hexanome.fourteen.server.model.board.GameBoard;
 import hexanome.fourteen.server.model.board.GameBoardHelper;
@@ -40,7 +38,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -68,7 +65,6 @@ public class GameHandlerController {
   private final LobbyServiceCaller lobbyService;
   private final Map<String, GameBoard> gameManager;
   private final Map<String, BroadcastContentManager<GameBoard>> gameSpecificBroadcastManagers;
-  private final Mapper<User, Player> userPlayerMapper;
   private final GsonInstance gsonInstance;
   private final SavedGamesService saveGameManager;
   private final ServerService serverService;
@@ -76,22 +72,19 @@ public class GameHandlerController {
   /**
    * Constructor.
    *
-   * @param longPollTimeout  the timeout for long polling
-   * @param lobbyService     Lobby service
-   * @param userPlayerMapper The User to Player Mapper
-   * @param gsonInstance     The GSON we will be using
-   * @param saveGameManager  the save game manager
-   * @param serverService    the server service
+   * @param longPollTimeout the timeout for long polling
+   * @param lobbyService    Lobby service
+   * @param gsonInstance    The GSON we will be using
+   * @param saveGameManager the save game manager
+   * @param serverService   the server service
    */
   public GameHandlerController(@Value("${long.poll.timeout}") long longPollTimeout,
                                @Autowired LobbyServiceCaller lobbyService,
-                               @Autowired Mapper<User, Player> userPlayerMapper,
                                @Autowired GsonInstance gsonInstance,
                                @Autowired SavedGamesService saveGameManager,
                                @Autowired ServerService serverService) {
     this.longPollTimeout = longPollTimeout;
     this.lobbyService = lobbyService;
-    this.userPlayerMapper = userPlayerMapper;
     this.gsonInstance = gsonInstance;
     this.saveGameManager = saveGameManager;
     this.serverService = serverService;
@@ -138,11 +131,10 @@ public class GameHandlerController {
   private GameBoard createGame(String gameid, LaunchGameForm launchGameForm) {
     Set<Expansion> expansions =
         GameServiceName.getExpansions(GameServiceName.valueOf(launchGameForm.gameType()));
-    Set<Player> players = Arrays.stream(launchGameForm.players()).map(userPlayerMapper::map)
-        .collect(Collectors.toSet());
     String creator = launchGameForm.creator();
 
-    return new GameBoard(expansions, players, gameid, creator);
+    return new GameBoard(expansions, Arrays.stream(launchGameForm.players()).toList(), gameid,
+        creator);
   }
 
   /**
@@ -473,8 +465,10 @@ public class GameHandlerController {
     hand.gemDiscounts().merge(cardToPurchase.discountColor(),
         Bonus.SINGLE.getValue(), Integer::sum);
 
-    TradingPostManager.checkCardTradingPosts(hand);
-    TradingPostManager.checkLoseCardTradingPosts(hand);
+    if (gameBoard.expansions().contains(Expansion.TRADING_POSTS)) {
+      TradingPostManager.checkCardTradingPosts(hand);
+      TradingPostManager.checkLoseCardTradingPosts(hand);
+    }
 
     return getStringResponseEntity(gameBoard, hand);
   }
@@ -605,7 +599,9 @@ public class GameHandlerController {
     // Add the card to the player's hand
     hand.purchasedCards().add(card);
     // Check if any trading posts should be awarded
-    TradingPostManager.checkCardTradingPosts(hand);
+    if (gameBoard.expansions().contains(Expansion.TRADING_POSTS)) {
+      TradingPostManager.checkCardTradingPosts(hand);
+    }
 
     return getStringResponseEntity(gameBoard, hand);
   }
@@ -708,27 +704,31 @@ public class GameHandlerController {
     final Set<Noble> nobles = gameBoard.computeClaimableNobles(hand);
     gameBoard.takeAction();
     if (!nobles.isEmpty()) {
-      gameSpecificBroadcastManagers.get(gameBoard.gameid()).touch();
-      return ResponseEntity.status(HttpStatus.OK).body(gsonInstance.gson.toJson(nobles));
+      return notifyAndReturn(gameBoard.gameid(),
+          ResponseEntity.status(HttpStatus.OK).body(gsonInstance.gson.toJson(nobles)));
     }
     return getStringResponseEntityAndComputeCities(gameBoard, hand);
   }
 
   private ResponseEntity<String> getStringResponseEntity(GameBoard gameBoard) {
     gameBoard.nextTurn();
-    gameSpecificBroadcastManagers.get(gameBoard.gameid()).touch();
-    return ResponseEntity.status(HttpStatus.OK).body(null);
+    return notifyAndReturn(gameBoard.gameid(), ResponseEntity.status(HttpStatus.OK).body(null));
   }
 
   private ResponseEntity<String> getStringResponseEntityAndComputeCities(GameBoard gameBoard,
                                                                          Hand hand) {
     final Set<City> cities = gameBoard.computeClaimableCities(hand);
     if (!cities.isEmpty()) {
-      gameSpecificBroadcastManagers.get(gameBoard.gameid()).touch();
-      return ResponseEntity.status(HttpStatus.OK).body(gsonInstance.gson.toJson(cities));
+      return notifyAndReturn(gameBoard.gameid(),
+          ResponseEntity.status(HttpStatus.OK).body(gsonInstance.gson.toJson(cities)));
     } else {
       return getStringResponseEntity(gameBoard);
     }
+  }
+
+  private ResponseEntity<String> notifyAndReturn(String gameId, ResponseEntity<String> result) {
+    gameSpecificBroadcastManagers.get(gameId).touch();
+    return result;
   }
 
   /**
@@ -897,7 +897,9 @@ public class GameHandlerController {
     hand.visitedNobles().add(nobleToClaim);
     hand.incrementPrestigePoints(nobleToClaim.prestigePoints());
 
-    TradingPostManager.checkNobleTradingPosts(hand);
+    if (gameBoard.expansions().contains(Expansion.TRADING_POSTS)) {
+      TradingPostManager.checkNobleTradingPosts(hand);
+    }
 
     return getStringResponseEntityAndComputeCities(gameBoard, hand);
   }

@@ -51,9 +51,9 @@ class GameBoardTest {
     expansions.add(Expansion.ORIENT);
 
     players = new HashSet<>();
-    Hand hand = new Hand();
+    Hand hand = new Hand(expansions);
     hand.setPrestigePoints(2);
-    player1 = new Player("player1", new Hand());
+    player1 = new Player("player1", new Hand(expansions));
     player2 = new Player("player2", hand);
     players.add(player1);
     players.add(player2);

@@ -1,5 +1,7 @@
 package hexanome.fourteen.server.model.board;
 
+import hexanome.fourteen.server.model.board.expansion.Expansion;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,7 +14,7 @@ public class HandTest {
 
   @BeforeEach
   public void init() {
-    hand = new Hand();
+    hand = new Hand(Set.of(Expansion.STANDARD));
   }
 
   @Test
@@ -59,5 +61,10 @@ public class HandTest {
     assertNotEquals(handToTest, new Object());
     assertEquals(handToTest, handToTest);
     assertEquals(handToTest, equalHand);
+  }
+
+  @Test
+  public void testNoArgs() {
+    assertNull(new Hand().gems());
   }
 }

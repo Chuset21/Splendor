@@ -67,10 +67,10 @@ public class SentGameBoardTest {
     expansions = new HashSet<>();
     expansions.add(Expansion.STANDARD);
     expansions.add(Expansion.ORIENT);
-    Player player1 = new Player(playerTurnid, new Hand());
-    Player player2 = new Player("player2", new Hand());
-    Player player3 = new Player("player3", new Hand());
-    Player player4 = new Player("player4", new Hand());
+    Player player1 = new Player(playerTurnid, new Hand(expansions));
+    Player player2 = new Player("player2", new Hand(expansions));
+    Player player3 = new Player("player3", new Hand(expansions));
+    Player player4 = new Player("player4", new Hand(expansions));
     leadingPlayer = player1;
     players = new HashSet<>();
     players.add(player1);
