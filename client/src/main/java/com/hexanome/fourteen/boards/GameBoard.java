@@ -1228,12 +1228,14 @@ public class GameBoard {
           tentativeNobleSelection = (Noble) ((ImageView) event.getSource()).getImage();
           choicesHBox.getChildren().forEach((child) -> child.setEffect(null));
           ((ImageView) event.getSource()).setEffect(BLUE_GLOW_EFFECT);
+          acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setDisable(false);
         });
 
         choicesHBox.getChildren().add(iv);
       }
 
       closeAllActionWindows();
+      ((Label) acquiredNobleAlertPane.getHeader()).setText("Noble Acquired!");
       acquiredNobleAlertPane.setContent(choicesHBox);
       acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
         // Acquire the noble via the server
@@ -1248,6 +1250,7 @@ public class GameBoard {
       });
       acquiredNobleAlertPane.setVisible(true);
       acquiredNobleAlertPane.setDisable(false);
+      acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setDisable(true);
     } else if (validCities != null) {
       // Generate ImageView for each selectable city
       for (CityForm c : validCities) {
@@ -1261,14 +1264,15 @@ public class GameBoard {
           tentativeCitySelection = (City) ((ImageView) event.getSource()).getImage();
           choicesHBox.getChildren().forEach((child) -> child.setEffect(null));
           ((ImageView) event.getSource()).setEffect(BLUE_GLOW_EFFECT);
+          acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setDisable(false);
         });
-
         choicesHBox.getChildren().add(iv);
       }
 
       // TODO acquire city, basically same menu as acquiring a noble,
       //  change from acquiredNobleAlertPane to something else
       closeAllActionWindows();
+      ((Label) acquiredNobleAlertPane.getHeader()).setText("City Acquired!");
       acquiredNobleAlertPane.setContent(choicesHBox);
       acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
         // Acquire the city via the server
@@ -1281,6 +1285,7 @@ public class GameBoard {
       });
       acquiredNobleAlertPane.setVisible(true);
       acquiredNobleAlertPane.setDisable(false);
+      acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setDisable(true);
     }
   }
 }
