@@ -1721,6 +1721,7 @@ public class GameHandlerControllerTest {
     player.hand().gems().clear();
     player.hand().gems().put(GemColor.GOLD, 1);
     player.hand().gems().put(GemColor.BLUE, 8);
+    card = new StandardCard(99, new Gems(), CardLevel.TWO, Expansion.STANDARD, GemColor.BLUE);
     reserveCardForm = new ReserveCardForm(card, null, true);
 
     response =
