@@ -249,12 +249,16 @@ public class GameHandlerController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body("token could not be refreshed");
       }
-      String saveGameid = saveGameManager.putGame(gameBoard);
-      lobbyService.saveGame(serverService.accessToken,
-          new SaveGameForm(GameServiceName.getGameServiceName(gameBoard.expansions()).name(),
-              gameBoard.players().stream().map(Player::uid).toList(), saveGameid));
-      return ResponseEntity.status(HttpStatus.OK).body(saveGameid);
+      return ResponseEntity.status(HttpStatus.OK).body(saveGame(gameBoard));
     }
+  }
+
+  private String saveGame(GameBoard gameBoard) {
+    String saveGameid = saveGameManager.putGame(gameBoard);
+    lobbyService.saveGame(serverService.accessToken,
+        new SaveGameForm(GameServiceName.getGameServiceName(gameBoard.expansions()).name(),
+            gameBoard.players().stream().map(Player::uid).toList(), saveGameid));
+    return saveGameid;
   }
 
   /**
