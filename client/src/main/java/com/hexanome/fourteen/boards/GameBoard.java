@@ -319,12 +319,12 @@ public class GameBoard {
     // Setup nobles CSV data and display on board
     generateNobles();
 
+    final String leadingPlayer = gameBoardForm.leadingPlayer().uid();
     if (gameBoardForm.isGameOver()) {
       closeAllActionWindows();
       disableGameAlteringActions();
-      final String winner = gameBoardForm.leadingPlayer().uid();
       // TODO show the player that won
-      System.out.printf("Game is over, winner: %s%n", winner);
+      System.out.printf("Game is over, winner: %s\n", leadingPlayer);
     } else {
       if (gameBoardForm.isLastRound() && !hasBeenLastRound) {
         hasBeenLastRound = true;
@@ -340,7 +340,6 @@ public class GameBoard {
 //        popup.setVisible(true);
         wait.play();
       }
-      final String leadingPlayer = gameBoardForm.leadingPlayer().uid();
       // TODO show the leading player??
     }
   }
