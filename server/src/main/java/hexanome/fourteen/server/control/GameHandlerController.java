@@ -13,6 +13,7 @@ import hexanome.fourteen.server.control.form.TakeGemsForm;
 import hexanome.fourteen.server.control.form.payment.CardPayment;
 import hexanome.fourteen.server.control.form.payment.GemPayment;
 import hexanome.fourteen.server.control.form.payment.Payment;
+import hexanome.fourteen.server.control.form.tradingpost.TradingPostTakeGem;
 import hexanome.fourteen.server.model.board.City;
 import hexanome.fourteen.server.model.board.GameBoard;
 import hexanome.fourteen.server.model.board.GameBoardHelper;
@@ -32,6 +33,7 @@ import hexanome.fourteen.server.model.board.expansion.Expansion;
 import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import hexanome.fourteen.server.model.board.player.Player;
+import hexanome.fourteen.server.model.board.tradingposts.TradingPostsEnum;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -302,9 +304,7 @@ public class GameHandlerController {
     if (gameBoard == null) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("game not found");
     } else if (gameBoard.isGameOver()) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("game is over");
-    } else if (gameBoard.isActionTaken()) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("action already taken");
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("game is over");
     }
 
     final Hand hand = GameBoardHelper.getHand(gameBoard.players(), username);
@@ -313,6 +313,8 @@ public class GameHandlerController {
     } else if (!gameBoard.isPlayerTurn(username)) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
           .body("cannot take an action outside of your turn");
+    } else if (gameBoard.isActionTaken()) {
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("action already taken");
     }
 
     final Card card = purchaseCardForm.card();
@@ -325,6 +327,60 @@ public class GameHandlerController {
     final Payment payment = purchaseCardForm.payment();
     if (payment == null) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("payment cannot be null");
+    }
+
+    final TradingPostTakeGem tradingPostTakeGem = purchaseCardForm.tradingPostTakeGem();
+    if (tradingPostTakeGem == null
+        && hand.tradingPosts().getOrDefault(TradingPostsEnum.BONUS_GEM_WITH_CARD, false)) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("must take an extra gem if you own the power one trading post");
+    } else if (tradingPostTakeGem != null) {
+      if (!hand.tradingPosts().getOrDefault(TradingPostsEnum.BONUS_GEM_WITH_CARD, false)) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("cannot take an extra gem if you don't own the power one trading post");
+      }
+
+      final Gems gameBoardGemsAfterPurchase;
+      final Gems gemsOwnedAfterPurchase;
+      if (payment instanceof GemPayment g) {
+        final Gems copyOfBoardGems = new Gems(gameBoard.availableGems());
+        GameBoardHelper.addGems(copyOfBoardGems, g.getChosenGems());
+        gameBoardGemsAfterPurchase = copyOfBoardGems;
+
+        final Gems copyOfHandGems = new Gems(hand.gems());
+        GameBoardHelper.removeGems(copyOfHandGems, g.getChosenGems());
+        gemsOwnedAfterPurchase = copyOfHandGems;
+      } else {
+        gameBoardGemsAfterPurchase = gameBoard.availableGems();
+        gemsOwnedAfterPurchase = hand.gems();
+      }
+
+      if (tradingPostTakeGem.gemToTake() == null
+          && gameBoardGemsAfterPurchase.entrySet().stream().filter(g -> g.getKey() != GemColor.GOLD)
+                 .mapToInt(Map.Entry::getValue).sum() > 0) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(
+                "gemToTake cannot be null when there are gems available to take after a purchase");
+      } else if (tradingPostTakeGem.gemToRemove() == null && gemsOwnedAfterPurchase.count() >= 10) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("gemToRemove cannot be null when you have 10 gems after a purchase");
+      } else if (tradingPostTakeGem.gemToRemove() != null && gemsOwnedAfterPurchase.count() < 10) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("gemToRemove must be null if you don't have 10 gems after a purchase");
+      } else if (tradingPostTakeGem.gemToTake() == GemColor.GOLD) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("cannot take a gold gem");
+      } else if (tradingPostTakeGem.gemToTake() != null
+                 && !gameBoardGemsAfterPurchase.containsKey(tradingPostTakeGem.gemToTake())) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("gem color: %s is not available after the purchase".formatted(
+                tradingPostTakeGem.gemToTake()));
+      } else if (tradingPostTakeGem.gemToRemove() != null
+                 && !gemsOwnedAfterPurchase.containsKey(tradingPostTakeGem.gemToRemove())) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("gem color: %s is not owned after the purchase and thus cannot be removed"
+                .formatted(tradingPostTakeGem.gemToRemove()));
+      }
     }
 
     final Set<List<Card>> decks = gameBoard.cards();
@@ -341,13 +397,14 @@ public class GameHandlerController {
     final Payment payment = purchaseCardForm.payment();
     return payment instanceof CardPayment c
         ? handlePayment(gameBoard, hand, purchaseCardForm.card(), c,
-        purchaseCardForm.isReserved())
+        purchaseCardForm.isReserved(), purchaseCardForm.tradingPostTakeGem())
         : handlePayment(gameBoard, hand, purchaseCardForm.card(), (GemPayment) payment,
-        purchaseCardForm.isReserved());
+        purchaseCardForm.isReserved(), purchaseCardForm.tradingPostTakeGem());
   }
 
   private ResponseEntity<String> handlePayment(GameBoard gameBoard, Hand hand, Card card,
-                                               CardPayment payment, boolean reserved) {
+                                               CardPayment payment, boolean reserved,
+                                               TradingPostTakeGem tradingPostTakeGem) {
     if (!(card instanceof SacrificeCard cardToPurchase)) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body("can only pay for a card with cards if it is a sacrifice card");
@@ -486,6 +543,8 @@ public class GameHandlerController {
     hand.gemDiscounts().merge(cardToPurchase.discountColor(),
         Bonus.SINGLE.getValue(), Integer::sum);
 
+    GameBoardHelper.executeTradingPostOnePower(gameBoard, hand, tradingPostTakeGem);
+
     if (gameBoard.expansions().contains(Expansion.TRADING_POSTS)) {
       TradingPostManager.checkCardTradingPosts(hand);
       TradingPostManager.checkLoseCardTradingPosts(hand);
@@ -495,7 +554,8 @@ public class GameHandlerController {
   }
 
   private ResponseEntity<String> handlePayment(GameBoard gameBoard, Hand hand, Card card,
-                                               GemPayment payment, boolean reserved) {
+                                               GemPayment payment, boolean reserved,
+                                               TradingPostTakeGem tradingPostTakeGem) {
     if (card instanceof SacrificeCard) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body("cannot pay for a card with gems if it is a sacrifice card");
@@ -511,7 +571,6 @@ public class GameHandlerController {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body("do not have enough gold gem cards");
     }
-
 
     final Gems gemsToPayWith = payment.getChosenGems() == null ? new Gems() :
         payment.getChosenGems();
@@ -619,6 +678,9 @@ public class GameHandlerController {
     hand.incrementPrestigePoints(card.prestigePoints());
     // Add the card to the player's hand
     hand.purchasedCards().add(card);
+
+    GameBoardHelper.executeTradingPostOnePower(gameBoard, hand, tradingPostTakeGem);
+
     // Check if any trading posts should be awarded
     if (gameBoard.expansions().contains(Expansion.TRADING_POSTS)) {
       TradingPostManager.checkCardTradingPosts(hand);

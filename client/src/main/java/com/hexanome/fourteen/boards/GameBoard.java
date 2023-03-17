@@ -584,7 +584,7 @@ public class GameBoard {
       purchaseCardForm = new PurchaseCardForm(cardPurchased.getCardForm(),
           new GemPaymentForm(cardPurchased.getCardForm().cost()
               .getDiscountedCost(player.getHandForm().gemDiscounts()), null, 0),
-          player.getHandForm().reservedCards().contains(cardPurchased.getCardForm()));
+          player.getHandForm().reservedCards().contains(cardPurchased.getCardForm()), null);
     } else if (cardPurchased.getCardForm() instanceof WaterfallCardForm) {
       displayWaterfallChoices((WaterfallCardForm) cardPurchased.getCardForm());
       return;
@@ -1193,7 +1193,7 @@ public class GameBoard {
         new GemPaymentForm(
             waterfallWithSelection.cost().getDiscountedCost(player.getHandForm().gemDiscounts()),
             null, 0),
-        player.getHandForm().reservedCards().contains(new OrientCard(wf).getCardForm()));
+        player.getHandForm().reservedCards().contains(wf), null);
 
     purchaseCard(purchaseCardForm);
     waterfallPane.setVisible(false);

@@ -1,5 +1,6 @@
 package hexanome.fourteen.server.model.board;
 
+import hexanome.fourteen.server.control.form.tradingpost.TradingPostTakeGem;
 import hexanome.fourteen.server.model.board.card.Bonus;
 import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.card.CardLevel;
@@ -14,6 +15,7 @@ import hexanome.fourteen.server.model.board.expansion.Expansion;
 import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import hexanome.fourteen.server.model.board.player.Player;
+import hexanome.fourteen.server.model.board.tradingposts.TradingPostsEnum;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -407,7 +409,27 @@ public final class GameBoardHelper {
     } else {
       return gemDiscounts.hasEnoughGems(requiredDiscounts);
     }
+  }
 
-
+  /**
+   * Execute trading post one power if it is owned.
+   *
+   * @param gameBoard          Game board.
+   * @param hand               The player's hand.
+   * @param tradingPostTakeGem Trading post take gem.
+   */
+  public static void executeTradingPostOnePower(GameBoard gameBoard, Hand hand,
+                                                TradingPostTakeGem tradingPostTakeGem) {
+    if (hand.tradingPosts().getOrDefault(TradingPostsEnum.BONUS_GEM_WITH_CARD, false)
+        && tradingPostTakeGem.gemToTake() != null) {
+      hand.gems().merge(tradingPostTakeGem.gemToTake(), 1, Integer::sum);
+      gameBoard.availableGems()
+          .computeIfPresent(tradingPostTakeGem.gemToTake(), (k, v) -> 1 >= v ? null : v - 1);
+      if (tradingPostTakeGem.gemToRemove() != null) {
+        hand.gems()
+            .computeIfPresent(tradingPostTakeGem.gemToRemove(), (k, v) -> 1 >= v ? null : v - 1);
+        gameBoard.availableGems().merge(tradingPostTakeGem.gemToRemove(), 1, Integer::sum);
+      }
+    }
   }
 }
