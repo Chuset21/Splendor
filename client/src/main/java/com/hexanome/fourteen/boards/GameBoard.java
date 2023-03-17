@@ -1269,17 +1269,14 @@ public class GameBoard {
         choicesHBox.getChildren().add(iv);
       }
 
-      // TODO acquire city, basically same menu as acquiring a noble,
-      //  change from acquiredNobleAlertPane to something else
       closeAllActionWindows();
       ((Label) acquiredNobleAlertPane.getHeader()).setText("City Acquired!");
       acquiredNobleAlertPane.setContent(choicesHBox);
       acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
         // Acquire the city via the server
-        final HttpResponse<String> cityResponse =
-            ServerCaller.claimCity(LobbyServiceCaller.getCurrentUserLobby(),
-                LobbyServiceCaller.getCurrentUserAccessToken(),
-                new ClaimCityForm(tentativeCitySelection.cityForm));
+        ServerCaller.claimCity(LobbyServiceCaller.getCurrentUserLobby(),
+            LobbyServiceCaller.getCurrentUserAccessToken(),
+            new ClaimCityForm(tentativeCitySelection.cityForm));
         // Close city select screen
         acquiredNobleAlertPane.setVisible(false);
       });
