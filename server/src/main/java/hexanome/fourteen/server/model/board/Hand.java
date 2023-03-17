@@ -1,6 +1,7 @@
 package hexanome.fourteen.server.model.board;
 
 import hexanome.fourteen.server.model.board.card.Card;
+import hexanome.fourteen.server.model.board.expansion.Expansion;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import hexanome.fourteen.server.model.board.tradingposts.TradingPosts;
 import java.util.ArrayList;
@@ -14,11 +15,11 @@ import java.util.Set;
  */
 public final class Hand {
   private int prestigePoints;
-  private final Gems gems;
-  private final List<Card> reservedCards;
-  private final List<Card> purchasedCards;
-  private final Set<Noble> visitedNobles;
-  private final Set<Noble> reservedNobles;
+  private Gems gems;
+  private List<Card> reservedCards;
+  private List<Card> purchasedCards;
+  private Set<Noble> visitedNobles;
+  private Set<Noble> reservedNobles;
   private Gems gemDiscounts;
   private TradingPosts tradingPosts;
   private City city;
@@ -54,8 +55,18 @@ public final class Hand {
    * Default constructor.
    */
   public Hand() {
+
+  }
+
+  /**
+   * Construct the hand based on the expansions being played.
+   *
+   * @param expansions The expansions being played.
+   */
+  public Hand(Set<Expansion> expansions) {
     this(0, new Gems(), new ArrayList<>(), new ArrayList<>(), new HashSet<>(), new HashSet<>(),
-        new Gems(), TradingPosts.createDefault(), null);
+        new Gems(), expansions.contains(Expansion.TRADING_POSTS) ? TradingPosts.createDefault() :
+            new TradingPosts(), null);
   }
 
   /**

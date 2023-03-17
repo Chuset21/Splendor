@@ -6,10 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 import hexanome.fourteen.server.model.board.Noble;
+import hexanome.fourteen.server.model.board.expansion.Expansion;
 import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import hexanome.fourteen.server.model.board.player.Player;
 import hexanome.fourteen.server.model.board.tradingposts.TradingPostsEnum;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -21,7 +23,8 @@ public class TradingPostManagerTest {
 
   @BeforeEach
   public void setUp() {
-    player = new Player("test");
+    player =
+        new Player("test", Set.of(Expansion.TRADING_POSTS, Expansion.STANDARD, Expansion.ORIENT));
     Gems gemDiscounts = new Gems();
     gemDiscounts.put(GemColor.RED, 2);
     gemDiscounts.put(GemColor.BLUE, 2);
@@ -116,9 +119,10 @@ public class TradingPostManagerTest {
     TradingPostManager.checkCardTradingPosts(player.hand());
     assertTrue(player.hand().tradingPosts().get(TradingPostsEnum.ONE_POINT_PER_POWER));
     int bonusPoints = 0;
-    for (boolean value: player.hand().tradingPosts().values())
-    {
-      if (value) bonusPoints++;
+    for (boolean value : player.hand().tradingPosts().values()) {
+      if (value) {
+        bonusPoints++;
+      }
     }
     assertEquals(prestigePoints + bonusPoints, player.hand().prestigePoints());
   }

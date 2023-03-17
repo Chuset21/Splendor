@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.gson.reflect.TypeToken;
 import eu.kartoffelquadrat.asyncrestlib.BroadcastContent;
 import hexanome.fourteen.server.control.GsonInstance;
+import hexanome.fourteen.server.model.User;
 import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.card.CardLevel;
 import hexanome.fourteen.server.model.board.card.StandardCard;
@@ -87,6 +88,21 @@ public final class GameBoard implements BroadcastContent {
    * Constructor.
    *
    * @param expansions The set of expansions
+   * @param users      The users
+   * @param gameid     The game ID
+   * @param creator    The creator of the game
+   */
+  public GameBoard(Set<Expansion> expansions, Collection<User> users, String gameid,
+                   String creator) {
+    this(expansions,
+        users.stream().map(u -> new Player(u.name(), expansions)).collect(Collectors.toSet()),
+        gameid, creator);
+  }
+
+  /**
+   * Constructor.
+   *
+   * @param expansions The set of expansions
    * @param players    The players
    * @param gameid     The game ID
    * @param creator    The creator of the game
@@ -122,7 +138,8 @@ public final class GameBoard implements BroadcastContent {
   }
 
   private static Set<City> createCities() {
-    final Type mapType = new TypeToken<Map<String, City>>(){}.getType();
+    final Type mapType = new TypeToken<Map<String, City>>() {
+    }.getType();
     final Map<String, City> map = GSON.gson.fromJson(new Scanner(
         Objects.requireNonNull(GameBoard.class.getResourceAsStream("Cities.json")),
         StandardCharsets.UTF_8).useDelimiter("\\A").next(), mapType);

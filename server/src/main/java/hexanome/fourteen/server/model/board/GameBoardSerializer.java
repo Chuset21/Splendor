@@ -8,30 +8,15 @@ import hexanome.fourteen.server.control.GsonInstance;
 import hexanome.fourteen.server.model.clientmapper.ServerToClientBoardGameMapper;
 import hexanome.fourteen.server.model.sent.SentGameBoard;
 import java.io.IOException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * Custom game board serializer.
  */
-@Component
 public final class GameBoardSerializer extends JsonSerializer<GameBoard> {
 
   private final GsonInstance gsonInstance;
 
   private final Mapper<GameBoard, SentGameBoard> gameBoardMapper;
-
-  /**
-   * Constructor.
-   *
-   * @param gsonInstance    gson instance
-   * @param gameBoardMapper game board mapper
-   */
-  public GameBoardSerializer(@Autowired GsonInstance gsonInstance,
-                             @Autowired Mapper<GameBoard, SentGameBoard> gameBoardMapper) {
-    this.gsonInstance = gsonInstance;
-    this.gameBoardMapper = gameBoardMapper;
-  }
 
   /**
    * No args constructor.

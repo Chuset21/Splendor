@@ -1,6 +1,8 @@
 package hexanome.fourteen.server.model.board.player;
 
 import hexanome.fourteen.server.model.board.Hand;
+import hexanome.fourteen.server.model.board.expansion.Expansion;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -15,12 +17,12 @@ public class PlayerTest {
 
   @BeforeAll
   public static void setUp() {
-    player = new Player("user");
+    player = new Player("user", Set.of(Expansion.STANDARD));
   }
 
   @Test
   public void testPlayerConstructor() {
-    final Player p = new Player("user", new Hand());
+    final Player p = new Player("user", new Hand(Set.of(Expansion.STANDARD)));
     assertEquals(player.uid(), p.uid());
     assertEquals(player.hand(), p.hand());
   }
@@ -32,6 +34,11 @@ public class PlayerTest {
 
   @Test
   public void testHand() {
-    assertEquals(new Hand(), player.hand());
+    assertEquals(new Hand(Set.of(Expansion.STANDARD)), player.hand());
+  }
+
+  @Test
+  public void testNoArgs() {
+    assertNull(new Player().uid());
   }
 }

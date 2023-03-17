@@ -51,9 +51,13 @@ public final class SacrificeCard extends Card {
       return false;
     }
     SacrificeCard card = (SacrificeCard) obj;
-    return super.prestigePoints == card.prestigePoints
-           && Objects.equals(super.cost, card.cost)
+    return super.prestigePoints == card.prestigePoints && Objects.equals(super.cost, card.cost)
            && super.level == card.level && super.expansion == card.expansion
            && discountColor == card.discountColor;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(prestigePoints, cost, level, expansion, discountColor);
   }
 }

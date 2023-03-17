@@ -40,4 +40,10 @@ public class NobleTest {
         assertNull(noble.cost().get(GemColor.WHITE));
         assertNull(noble.cost().get(GemColor.GOLD));
     }
+
+    @Test
+    public void testEquals() {
+        assertEquals(noble, noble);
+        assertFalse(noble.equals(null));
+    }
 }
