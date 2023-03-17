@@ -1,32 +1,27 @@
 package com.hexanome.fourteen.lobbyui;
 
+import com.hexanome.fourteen.GameServiceName;
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.Main;
-import com.hexanome.fourteen.boards.Expansion;
-import com.hexanome.fourteen.form.lobbyservice.GameParametersForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionForm;
 import kong.unirest.HttpResponse;
-import org.apache.commons.codec.digest.DigestUtils;
 
 public class Lobby {
 
-  private String sessionid;
+  private final String sessionid;
   private SessionForm session;
-  private Expansion expansion;
+  private final GameServiceName gameServiceName;
 
   public Lobby(String sessionid) {
 
     // Get settings for session
     final HttpResponse<String> response = LobbyServiceCaller.getSessionDetails(sessionid);
     session = Main.GSON.fromJson(response.getBody(), SessionForm.class);
-    GameParametersForm gameParameters = session.gameParameters();
 
     // Initialize object vars
     this.sessionid = sessionid;
 
-    // TODO: Make this actually set expansion session's expansion
-    // Set expansion
-    this.expansion = Expansion.ORIENT;
+    this.gameServiceName = GameServiceName.valueOf(session.gameParameters().name());
   }
 
   public String getSessionid() {
@@ -45,8 +40,8 @@ public class Lobby {
     return getPlayers()[0];
   }
 
-  public Expansion getExpansion() {
-    return expansion;
+  public GameServiceName getGameServiceName() {
+    return gameServiceName;
   }
 
   public boolean getLaunched() {
