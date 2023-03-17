@@ -103,7 +103,7 @@ public class TradingPostManagerTest {
 
   @Test
   public void testCheckTradingPost4WithNoble() {
-    player.hand().gemDiscounts().replace(GemColor.GREEN, 5);
+    player.hand().gemDiscounts().put(GemColor.GREEN, 5);
     assertFalse(player.hand().tradingPosts().get(TradingPostsEnum.FIVE_PRESTIGE_POINTS));
     player.hand().visitedNobles().add(new Noble());
     int prestigePoints = player.hand().prestigePoints();
@@ -114,17 +114,20 @@ public class TradingPostManagerTest {
 
   @Test
   public void testCheckTradingPost5() {
-    player.hand().gemDiscounts().replace(GemColor.BLACK, 3);
+    player.hand().gemDiscounts().put(GemColor.BLACK, 3);
     int prestigePoints = player.hand().prestigePoints();
     TradingPostManager.checkCardTradingPosts(player.hand());
     assertTrue(player.hand().tradingPosts().get(TradingPostsEnum.ONE_POINT_PER_POWER));
-    int bonusPoints = 0;
-    for (boolean value : player.hand().tradingPosts().values()) {
-      if (value) {
-        bonusPoints++;
-      }
-    }
+    int bonusPoints = player.hand().tradingPosts().values().stream().mapToInt(b -> b ? 1 : 0).sum();
     assertEquals(prestigePoints + bonusPoints, player.hand().prestigePoints());
+
+    player.hand().visitedNobles().add(new Noble());
+    player.hand().gemDiscounts().put(GemColor.GREEN, 5);
+    TradingPostManager.checkNobleTradingPosts(player.hand());
+    TradingPostManager.checkCardTradingPosts(player.hand());
+
+    bonusPoints = player.hand().tradingPosts().values().stream().mapToInt(b -> b ? 1 : 0).sum();
+    assertEquals(prestigePoints + 5 + bonusPoints, player.hand().prestigePoints());
   }
 
   @Test
@@ -132,7 +135,17 @@ public class TradingPostManagerTest {
     player.hand().setPrestigePoints(1);
     player.hand().tradingPosts().replace(TradingPostsEnum.ONE_POINT_PER_POWER, true);
     TradingPostManager.checkLoseCardTradingPosts(player.hand());
-    assertFalse(player.hand().tradingPosts().get(TradingPostsEnum.BONUS_GEM_WITH_CARD));
+    assertFalse(player.hand().tradingPosts().get(TradingPostsEnum.ONE_POINT_PER_POWER));
     assertEquals(0, player.hand().prestigePoints());
+
+    player.hand().visitedNobles().add(new Noble());
+    player.hand().gemDiscounts().put(GemColor.GREEN, 5);
+    TradingPostManager.checkNobleTradingPosts(player.hand());
+    assertTrue(player.hand().tradingPosts().get(TradingPostsEnum.FIVE_PRESTIGE_POINTS));
+    player.hand().gemDiscounts().put(GemColor.BLACK, 3);
+    player.hand().tradingPosts().replace(TradingPostsEnum.ONE_POINT_PER_POWER, true);
+    TradingPostManager.checkLoseCardTradingPosts(player.hand());
+    assertTrue(player.hand().tradingPosts().get(TradingPostsEnum.ONE_POINT_PER_POWER));
+    assertEquals(5, player.hand().prestigePoints());
   }
 }
