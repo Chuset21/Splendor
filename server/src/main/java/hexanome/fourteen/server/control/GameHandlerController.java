@@ -106,9 +106,7 @@ public class GameHandlerController {
             GameHandlerController.class.getResourceAsStream("SavedGamesForDemo.json")),
         StandardCharsets.UTF_8).useDelimiter("\\A").next(), mapType);
 
-    for (GameBoard game : gameBoardMap.values()) {
-      saveGame(game);
-    }
+    gameBoardMap.values().forEach(this::saveGame);
   }
 
   /**
