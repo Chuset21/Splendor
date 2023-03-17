@@ -1,5 +1,6 @@
 package hexanome.fourteen.server.control;
 
+import com.google.gson.reflect.TypeToken;
 import eu.kartoffelquadrat.asyncrestlib.BroadcastContentManager;
 import eu.kartoffelquadrat.asyncrestlib.ResponseGenerator;
 import hexanome.fourteen.server.control.form.ClaimCityForm;
@@ -31,13 +32,17 @@ import hexanome.fourteen.server.model.board.expansion.Expansion;
 import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import hexanome.fourteen.server.model.board.player.Player;
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Scanner;
 import java.util.Set;
+import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -90,6 +95,20 @@ public class GameHandlerController {
     this.serverService = serverService;
     gameManager = new HashMap<>();
     gameSpecificBroadcastManagers = new LinkedHashMap<>();
+  }
+
+  @PostConstruct
+  private void setupSaveGamesForDemo() {
+    final Type mapType = new TypeToken<Map<String, GameBoard>>() {
+    }.getType();
+    final Map<String, GameBoard> gameBoardMap = gsonInstance.gson.fromJson(new Scanner(
+        Objects.requireNonNull(
+            GameHandlerController.class.getResourceAsStream("SavedGamesForDemo.json")),
+        StandardCharsets.UTF_8).useDelimiter("\\A").next(), mapType);
+
+    for (GameBoard game : gameBoardMap.values()) {
+      saveGame(game);
+    }
   }
 
   /**
