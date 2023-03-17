@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -61,6 +62,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import com.hexanome.fourteen.lobbyui.*;
+import javafx.util.Duration;
 import kong.unirest.HttpResponse;
 import kong.unirest.HttpStatus;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -224,6 +226,7 @@ public class GameBoard {
   @FXML
   public Label discardTokenLabel;
   public TokenDiscarder tokenDiscarder;
+  private boolean hasBeenLastRound;
 
   /**
    * A call to this method displays the game on screen by initializing the scene with the gameboard.
@@ -232,6 +235,7 @@ public class GameBoard {
    */
   public void goToGame(Stage stage) {
     this.stage = stage;
+    hasBeenLastRound = false;
 
     HttpResponse<String> s = ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby());
     // Get gameBoardForm
@@ -321,9 +325,21 @@ public class GameBoard {
       final String winner = gameBoardForm.leadingPlayer().uid();
       // TODO show the player that won
       System.out.printf("Game is over, winner: %s%n", winner);
-    } else if (gameBoardForm.isLastRound()) {
-      System.out.println("Last round of the game!!"); // TODO show a last round message instead
     } else {
+      if (gameBoardForm.isLastRound() && !hasBeenLastRound) {
+        hasBeenLastRound = true;
+        System.out.println("Last round of the game!!"); // TODO show a last round message instead
+        // Stub for showing popup
+        final PauseTransition wait = new PauseTransition(Duration.seconds(2));
+        wait.setOnFinished((e) -> {
+          // Disabling the button after a duration of time
+//          popup.setDisable(true);
+//          popup.setVisible(false);
+        });
+//        popup.setDisable(false);
+//        popup.setVisible(true);
+        wait.play();
+      }
       final String leadingPlayer = gameBoardForm.leadingPlayer().uid();
       // TODO show the leading player??
     }
