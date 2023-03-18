@@ -143,9 +143,13 @@ public class TradingPostManagerTest {
     TradingPostManager.checkNobleTradingPosts(player.hand());
     assertTrue(player.hand().tradingPosts().get(TradingPostsEnum.FIVE_PRESTIGE_POINTS));
     player.hand().gemDiscounts().put(GemColor.BLACK, 3);
-    player.hand().tradingPosts().replace(TradingPostsEnum.ONE_POINT_PER_POWER, true);
+    TradingPostManager.checkCardTradingPosts(player.hand());
+    assertTrue(player.hand().tradingPosts().get(TradingPostsEnum.ONE_POINT_PER_POWER));
+    assertEquals(7, player.hand().prestigePoints());
+    player.hand().gemDiscounts().clear();
+    player.hand().gemDiscounts().put(GemColor.BLACK, 3);
     TradingPostManager.checkLoseCardTradingPosts(player.hand());
     assertTrue(player.hand().tradingPosts().get(TradingPostsEnum.ONE_POINT_PER_POWER));
-    assertEquals(5, player.hand().prestigePoints());
+    assertEquals(1, player.hand().prestigePoints());
   }
 }
