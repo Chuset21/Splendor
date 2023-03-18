@@ -5,24 +5,20 @@ import com.hexanome.fourteen.form.server.GemsForm;
 /**
  * A class to represent payment using Gems.
  */
-public class GemPaymentForm implements PaymentForm {
+public final class GemPaymentForm implements PaymentForm {
 
   private GemsForm chosenGems;
-
-  private GemsForm substitutedGems;
 
   private int numGoldGemCards;
 
   /**
    * Constructor.
    *
-   * @param chosenGems        chosen Gems to pay with
-   * @param substitutedGems   required gems provided through goldGemCards
-   * @param numGoldGemCards   number of goldGemCards chosen
+   * @param chosenGems      chosen Gems to pay with
+   * @param numGoldGemCards number of goldGemCards chosen
    */
-  public GemPaymentForm(GemsForm chosenGems, GemsForm substitutedGems, int numGoldGemCards) {
+  public GemPaymentForm(GemsForm chosenGems, int numGoldGemCards) {
     this.chosenGems = chosenGems;
-    this.substitutedGems = substitutedGems;
     this.numGoldGemCards = numGoldGemCards;
   }
 
@@ -40,15 +36,6 @@ public class GemPaymentForm implements PaymentForm {
    */
   public GemsForm getChosenGems() {
     return chosenGems;
-  }
-
-  /**
-   * A getter for the number of substituted gems.
-   *
-   * @return substituted Gems
-   */
-  public GemsForm getSubstitutedGems() {
-    return substitutedGems;
   }
 
   /**

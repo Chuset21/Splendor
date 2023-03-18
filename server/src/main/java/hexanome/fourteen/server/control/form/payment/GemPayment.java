@@ -9,20 +9,16 @@ public final class GemPayment implements Payment {
 
   private Gems chosenGems;
 
-  private Gems substitutedGems;
-
   private int numGoldGemCards;
 
   /**
    * Constructor.
    *
    * @param chosenGems        chosen Gems to pay with
-   * @param substitutedGems   required gems provided through goldGemCards
    * @param numGoldGemCards   number of goldGemCards chosen
    */
-  public GemPayment(Gems chosenGems, Gems substitutedGems, int numGoldGemCards) {
+  public GemPayment(Gems chosenGems, int numGoldGemCards) {
     this.chosenGems = chosenGems;
-    this.substitutedGems = substitutedGems;
     this.numGoldGemCards = numGoldGemCards;
   }
 
@@ -40,15 +36,6 @@ public final class GemPayment implements Payment {
    */
   public Gems getChosenGems() {
     return chosenGems;
-  }
-
-  /**
-   * A getter for the number of substituted gems.
-   *
-   * @return substituted Gems
-   */
-  public Gems getSubstitutedGems() {
-    return substitutedGems;
   }
 
   /**

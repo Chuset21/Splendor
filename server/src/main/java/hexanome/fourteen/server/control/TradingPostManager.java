@@ -155,7 +155,6 @@ public class TradingPostManager {
       TradingPosts tp = hand.tradingPosts();
       tp.put(TradingPostsEnum.DOUBLE_GOLD_GEMS, true);
       hand.setTradingPosts(tp);
-      // TODO implementation for effects of this trading post still need to be implemented
     }
   }
 

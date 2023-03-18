@@ -578,45 +578,62 @@ public class GameHandlerController {
     // Add the gold gems from the gold gem cards to the chosen gems to pay with
     final Gems gemsWithExtraGoldGems = new Gems(gemsToPayWith);
     gemsWithExtraGoldGems.compute(GemColor.GOLD,
-        (k, v) -> v == null ? (numGoldGemCards == 0 ? null : numGoldGemCards * 2)
-            : Integer.valueOf(v + numGoldGemCards * 2));
+        (k, v) -> v == null
+            ? (numGoldGemCards == 0 ? null : numGoldGemCards * Bonus.DOUBLE.getValue())
+            : Integer.valueOf(v + numGoldGemCards * Bonus.DOUBLE.getValue()));
 
-    final Gems substitutedGems = payment.getSubstitutedGems() == null ? new Gems() :
-        payment.getSubstitutedGems();
-    if (substitutedGems.containsKey(GemColor.GOLD)) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-          .body("cannot substitute gold gems for gold gems");
-    }
-
-    final int substitutedGemsCount = substitutedGems.count();
-    if ((substitutedGemsCount != gemsWithExtraGoldGems.getOrDefault(GemColor.GOLD, 0)
-         && numGoldGemCards == 0)
-        || (numGoldGemCards != 0
-            && substitutedGemsCount != gemsWithExtraGoldGems.get(GemColor.GOLD) - 1)) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-          .body("substituting amount not equal to gold gems");
-    }
-
-    // If they wasted a gold token, remove it from gemsWithExtraGoldGems
-    if (numGoldGemCards != 0
-        && substitutedGemsCount == gemsWithExtraGoldGems.get(GemColor.GOLD) - 1) {
-      gemsWithExtraGoldGems.merge(GemColor.GOLD, 1, (v, n) -> v - n);
-    }
+    final int goldGemsUsed = gemsWithExtraGoldGems.getOrDefault(GemColor.GOLD, 0);
+    final int goldGemMultiplier =
+        (hand.tradingPosts().getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false)
+            ? Bonus.DOUBLE : Bonus.SINGLE).getValue();
+    final int goldGemsAvailable = goldGemMultiplier * goldGemsUsed;
+    final Gems paymentWithoutGold = new Gems(gemsToPayWith);
+    paymentWithoutGold.remove(GemColor.GOLD);
 
     final Gems ownedGems = hand.gems();
     if (!ownedGems.hasEnoughGems(gemsToPayWith)) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("not enough gems");
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("not enough gems owned");
     }
-
+    final Gems cardCost = card.cost() == null ? new Gems() : card.cost();
     // Verify that the amount of gems is enough to buy the card
-    final Gems discountedCost = GameBoardHelper.getDiscountedCost(card.cost(), hand.gemDiscounts());
-    if (!discountedCost.equals(
-        GameBoardHelper.getPaymentWithoutGoldGems(substitutedGems, gemsWithExtraGoldGems))) {
-      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("card cost does not match payment");
+    final Gems discountedCost = GameBoardHelper.getDiscountedCost(cardCost, hand.gemDiscounts());
+    // If this doesn't return null then they have underpaid or not used the correct gems
+    final ResponseEntity<String> result =
+        GameBoardHelper.canAffordPayment(
+            discountedCost, paymentWithoutGold, goldGemsUsed, goldGemMultiplier);
+    if (result != null) {
+      return result;
+    }
+    // Check if they have overpaid with gold gems
+    if (discountedCost.count() < paymentWithoutGold.count() + goldGemsAvailable) {
+      final int difference =
+          paymentWithoutGold.count() + goldGemsAvailable - discountedCost.count();
+      if (numGoldGemCards != 0) {
+        if (difference > Bonus.SINGLE.getValue()
+            && goldGemMultiplier == Bonus.SINGLE.getValue()) {
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body("cannot waste more than one gem when gold gem cards are used"
+                    + " and trading post 2 isn't acquired");
+        } else if (difference > Bonus.SINGLE.getValue() + Bonus.DOUBLE.getValue()
+                   && goldGemMultiplier == Bonus.DOUBLE.getValue()) {
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body("cannot waste more than three gems when gold gem cards are used"
+                    + " and trading post 2 is acquired");
+        }
+      } else if (difference != goldGemMultiplier - Bonus.SINGLE.getValue()) {
+        if (goldGemMultiplier == Bonus.SINGLE.getValue()) {
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body("cannot waste any gold gems when trading post 2"
+                    + " isn't acquired and no gold gem cards are used");
+        } else {
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body("cannot waste more than one gem when trading post 2"
+                    + " is acquired and no gold gem cards are used");
+        }
+      }
     }
 
     // Now we know that they can pay for this card
-
     if (card instanceof DoubleBonusCard c) {
       hand.gemDiscounts().merge(c.discountColor(), Bonus.DOUBLE.getValue(), Integer::sum);
     } else if (card instanceof StandardCard c) {
