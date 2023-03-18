@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * Class to represent a city.
  */
-public class CityForm {
+public final class CityForm {
   private int prestigePoints;
   private GemsForm gemDiscounts;
 

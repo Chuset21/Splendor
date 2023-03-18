@@ -5,7 +5,7 @@ import com.hexanome.fourteen.form.server.cardform.CardForm;
 /**
  * A class to represent payment using cards as required by sacrifice cards.
  */
-public class CardPaymentForm implements PaymentForm {
+public final class CardPaymentForm implements PaymentForm {
 
   private CardForm cardToSacrifice1;
 
