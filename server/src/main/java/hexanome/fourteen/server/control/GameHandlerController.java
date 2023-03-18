@@ -872,6 +872,8 @@ public class GameHandlerController {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("gems to take cannot be null");
     } else if (gemsToTake.get(GemColor.GOLD) != null) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("cannot take gold gems");
+    } else if (gemsToTake.values().stream().anyMatch(v -> v <= 0)) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("gems to take cannot be <= 0");
     }
 
     final Gems gemsToRemove = takeGemsForm.gemsToRemove();
@@ -902,6 +904,8 @@ public class GameHandlerController {
       }
     }
 
+    final boolean isTradingPost2Acquired =
+        hand.tradingPosts().getOrDefault(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO, false);
     final long sizeOfBankWithoutGoldGems =
         new Gems(gameBoard.availableGems()).keySet().stream().filter(e -> e != GemColor.GOLD)
             .count();
@@ -918,14 +922,40 @@ public class GameHandlerController {
                  && (sizeOfBankWithoutGoldGems > 1 || amountOfGemsAvailable >= 4)) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("cannot take 1 gem if it is possible to take more");
+      } else if (isTradingPost2Acquired && amountOfGemsAvailable >= 4 && amountOfGemsToTake == 2
+                 && sizeOfBankWithoutGoldGems > 1) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("must take an extra gem of another color"
+                  + " if trading post 2 is acquired and it is possible");
       }
       // Only possible scenarios now
       // amountOfGemsAvailable >= 4 && amountOfGemsToTake == 2
       // amountOfGemsAvailable < 4 && amountOfGemsToTake == 1 && only 1 gem color available
+    } else if (isTradingPost2Acquired && gemsToTake.size() == 2) {
+      final List<Map.Entry<GemColor, Integer>> entries = gemsToTake.entrySet().stream().toList();
+      final Map.Entry<GemColor, Integer> e1 = entries.get(0);
+      final Map.Entry<GemColor, Integer> e2 = entries.get(1);
+      final int e1Available = gameBoard.availableGems().get(e1.getKey());
+      final int e2Available = gameBoard.availableGems().get(e2.getKey());
+
+      // e1,e2 can only be one or 2 right now
+      if (e1.getValue() == 1 && e2.getValue() == 1) {
+        if (e1Available >= 4 || e2Available >= 4) {
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+              .body("must take more than one gem of a gem since you have trading post power 2");
+        } else if (sizeOfBankWithoutGoldGems > 2) {
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+              "cannot take 1 gem of each for 2 gem colors if it is possible to take from 3 colors");
+        }
+      } else if ((e1.getValue() == 2 && e1Available < 4)
+                 || (e2.getValue() == 2 && e2Available < 4)) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            "cannot take 2 same color gems, there are less than 4 gems of that color in the bank");
+      }
     } else if (gemsToTake.values().stream().anyMatch(v -> v > 1)) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body("cannot take more than one gem of each gem");
-    } else if (gemsToTake.size() == 2 && sizeOfBankWithoutGoldGems != 2) {
+    } else if (gemsToTake.size() == 2 && sizeOfBankWithoutGoldGems > 2) {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
           "cannot take 1 gem of each for 2 gem colors if it is possible to take from 3 colors");
     }

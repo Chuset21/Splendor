@@ -454,6 +454,10 @@ public class GameHandlerControllerTest {
     purchaseCardForm = new PurchaseCardForm(cardToPurchase, payment, true);
 
     if (!board.isPlayerTurn("test")) {
+      response = gameHandlerController.purchaseCard("", "token",
+              gsonInstance.gson.toJson(purchaseCardForm));
+      assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+      assertEquals("cannot take an action outside of your turn", response.getBody());
       board.nextTurn();
     }
     response =
@@ -1866,6 +1870,10 @@ public class GameHandlerControllerTest {
     reserveCardForm = new ReserveCardForm(null, null, false);
 
     if (!board.isPlayerTurn("test")) {
+      response =
+          gameHandlerController.reserveCard("", "token", gsonInstance.gson.toJson(reserveCardForm));
+      assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+      assertEquals("cannot take an action outside of your turn", response.getBody());
       board.nextTurn();
     }
     response =
@@ -1955,6 +1963,14 @@ public class GameHandlerControllerTest {
     response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("cannot take gold gems", response.getBody());
+
+    gemsToTake.clear();
+    gemsToTake.put(GemColor.BLACK, -1);
+    takeGemsForm = new TakeGemsForm(gemsToTake, null);
+
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("gems to take cannot be <= 0", response.getBody());
 
     gemsToTake.clear();
     gemsToTake.put(GemColor.WHITE, 4);
@@ -2083,6 +2099,10 @@ public class GameHandlerControllerTest {
     previousBank = new Gems(board.availableGems());
 
     if (!board.isPlayerTurn("test")) {
+      response =
+          gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
+      assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+      assertEquals("cannot take an action outside of your turn", response.getBody());
       board.nextTurn();
     }
     response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
@@ -2208,6 +2228,187 @@ public class GameHandlerControllerTest {
         player.hand().gems().getOrDefault(GemColor.GOLD, 0));
     assertEquals(previousBank.getOrDefault(GemColor.GOLD, 0) + 1,
         board.availableGems().get(GemColor.GOLD));
+
+    gemsToTake.clear();
+    player.hand().gems().clear();
+    board.availableGems().clear();
+    gemsToRemove.clear();
+    gemsToTake.put(GemColor.WHITE, 2);
+    player.hand().gems().put(GemColor.GOLD, 2);
+    board.availableGems().put(GemColor.WHITE, 4);
+    board.availableGems().put(GemColor.RED, 1);
+    board.availableGems().put(GemColor.GREEN, 1);
+    takeGemsForm = new TakeGemsForm(gemsToTake, null);
+    player.hand().tradingPosts().put(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO, true);
+
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("must take an extra gem of another color"
+                 + " if trading post 2 is acquired and it is possible", response.getBody());
+
+    gemsToTake.clear();
+    player.hand().gems().clear();
+    board.availableGems().clear();
+    gemsToRemove.clear();
+    gemsToTake.put(GemColor.WHITE, 1);
+    gemsToTake.put(GemColor.RED, 1);
+    player.hand().gems().put(GemColor.GOLD, 2);
+    board.availableGems().put(GemColor.WHITE, 4);
+    board.availableGems().put(GemColor.RED, 2);
+    board.availableGems().put(GemColor.GREEN, 1);
+    takeGemsForm = new TakeGemsForm(gemsToTake, null);
+    player.hand().tradingPosts().put(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO, true);
+
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("must take more than one gem of a gem since you have trading post power 2",
+        response.getBody());
+
+    gemsToTake.clear();
+    player.hand().gems().clear();
+    board.availableGems().clear();
+    gemsToRemove.clear();
+    gemsToTake.put(GemColor.WHITE, 1);
+    gemsToTake.put(GemColor.RED, 1);
+    player.hand().gems().put(GemColor.GOLD, 2);
+    board.availableGems().put(GemColor.WHITE, 3);
+    board.availableGems().put(GemColor.RED, 2);
+    board.availableGems().put(GemColor.GREEN, 1);
+    takeGemsForm = new TakeGemsForm(gemsToTake, null);
+    player.hand().tradingPosts().put(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO, true);
+
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals(
+        "cannot take 1 gem of each for 2 gem colors if it is possible to take from 3 colors",
+        response.getBody());
+
+    gemsToTake.clear();
+    player.hand().gems().clear();
+    board.availableGems().clear();
+    gemsToRemove.clear();
+    gemsToTake.put(GemColor.WHITE, 2);
+    gemsToTake.put(GemColor.RED, 1);
+    player.hand().gems().put(GemColor.GOLD, 2);
+    board.availableGems().put(GemColor.WHITE, 3);
+    board.availableGems().put(GemColor.RED, 2);
+    board.availableGems().put(GemColor.GREEN, 1);
+    takeGemsForm = new TakeGemsForm(gemsToTake, null);
+    player.hand().tradingPosts().put(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO, true);
+
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals(
+        "cannot take 2 same color gems, there are less than 4 gems of that color in the bank",
+        response.getBody());
+
+    gemsToTake.clear();
+    player.hand().gems().clear();
+    board.availableGems().clear();
+    gemsToRemove.clear();
+    gemsToTake.put(GemColor.WHITE, 2);
+    gemsToTake.put(GemColor.RED, 1);
+    player.hand().gems().put(GemColor.GOLD, 2);
+    board.availableGems().put(GemColor.WHITE, 4);
+    board.availableGems().put(GemColor.RED, 1);
+    board.availableGems().put(GemColor.GREEN, 1);
+    takeGemsForm = new TakeGemsForm(gemsToTake, null);
+    player.hand().tradingPosts().put(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO, true);
+
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+
+    // It is still okay to take 3 gems as normal (one gem of each color)
+    gemsToTake.clear();
+    player.hand().gems().clear();
+    board.availableGems().clear();
+    gemsToRemove.clear();
+    gemsToTake.put(GemColor.WHITE, 1);
+    gemsToTake.put(GemColor.RED, 1);
+    gemsToTake.put(GemColor.GREEN, 1);
+    player.hand().gems().put(GemColor.BLACK, 7);
+    player.hand().gems().put(GemColor.GOLD, 2);
+    board.availableGems().put(GemColor.WHITE, 4);
+    board.availableGems().put(GemColor.RED, 1);
+    board.availableGems().put(GemColor.GREEN, 1);
+    gemsToRemove.put(GemColor.BLACK, 1);
+    gemsToRemove.put(GemColor.GOLD, 1);
+    previousOwnedGems = new Gems(player.hand().gems());
+    previousBank = new Gems(board.availableGems());
+    takeGemsForm = new TakeGemsForm(gemsToTake, gemsToRemove);
+
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(previousOwnedGems.getOrDefault(GemColor.WHITE, 0) + 1,
+        player.hand().gems().get(GemColor.WHITE));
+    assertEquals(previousBank.get(GemColor.WHITE) - 1,
+        board.availableGems().getOrDefault(GemColor.WHITE, 0));
+    assertEquals(previousOwnedGems.getOrDefault(GemColor.RED, 0) + 1,
+        player.hand().gems().get(GemColor.RED));
+    assertEquals(previousBank.get(GemColor.RED) - 1,
+        board.availableGems().getOrDefault(GemColor.RED, 0));
+    assertEquals(previousOwnedGems.getOrDefault(GemColor.GREEN, 0) + 1,
+        player.hand().gems().get(GemColor.GREEN));
+    assertEquals(previousBank.get(GemColor.GREEN) - 1,
+        board.availableGems().getOrDefault(GemColor.GREEN, 0));
+    assertEquals(previousOwnedGems.get(GemColor.BLACK) - 1,
+        player.hand().gems().getOrDefault(GemColor.BLACK, 0));
+    assertEquals(previousBank.getOrDefault(GemColor.BLACK, 0) + 1,
+        board.availableGems().get(GemColor.BLACK));
+    assertEquals(previousOwnedGems.get(GemColor.GOLD) - 1,
+        player.hand().gems().getOrDefault(GemColor.GOLD, 0));
+    assertEquals(previousBank.getOrDefault(GemColor.GOLD, 0) + 1,
+        board.availableGems().get(GemColor.GOLD));
+
+    // It is still okay to take 2 gems (one gem of each color) when there aren't more to take
+    gemsToTake.clear();
+    player.hand().gems().clear();
+    board.availableGems().clear();
+    gemsToRemove.clear();
+    gemsToTake.put(GemColor.WHITE, 1);
+    gemsToTake.put(GemColor.RED, 1);
+    board.availableGems().put(GemColor.WHITE, 3);
+    board.availableGems().put(GemColor.RED, 1);
+    takeGemsForm = new TakeGemsForm(gemsToTake, null);
+
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+
+    // It is still okay to take 2 gems of one color when there isn't an extra color to take
+    gemsToTake.clear();
+    player.hand().gems().clear();
+    board.availableGems().clear();
+    gemsToRemove.clear();
+    gemsToTake.put(GemColor.WHITE, 2);
+    board.availableGems().put(GemColor.WHITE, 4);
+    takeGemsForm = new TakeGemsForm(gemsToTake, null);
+
+    if (!board.isPlayerTurn("test")) {
+      board.nextTurn();
+    }
+    response = gameHandlerController.takeGems("", "token", gsonInstance.gson.toJson(takeGemsForm));
+    assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 
   @Test

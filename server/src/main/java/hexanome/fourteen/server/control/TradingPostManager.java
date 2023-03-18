@@ -121,7 +121,6 @@ public class TradingPostManager {
       TradingPosts tp = hand.tradingPosts();
       tp.put(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO, true);
       hand.setTradingPosts(tp);
-      // TODO implementation for effects of this trading post still need to be implemented
     }
   }
 
