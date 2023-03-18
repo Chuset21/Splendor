@@ -629,7 +629,8 @@ public class GameBoard {
 
     if (totalGemsInHand + 1 > 10 && gameBoardForm.availableGems().get(GemColor.GOLD) > 0) {
       closeAllActionWindows();
-      tokenDiscarder = new TokenDiscarder(this, 1, this::handleReserve);
+      tokenDiscarder =
+          new TokenDiscarder(this, player.getHandForm().gems(), 1, this::handleReserve);
       tokenDiscarder.open();
       cardMatrix.setDisable(true);
       return;
@@ -1124,7 +1125,6 @@ public class GameBoard {
     bankPane.setDisable(true);
     cardMatrix.setDisable(true);
   }
-
 
   @FXML
   private void enableGameAlteringActions() {

@@ -1,6 +1,7 @@
 package com.hexanome.fourteen.boards;
 
 import com.hexanome.fourteen.form.server.GemsForm;
+import java.util.Arrays;
 import java.util.function.Consumer;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -18,15 +19,16 @@ public class TokenDiscarder {
   private Label discardTokenLabel;
   private int tokensToRemove;
   private int[] returnedTokens;
-  private GameBoard gameBoard;
+  private GemsForm gemsOwnedAfterTaking;
   private final String TEXT_TEMPLATE = "Select %s gems to discard";
 
-  public TokenDiscarder(GameBoard gb, int tokensToRemove, Consumer<GemsForm> returnMethod) {
-    this.gameBoard = gb;
+  public TokenDiscarder(GameBoard gb, GemsForm gemsOwnedAfterTaking, int tokensToRemove,
+                        Consumer<GemsForm> returnMethod) {
     this.discardTokenPane = gb.discardTokenPane;
     this.discardTokenGrid = gb.discardTokenGrid;
     this.discardTokenLabel = gb.discardTokenLabel;
     this.tokensToRemove = tokensToRemove;
+    this.gemsOwnedAfterTaking = gemsOwnedAfterTaking;
 
     returnedTokens = new int[] {0, 0, 0, 0, 0, 0};
     discardTokenLabel.setText(TEXT_TEMPLATE.formatted(tokensToRemove));
@@ -34,7 +36,7 @@ public class TokenDiscarder {
     discardTokenPane.setVisible(false);
 
     discardTokenPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(e -> {
-      if(getAmountTokensReturned() == 0){
+      if (getAmountTokensReturned() == 0) {
         System.out.println("Attempted to finish discardToken session early—not allowed");
         return;
       }
@@ -51,7 +53,7 @@ public class TokenDiscarder {
     discardTokenPane.setVisible(true);
   }
 
-  public void close(){
+  public void close() {
     discardTokenPane.setVisible(false);
   }
 
@@ -76,22 +78,19 @@ public class TokenDiscarder {
   }
 
   private int getAmountTokensReturned() {
-    int returned = 0;
-    for (int i : returnedTokens) {
-      returned += i;
-    }
-    return returned;
+    return Arrays.stream(returnedTokens).sum();
   }
 
   /**
    * Returns index of node in a grid
+   *
    * @param n
    * @return index as form {row, column};
    */
-  private int[] getNodeIndexInGrid(Node n){
-    int row = (GridPane.getRowIndex(n) == null) ? 0 : GridPane.getRowIndex(n).intValue();
-    int column = (GridPane.getColumnIndex(n) == null) ? 0 : GridPane.getColumnIndex(n).intValue();
-    return new int[]{row,column};
+  private int[] getNodeIndexInGrid(Node n) {
+    int row = (GridPane.getRowIndex(n) == null) ? 0 : GridPane.getRowIndex(n);
+    int column = (GridPane.getColumnIndex(n) == null) ? 0 : GridPane.getColumnIndex(n);
+    return new int[] {row, column};
   }
 
   private void updateButtonsAndText() {
@@ -103,21 +102,17 @@ public class TokenDiscarder {
         if (getNodeIndexInGrid(n)[1] == 0) {
           int numThisTokenReturned = returnedTokens[getNodeIndexInGrid(n)[0]];
 
-          if (numThisTokenReturned != 0) {
-            n.setDisable(false);
-          } else {
-            n.setDisable(true);
-          }
+          n.setDisable(numThisTokenReturned == 0);
 
         } else
           // Handle returnTokenButton (+)
           if (getNodeIndexInGrid(n)[1] == 3) {
             int numThisTokenReturned = returnedTokens[getNodeIndexInGrid(n)[0]];
-            int numThisTokenInHand = GemsForm.costHashToArrayWithGold(
-                gameBoard.player.getHandForm().gems())[getNodeIndexInGrid(n)[0]];
+            int numThisTokenInHand =
+                GemsForm.costHashToArrayWithGold(gemsOwnedAfterTaking)[getNodeIndexInGrid(n)[0]];
 
-            if (getAmountTokensReturned() < tokensToRemove &&
-                numThisTokenReturned < numThisTokenInHand) {
+            if (getAmountTokensReturned() < tokensToRemove
+                && numThisTokenReturned < numThisTokenInHand) {
               n.setDisable(false);
             } else {
               n.setDisable(true);
@@ -125,12 +120,7 @@ public class TokenDiscarder {
           }
     }
 
-    if(getAmountTokensReturned() == tokensToRemove){
-      discardTokenPane.lookupButton(ButtonType.FINISH).setDisable(false);
-    } else{
-      discardTokenPane.lookupButton(ButtonType.FINISH).setDisable(true);
-    }
+    discardTokenPane.lookupButton(ButtonType.FINISH)
+        .setDisable(getAmountTokensReturned() != tokensToRemove);
   }
-
-
 }
