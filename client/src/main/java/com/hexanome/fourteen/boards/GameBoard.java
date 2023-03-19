@@ -15,6 +15,8 @@ import com.hexanome.fourteen.form.server.PurchaseCardForm;
 import com.hexanome.fourteen.form.server.ReserveCardForm;
 import com.hexanome.fourteen.form.server.cardform.CardForm;
 import com.hexanome.fourteen.form.server.cardform.CardLevelForm;
+import com.hexanome.fourteen.form.server.cardform.DoubleBonusCardForm;
+import com.hexanome.fourteen.form.server.cardform.GoldGemCardForm;
 import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
 import com.hexanome.fourteen.form.server.cardform.WaterfallCardForm;
 import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
@@ -578,9 +580,11 @@ public class GameBoard {
     // Get card to be purchased
     Card cardPurchased = (Card) selectedCardView.getImage();
 
-    PurchaseCardForm purchaseCardForm = null;
+    PurchaseCardForm purchaseCardForm;
 
-    if (cardPurchased.getCardForm() instanceof StandardCardForm) {
+    if (cardPurchased.getCardForm() instanceof StandardCardForm
+        || cardPurchased.getCardForm() instanceof GoldGemCardForm
+        || cardPurchased.getCardForm() instanceof DoubleBonusCardForm) {
       purchaseCardForm = new PurchaseCardForm(cardPurchased.getCardForm(),
           new GemPaymentForm(cardPurchased.getCardForm().cost()
               .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
@@ -588,18 +592,21 @@ public class GameBoard {
     } else if (cardPurchased.getCardForm() instanceof WaterfallCardForm) {
       displayWaterfallChoices((WaterfallCardForm) cardPurchased.getCardForm());
       return;
+    } else {
+      System.out.println("This card is not yet handled");
+      return;
     }
 
     purchaseCard(purchaseCardForm);
   }
 
   /**
-   * Sends a request to the server to purchase a card
+   * Sends a request to the server to purchase a card.
    *
    * @param purchaseCardForm form of purchase card
    */
   private void purchaseCard(PurchaseCardForm purchaseCardForm) {
-    HttpResponse<String> response =
+    final HttpResponse<String> response =
         ServerCaller.purchaseCard(LobbyServiceCaller.getCurrentUserLobby(),
             LobbyServiceCaller.getCurrentUserAccessToken(), purchaseCardForm);
 

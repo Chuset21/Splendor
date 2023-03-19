@@ -81,7 +81,7 @@ public class OrientCard extends Card {
   }
 
   @Override
-  public CardForm getCardForm(){
+  public CardForm getCardForm() {
     return cardForm;
   }
 
