@@ -135,9 +135,10 @@ public final class GameBoardHelper {
 
     // Add gem discounts
     hand.gemDiscounts().merge(card.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
-    // Add reserved noble to hand
+    // Add reserved noble to hand and remove noble from game board
     if (card.nobleToReserve() != null) {
       hand.reservedNobles().add(card.nobleToReserve());
+      gameBoard.availableNobles().remove(card.nobleToReserve());
     }
     card.removeNobleToReserve();
     return null;
