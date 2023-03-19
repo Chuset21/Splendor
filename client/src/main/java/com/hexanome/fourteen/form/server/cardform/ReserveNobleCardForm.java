@@ -24,11 +24,23 @@ public final class ReserveNobleCardForm extends CardForm {
    * @param nobleToReserve the noble to be reserved
    */
   public ReserveNobleCardForm(int prestigePoints, GemsForm cost,
-                          CardLevelForm level, Expansion expansion, GemColor discountColor,
-                          NobleForm nobleToReserve) {
+                              CardLevelForm level, Expansion expansion, GemColor discountColor,
+                              NobleForm nobleToReserve) {
     super(prestigePoints, cost, level, expansion);
     this.discountColor = discountColor;
     this.nobleToReserve = nobleToReserve;
+  }
+
+
+  /**
+   * Construct a reserve noble card form using another reserve noble card form
+   *
+   * @param reserveNobleCardForm the reserve noble card form to copy from
+   * @param nobleToReserve       the noble to be reserved
+   */
+  public ReserveNobleCardForm(ReserveNobleCardForm reserveNobleCardForm, NobleForm nobleToReserve) {
+    this(reserveNobleCardForm.prestigePoints, reserveNobleCardForm.cost, reserveNobleCardForm.level,
+        reserveNobleCardForm.expansion, reserveNobleCardForm.discountColor, nobleToReserve);
   }
 
   /**
@@ -41,8 +53,8 @@ public final class ReserveNobleCardForm extends CardForm {
    * @param discountColor  the color of the gems to be discounted
    */
   public ReserveNobleCardForm(int prestigePoints, GemsForm cost,
-                          CardLevelForm level,
-                          Expansion expansion, GemColor discountColor) {
+                              CardLevelForm level,
+                              Expansion expansion, GemColor discountColor) {
     this(prestigePoints, cost, level, expansion, discountColor, null);
   }
 

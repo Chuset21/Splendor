@@ -17,6 +17,7 @@ import com.hexanome.fourteen.form.server.cardform.CardForm;
 import com.hexanome.fourteen.form.server.cardform.CardLevelForm;
 import com.hexanome.fourteen.form.server.cardform.DoubleBonusCardForm;
 import com.hexanome.fourteen.form.server.cardform.GoldGemCardForm;
+import com.hexanome.fourteen.form.server.cardform.ReserveNobleCardForm;
 import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
 import com.hexanome.fourteen.form.server.cardform.WaterfallCardForm;
 import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
@@ -34,7 +35,6 @@ import java.util.Random;
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import javafx.animation.PauseTransition;
@@ -580,25 +580,70 @@ public class GameBoard {
     // Get card to be purchased
     Card cardPurchased = (Card) selectedCardView.getImage();
 
-    PurchaseCardForm purchaseCardForm;
 
     if (cardPurchased.getCardForm() instanceof StandardCardForm
         || cardPurchased.getCardForm() instanceof GoldGemCardForm
         || cardPurchased.getCardForm() instanceof DoubleBonusCardForm) {
-      purchaseCardForm = new PurchaseCardForm(cardPurchased.getCardForm(),
+
+      final PurchaseCardForm purchaseCardForm = new PurchaseCardForm(cardPurchased.getCardForm(),
           new GemPaymentForm(cardPurchased.getCardForm().cost()
               .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
           player.getHandForm().reservedCards().contains(cardPurchased.getCardForm()), null);
+      purchaseCard(purchaseCardForm);
     } else if (cardPurchased.getCardForm() instanceof WaterfallCardForm) {
       displayWaterfallChoices((WaterfallCardForm) cardPurchased.getCardForm());
-      return;
+    } else if (cardPurchased.getCardForm() instanceof ReserveNobleCardForm) {
+      purchaseReserveNobleCard(cardPurchased);
     } else {
       System.out.println("This card is not yet handled");
-      return;
+    }
+  }
+
+  private void purchaseReserveNobleCard(Card cardPurchased) {
+    final HBox choices = new HBox();
+    choices.setSpacing(20);
+    choices.setPadding(new Insets(10));
+
+    // Generate ImageView for each selectable noble
+    for (NobleForm n : gameBoardForm.availableNobles()) {
+      addNobleToAcquiredNobleAlertPane(choices, n);
     }
 
-    purchaseCard(purchaseCardForm);
+    closeAllActionWindows();
+    ((Label) acquiredNobleAlertPane.getHeader()).setText("Choose noble to reserve");
+    acquiredNobleAlertPane.setContent(choices);
+    acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
+      final ReserveNobleCardForm reserveNobleCardForm =
+          new ReserveNobleCardForm((ReserveNobleCardForm) cardPurchased.getCardForm(),
+              tentativeNobleSelection.nobleForm);
+      acquiredNobleAlertPane.setVisible(false);
+      purchaseCard(new PurchaseCardForm(reserveNobleCardForm,
+          new GemPaymentForm(cardPurchased.getCardForm().cost()
+              .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
+          player.getHandForm().reservedCards().contains(cardPurchased.getCardForm()), null));
+
+    });
+    acquiredNobleAlertPane.setVisible(true);
+    acquiredNobleAlertPane.setDisable(false);
+    acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setDisable(true);
   }
+
+  private void addNobleToAcquiredNobleAlertPane(HBox choices, NobleForm n) {
+    ImageView iv = new ImageView();
+    iv.setImage(new Noble(n));
+    iv.setFitHeight(150);
+    iv.setFitWidth(150);
+
+    // Apply event handler to each card in choices
+    iv.setOnMouseClicked(event -> {
+      tentativeNobleSelection = (Noble) ((ImageView) event.getSource()).getImage();
+      choices.getChildren().forEach((child) -> child.setEffect(null));
+      ((ImageView) event.getSource()).setEffect(BLUE_GLOW_EFFECT);
+      acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setDisable(false);
+    });
+    choices.getChildren().add(iv);
+  }
+
 
   /**
    * Sends a request to the server to purchase a card.
@@ -1240,20 +1285,7 @@ public class GameBoard {
     if (validNobles != null) {
       // Generate ImageView for each selectable noble
       for (NobleForm n : validNobles) {
-        ImageView iv = new ImageView();
-        iv.setImage(new Noble(n));
-        iv.setFitHeight(150);
-        iv.setFitWidth(150);
-
-        // Apply event handler to each card in choices
-        iv.setOnMouseClicked(event -> {
-          tentativeNobleSelection = (Noble) ((ImageView) event.getSource()).getImage();
-          choicesHBox.getChildren().forEach((child) -> child.setEffect(null));
-          ((ImageView) event.getSource()).setEffect(BLUE_GLOW_EFFECT);
-          acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setDisable(false);
-        });
-
-        choicesHBox.getChildren().add(iv);
+        addNobleToAcquiredNobleAlertPane(choicesHBox, n);
       }
 
       closeAllActionWindows();
