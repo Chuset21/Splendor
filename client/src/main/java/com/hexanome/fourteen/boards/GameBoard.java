@@ -617,7 +617,6 @@ public class GameBoard {
       if (s.level() == CardLevelForm.TWO) {
         System.out.println("This card is not yet handled");
       } else {
-        System.out.println("Debug miguel: reached satchel card");
         purchaseLevelOneSatchelCard(s);
       }
     } else {
@@ -1304,7 +1303,7 @@ public class GameBoard {
     waterfallPane.setContent(choicesHBox);
     waterfallPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
       handleWaterfallChoiceSelect(tentativeCardSelection, rootCard);
-    });
+    });∂
     waterfallPane.setVisible(true);
     waterfallPane.setDisable(false);
   }
