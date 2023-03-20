@@ -378,7 +378,7 @@ public final class GameBoardHelper {
         if (firstCard.level() == card.level() && firstCard.expansion() == card.expansion()) {
           final int limit =
               Integer.min(cards.size(), firstCard.expansion() == Expansion.STANDARD ? 4 : 2);
-          return cards.subList(0, limit).stream().anyMatch(cardToCheck -> cardToCheck.equals(card));
+          return cards.subList(0, limit).stream().anyMatch(card::equals);
         }
       }
     }
