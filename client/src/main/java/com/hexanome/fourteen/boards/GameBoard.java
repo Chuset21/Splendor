@@ -657,10 +657,8 @@ public class GameBoard {
     waterfallPaneTitle.setText("Attach a card");
     waterfallPane.setContent(choicesHBox);
     waterfallPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
-      final CardForm cardForm =
-          new SatchelCardForm(satchelCard.prestigePoints(), satchelCard.cost(), satchelCard.level(),
-              satchelCard.expansion(), tentativeCardSelection.getCardForm());
-      purchaseCard(new PurchaseCardForm(cardForm,
+      satchelCard.setCardToAttach(tentativeCardSelection.getCardForm());
+      purchaseCard(new PurchaseCardForm(satchelCard,
           new GemPaymentForm(satchelCard.cost()
               .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
           player.getHandForm().reservedCards().contains(satchelCard), null));

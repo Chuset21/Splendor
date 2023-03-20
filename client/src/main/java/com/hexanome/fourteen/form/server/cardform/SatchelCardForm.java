@@ -70,6 +70,14 @@ public final class SatchelCardForm extends CardForm {
     return freeCardToTake;
   }
 
+  public void setCardToAttach(CardForm cardToAttach) {
+    this.cardToAttach = cardToAttach;
+  }
+
+  public void setFreeCardToTake(CardForm freeCardToTake) {
+    this.freeCardToTake = freeCardToTake;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
