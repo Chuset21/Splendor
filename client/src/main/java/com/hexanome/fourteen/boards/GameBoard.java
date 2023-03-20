@@ -1303,7 +1303,7 @@ public class GameBoard {
     waterfallPane.setContent(choicesHBox);
     waterfallPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
       handleWaterfallChoiceSelect(tentativeCardSelection, rootCard);
-    });∂
+    });
     waterfallPane.setVisible(true);
     waterfallPane.setDisable(false);
   }
