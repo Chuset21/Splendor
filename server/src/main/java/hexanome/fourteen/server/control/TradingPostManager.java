@@ -25,15 +25,15 @@ public class TradingPostManager {
    * @param hand the players hand to check.
    */
   public static void checkCardTradingPosts(Hand hand) {
+    final int amountOfTradingPostsBefore =
+        hand.tradingPosts().values().stream().mapToInt(b -> b ? 1 : 0).sum();
     checkTradingPost1(hand);
     checkTradingPost2(hand);
     checkTradingPost3(hand);
-    if (!hand.tradingPosts().getOrDefault(TradingPostsEnum.FIVE_PRESTIGE_POINTS, true)) {
+    if (!hand.tradingPosts().getOrDefault(TradingPostsEnum.FIVE_PRESTIGE_POINTS, false)) {
       checkTradingPost4(hand);
     }
-    if (!hand.tradingPosts().getOrDefault(TradingPostsEnum.ONE_POINT_PER_POWER, true)) {
-      checkTradingPost5(hand);
-    }
+    checkTradingPost5(hand, amountOfTradingPostsBefore);
   }
 
   /**
@@ -43,14 +43,22 @@ public class TradingPostManager {
    * @param hand the players hand to check.
    */
   public static void checkLoseCardTradingPosts(Hand hand) {
-    checkLoseTradingPost1(hand);
-    checkLoseTradingPost2(hand);
-    checkLoseTradingPost3(hand);
+    final int amountOfTradingPostsBefore =
+        hand.tradingPosts().values().stream().mapToInt(b -> b ? 1 : 0).sum();
+    if (hand.tradingPosts().getOrDefault(TradingPostsEnum.BONUS_GEM_WITH_CARD, false)) {
+      checkLoseTradingPost1(hand);
+    }
+    if (hand.tradingPosts().getOrDefault(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO, false)) {
+      checkLoseTradingPost2(hand);
+    }
+    if (hand.tradingPosts().getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false)) {
+      checkLoseTradingPost3(hand);
+    }
     if (hand.tradingPosts().getOrDefault(TradingPostsEnum.FIVE_PRESTIGE_POINTS, false)) {
       checkLoseTradingPost4(hand);
     }
     if (hand.tradingPosts().getOrDefault(TradingPostsEnum.ONE_POINT_PER_POWER, false)) {
-      checkLoseTradingPost5(hand);
+      checkLoseTradingPost5(hand, amountOfTradingPostsBefore);
     }
   }
 
@@ -60,7 +68,10 @@ public class TradingPostManager {
    * @param hand the players hand to check.
    */
   public static void checkNobleTradingPosts(Hand hand) {
+    final int amountOfTradingPostsBefore =
+        hand.tradingPosts().values().stream().mapToInt(b -> b ? 1 : 0).sum();
     checkTradingPost4(hand);
+    checkTradingPost5(hand, amountOfTradingPostsBefore);
   }
 
   /**
@@ -75,9 +86,8 @@ public class TradingPostManager {
     gemsNeeded.put(GemColor.WHITE, 1);
     if (hand.gemDiscounts().hasEnoughGems(gemsNeeded)) {
       TradingPosts tp = hand.tradingPosts();
-      tp.replace(TradingPostsEnum.BONUS_GEM_WITH_CARD, true);
+      tp.put(TradingPostsEnum.BONUS_GEM_WITH_CARD, true);
       hand.setTradingPosts(tp);
-      //TODO implementation for effects of this trading post still need to be implemented
     }
   }
 
@@ -93,9 +103,8 @@ public class TradingPostManager {
     gemsNeeded.put(GemColor.WHITE, 1);
     if (!hand.gemDiscounts().hasEnoughGems(gemsNeeded)) {
       TradingPosts tp = hand.tradingPosts();
-      tp.replace(TradingPostsEnum.BONUS_GEM_WITH_CARD, false);
+      tp.put(TradingPostsEnum.BONUS_GEM_WITH_CARD, false);
       hand.setTradingPosts(tp);
-      //TODO remove the effects of this trading post
     }
   }
 
@@ -110,9 +119,8 @@ public class TradingPostManager {
     gemsNeeded.put(GemColor.WHITE, 2);
     if (hand.gemDiscounts().hasEnoughGems(gemsNeeded)) {
       TradingPosts tp = hand.tradingPosts();
-      tp.replace(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO, true);
+      tp.put(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO, true);
       hand.setTradingPosts(tp);
-      //TODO implementation for effects of this trading post still need to be implemented
     }
   }
 
@@ -127,9 +135,8 @@ public class TradingPostManager {
     gemsNeeded.put(GemColor.WHITE, 2);
     if (!hand.gemDiscounts().hasEnoughGems(gemsNeeded)) {
       TradingPosts tp = hand.tradingPosts();
-      tp.replace(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO, false);
+      tp.put(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO, false);
       hand.setTradingPosts(tp);
-      //TODO remove the effects of this trading post
     }
   }
 
@@ -145,9 +152,8 @@ public class TradingPostManager {
     gemsNeeded.put(GemColor.BLACK, 1);
     if (hand.gemDiscounts().hasEnoughGems(gemsNeeded)) {
       TradingPosts tp = hand.tradingPosts();
-      tp.replace(TradingPostsEnum.DOUBLE_GOLD_GEMS, true);
+      tp.put(TradingPostsEnum.DOUBLE_GOLD_GEMS, true);
       hand.setTradingPosts(tp);
-      //TODO implementation for effects of this trading post still need to be implemented
     }
   }
 
@@ -163,9 +169,8 @@ public class TradingPostManager {
     gemsNeeded.put(GemColor.BLACK, 1);
     if (!hand.gemDiscounts().hasEnoughGems(gemsNeeded)) {
       TradingPosts tp = hand.tradingPosts();
-      tp.replace(TradingPostsEnum.DOUBLE_GOLD_GEMS, false);
+      tp.put(TradingPostsEnum.DOUBLE_GOLD_GEMS, false);
       hand.setTradingPosts(tp);
-      //TODO remove the effects of this trading post
     }
   }
 
@@ -180,9 +185,9 @@ public class TradingPostManager {
     gemsNeeded.put(GemColor.GREEN, 5);
     if (hand.gemDiscounts().hasEnoughGems(gemsNeeded) && hand.visitedNobles().size() >= 1) {
       TradingPosts tp = hand.tradingPosts();
-      tp.replace(TradingPostsEnum.FIVE_PRESTIGE_POINTS, true);
+      tp.put(TradingPostsEnum.FIVE_PRESTIGE_POINTS, true);
       hand.setTradingPosts(tp);
-      hand.setPrestigePoints(hand.prestigePoints() + 5);
+      hand.incrementPrestigePoints(5);
     }
   }
 
@@ -197,7 +202,7 @@ public class TradingPostManager {
     gemsNeeded.put(GemColor.GREEN, 5);
     if (!hand.gemDiscounts().hasEnoughGems(gemsNeeded)) {
       TradingPosts tp = hand.tradingPosts();
-      tp.replace(TradingPostsEnum.FIVE_PRESTIGE_POINTS, false);
+      tp.put(TradingPostsEnum.FIVE_PRESTIGE_POINTS, false);
       hand.setTradingPosts(tp);
       hand.decrementPrestigePoints(5);
     }
@@ -209,18 +214,17 @@ public class TradingPostManager {
    *
    * @param hand the players hand to check.
    */
-  private static void checkTradingPost5(Hand hand) {
+  private static void checkTradingPost5(Hand hand, int amountOfTradingPostsBefore) {
     Gems gemsNeeded = new Gems();
     gemsNeeded.put(GemColor.BLACK, 3);
     if (hand.gemDiscounts().hasEnoughGems(gemsNeeded)) {
       TradingPosts tp = hand.tradingPosts();
-      tp.replace(TradingPostsEnum.ONE_POINT_PER_POWER, true);
+      final Boolean before = tp.put(TradingPostsEnum.ONE_POINT_PER_POWER, true);
       hand.setTradingPosts(tp);
-      int numPosts = 0;
-      for (boolean value : tp.values()) {
-        if (value) {
-          numPosts++;
-        }
+      final int numPosts = hand.tradingPosts().values().stream().mapToInt(b -> b ? 1 : 0).sum();
+      // Decrement if this post was already owned
+      if (before != null && before) {
+        hand.decrementPrestigePoints(amountOfTradingPostsBefore);
       }
       hand.incrementPrestigePoints(numPosts);
     }
@@ -232,20 +236,21 @@ public class TradingPostManager {
    *
    * @param hand the players hand to check.
    */
-  private static void checkLoseTradingPost5(Hand hand) {
+  private static void checkLoseTradingPost5(Hand hand, int amountOfTradingPostsBefore) {
+    TradingPosts tp = hand.tradingPosts();
+    final boolean before = tp.getOrDefault(TradingPostsEnum.ONE_POINT_PER_POWER, false);
     Gems gemsNeeded = new Gems();
     gemsNeeded.put(GemColor.BLACK, 3);
     if (!hand.gemDiscounts().hasEnoughGems(gemsNeeded)) {
-      TradingPosts tp = hand.tradingPosts();
-      int numPosts = 0;
-      for (boolean value : tp.values()) {
-        if (value) {
-          numPosts++;
-        }
+      if (before) {
+        hand.decrementPrestigePoints(amountOfTradingPostsBefore);
       }
-      tp.replace(TradingPostsEnum.ONE_POINT_PER_POWER, false);
+      tp.put(TradingPostsEnum.ONE_POINT_PER_POWER, false);
       hand.setTradingPosts(tp);
-      hand.decrementPrestigePoints(numPosts);
+    } else if (before) {
+      final int numPosts =
+          hand.tradingPosts().values().stream().mapToInt(b -> b ? 1 : 0).sum();
+      hand.decrementPrestigePoints(amountOfTradingPostsBefore - numPosts);
     }
   }
 }

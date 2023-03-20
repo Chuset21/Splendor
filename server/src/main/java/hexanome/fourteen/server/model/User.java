@@ -17,6 +17,15 @@ public final class User {
   }
 
   /**
+   * Constructor using a name.
+   *
+   * @param name The name.
+   */
+  public User(String name) {
+    this.name = name;
+  }
+
+  /**
    * A Getter for the Name of a User.
    *
    * @return The Name

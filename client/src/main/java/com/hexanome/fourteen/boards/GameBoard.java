@@ -4,6 +4,7 @@ import com.google.gson.reflect.TypeToken;
 import com.hexanome.fourteen.Main;
 import com.hexanome.fourteen.ServerCaller;
 import com.hexanome.fourteen.form.server.CityForm;
+import com.hexanome.fourteen.form.server.ClaimCityForm;
 import com.hexanome.fourteen.form.server.ClaimNobleForm;
 import com.hexanome.fourteen.form.server.GameBoardForm;
 import com.hexanome.fourteen.form.server.GemsForm;
@@ -14,6 +15,10 @@ import com.hexanome.fourteen.form.server.PurchaseCardForm;
 import com.hexanome.fourteen.form.server.ReserveCardForm;
 import com.hexanome.fourteen.form.server.cardform.CardForm;
 import com.hexanome.fourteen.form.server.cardform.CardLevelForm;
+import com.hexanome.fourteen.form.server.cardform.DoubleBonusCardForm;
+import com.hexanome.fourteen.form.server.cardform.GoldGemCardForm;
+import com.hexanome.fourteen.form.server.cardform.ReserveNobleCardForm;
+import com.hexanome.fourteen.form.server.cardform.SatchelCardForm;
 import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
 import com.hexanome.fourteen.form.server.cardform.WaterfallCardForm;
 import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
@@ -22,6 +27,7 @@ import java.lang.reflect.Type;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +38,9 @@ import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.TokenRefreshFailedException;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -59,6 +67,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import com.hexanome.fourteen.lobbyui.*;
+import javafx.util.Duration;
 import kong.unirest.HttpResponse;
 import kong.unirest.HttpStatus;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -67,7 +76,6 @@ import org.apache.commons.codec.digest.DigestUtils;
  * A class to represent the game objects required to represent a OrientExpansion Splendor game.
  */
 public class GameBoard {
-
   private Stage stage;
 
   private GameBoardForm gameBoardForm;
@@ -81,7 +89,7 @@ public class GameBoard {
 
   public static final int[] GEM_INDEX = {0, 1, 2, 3, 4, 5};
 
-  private static Random random = new Random();
+  private static final Random random = new Random();
 
   // Player's Info
   public Player player;
@@ -111,7 +119,7 @@ public class GameBoard {
   // PURCHASED CARDS PANE
   @FXML
   private Pane purchasedCardsView;
-  private List<Image> purchasedCardImages = new ArrayList<Image>();
+  private final List<Image> purchasedCardImages = new ArrayList<Image>();
   @FXML
   private BorderPane purchasedBorderPane;
 
@@ -120,7 +128,7 @@ public class GameBoard {
   private Pane reservedCardsView;
   @FXML
   private VBox reservedCardsVBox;
-  private List<Image> reservedCardImages = new ArrayList<Image>();
+  private final List<Image> reservedCardImages = new ArrayList<Image>();
 
   // ACQUIRED NOBLES PANE
   @FXML
@@ -152,10 +160,16 @@ public class GameBoard {
   @FXML
   private DialogPane waterfallPane;
   @FXML
+  private Label waterfallPaneSubtitle;
+
+  @FXML
+  private Label waterfallPaneTitle;
+  @FXML
   private VBox waterfallVBox;
 
   private Card tentativeCardSelection;
   private Noble tentativeNobleSelection;
+  private City tentativeCitySelection;
   @FXML
   private VBox nobleAcquiredLabelVBox;
 
@@ -221,15 +235,16 @@ public class GameBoard {
   @FXML
   public Label discardTokenLabel;
   public TokenDiscarder tokenDiscarder;
+  private boolean hasBeenLastRound;
 
   /**
    * A call to this method displays the game on screen by initializing the scene with the gameboard.
    *
    * @param stage the stage currently being used to hold JavaFX UI items
-   * @throws IOException throw an exception if an illegal UI action is executed
    */
-  public void goToGame(Stage stage) throws IOException {
+  public void goToGame(Stage stage) {
     this.stage = stage;
+    hasBeenLastRound = false;
 
     HttpResponse<String> s = ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby());
     // Get gameBoardForm
@@ -312,6 +327,30 @@ public class GameBoard {
 
     // Setup nobles CSV data and display on board
     generateNobles();
+
+    final String leadingPlayer = gameBoardForm.leadingPlayer().uid();
+    if (gameBoardForm.isGameOver()) {
+      closeAllActionWindows();
+      disableGameAlteringActions();
+      // TODO show the player that won
+      System.out.printf("Game is over, winner: %s\n", leadingPlayer);
+    } else {
+      if (gameBoardForm.isLastRound() && !hasBeenLastRound) {
+        hasBeenLastRound = true;
+        System.out.println("Last round of the game!!"); // TODO show a last round message instead
+        // Stub for showing popup
+        final PauseTransition wait = new PauseTransition(Duration.seconds(2));
+        wait.setOnFinished((e) -> {
+          // Disabling the button after a duration of time
+//          popup.setDisable(true);
+//          popup.setVisible(false);
+        });
+//        popup.setDisable(false);
+//        popup.setVisible(true);
+        wait.play();
+      }
+      // TODO show the leading player??
+    }
   }
 
   public void closeAllActionWindows() {
@@ -398,7 +437,7 @@ public class GameBoard {
     }
 
     // Reset list of players
-    players = new ArrayList<Player>();
+    players = new ArrayList<>();
 
     int i = 0;
 
@@ -423,14 +462,13 @@ public class GameBoard {
     // Place all players in their frames
     for (i = 0; i < playerViews.size(); i++) {
       if (i < players.size() && players.get(i) != null) {
-        ((ImageView) playerViews.get(i)).setImage(players.get(i));
-        Tooltip.install(((ImageView) playerViews.get(i)), new Tooltip(players.get(i).getUserId() +
-                                                                      (player.getUserId().equals(
-                                                                          players.get(i)
-                                                                              .getUserId()) ?
-                                                                          " (you)" : "")));
+        playerViews.get(i).setImage(players.get(i));
+        Tooltip.install(playerViews.get(i), new Tooltip(players.get(i).getUserId()
+                                                        + (player.getUserId().equals(
+            players.get(i).getUserId())
+            ? " (you)" : "")));
       } else {
-        ((ImageView) playerViews.get(i)).imageProperty().set(null);
+        playerViews.get(i).imageProperty().set(null);
       }
     }
 
@@ -450,16 +488,16 @@ public class GameBoard {
 
   private void displayCurrentPlayer() {
     if (gameBoardForm == null || playerViews == null) {
-      throw new InvalidParameterException("gameBoardForm nor playerViews can be null");
+      throw new InvalidParameterException("neither gameBoardForm nor playerViews can be null");
     }
 
     for (int i = 0; i < players.size(); i++) {
       if (players.get(i).getUserId().equals(gameBoardForm.playerTurnid())) {
         currentPlayerTurnLabel.setText(players.get(i).getUserId() + "'s Turn");
         currentPlayerTurnLabel.setPadding(new Insets(5));
-        ((ImageView) playerViews.get(i)).setEffect(BLUE_GLOW_EFFECT);
+        playerViews.get(i).setEffect(BLUE_GLOW_EFFECT);
       } else {
-        ((ImageView) playerViews.get(i)).setEffect(null);
+        playerViews.get(i).setEffect(null);
       }
     }
 
@@ -500,7 +538,8 @@ public class GameBoard {
 
     // Set action pane image to the selected card
     cardActionImage.setImage(selectedCardView.getImage());
-    GemsForm cost = ((Card) selectedCardView.getImage()).getCardForm().cost();
+    final CardForm cardForm = ((Card) selectedCardView.getImage()).getCardForm();
+    final GemsForm cost = cardForm.cost();
     final int[] gemsCost = cost == null ? new int[] {0, 0, 0, 0, 0, 0} : GemsForm.costHashToArray(
         cost.getDiscountedCost(player.getHandForm().gemDiscounts()));
 
@@ -522,10 +561,20 @@ public class GameBoard {
 
     if (isYourTurn()) {
       // If player's gems cannot pay for card, disable purchase button
+      boolean canAfford = true;
       for (int i = 0; i < 5; i++) {
         if (selectedCost[i] > GemsForm.costHashToArray(handForm.gems())[i]) {
           cardPurchaseButton.setDisable(true);
+          canAfford = false;
           break;
+        }
+      }
+      if (canAfford && cardForm instanceof SatchelCardForm) {
+        final long gemDiscountCards =
+            player.getHandForm().purchasedCards().stream().filter(this::cardHasDiscountColor)
+                .count();
+        if (gemDiscountCards < 1) {
+          cardPurchaseButton.setDisable(true);
         }
       }
     } else {
@@ -533,16 +582,16 @@ public class GameBoard {
     }
 
     //// Handle Reserve Availability
-    if (isYourTurn() && handForm.reservedCards().size() < 3 &&
-        !handForm.reservedCards().contains(((Card) selectedCardView.getImage()).getCardForm())) {
-      cardReserveButton.setDisable(false);
-    } else {
-      cardReserveButton.setDisable(true);
-    }
+    cardReserveButton.setDisable(!isYourTurn() || handForm.reservedCards().size() >= 3
+                                 || handForm.reservedCards().contains(cardForm));
 
     // Open menu
     cardActionMenu.toFront();
     cardActionMenu.setVisible(true);
+  }
+
+  private boolean cardHasDiscountColor(CardForm cardForm) {
+    return !(cardForm instanceof GoldGemCardForm || cardForm instanceof SatchelCardForm);
   }
 
   /**
@@ -552,28 +601,148 @@ public class GameBoard {
     // Get card to be purchased
     Card cardPurchased = (Card) selectedCardView.getImage();
 
-    PurchaseCardForm purchaseCardForm = null;
+    final CardForm cardForm = cardPurchased.getCardForm();
+    if (cardForm instanceof StandardCardForm
+        || cardForm instanceof GoldGemCardForm
+        || cardForm instanceof DoubleBonusCardForm) {
+      final PurchaseCardForm purchaseCardForm = new PurchaseCardForm(cardForm,
+          new GemPaymentForm(cardForm.cost()
+              .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
+          player.getHandForm().reservedCards().contains(cardForm), null);
+      purchaseCard(purchaseCardForm);
+    } else if (cardForm instanceof WaterfallCardForm) {
+      displayWaterfallChoices(cardForm, CardLevelForm.TWO, f ->
+          purchaseCard(new PurchaseCardForm(cardForm,
+              new GemPaymentForm(
+                  cardForm.cost().getDiscountedCost(player.getHandForm().gemDiscounts()),
+                  0),
+              player.getHandForm().reservedCards().contains(cardForm), null)));
+    } else if (cardForm instanceof ReserveNobleCardForm r) {
+      purchaseReserveNobleCard(r, f ->
+          purchaseCard(new PurchaseCardForm(cardForm,
+              new GemPaymentForm(cardForm.cost()
+                  .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
+              player.getHandForm().reservedCards().contains(cardForm), null)));
+    } else if (cardForm instanceof SatchelCardForm s) {
+      if (s.level() == CardLevelForm.TWO) {
+        purchaseLevelOneSatchelCard(s, f -> displayWaterfallChoices(s, CardLevelForm.ONE, x -> {
+          purchaseCard(new PurchaseCardForm(cardForm,
+              new GemPaymentForm(
+                  cardForm.cost().getDiscountedCost(player.getHandForm().gemDiscounts()),
+                  0),
+              player.getHandForm().reservedCards().contains(cardForm), null));
+        }));
+      } else {
+        purchaseLevelOneSatchelCard(s, f ->
+            purchaseCard(new PurchaseCardForm(s,
+                new GemPaymentForm(s.cost()
+                    .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
+                player.getHandForm().reservedCards().contains(s), null)));
+      }
+    } else {
+      System.out.println("This card is not yet handled");
+    }
+  }
 
-    if (cardPurchased.getCardForm() instanceof StandardCardForm) {
-      purchaseCardForm = new PurchaseCardForm(cardPurchased.getCardForm(),
-          new GemPaymentForm(cardPurchased.getCardForm().cost()
-              .getDiscountedCost(player.getHandForm().gemDiscounts()), null, 0),
-          player.getHandForm().reservedCards().contains(cardPurchased.getCardForm()));
-    } else if (cardPurchased.getCardForm() instanceof WaterfallCardForm) {
-      displayWaterfallChoices((WaterfallCardForm) cardPurchased.getCardForm());
-      return;
+  private void purchaseLevelOneSatchelCard(SatchelCardForm satchelCard,
+                                           Consumer<Void> function) {
+    final List<CardForm> cardToAttachSelection =
+        player.getHandForm().purchasedCards().stream().filter(this::cardHasDiscountColor).toList();
+    // Generate HBox to display the card choices to user
+    final HBox choicesHBox = new HBox();
+    choicesHBox.setSpacing(5);
+    choicesHBox.setPadding(new Insets(5));
+
+    // Generate ImageView for each selectable card form
+    for (CardForm c : cardToAttachSelection) {
+      ImageView iv = new ImageView();
+      iv.setImage((c instanceof StandardCardForm) ? new StandardCard((StandardCardForm) c) :
+          new OrientCard(c));
+      iv.setFitHeight(140);
+      iv.setFitWidth(100);
+
+      // Apply event handler to each card in choices
+      iv.setOnMouseClicked(event -> {
+        tentativeCardSelection = (Card) ((ImageView) event.getSource()).getImage();
+        choicesHBox.getChildren().forEach((child) -> child.setEffect(null));
+        ((ImageView) event.getSource()).setEffect(BLUE_GLOW_EFFECT);
+        waterfallPane.lookupButton(ButtonType.FINISH).setDisable(false);
+      });
+
+      choicesHBox.getChildren().add(iv);
     }
 
-    purchaseCard(purchaseCardForm);
+    closeAllActionWindows();
+    waterfallPaneSubtitle.setText("Select one of the following cards to attach.");
+    waterfallPaneTitle.setText("Attach a card");
+    waterfallPane.setContent(choicesHBox);
+    waterfallPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
+      player.getHandForm().purchasedCards().remove(tentativeCardSelection.getCardForm());
+      satchelCard.setCardToAttach(tentativeCardSelection.getCardForm());
+      waterfallPane.setVisible(false);
+      waterfallPane.setDisable(true);
+      function.accept(null);
+    });
+    waterfallPane.setVisible(true);
+    waterfallPane.setDisable(false);
+    waterfallPane.lookupButton(ButtonType.FINISH).setDisable(true);
+  }
+
+  private void purchaseReserveNobleCard(ReserveNobleCardForm cardPurchased,
+                                        Consumer<Void> function) {
+    final HBox choices = new HBox();
+    choices.setSpacing(20);
+    choices.setPadding(new Insets(10));
+
+    final Set<NobleForm> nobleForms = gameBoardForm.availableNobles();
+    if (!nobleForms.isEmpty()) {
+      // Generate ImageView for each selectable noble
+      for (NobleForm n : nobleForms) {
+        addNobleToAcquiredNobleAlertPane(choices, n);
+      }
+
+      closeAllActionWindows();
+      ((Label) acquiredNobleAlertPane.getHeader()).setText("Choose noble to reserve");
+      acquiredNobleAlertPane.setContent(choices);
+      acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
+        cardPurchased.setNobleToReserve(tentativeNobleSelection.nobleForm);
+        acquiredNobleAlertPane.setVisible(false);
+        function.accept(null);
+      });
+      acquiredNobleAlertPane.setVisible(true);
+      acquiredNobleAlertPane.setDisable(false);
+      acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setDisable(true);
+    } else {
+      purchaseCard(new PurchaseCardForm(cardPurchased,
+          new GemPaymentForm(cardPurchased.cost()
+              .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
+          player.getHandForm().reservedCards().contains(cardPurchased), null));
+    }
+  }
+
+  private void addNobleToAcquiredNobleAlertPane(HBox choices, NobleForm n) {
+    ImageView iv = new ImageView();
+    iv.setImage(new Noble(n));
+    iv.setFitHeight(150);
+    iv.setFitWidth(150);
+
+    // Apply event handler to each card in choices
+    iv.setOnMouseClicked(event -> {
+      tentativeNobleSelection = (Noble) ((ImageView) event.getSource()).getImage();
+      choices.getChildren().forEach((child) -> child.setEffect(null));
+      ((ImageView) event.getSource()).setEffect(BLUE_GLOW_EFFECT);
+      acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setDisable(false);
+    });
+    choices.getChildren().add(iv);
   }
 
   /**
-   * Sends a request to the server to purchase a card
+   * Sends a request to the server to purchase a card.
    *
    * @param purchaseCardForm form of purchase card
    */
   private void purchaseCard(PurchaseCardForm purchaseCardForm) {
-    HttpResponse<String> response =
+    final HttpResponse<String> response =
         ServerCaller.purchaseCard(LobbyServiceCaller.getCurrentUserLobby(),
             LobbyServiceCaller.getCurrentUserAccessToken(), purchaseCardForm);
 
@@ -603,7 +772,8 @@ public class GameBoard {
 
     if (totalGemsInHand + 1 > 10 && gameBoardForm.availableGems().get(GemColor.GOLD) > 0) {
       closeAllActionWindows();
-      tokenDiscarder = new TokenDiscarder(this, 1, this::handleReserve);
+      tokenDiscarder =
+          new TokenDiscarder(this, player.getHandForm().gems(), 1, this::handleReserve);
       tokenDiscarder.open();
       cardMatrix.setDisable(true);
       return;
@@ -868,9 +1038,9 @@ public class GameBoard {
 
   @FXML
   public void handlePurchasedPaneSelect(MouseEvent event) {
-
     purchasedCardImages.clear();
 
+    // TODO fix error with showing satchel cards when they've been purchased
     for (CardForm cardForm : player.getHandForm().purchasedCards()) {
       purchasedCardImages.add(
           (cardForm instanceof StandardCardForm) ? new StandardCard((StandardCardForm) cardForm) :
@@ -1061,7 +1231,7 @@ public class GameBoard {
 
     // Fetch and apply the player's reserved cards as images
     List<Image> requestedPlayerReservedCardImages = new ArrayList<>();
-    Card cardToAdd = null;
+    Card cardToAdd;
     for (CardForm c : requestedPlayer.hand().reservedCards()) {
       if (c instanceof StandardCardForm) {
         cardToAdd = new StandardCard((StandardCardForm) c);
@@ -1069,9 +1239,7 @@ public class GameBoard {
         cardToAdd = new OrientCard(c);
       }
 
-      if (cardToAdd != null) {
-        requestedPlayerReservedCardImages.add(cardToAdd);
-      }
+      requestedPlayerReservedCardImages.add(cardToAdd);
     }
     reservedSummary.getChildren().clear();
     reservedSummary.getChildren()
@@ -1101,7 +1269,6 @@ public class GameBoard {
     cardMatrix.setDisable(true);
   }
 
-
   @FXML
   private void enableGameAlteringActions() {
     bankPane.setDisable(false);
@@ -1109,23 +1276,19 @@ public class GameBoard {
   }
 
   private List<CardForm> fetchWaterfallSelection(CardLevelForm level) {
-    // Initialize free card selection list
-    List<CardForm> waterfallSelection = new ArrayList<>();
-
-    // Fetch user's free card choices and add to list
-    for (List<CardForm> decks : gameBoardForm.cards()) {
-      for (CardForm c : decks) {
-        if ((c.level().equals(level))) {
-          waterfallSelection.add(c);
-        }
-      }
-    }
-    return waterfallSelection;
+    final boolean canPurchaseSatchelCard =
+        player.getHandForm().purchasedCards().stream().anyMatch(this::cardHasDiscountColor);
+    // Fetch user's free card choices
+    return gameBoardForm.cards().stream().flatMap(Collection::stream)
+        .filter(c -> (c.level().equals(level))
+                     && (!(c instanceof SatchelCardForm) || canPurchaseSatchelCard))
+        .collect(Collectors.toList());
   }
 
   @FXML
-  private void displayWaterfallChoices(WaterfallCardForm rootCard) {
-    List<CardForm> waterfallSelection = fetchWaterfallSelection(CardLevelForm.TWO);
+  private void displayWaterfallChoices(CardForm rootCard, CardLevelForm levelToTake,
+                                       Consumer<Void> function) {
+    final List<CardForm> waterfallSelection = fetchWaterfallSelection(levelToTake);
 
     // Generate HBox to display the free card choices to user
     HBox choicesHBox = new HBox();
@@ -1135,8 +1298,7 @@ public class GameBoard {
     // Generate ImageView for each selectable card form
     for (CardForm c : waterfallSelection) {
       ImageView iv = new ImageView();
-      iv.setImage((c instanceof StandardCardForm) ? new StandardCard((StandardCardForm) c) :
-          new OrientCard(c));
+      iv.setImage((c instanceof StandardCardForm x) ? new StandardCard(x) : new OrientCard(c));
       iv.setFitHeight(140);
       iv.setFitWidth(100);
 
@@ -1145,35 +1307,41 @@ public class GameBoard {
         tentativeCardSelection = (Card) ((ImageView) event.getSource()).getImage();
         choicesHBox.getChildren().forEach((child) -> child.setEffect(null));
         ((ImageView) event.getSource()).setEffect(BLUE_GLOW_EFFECT);
+        waterfallPane.lookupButton(ButtonType.FINISH).setDisable(false);
       });
 
       choicesHBox.getChildren().add(iv);
     }
 
     closeAllActionWindows();
+    waterfallPaneSubtitle.setText("Select one of the following cards to acquire.");
+    waterfallPaneTitle.setText("Waterfall Effect!");
     waterfallPane.setContent(choicesHBox);
     waterfallPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
-      handleWaterfallChoiceSelect(tentativeCardSelection, rootCard);
+      final CardForm selectedCard = tentativeCardSelection.getCardForm();
+      if (rootCard instanceof WaterfallCardForm w) {
+        w.setCardToTake(selectedCard);
+      } else {
+        ((SatchelCardForm) rootCard).setFreeCardToTake(selectedCard);
+      }
+      waterfallPane.setVisible(false);
+      waterfallPane.setDisable(true);
+      if (selectedCard instanceof ReserveNobleCardForm c) {
+        purchaseReserveNobleCard(c, f -> function.accept(null));
+      } else if (selectedCard instanceof SatchelCardForm c) {
+        if (levelToTake == CardLevelForm.TWO) {
+          purchaseLevelOneSatchelCard(c,
+              f -> displayWaterfallChoices(c, CardLevelForm.ONE, x -> function.accept(null)));
+        } else {
+          purchaseLevelOneSatchelCard(c, f -> function.accept(null));
+        }
+      } else {
+        function.accept(null);
+      }
     });
     waterfallPane.setVisible(true);
     waterfallPane.setDisable(false);
-  }
-
-  @FXML
-  public void handleWaterfallChoiceSelect(Card selection, WaterfallCardForm wf) {
-    CardForm selectedCard = selection.getCardForm();
-    WaterfallCardForm waterfallWithSelection = new WaterfallCardForm(wf, selectedCard);
-
-
-    PurchaseCardForm purchaseCardForm = new PurchaseCardForm(waterfallWithSelection,
-        new GemPaymentForm(
-            waterfallWithSelection.cost().getDiscountedCost(player.getHandForm().gemDiscounts()),
-            null, 0),
-        player.getHandForm().reservedCards().contains(new OrientCard(wf).getCardForm()));
-
-    purchaseCard(purchaseCardForm);
-    waterfallPane.setVisible(false);
-    waterfallPane.setDisable(true);
+    waterfallPane.lookupButton(ButtonType.FINISH).setDisable(true);
   }
 
   public void acquireNobleAndCityCheck(HttpResponse<String> response) {
@@ -1202,47 +1370,65 @@ public class GameBoard {
     }
 
     // Generate HBox to display the choices
-    HBox choicesHBox = new HBox();
+    final HBox choicesHBox = new HBox();
     choicesHBox.setSpacing(20);
     choicesHBox.setPadding(new Insets(10));
 
     if (validNobles != null) {
-      return;
-    }
+      // Generate ImageView for each selectable noble
+      for (NobleForm n : validNobles) {
+        addNobleToAcquiredNobleAlertPane(choicesHBox, n);
+      }
 
-    // Generate ImageView for each selectable noble
-    // TODO won't this always be null?
-    for (NobleForm n : validNobles) {
-      ImageView iv = new ImageView();
-      iv.setImage(new Noble(n));
-      iv.setFitHeight(150);
-      iv.setFitWidth(150);
-
-      // Apply event handler to each card in choices
-      iv.setOnMouseClicked(event -> {
-        tentativeNobleSelection = (Noble) ((ImageView) event.getSource()).getImage();
-        choicesHBox.getChildren().forEach((child) -> child.setEffect(null));
-        ((ImageView) event.getSource()).setEffect(BLUE_GLOW_EFFECT);
+      closeAllActionWindows();
+      ((Label) acquiredNobleAlertPane.getHeader()).setText("Noble Acquired!");
+      acquiredNobleAlertPane.setContent(choicesHBox);
+      acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
+        // Acquire the noble via the server
+        final HttpResponse<String> nobleResponse =
+            ServerCaller.claimNoble(LobbyServiceCaller.getCurrentUserLobby(),
+                LobbyServiceCaller.getCurrentUserAccessToken(),
+                new ClaimNobleForm(tentativeNobleSelection.nobleForm));
+        // Close noble select screen
+        acquiredNobleAlertPane.setVisible(false);
+        // Call this method again to check for claimable cities
+        acquireNobleAndCityCheck(nobleResponse);
       });
+      acquiredNobleAlertPane.setVisible(true);
+      acquiredNobleAlertPane.setDisable(false);
+      acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setDisable(true);
+    } else if (validCities != null) {
+      // Generate ImageView for each selectable city
+      for (CityForm c : validCities) {
+        ImageView iv = new ImageView();
+        iv.setImage(new City(c));
+        iv.setFitHeight(200);
+        iv.setFitWidth(300);
 
-      choicesHBox.getChildren().add(iv);
+        // Apply event handler to each city in choices
+        iv.setOnMouseClicked(event -> {
+          tentativeCitySelection = (City) ((ImageView) event.getSource()).getImage();
+          choicesHBox.getChildren().forEach((child) -> child.setEffect(null));
+          ((ImageView) event.getSource()).setEffect(BLUE_GLOW_EFFECT);
+          acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setDisable(false);
+        });
+        choicesHBox.getChildren().add(iv);
+      }
+
+      closeAllActionWindows();
+      ((Label) acquiredNobleAlertPane.getHeader()).setText("City Acquired!");
+      acquiredNobleAlertPane.setContent(choicesHBox);
+      acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
+        // Acquire the city via the server
+        ServerCaller.claimCity(LobbyServiceCaller.getCurrentUserLobby(),
+            LobbyServiceCaller.getCurrentUserAccessToken(),
+            new ClaimCityForm(tentativeCitySelection.cityForm));
+        // Close city select screen
+        acquiredNobleAlertPane.setVisible(false);
+      });
+      acquiredNobleAlertPane.setVisible(true);
+      acquiredNobleAlertPane.setDisable(false);
+      acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setDisable(true);
     }
-
-    closeAllActionWindows();
-    acquiredNobleAlertPane.setContent(choicesHBox);
-    acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
-      // Acquire the noble via the server
-      final HttpResponse<String> nobleResponse =
-          ServerCaller.claimNoble(LobbyServiceCaller.getCurrentUserLobby(),
-              LobbyServiceCaller.getCurrentUserAccessToken(),
-              new ClaimNobleForm(tentativeNobleSelection.nobleForm));
-      System.out.println(nobleResponse.getBody());
-      // Call this method again to check for claimable cities
-      acquireNobleAndCityCheck(response);
-      // Close noble select screen
-      acquiredNobleAlertPane.setVisible(false);
-    });
-    acquiredNobleAlertPane.setVisible(true);
-    acquiredNobleAlertPane.setDisable(false);
   }
 }

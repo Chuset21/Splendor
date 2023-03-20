@@ -34,15 +34,16 @@ public final class GemsForm extends HashMap<GemColor, Integer> {
    * @param gemsForm form to convert
    * @return array of cost values
    */
-  public static int[] costHashToArray(GemsForm gemsForm){
-    if(gemsForm == null){
+  public static int[] costHashToArray(GemsForm gemsForm) {
+    if (gemsForm == null) {
       throw new InvalidParameterException("gemsForm cannot be null");
     }
 
     int[] cost = new int[5];
 
-    for(int i = 0;i<cost.length;i++){
-      cost[i] = (gemsForm.get(CONVERSION_ARRAY[i]) == null) ? 0 : gemsForm.get(CONVERSION_ARRAY[i]).intValue();
+    for (int i = 0; i < cost.length; i++) {
+      cost[i] = (gemsForm.get(CONVERSION_ARRAY[i]) == null) ? 0 :
+          gemsForm.get(CONVERSION_ARRAY[i]).intValue();
     }
 
     return cost;
@@ -54,15 +55,16 @@ public final class GemsForm extends HashMap<GemColor, Integer> {
    * @param gemsForm form to convert
    * @return array of cost values
    */
-  public static int[] costHashToArrayWithGold(GemsForm gemsForm){
-    if(gemsForm == null){
+  public static int[] costHashToArrayWithGold(GemsForm gemsForm) {
+    if (gemsForm == null) {
       throw new InvalidParameterException("gemsForm cannot be null");
     }
 
     int[] cost = new int[6];
 
-    for(int i = 0;i<cost.length;i++){
-      cost[i] = (gemsForm.get(CONVERSION_ARRAY[i]) == null) ? 0 : gemsForm.get(CONVERSION_ARRAY[i]).intValue();
+    for (int i = 0; i < cost.length; i++) {
+      cost[i] = (gemsForm.get(CONVERSION_ARRAY[i]) == null) ? 0 :
+          gemsForm.get(CONVERSION_ARRAY[i]).intValue();
     }
 
     return cost;
@@ -74,17 +76,17 @@ public final class GemsForm extends HashMap<GemColor, Integer> {
    * @param cost array to convert
    * @return GemsForm object with converted cost values
    */
-  public static GemsForm costArrayToHash(int[] cost){
-    if(cost == null){
+  public static GemsForm costArrayToHash(int[] cost) {
+    if (cost == null) {
       throw new InvalidParameterException("cost cannot be null");
     }
-    if(cost.length < 6){
+    if (cost.length < 6) {
       throw new InvalidParameterException("Cost array must be less than 7 long");
     }
 
     GemsForm convertedForm = new GemsForm();
 
-    for(int i = 0; i<cost.length;i++){
+    for (int i = 0; i < cost.length; i++) {
       final int curCost = cost[i];
       convertedForm.computeIfAbsent(CONVERSION_ARRAY[i], k -> curCost > 0 ? curCost : null);
     }
@@ -110,10 +112,28 @@ public final class GemsForm extends HashMap<GemColor, Integer> {
   /**
    * Remove gems from other gems.
    *
-   * @param gemsToRemove     the gems to remove
+   * @param gemsToRemove the gems to remove
    */
   public void removeGems(GemsForm gemsToRemove) {
     gemsToRemove.forEach((key, amountToRemove) -> this.computeIfPresent(key,
         (k, v) -> amountToRemove >= v ? null : v - amountToRemove));
+  }
+
+  /**
+   * Add gems to <b>this</b>.
+   *
+   * @param gemsToAdd the gems to add
+   */
+  public void addGems(GemsForm gemsToAdd) {
+    gemsToAdd.forEach((key, value) -> this.merge(key, value, Integer::sum));
+  }
+
+  /**
+   * Count the total amount of gems.
+   *
+   * @return the number of gems.
+   */
+  public int count() {
+    return this.values().stream().mapToInt(value -> value).sum();
   }
 }

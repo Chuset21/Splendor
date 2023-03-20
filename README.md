@@ -78,7 +78,7 @@ Run the services in the following order:
 
 - Run the LobbyService and its database, following its [instructions](LobbyService/README.md).
 - Run the server and its database, following its [instructions](server/README.md).
-- Run the client, follow its [instructions](client/README.md).
+- Run the client, following its [instructions](client/README.md).
 
 ### Docker Compose
 

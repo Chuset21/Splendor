@@ -1,13 +1,15 @@
 package hexanome.fourteen.server.model.board.player;
 
 import hexanome.fourteen.server.model.board.Hand;
+import hexanome.fourteen.server.model.board.expansion.Expansion;
+import java.util.Set;
 
 /**
  * Player.
  */
 public final class Player {
-  private final String uid;
-  private final Hand hand;
+  private String uid;
+  private Hand hand;
 
   /**
    * Constructor.
@@ -23,10 +25,18 @@ public final class Player {
   /**
    * Constructor when given just the ID.
    *
-   * @param id ID of the Player
+   * @param id         ID of the Player
+   * @param expansions The chosen expansions
    */
-  public Player(String id) {
-    this(id, new Hand());
+  public Player(String id, Set<Expansion> expansions) {
+    this(id, new Hand(expansions));
+  }
+
+  /**
+   * No args constructor.
+   */
+  public Player() {
+
   }
 
   /**

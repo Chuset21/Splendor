@@ -43,7 +43,7 @@ public class StandardCard extends Card {
    */
   @Override
   public int getLevel() {
-    return CardLevelForm.TO_INTEGER_CONVERSION_ARRAY.get(cardForm.level()).intValue();
+    return CardLevelForm.TO_INTEGER_CONVERSION_ARRAY.get(cardForm.level());
   }
 
   /**

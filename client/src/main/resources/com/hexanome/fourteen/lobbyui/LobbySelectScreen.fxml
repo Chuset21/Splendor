@@ -30,7 +30,7 @@
                   <Font name="Satoshi Italic" size="26.0" />
                </font>
             </Text>
-            <Text layoutX="617.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Mode">
+            <Text layoutX="617.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Expansions">
                <font>
                   <Font name="Satoshi Italic" size="26.0" />
                </font>

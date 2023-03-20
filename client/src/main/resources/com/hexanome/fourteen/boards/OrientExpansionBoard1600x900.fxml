@@ -965,7 +965,7 @@
          <header>
             <VBox fx:id="waterfallVBox" alignment="CENTER" spacing="5.0">
                <children>
-                  <Label alignment="TOP_CENTER" text="Waterfall Effect!" textAlignment="CENTER" textFill="#72465b">
+                  <Label fx:id="waterfallPaneTitle" alignment="TOP_CENTER" text="Waterfall Effect!" textAlignment="CENTER" textFill="#72465b">
                      <font>
                         <Font name="Satoshi Bold" size="24.0" />
                      </font>
@@ -973,7 +973,7 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </Label>
-                  <Label text="Select one of the following cards to acquire." />
+                  <Label fx:id="waterfallPaneSubtitle" text="Select one of the following cards to acquire." />
                </children>
             </VBox>
          </header>

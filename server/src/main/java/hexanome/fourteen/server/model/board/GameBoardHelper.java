@@ -1,5 +1,6 @@
 package hexanome.fourteen.server.model.board;
 
+import hexanome.fourteen.server.control.form.tradingpost.TradingPostTakeGem;
 import hexanome.fourteen.server.model.board.card.Bonus;
 import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.card.CardLevel;
@@ -14,6 +15,7 @@ import hexanome.fourteen.server.model.board.expansion.Expansion;
 import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import hexanome.fourteen.server.model.board.player.Player;
+import hexanome.fourteen.server.model.board.tradingposts.TradingPostsEnum;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -133,9 +135,10 @@ public final class GameBoardHelper {
 
     // Add gem discounts
     hand.gemDiscounts().merge(card.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
-    // Add reserved noble to hand
+    // Add reserved noble to hand and remove noble from game board
     if (card.nobleToReserve() != null) {
       hand.reservedNobles().add(card.nobleToReserve());
+      gameBoard.availableNobles().remove(card.nobleToReserve());
     }
     card.removeNobleToReserve();
     return null;
@@ -329,19 +332,36 @@ public final class GameBoardHelper {
   }
 
   /**
-   * Get payment without gold gems.
+   * Determine whether a player's payment is enough to afford paying for this resource.
    *
-   * @param substitutedGems the gems substituted for gold gems
-   * @param gemsToPayWith   the gems the player plans to pay with
-   * @return the gemsToPayWith with the gold gems being substituted
+   * @param requiredGems       The required gems, the resource's cost
+   * @param paymentWithoutGold The player's payment excluding gold gems
+   * @param goldGemsUsed       The number of gold gems used, these act like wild tokens
+   * @param goldGemsMultiplier The amount of gems each gold gem is worth.
+   * @return The response containing the error message if there was an error, null otherwise.
    */
-  public static Gems getPaymentWithoutGoldGems(Gems substitutedGems, Gems gemsToPayWith) {
-    final Gems result = new Gems(gemsToPayWith);
-    result.remove(GemColor.GOLD);
+  public static ResponseEntity<String> canAffordPayment(Gems requiredGems, Gems paymentWithoutGold,
+                                                        int goldGemsUsed, int goldGemsMultiplier) {
+    final Gems requiredCopy = new Gems(requiredGems);
+    removeGems(requiredCopy, paymentWithoutGold);
+    if (requiredGems.count() != paymentWithoutGold.count() + requiredCopy.count()) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+          .body("gems used to pay don't match up to cost");
+    }
 
-    substitutedGems.forEach((key, value) -> result.merge(key, value, Integer::sum));
+    if (requiredCopy.count() == 0) {
+      return null;
+    }
 
-    return result;
+    for (final int val : requiredCopy.values()) {
+      // Ceiling division
+      final int numberOfGemsUsed = (val + goldGemsMultiplier - 1) / goldGemsMultiplier;
+      goldGemsUsed -= numberOfGemsUsed;
+    }
+    if (goldGemsUsed < 0) {
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("not enough gold gems used");
+    }
+    return null;
   }
 
   /**
@@ -358,7 +378,7 @@ public final class GameBoardHelper {
         if (firstCard.level() == card.level() && firstCard.expansion() == card.expansion()) {
           final int limit =
               Integer.min(cards.size(), firstCard.expansion() == Expansion.STANDARD ? 4 : 2);
-          return cards.subList(0, limit).stream().anyMatch(cardToCheck -> cardToCheck.equals(card));
+          return cards.subList(0, limit).stream().anyMatch(card::equals);
         }
       }
     }
@@ -407,7 +427,27 @@ public final class GameBoardHelper {
     } else {
       return gemDiscounts.hasEnoughGems(requiredDiscounts);
     }
+  }
 
-
+  /**
+   * Execute trading post one power if it is owned.
+   *
+   * @param gameBoard          Game board.
+   * @param hand               The player's hand.
+   * @param tradingPostTakeGem Trading post take gem.
+   */
+  public static void executeTradingPostOnePower(GameBoard gameBoard, Hand hand,
+                                                TradingPostTakeGem tradingPostTakeGem) {
+    if (hand.tradingPosts().getOrDefault(TradingPostsEnum.BONUS_GEM_WITH_CARD, false)
+        && tradingPostTakeGem.gemToTake() != null) {
+      hand.gems().merge(tradingPostTakeGem.gemToTake(), 1, Integer::sum);
+      gameBoard.availableGems()
+          .computeIfPresent(tradingPostTakeGem.gemToTake(), (k, v) -> 1 >= v ? null : v - 1);
+      if (tradingPostTakeGem.gemToRemove() != null) {
+        hand.gems()
+            .computeIfPresent(tradingPostTakeGem.gemToRemove(), (k, v) -> 1 >= v ? null : v - 1);
+        gameBoard.availableGems().merge(tradingPostTakeGem.gemToRemove(), 1, Integer::sum);
+      }
+    }
   }
 }

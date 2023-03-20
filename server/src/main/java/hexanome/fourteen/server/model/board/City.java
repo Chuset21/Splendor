@@ -6,7 +6,7 @@ import java.util.Objects;
 /**
  * Class to represent a city.
  */
-public class City {
+public final class City {
   private int prestigePoints;
   private Gems gemDiscounts;
 
