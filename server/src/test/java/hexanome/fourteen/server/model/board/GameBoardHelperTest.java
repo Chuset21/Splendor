@@ -1,6 +1,5 @@
 package hexanome.fourteen.server.model.board;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 import hexanome.fourteen.server.control.GsonInstance;
@@ -8,8 +7,10 @@ import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.expansion.Expansion;
 import hexanome.fourteen.server.model.board.player.Player;
 import hexanome.fourteen.server.model.clientmapper.ServerToClientBoardGameMapper;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,16 +51,13 @@ public class GameBoardHelperTest {
         gsonInstance.gson.toJson(gameBoard), GameBoard.class);
     Set<List<Card>> cards = serverToClientBoardGameMapper.map(g).cards();
     do {
-      for (List<Card> cardList : cards) {
-        for (Card card : cardList) {
-          assertTrue(GameBoardHelper.isCardFaceUpOnBoard(gameBoard.cards(), card));
-        }
-      }
-      for (List<Card> cardList : cards) {
-        for (Card card : cardList) {
-          assertTrue(GameBoardHelper.removeCardFromDeck(gameBoard.cards(), card));
-        }
-      }
+      final Set<List<Card>> c = gameBoard.cards();
+      cards.stream().flatMap(Collection::stream)
+          .map(card -> GameBoardHelper.isCardFaceUpOnBoard(c, card))
+          .forEach(Assertions::assertTrue);
+      cards.stream().flatMap(Collection::stream)
+          .map(card -> GameBoardHelper.removeCardFromDeck(c, card))
+          .forEach(Assertions::assertTrue);
       final GameBoard gameBoardCopy = gsonInstance.gson.fromJson(
           gsonInstance.gson.toJson(gameBoard), GameBoard.class);
       cards = serverToClientBoardGameMapper.map(gameBoardCopy).cards();
