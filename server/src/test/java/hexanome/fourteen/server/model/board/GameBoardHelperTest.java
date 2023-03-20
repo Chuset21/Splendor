@@ -3,14 +3,11 @@ package hexanome.fourteen.server.model.board;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
-import com.google.gson.reflect.TypeToken;
 import hexanome.fourteen.server.control.GsonInstance;
 import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.expansion.Expansion;
 import hexanome.fourteen.server.model.board.player.Player;
 import hexanome.fourteen.server.model.clientmapper.ServerToClientBoardGameMapper;
-import hexanome.fourteen.server.model.sent.SentGameBoard;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeAll;
