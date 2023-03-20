@@ -67,6 +67,10 @@ public final class WaterfallCardForm extends CardForm {
     return cardToTake;
   }
 
+  public void setCardToTake(CardForm cardToTake) {
+    this.cardToTake = cardToTake;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {

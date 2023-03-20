@@ -88,13 +88,11 @@ public final class SatchelCardForm extends CardForm {
     }
     SatchelCardForm card = (SatchelCardForm) obj;
     return super.prestigePoints == card.prestigePoints && Objects.equals(super.cost, card.cost)
-           && super.level == card.level && super.expansion == card.expansion
-           && Objects.equals(cardToAttach, card.cardToAttach)
-           && Objects.equals(freeCardToTake, card.freeCardToTake);
+           && super.level == card.level && super.expansion == card.expansion;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(prestigePoints, cost, level, expansion, cardToAttach, freeCardToTake);
+    return Objects.hash(prestigePoints, cost, level, expansion);
   }
 }
