@@ -18,6 +18,7 @@ import com.hexanome.fourteen.form.server.cardform.CardLevelForm;
 import com.hexanome.fourteen.form.server.cardform.DoubleBonusCardForm;
 import com.hexanome.fourteen.form.server.cardform.GoldGemCardForm;
 import com.hexanome.fourteen.form.server.cardform.ReserveNobleCardForm;
+import com.hexanome.fourteen.form.server.cardform.SatchelCardForm;
 import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
 import com.hexanome.fourteen.form.server.cardform.WaterfallCardForm;
 import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
@@ -73,7 +74,6 @@ import org.apache.commons.codec.digest.DigestUtils;
  * A class to represent the game objects required to represent a OrientExpansion Splendor game.
  */
 public class GameBoard {
-
   private Stage stage;
 
   private GameBoardForm gameBoardForm;
@@ -157,6 +157,11 @@ public class GameBoard {
   private GridPane cardMatrix;
   @FXML
   private DialogPane waterfallPane;
+  @FXML
+  private Label waterfallPaneSubtitle;
+
+  @FXML
+  private Label waterfallPaneTitle;
   @FXML
   private VBox waterfallVBox;
 
@@ -531,7 +536,8 @@ public class GameBoard {
 
     // Set action pane image to the selected card
     cardActionImage.setImage(selectedCardView.getImage());
-    GemsForm cost = ((Card) selectedCardView.getImage()).getCardForm().cost();
+    final CardForm cardForm = ((Card) selectedCardView.getImage()).getCardForm();
+    final GemsForm cost = cardForm.cost();
     final int[] gemsCost = cost == null ? new int[] {0, 0, 0, 0, 0, 0} : GemsForm.costHashToArray(
         cost.getDiscountedCost(player.getHandForm().gemDiscounts()));
 
@@ -553,10 +559,21 @@ public class GameBoard {
 
     if (isYourTurn()) {
       // If player's gems cannot pay for card, disable purchase button
+      boolean canAfford = true;
       for (int i = 0; i < 5; i++) {
         if (selectedCost[i] > GemsForm.costHashToArray(handForm.gems())[i]) {
           cardPurchaseButton.setDisable(true);
+          canAfford = false;
           break;
+        }
+      }
+      if (canAfford && cardForm instanceof SatchelCardForm) {
+        final long gemDiscountCards =
+            player.getHandForm().purchasedCards().stream().filter(this::cardHasDiscountColor)
+                .count();
+        if (gemDiscountCards < 2 && cardForm.level() == CardLevelForm.TWO
+            || (cardForm.level() == CardLevelForm.ONE && gemDiscountCards < 1)) {
+          cardPurchaseButton.setDisable(true);
         }
       }
     } else {
@@ -564,13 +581,16 @@ public class GameBoard {
     }
 
     //// Handle Reserve Availability
-    cardReserveButton.setDisable(!isYourTurn() || handForm.reservedCards().size() >= 3 ||
-                                 handForm.reservedCards()
-                                     .contains(((Card) selectedCardView.getImage()).getCardForm()));
+    cardReserveButton.setDisable(!isYourTurn() || handForm.reservedCards().size() >= 3
+                                 || handForm.reservedCards().contains(cardForm));
 
     // Open menu
     cardActionMenu.toFront();
     cardActionMenu.setVisible(true);
+  }
+
+  private boolean cardHasDiscountColor(CardForm cardForm) {
+    return !(cardForm instanceof GoldGemCardForm || cardForm instanceof SatchelCardForm);
   }
 
   /**
@@ -580,23 +600,77 @@ public class GameBoard {
     // Get card to be purchased
     Card cardPurchased = (Card) selectedCardView.getImage();
 
-
-    if (cardPurchased.getCardForm() instanceof StandardCardForm
-        || cardPurchased.getCardForm() instanceof GoldGemCardForm
-        || cardPurchased.getCardForm() instanceof DoubleBonusCardForm) {
-
-      final PurchaseCardForm purchaseCardForm = new PurchaseCardForm(cardPurchased.getCardForm(),
-          new GemPaymentForm(cardPurchased.getCardForm().cost()
+    final CardForm cardForm = cardPurchased.getCardForm();
+    if (cardForm instanceof StandardCardForm
+        || cardForm instanceof GoldGemCardForm
+        || cardForm instanceof DoubleBonusCardForm) {
+      final PurchaseCardForm purchaseCardForm = new PurchaseCardForm(cardForm,
+          new GemPaymentForm(cardForm.cost()
               .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
-          player.getHandForm().reservedCards().contains(cardPurchased.getCardForm()), null);
+          player.getHandForm().reservedCards().contains(cardForm), null);
       purchaseCard(purchaseCardForm);
-    } else if (cardPurchased.getCardForm() instanceof WaterfallCardForm) {
-      displayWaterfallChoices((WaterfallCardForm) cardPurchased.getCardForm());
-    } else if (cardPurchased.getCardForm() instanceof ReserveNobleCardForm) {
+    } else if (cardForm instanceof WaterfallCardForm) {
+      displayWaterfallChoices((WaterfallCardForm) cardForm);
+    } else if (cardForm instanceof ReserveNobleCardForm) {
       purchaseReserveNobleCard(cardPurchased);
+    } else if (cardForm instanceof SatchelCardForm s) {
+      if (s.level() == CardLevelForm.TWO) {
+        System.out.println("This card is not yet handled");
+      } else {
+        System.out.println("Debug miguel: reached satchel card");
+        purchaseLevelOneSatchelCard(s);
+      }
     } else {
       System.out.println("This card is not yet handled");
     }
+  }
+
+  private void purchaseLevelOneSatchelCard(SatchelCardForm satchelCard) {
+    final List<CardForm> cardToAttachSelection =
+        player.getHandForm().purchasedCards().stream().filter(this::cardHasDiscountColor).toList();
+
+    // Generate HBox to display the card choices to user
+    final HBox choicesHBox = new HBox();
+    choicesHBox.setSpacing(5);
+    choicesHBox.setPadding(new Insets(5));
+
+    // Generate ImageView for each selectable card form
+    for (CardForm c : cardToAttachSelection) {
+      ImageView iv = new ImageView();
+      iv.setImage((c instanceof StandardCardForm) ? new StandardCard((StandardCardForm) c) :
+          new OrientCard(c));
+      iv.setFitHeight(140);
+      iv.setFitWidth(100);
+
+      // Apply event handler to each card in choices
+      iv.setOnMouseClicked(event -> {
+        tentativeCardSelection = (Card) ((ImageView) event.getSource()).getImage();
+        choicesHBox.getChildren().forEach((child) -> child.setEffect(null));
+        ((ImageView) event.getSource()).setEffect(BLUE_GLOW_EFFECT);
+        waterfallPane.lookupButton(ButtonType.FINISH).setDisable(false);
+      });
+
+      choicesHBox.getChildren().add(iv);
+    }
+
+    closeAllActionWindows();
+    waterfallPaneSubtitle.setText("Select one of the following cards to attach.");
+    waterfallPaneTitle.setText("Attach a card");
+    waterfallPane.setContent(choicesHBox);
+    waterfallPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
+      final CardForm cardForm =
+          new SatchelCardForm(satchelCard.prestigePoints(), satchelCard.cost(), satchelCard.level(),
+              satchelCard.expansion(), tentativeCardSelection.getCardForm());
+      purchaseCard(new PurchaseCardForm(cardForm,
+          new GemPaymentForm(satchelCard.cost()
+              .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
+          player.getHandForm().reservedCards().contains(satchelCard), null));
+      waterfallPane.setVisible(false);
+      waterfallPane.setDisable(true);
+    });
+    waterfallPane.setVisible(true);
+    waterfallPane.setDisable(false);
+    waterfallPane.lookupButton(ButtonType.FINISH).setDisable(true);
   }
 
   private void purchaseReserveNobleCard(Card cardPurchased) {
@@ -621,7 +695,6 @@ public class GameBoard {
           new GemPaymentForm(cardPurchased.getCardForm().cost()
               .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
           player.getHandForm().reservedCards().contains(cardPurchased.getCardForm()), null));
-
     });
     acquiredNobleAlertPane.setVisible(true);
     acquiredNobleAlertPane.setDisable(false);
@@ -643,7 +716,6 @@ public class GameBoard {
     });
     choices.getChildren().add(iv);
   }
-
 
   /**
    * Sends a request to the server to purchase a card.
@@ -947,9 +1019,9 @@ public class GameBoard {
 
   @FXML
   public void handlePurchasedPaneSelect(MouseEvent event) {
-
     purchasedCardImages.clear();
 
+    // TODO fix error with showing satchel cards when they've been purchased
     for (CardForm cardForm : player.getHandForm().purchasedCards()) {
       purchasedCardImages.add(
           (cardForm instanceof StandardCardForm) ? new StandardCard((StandardCardForm) cardForm) :
@@ -1227,6 +1299,8 @@ public class GameBoard {
     }
 
     closeAllActionWindows();
+    waterfallPaneSubtitle.setText("Select one of the following cards to acquire.");
+    waterfallPaneTitle.setText("Waterfall Effect!");
     waterfallPane.setContent(choicesHBox);
     waterfallPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
       handleWaterfallChoiceSelect(tentativeCardSelection, rootCard);
@@ -1239,7 +1313,6 @@ public class GameBoard {
   public void handleWaterfallChoiceSelect(Card selection, WaterfallCardForm wf) {
     CardForm selectedCard = selection.getCardForm();
     WaterfallCardForm waterfallWithSelection = new WaterfallCardForm(wf, selectedCard);
-
 
     PurchaseCardForm purchaseCardForm = new PurchaseCardForm(waterfallWithSelection,
         new GemPaymentForm(
