@@ -611,8 +611,8 @@ public class GameBoard {
       purchaseCard(purchaseCardForm);
     } else if (cardForm instanceof WaterfallCardForm) {
       displayWaterfallChoices((WaterfallCardForm) cardForm);
-    } else if (cardForm instanceof ReserveNobleCardForm) {
-      purchaseReserveNobleCard(cardPurchased);
+    } else if (cardForm instanceof ReserveNobleCardForm r) {
+      purchaseReserveNobleCard(r);
     } else if (cardForm instanceof SatchelCardForm s) {
       if (s.level() == CardLevelForm.TWO) {
         System.out.println("This card is not yet handled");
@@ -672,32 +672,38 @@ public class GameBoard {
     waterfallPane.lookupButton(ButtonType.FINISH).setDisable(true);
   }
 
-  private void purchaseReserveNobleCard(Card cardPurchased) {
+  private void purchaseReserveNobleCard(ReserveNobleCardForm cardPurchased) {
     final HBox choices = new HBox();
     choices.setSpacing(20);
     choices.setPadding(new Insets(10));
 
-    // Generate ImageView for each selectable noble
-    for (NobleForm n : gameBoardForm.availableNobles()) {
-      addNobleToAcquiredNobleAlertPane(choices, n);
-    }
+    final Set<NobleForm> nobleForms = gameBoardForm.availableNobles();
+    if (!nobleForms.isEmpty()) {
+      // Generate ImageView for each selectable noble
+      for (NobleForm n : nobleForms) {
+        addNobleToAcquiredNobleAlertPane(choices, n);
+      }
 
-    closeAllActionWindows();
-    ((Label) acquiredNobleAlertPane.getHeader()).setText("Choose noble to reserve");
-    acquiredNobleAlertPane.setContent(choices);
-    acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
-      final ReserveNobleCardForm reserveNobleCardForm =
-          new ReserveNobleCardForm((ReserveNobleCardForm) cardPurchased.getCardForm(),
-              tentativeNobleSelection.nobleForm);
-      acquiredNobleAlertPane.setVisible(false);
-      purchaseCard(new PurchaseCardForm(reserveNobleCardForm,
-          new GemPaymentForm(cardPurchased.getCardForm().cost()
+      closeAllActionWindows();
+      ((Label) acquiredNobleAlertPane.getHeader()).setText("Choose noble to reserve");
+      acquiredNobleAlertPane.setContent(choices);
+      acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
+        cardPurchased.setNobleToReserve(tentativeNobleSelection.nobleForm);
+        acquiredNobleAlertPane.setVisible(false);
+        purchaseCard(new PurchaseCardForm(cardPurchased,
+            new GemPaymentForm(cardPurchased.cost()
+                .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
+            player.getHandForm().reservedCards().contains(cardPurchased), null));
+      });
+      acquiredNobleAlertPane.setVisible(true);
+      acquiredNobleAlertPane.setDisable(false);
+      acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setDisable(true);
+    } else {
+      purchaseCard(new PurchaseCardForm(cardPurchased,
+          new GemPaymentForm(cardPurchased.cost()
               .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
-          player.getHandForm().reservedCards().contains(cardPurchased.getCardForm()), null));
-    });
-    acquiredNobleAlertPane.setVisible(true);
-    acquiredNobleAlertPane.setDisable(false);
-    acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setDisable(true);
+          player.getHandForm().reservedCards().contains(cardPurchased), null));
+    }
   }
 
   private void addNobleToAcquiredNobleAlertPane(HBox choices, NobleForm n) {

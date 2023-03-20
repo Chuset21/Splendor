@@ -78,6 +78,10 @@ public final class ReserveNobleCardForm extends CardForm {
     return nobleToReserve;
   }
 
+  public void setNobleToReserve(NobleForm nobleToReserve) {
+    this.nobleToReserve = nobleToReserve;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
