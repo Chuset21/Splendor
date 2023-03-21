@@ -139,7 +139,6 @@ public final class LobbyServiceCaller {
         Main.GSON.fromJson(response.getBody(), LoginResponse.class);
     currentUser.setAccessToken(loginResponse.accessToken());
     currentUser.setRefreshToken(loginResponse.refreshToken());
-    System.out.println(loginResponse.expiresIn());
     return loginResponse.expiresIn() >= 35 || updateAccessToken();
   }
 
