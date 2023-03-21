@@ -390,8 +390,12 @@ public class GameBoard {
             case THREE -> listToUpdate = level3CardViewsBase;
             default -> throw new IllegalStateException("Invalid card level from gameBoardForm.");
           }
-          for (int i = 0; i < cardlist.size(); i++) {
-            listToUpdate.get(i).setImage(new StandardCard((StandardCardForm) cardlist.get(i)));
+          for (int i = 0; i < listToUpdate.size(); i++) {
+            if (i < cardlist.size()) {
+              listToUpdate.get(i).setImage(new StandardCard((StandardCardForm) cardlist.get(i)));
+            } else {
+              listToUpdate.get(i).imageProperty().set(null);
+            }
           }
         } else {
           switch (cardlist.get(0).level()) {
@@ -400,8 +404,12 @@ public class GameBoard {
             case THREE -> listToUpdate = level3CardViewsOrient;
             default -> throw new IllegalStateException("Invalid card level from gameBoardForm.");
           }
-          for (int i = 0; i < cardlist.size(); i++) {
-            listToUpdate.get(i).setImage(new OrientCard(cardlist.get(i)));
+          for (int i = 0; i < listToUpdate.size(); i++) {
+            if (i < cardlist.size()) {
+              listToUpdate.get(i).setImage(new OrientCard(cardlist.get(i)));
+            } else {
+              listToUpdate.get(i).imageProperty().set(null);
+            }
           }
         }
       }
@@ -569,7 +577,7 @@ public class GameBoard {
       }
       if (canAfford && cardForm instanceof SatchelCardForm) {
         final long gemDiscountCards =
-            player.getHandForm().purchasedCards().stream().filter(this::cardHasDiscountColor)
+            player.getHandForm().purchasedCards().stream().filter(this::cardIsAttachable)
                 .count();
         if (gemDiscountCards < 1) {
           cardPurchaseButton.setDisable(true);
@@ -588,7 +596,7 @@ public class GameBoard {
     cardActionMenu.setVisible(true);
   }
 
-  private boolean cardHasDiscountColor(CardForm cardForm) {
+  private boolean cardIsAttachable(CardForm cardForm) {
     return !(cardForm instanceof GoldGemCardForm || cardForm instanceof SatchelCardForm);
   }
 
@@ -645,7 +653,7 @@ public class GameBoard {
   private void purchaseLevelOneSatchelCard(SatchelCardForm satchelCard,
                                            Consumer<Void> function) {
     final List<CardForm> cardToAttachSelection =
-        player.getHandForm().purchasedCards().stream().filter(this::cardHasDiscountColor).toList();
+        player.getHandForm().purchasedCards().stream().filter(this::cardIsAttachable).toList();
     // Generate HBox to display the card choices to user
     final HBox choicesHBox = new HBox();
     choicesHBox.setSpacing(5);
@@ -1275,7 +1283,7 @@ public class GameBoard {
 
   private List<CardForm> fetchWaterfallSelection(CardLevelForm level) {
     final boolean canPurchaseSatchelCard =
-        player.getHandForm().purchasedCards().stream().anyMatch(this::cardHasDiscountColor);
+        player.getHandForm().purchasedCards().stream().anyMatch(this::cardIsAttachable);
     // Fetch user's free card choices
     return gameBoardForm.cards().stream().flatMap(Collection::stream)
         .filter(c -> (c.level().equals(level))
