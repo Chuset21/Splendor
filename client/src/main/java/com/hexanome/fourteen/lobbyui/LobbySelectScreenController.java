@@ -69,8 +69,6 @@ public class LobbySelectScreenController implements ScreenController {
                   lobbyForm = notLaunchedSessions;
                   updateLobbies();
                 });
-              } else {
-                LobbyServiceCaller.updateAccessToken();
               }
             }
           }

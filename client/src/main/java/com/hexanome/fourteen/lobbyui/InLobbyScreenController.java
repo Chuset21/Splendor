@@ -1,20 +1,14 @@
 package com.hexanome.fourteen.lobbyui;
 
 import com.hexanome.fourteen.Main;
-import com.hexanome.fourteen.ServerCaller;
 import com.hexanome.fourteen.form.lobbyservice.SessionForm;
-import com.hexanome.fourteen.form.server.GameBoardForm;
 import java.io.IOException;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
-import com.hexanome.fourteen.TokenRefreshFailedException;
-import java.net.URL;
-import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -97,8 +91,6 @@ public class InLobbyScreenController implements ScreenController {
                   lobby.setSession(session);
                   updateLobbyInfo();
                 });
-              } else {
-                LobbyServiceCaller.updateAccessToken();
               }
             }
           }
@@ -149,29 +141,9 @@ public class InLobbyScreenController implements ScreenController {
   @FXML
   private void handleLeaveButton() {
     if (LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost())) {
-      try {
-        LobbyServiceCaller.deleteSession();
-      } catch (TokenRefreshFailedException e) {
-        try {
-          MenuController.returnToLogin("Session timed out, retry login");
-          stage.close();
-          return;
-        } catch (IOException ioe) {
-          ioe.printStackTrace();
-        }
-      }
+      LobbyServiceCaller.deleteSession();
     } else {
-      try {
-        LobbyServiceCaller.leaveSession();
-      } catch (TokenRefreshFailedException e) {
-        try {
-          MenuController.returnToLogin("Session timed out, retry login");
-          stage.close();
-          return;
-        } catch (IOException ioe) {
-          ioe.printStackTrace();
-        }
-      }
+      LobbyServiceCaller.leaveSession();
     }
 
     try {

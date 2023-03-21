@@ -307,8 +307,6 @@ public class GameBoard {
                   gameBoardForm = game;
                   updateBoard();
                 });
-              } else {
-                LobbyServiceCaller.updateAccessToken();
               }
             }
           }

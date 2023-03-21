@@ -2,7 +2,6 @@ package com.hexanome.fourteen.lobbyui;
 
 import com.hexanome.fourteen.GameServiceName;
 import com.hexanome.fourteen.LobbyServiceCaller;
-import com.hexanome.fourteen.TokenRefreshFailedException;
 import com.hexanome.fourteen.boards.Expansion;
 import com.hexanome.fourteen.form.lobbyservice.CreateSessionForm;
 import java.io.IOException;
@@ -69,15 +68,7 @@ public class CreateGameScreenController implements ScreenController {
     // Gets sessions
     String sessionid = null;
 
-    try {
-      sessionid = LobbyServiceCaller.createSession(session);
-    } catch (TokenRefreshFailedException e) {
-      try {
-        MenuController.returnToLogin("Session timed out, retry login");
-      } catch (IOException ioe) {
-        ioe.printStackTrace();
-      }
-    }
+    sessionid = LobbyServiceCaller.createSession(session);
 
     System.out.println("SessionID: " + sessionid);
 

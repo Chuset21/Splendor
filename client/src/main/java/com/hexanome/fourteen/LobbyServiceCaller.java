@@ -3,7 +3,6 @@ package com.hexanome.fourteen;
 import com.google.gson.reflect.TypeToken;
 import com.hexanome.fourteen.form.lobbyservice.CreateSessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SaveGameForm;
-import com.hexanome.fourteen.form.lobbyservice.SessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
 import com.hexanome.fourteen.lobbyui.Lobby;
 import com.hexanome.fourteen.lobbyui.User;
@@ -105,7 +104,7 @@ public final class LobbyServiceCaller {
   /**
    * Update the access token.
    */
-  public static boolean updateAccessToken() {
+  private static boolean updateAccessToken() {
     HttpResponse<String> response = Unirest.post("%soauth/token".formatted(Main.lsLocation))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("grant_type", "refresh_token")
@@ -120,16 +119,7 @@ public final class LobbyServiceCaller {
    * Updates the user's access token and sends it in the return.
    */
   public static String getCurrentUserAccessToken() {
-    HttpResponse<String> response = Unirest.post("%soauth/token".formatted(Main.lsLocation))
-        .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-        .queryString("grant_type", "refresh_token")
-        .queryString("refresh_token", currentUser.getRefreshToken())
-        .body("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true")
-        .asString();
-
-    if (!getTokens(response)) {
-      login(currentUser.getUserid(), currentUser.getPassword());
-    }
+    login(currentUser.getUserid(), currentUser.getPassword());
 
     return currentUser.getAccessToken();
   }
@@ -147,10 +137,10 @@ public final class LobbyServiceCaller {
 
     final LoginResponse loginResponse =
         Main.GSON.fromJson(response.getBody(), LoginResponse.class);
-
     currentUser.setAccessToken(loginResponse.accessToken());
     currentUser.setRefreshToken(loginResponse.refreshToken());
-    return true;
+    System.out.println(loginResponse.expiresIn());
+    return loginResponse.expiresIn() >= 35 || updateAccessToken();
   }
 
   /**
@@ -182,17 +172,11 @@ public final class LobbyServiceCaller {
    * @param sessionid The session ID
    * @return true if successful, false otherwise
    */
-  public static boolean joinSession(String sessionid) throws TokenRefreshFailedException {
-    // Try updating tokens, if fails: send currentUser back to login to refresh tokens
-    if (!updateAccessToken()) {
-      throw new TokenRefreshFailedException();
-    }
-
-
+  public static boolean joinSession(String sessionid) {
     HttpResponse<String> response = Unirest.put(
             "%sapi/sessions/%s/players/%s".formatted(Main.lsLocation, sessionid,
                 currentUser.getUserid()))
-        .queryString("access_token", currentUser.getAccessToken())
+        .queryString("access_token", getCurrentUserAccessToken())
         .asString();
 
     return response.getStatus() == 200;
@@ -203,22 +187,17 @@ public final class LobbyServiceCaller {
    *
    * @return true if successful, false otherwise (includes case where currentUser is not in lobby in the first place)
    */
-  public static boolean leaveSession() throws TokenRefreshFailedException {
+  public static boolean leaveSession() {
     // Check if currentUser is in a lobby to begin with
     if (currentUser.getCurrentLobby() == null) {
       return false;
-    }
-
-    // Try updating tokens, if fails: send currentUser back to login to refresh tokens
-    if (!updateAccessToken()) {
-      throw new TokenRefreshFailedException();
     }
 
     HttpResponse<String> response =
         Unirest.delete("%sapi/sessions/%s/players/%s".formatted(Main.lsLocation,
                 currentUser.getCurrentLobby().getSessionid(), currentUser.getUserid()))
             .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-            .queryString("access_token", currentUser.getAccessToken())
+            .queryString("access_token", getCurrentUserAccessToken())
             .asString();
 
     return response.getStatus() == 200;
@@ -254,16 +233,11 @@ public final class LobbyServiceCaller {
    *
    * @return true if successful, false otherwise
    */
-  public static boolean launchSession() throws TokenRefreshFailedException {
-    // Try updating tokens, if fails: send currentUser back to login to refresh tokens
-    if (!updateAccessToken()) {
-      throw new TokenRefreshFailedException();
-    }
-
+  public static boolean launchSession() {
     HttpResponse<String> response =
         Unirest.post("%sapi/sessions/%s".formatted(Main.lsLocation,
                 currentUser.getCurrentLobby().getSessionid()))
-            .queryString("access_token", currentUser.getAccessToken())
+            .queryString("access_token", getCurrentUserAccessToken())
             .asString();
 
     return response.getStatus() == 200;
@@ -275,15 +249,10 @@ public final class LobbyServiceCaller {
    * @param sessionid session to launch
    * @return true if successful, false otherwise
    */
-  public static boolean launchSession(String sessionid) throws TokenRefreshFailedException {
-    // Try updating tokens, if fails: send currentUser back to login to refresh tokens
-    if (!updateAccessToken()) {
-      throw new TokenRefreshFailedException();
-    }
-
+  public static boolean launchSession(String sessionid) {
     HttpResponse<String> response =
         Unirest.post("%sapi/sessions/%s".formatted(Main.lsLocation, sessionid))
-            .queryString("access_token", currentUser.getAccessToken())
+            .queryString("access_token", getCurrentUserAccessToken())
             .asString();
 
     return response.getStatus() == 200;
@@ -296,16 +265,10 @@ public final class LobbyServiceCaller {
    * @return The session ID corresponding to the newly created session or
    * null if the session couldn't be created.
    */
-  public static String createSession(CreateSessionForm createSessionForm)
-      throws TokenRefreshFailedException {
-    // Try updating tokens, if fails: send currentUser back to login to refresh tokens
-    if (!updateAccessToken()) {
-      throw new TokenRefreshFailedException();
-    }
-
+  public static String createSession(CreateSessionForm createSessionForm) {
     HttpResponse<String> response = Unirest.post("%sapi/sessions".formatted(Main.lsLocation))
         .header("Content-Type", "application/json")
-        .queryString("access_token", currentUser.getAccessToken())
+        .queryString("access_token", getCurrentUserAccessToken())
         .body(Main.GSON.toJson(createSessionForm))
         .asString();
 
@@ -321,21 +284,16 @@ public final class LobbyServiceCaller {
    *
    * @return true if session was deleted, false otherwise (includes case where player wasn't hosting a session)
    */
-  public static boolean deleteSession() throws TokenRefreshFailedException {
+  public static boolean deleteSession() {
     // Check if currentUser is in a lobby to begin with
     if (currentUser.getCurrentLobby() == null) {
       return false;
     }
 
-    // Try updating tokens, if fails: send currentUser back to login to refresh tokens
-    if (!updateAccessToken()) {
-      throw new TokenRefreshFailedException();
-    }
-
     HttpResponse<String> response = Unirest.delete("%sapi/sessions/%s".formatted(Main.lsLocation,
             currentUser.getCurrentLobby().getSessionid()))
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-        .queryString("access_token", currentUser.getAccessToken())
+        .queryString("access_token", getCurrentUserAccessToken())
         .asString();
 
     return response.getStatus() == 200;
@@ -401,23 +359,8 @@ public final class LobbyServiceCaller {
    *
    * @return The list of saved games
    */
-  public static List<SaveGameForm> getSavedGames() { // Can then use this to filter and see where our player appears
-    final Type listType = new TypeToken<ArrayList<SaveGameForm>>() {
-    }.getType();
-    final List<SaveGameForm> saveGameForms = new ArrayList<>();
-    for (GameServiceName e : GameServiceName.values()) {
-      final HttpResponse<String> response =
-          Unirest.get("%sapi/gameservices/%s/savegames".formatted(Main.lsLocation, e))
-              .header("Content-Type", "application/json")
-              .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
-              .queryString("access_token", currentUser.getAccessToken()).asString();
-
-      if (response.getStatus() == 200) {
-        saveGameForms.addAll(Main.GSON.fromJson(response.getBody(), listType));
-      }
-    }
-
-    return saveGameForms;
+  public static List<SaveGameForm> getSavedGames() {
+    return getSavedGames(getCurrentUserAccessToken());
   }
 
 

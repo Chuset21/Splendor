@@ -7,7 +7,7 @@ public final class LoginResponse {
   private String accessToken;
   private transient String tokenType;
   private String refreshToken;
-  private transient int expiresIn;
+  private int expiresIn;
   private transient String scope;
 
   /**

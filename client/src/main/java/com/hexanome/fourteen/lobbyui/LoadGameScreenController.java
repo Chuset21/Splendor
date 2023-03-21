@@ -1,31 +1,15 @@
 package com.hexanome.fourteen.lobbyui;
 
 import com.hexanome.fourteen.LobbyServiceCaller;
-import com.hexanome.fourteen.Main;
-import com.hexanome.fourteen.ServerCaller;
-import com.hexanome.fourteen.TokenRefreshFailedException;
 import com.hexanome.fourteen.form.lobbyservice.CreateSessionForm;
 import com.hexanome.fourteen.form.lobbyservice.SaveGameForm;
-import com.hexanome.fourteen.form.lobbyservice.SessionForm;
-import com.hexanome.fourteen.form.lobbyservice.SessionsForm;
-import com.hexanome.fourteen.form.server.GameBoardForm;
 import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.ResourceBundle;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -56,9 +40,6 @@ public class LoadGameScreenController implements ScreenController {
     // Post init
     savedGames = new HashMap<String, SaveGameForm>();
 
-    // Update our access tokens on page load
-    LobbyServiceCaller.updateAccessToken();
-
     // display our saved games
     displaySavedGames();
 
@@ -79,15 +60,7 @@ public class LoadGameScreenController implements ScreenController {
         savedGames.get(saveGameID).gameName(), saveGameID);
 
     // Get the session
-    try {
-      sessionID = LobbyServiceCaller.createSession(session);
-    } catch (TokenRefreshFailedException e) {
-      try {
-        MenuController.returnToLogin("Session timed out, retry login");
-      } catch (IOException ioe) {
-        ioe.printStackTrace();
-      }
-    }
+    sessionID = LobbyServiceCaller.createSession(session);
 
     System.out.println("Session ID: " + sessionID);
 
