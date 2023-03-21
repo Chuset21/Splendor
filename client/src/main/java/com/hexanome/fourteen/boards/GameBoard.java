@@ -28,6 +28,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -373,26 +374,30 @@ public class GameBoard {
     if (gameBoardForm == null) {
       throw new InvalidParameterException("gameBoardForm is null");
     }
-
+    final Map<CardLevelForm, Map<Expansion, List<CardForm>>> cardLevelFormListMap = new HashMap<>();
+    for (CardLevelForm level : CardLevelForm.values()) {
+      cardLevelFormListMap.put(level, new HashMap<>());
+      cardLevelFormListMap.get(level).put(Expansion.STANDARD, Collections.emptyList());
+      cardLevelFormListMap.get(level).put(Expansion.ORIENT, Collections.emptyList());
+    }
     // Iterate through each list of the gameBoardForm.cards set (each different levels)
-    for (List<CardForm> cardlist : gameBoardForm.cards()) {
-
+    for (List<CardForm> cardList : gameBoardForm.cards()) {
       // Check to see that we have at least one card to assign
-      if (!cardlist.isEmpty()) {
-
+      if (!cardList.isEmpty()) {
         // set listToUpdate (GUI list) according list's level
         final ArrayList<ImageView> listToUpdate;
-
-        if (cardlist.get(0).expansion() == Expansion.STANDARD) {
-          switch (cardlist.get(0).level()) {
+        final CardForm cardForm = cardList.get(0);
+        if (cardForm.expansion() == Expansion.STANDARD) {
+          cardLevelFormListMap.get(cardForm.level()).put(Expansion.STANDARD, cardList);
+          switch (cardForm.level()) {
             case ONE -> listToUpdate = level1CardViewsBase;
             case TWO -> listToUpdate = level2CardViewsBase;
             case THREE -> listToUpdate = level3CardViewsBase;
             default -> throw new IllegalStateException("Invalid card level from gameBoardForm.");
           }
           for (int i = 0; i < listToUpdate.size(); i++) {
-            if (i < cardlist.size()) {
-              listToUpdate.get(i).setImage(new StandardCard((StandardCardForm) cardlist.get(i)));
+            if (i < cardList.size()) {
+              listToUpdate.get(i).setImage(new StandardCard((StandardCardForm) cardList.get(i)));
               listToUpdate.get(i).setDisable(false);
             } else {
               listToUpdate.get(i).imageProperty().set(null);
@@ -400,15 +405,16 @@ public class GameBoard {
             }
           }
         } else {
-          switch (cardlist.get(0).level()) {
+          cardLevelFormListMap.get(cardForm.level()).put(Expansion.ORIENT, cardList);
+          switch (cardForm.level()) {
             case ONE -> listToUpdate = level1CardViewsOrient;
             case TWO -> listToUpdate = level2CardViewsOrient;
             case THREE -> listToUpdate = level3CardViewsOrient;
             default -> throw new IllegalStateException("Invalid card level from gameBoardForm.");
           }
           for (int i = 0; i < listToUpdate.size(); i++) {
-            if (i < cardlist.size()) {
-              listToUpdate.get(i).setImage(new OrientCard(cardlist.get(i)));
+            if (i < cardList.size()) {
+              listToUpdate.get(i).setImage(new OrientCard(cardList.get(i)));
               listToUpdate.get(i).setDisable(false);
             } else {
               listToUpdate.get(i).imageProperty().set(null);
@@ -417,6 +423,35 @@ public class GameBoard {
           }
         }
       }
+    }
+    for (CardLevelForm level : CardLevelForm.values()) {
+      final List<CardForm> standardCards = cardLevelFormListMap.get(level).get(Expansion.STANDARD);
+      final List<CardForm> orientCards = cardLevelFormListMap.get(level).get(Expansion.ORIENT);
+      switch (level) {
+        case ONE -> removeImagesFromDeck(standardCards, orientCards, level1CardViewsBase,
+            level1CardViewsOrient);
+        case TWO -> removeImagesFromDeck(standardCards, orientCards, level2CardViewsBase,
+            level2CardViewsOrient);
+        case THREE -> removeImagesFromDeck(standardCards, orientCards, level3CardViewsBase,
+            level3CardViewsOrient);
+        default -> throw new IllegalStateException("Invalid card level from gameBoardForm.");
+      }
+    }
+  }
+
+  private void removeImagesFromDeck(List<CardForm> standardCards, List<CardForm> orientCards,
+                                    List<ImageView> standardView, List<ImageView> orientView) {
+    if (standardCards.isEmpty()) {
+      standardView.forEach(e -> {
+        e.imageProperty().set(null);
+        e.setDisable(true);
+      });
+    }
+    if (orientCards.isEmpty()) {
+      orientView.forEach(e -> {
+        e.imageProperty().set(null);
+        e.setDisable(true);
+      });
     }
   }
 
