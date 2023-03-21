@@ -393,8 +393,10 @@ public class GameBoard {
           for (int i = 0; i < listToUpdate.size(); i++) {
             if (i < cardlist.size()) {
               listToUpdate.get(i).setImage(new StandardCard((StandardCardForm) cardlist.get(i)));
+              listToUpdate.get(i).setDisable(false);
             } else {
               listToUpdate.get(i).imageProperty().set(null);
+              listToUpdate.get(i).setDisable(true);
             }
           }
         } else {
@@ -407,8 +409,10 @@ public class GameBoard {
           for (int i = 0; i < listToUpdate.size(); i++) {
             if (i < cardlist.size()) {
               listToUpdate.get(i).setImage(new OrientCard(cardlist.get(i)));
+              listToUpdate.get(i).setDisable(false);
             } else {
               listToUpdate.get(i).imageProperty().set(null);
+              listToUpdate.get(i).setDisable(true);
             }
           }
         }
