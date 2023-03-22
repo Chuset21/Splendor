@@ -655,7 +655,7 @@ public class GameBoard {
           cardPurchaseButton.setDisable(true);
         }
       } else if (cardForm instanceof SacrificeCardForm s) {
-        if (!canPurchaseSacrificeCard(s.discountColor())) {
+        if (!canPurchaseSacrificeCard(s.sacrificeColor())) {
           cardPurchaseButton.setDisable(true);
         }
       }
@@ -769,7 +769,7 @@ public class GameBoard {
 
   private void purchaseSacrificeCard(SacrificeCardForm sacrificeCard) {
     final List<CardForm> possibleCardsToSacrifice =
-        getPossibleCardsToSacrifice(sacrificeCard.discountColor());
+        getPossibleCardsToSacrifice(sacrificeCard.sacrificeColor());
     // Generate HBox to display the card choices to user
     final HBox choicesHBox = new HBox();
     choicesHBox.setSpacing(5);

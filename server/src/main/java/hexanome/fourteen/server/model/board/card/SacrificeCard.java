@@ -10,6 +10,7 @@ import java.util.Objects;
  */
 public final class SacrificeCard extends Card {
   private GemColor discountColor;
+  private GemColor sacrificeColor;
 
   /**
    * Constructor.
@@ -19,11 +20,14 @@ public final class SacrificeCard extends Card {
    * @param level          the level of the card
    * @param expansion      the expansion to which the card belongs to
    * @param discountColor  the color of the gems to be discounted
+   * @param sacrificeColor the color of the cards to sacrifice
    */
   public SacrificeCard(int prestigePoints, Gems cost,
-                       CardLevel level, Expansion expansion, GemColor discountColor) {
+                       CardLevel level, Expansion expansion, GemColor discountColor,
+                       GemColor sacrificeColor) {
     super(prestigePoints, cost, level, expansion);
     this.discountColor = discountColor;
+    this.sacrificeColor = sacrificeColor;
   }
 
   /**
@@ -42,6 +46,15 @@ public final class SacrificeCard extends Card {
     return discountColor;
   }
 
+  /**
+   * A Getter for the sacrifice Color associated with the Sacrifice Card.
+   *
+   * @return The sacrifice Color.
+   */
+  public GemColor sacrificeColor() {
+    return sacrificeColor;
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -53,11 +66,11 @@ public final class SacrificeCard extends Card {
     SacrificeCard card = (SacrificeCard) obj;
     return super.prestigePoints == card.prestigePoints && Objects.equals(super.cost, card.cost)
            && super.level == card.level && super.expansion == card.expansion
-           && discountColor == card.discountColor;
+           && discountColor == card.discountColor && sacrificeColor == card.sacrificeColor;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(prestigePoints, cost, level, expansion, discountColor);
+    return Objects.hash(prestigePoints, cost, level, expansion, discountColor, sacrificeColor);
   }
 }
