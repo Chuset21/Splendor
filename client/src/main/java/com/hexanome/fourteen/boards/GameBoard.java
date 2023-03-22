@@ -701,13 +701,12 @@ public class GameBoard {
               player.getHandForm().reservedCards().contains(cardForm), null)));
     } else if (cardForm instanceof SatchelCardForm s) {
       if (s.level() == CardLevelForm.TWO) {
-        purchaseLevelOneSatchelCard(s, f -> displayWaterfallChoices(s, CardLevelForm.ONE, x -> {
-          purchaseCard(new PurchaseCardForm(cardForm,
-              new GemPaymentForm(
-                  cardForm.cost().getDiscountedCost(player.getHandForm().gemDiscounts()),
-                  0),
-              player.getHandForm().reservedCards().contains(cardForm), null));
-        }));
+        purchaseLevelOneSatchelCard(s, f -> displayWaterfallChoices(s, CardLevelForm.ONE,
+            x -> purchaseCard(new PurchaseCardForm(cardForm,
+                new GemPaymentForm(
+                    cardForm.cost().getDiscountedCost(player.getHandForm().gemDiscounts()),
+                    0),
+                player.getHandForm().reservedCards().contains(cardForm), null))));
       } else {
         purchaseLevelOneSatchelCard(s, f ->
             purchaseCard(new PurchaseCardForm(s,
