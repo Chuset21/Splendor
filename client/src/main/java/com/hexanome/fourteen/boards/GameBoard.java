@@ -64,7 +64,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
@@ -355,8 +354,7 @@ public class GameBoard {
     generateNobles();
 
     // Update tradingPostsMenu
-    if(GameServiceName.getExpansions(LobbyServiceCaller.getCurrentUserLobby().getGameServiceName())
-        .contains(Expansion.TRADING_POSTS)){
+    if (gameBoardForm.expansions().contains(Expansion.TRADING_POSTS)) {
       tradingPostsMenu.updateMenu();
     }
 
@@ -542,7 +540,7 @@ public class GameBoard {
       if (i < players.size() && players.get(i) != null) {
         playerViews.get(i).setImage(players.get(i));
         Tooltip.install(playerViews.get(i), new Tooltip(players.get(i).getUserId()
-            + (player.getUserId().equals(
+                                                        + (player.getUserId().equals(
             players.get(i).getUserId())
             ? " (you)" : "")));
       } else {
@@ -661,7 +659,7 @@ public class GameBoard {
 
     //// Handle Reserve Availability
     cardReserveButton.setDisable(!isYourTurn() || handForm.reservedCards().size() >= 3
-        || handForm.reservedCards().contains(cardForm));
+                                 || handForm.reservedCards().contains(cardForm));
 
     // Open menu
     cardActionMenu.toFront();
@@ -1285,7 +1283,7 @@ public class GameBoard {
     // Set summary label as player title
     playerSummaryUserLabel.setText(
         requestedPlayer.uid() + "'s Board\nPrestige points: " +
-            requestedPlayer.hand().prestigePoints());
+        requestedPlayer.hand().prestigePoints());
 
     // Fetch and apply the user's discounts to the summary discount matrix
     int index = 0;
@@ -1359,7 +1357,7 @@ public class GameBoard {
     // Fetch user's free card choices
     return gameBoardForm.cards().stream().flatMap(Collection::stream)
         .filter(c -> (c.level().equals(level))
-            && (!(c instanceof SatchelCardForm) || canPurchaseSatchelCard))
+                     && (!(c instanceof SatchelCardForm) || canPurchaseSatchelCard))
         .collect(Collectors.toList());
   }
 
