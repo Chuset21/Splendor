@@ -844,7 +844,7 @@ public class GameBoard {
       waterfallPane.setDisable(true);
       final CardForm cardToSacrifice1 = tentativeSacrifices.get(0).getCardForm();
       final CardForm cardToSacrifice2 =
-          tentativeSacrifices.size() < 2 ? null : tentativeSacrifices.get(0).getCardForm();
+          tentativeSacrifices.size() < 2 ? null : tentativeSacrifices.get(1).getCardForm();
       purchaseCard(new PurchaseCardForm(sacrificeCard,
           new CardPaymentForm(cardToSacrifice1, cardToSacrifice2),
           player.getHandForm().reservedCards().contains(sacrificeCard), null));
