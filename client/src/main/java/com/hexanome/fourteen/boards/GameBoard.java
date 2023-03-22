@@ -19,9 +19,11 @@ import com.hexanome.fourteen.form.server.cardform.CardLevelForm;
 import com.hexanome.fourteen.form.server.cardform.DoubleBonusCardForm;
 import com.hexanome.fourteen.form.server.cardform.GoldGemCardForm;
 import com.hexanome.fourteen.form.server.cardform.ReserveNobleCardForm;
+import com.hexanome.fourteen.form.server.cardform.SacrificeCardForm;
 import com.hexanome.fourteen.form.server.cardform.SatchelCardForm;
 import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
 import com.hexanome.fourteen.form.server.cardform.WaterfallCardForm;
+import com.hexanome.fourteen.form.server.payment.CardPaymentForm;
 import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -41,7 +43,6 @@ import com.hexanome.fourteen.TokenRefreshFailedException;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
@@ -173,6 +174,7 @@ public class GameBoard {
   private Card tentativeCardSelection;
   private Noble tentativeNobleSelection;
   private City tentativeCitySelection;
+  private List<Card> tentativeSacrifices;
   @FXML
   private VBox nobleAcquiredLabelVBox;
 
@@ -652,6 +654,10 @@ public class GameBoard {
         if (gemDiscountCards < 1) {
           cardPurchaseButton.setDisable(true);
         }
+      } else if (cardForm instanceof SacrificeCardForm s) {
+        if (!canPurchaseSacrificeCard(s.discountColor())) {
+          cardPurchaseButton.setDisable(true);
+        }
       }
     } else {
       cardPurchaseButton.setDisable(true);
@@ -664,6 +670,48 @@ public class GameBoard {
     // Open menu
     cardActionMenu.toFront();
     cardActionMenu.setVisible(true);
+  }
+
+  private boolean canPurchaseSacrificeCard(GemColor gemColor) {
+    final List<CardForm> cardsWithDiscountColor = getPurchasedCardsWithDiscountColor(gemColor);
+    return cardsWithDiscountColor.size() >= 2
+           || (cardsWithDiscountColor.size() == 1 && (cardsWithDiscountColor.get(0)
+                                                          instanceof DoubleBonusCardForm
+                                                      || cardsWithDiscountColor.get(0)
+                                                          instanceof SatchelCardForm));
+  }
+
+  private List<CardForm> getPurchasedCardsWithDiscountColor(GemColor gemColor) {
+    return player.getHandForm().purchasedCards().stream()
+        .filter(c -> cardHasDiscountOfColor(c, gemColor)).toList();
+  }
+
+  private boolean cardHasDiscountOfColor(CardForm cardForm, GemColor gemColor) {
+    if (cardForm == null || cardForm instanceof GoldGemCardForm) {
+      return false;
+    }
+
+    if (cardForm instanceof DoubleBonusCardForm c) {
+      return c.discountColor() == gemColor;
+    } else if (cardForm instanceof ReserveNobleCardForm c) {
+      return c.discountColor() == gemColor;
+    } else if (cardForm instanceof SacrificeCardForm c) {
+      return c.discountColor() == gemColor;
+    } else if (cardForm instanceof StandardCardForm c) {
+      return c.discountColor() == gemColor;
+    } else if (cardForm instanceof WaterfallCardForm c) {
+      return c.discountColor() == gemColor;
+    } else if (cardForm instanceof SatchelCardForm c) {
+      return cardHasDiscountOfColor(c.cardToAttach(), gemColor);
+    }
+    return false;
+  }
+
+  private List<CardForm> getPossibleCardsToSacrifice(GemColor gemColor) {
+    final List<CardForm> cardsWithDiscountColor = getPurchasedCardsWithDiscountColor(gemColor);
+    final List<CardForm> satchelCards =
+        cardsWithDiscountColor.stream().filter(c -> c instanceof SatchelCardForm).toList();
+    return satchelCards.isEmpty() ? cardsWithDiscountColor : satchelCards;
   }
 
   private boolean cardIsAttachable(CardForm cardForm) {
@@ -714,9 +762,96 @@ public class GameBoard {
                     .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
                 player.getHandForm().reservedCards().contains(s), null)));
       }
-    } else {
-      System.out.println("This card is not yet handled");
+    } else if (cardForm instanceof SacrificeCardForm c) {
+      purchaseSacrificeCard(c);
     }
+  }
+
+  private void purchaseSacrificeCard(SacrificeCardForm sacrificeCard) {
+    final List<CardForm> possibleCardsToSacrifice =
+        getPossibleCardsToSacrifice(sacrificeCard.discountColor());
+    // Generate HBox to display the card choices to user
+    final HBox choicesHBox = new HBox();
+    choicesHBox.setSpacing(5);
+    choicesHBox.setPadding(new Insets(5));
+
+    tentativeSacrifices = new ArrayList<>();
+    // Generate ImageView for each selectable card form
+    for (CardForm c : possibleCardsToSacrifice) {
+      ImageView iv = new ImageView();
+      iv.setImage((c instanceof StandardCardForm) ? new StandardCard((StandardCardForm) c) :
+          new OrientCard(c));
+      iv.setFitHeight(140);
+      iv.setFitWidth(100);
+
+      // Apply event handler to each card in choices
+      iv.setOnMouseClicked(event -> {
+        final Card cardSelected = (Card) ((ImageView) event.getSource()).getImage();
+        if (tentativeSacrifices.isEmpty()) {
+          tentativeSacrifices.add(cardSelected);
+          waterfallPane.lookupButton(ButtonType.FINISH)
+              .setDisable(!(cardSelected.getCardForm() instanceof DoubleBonusCardForm
+                            || cardSelected.getCardForm() instanceof SatchelCardForm));
+        } else if (tentativeSacrifices.size() == 1) {
+          final Card card = tentativeSacrifices.get(0);
+          if (card.getCardForm() instanceof SatchelCardForm) {
+            choicesHBox.getChildren().forEach((child) -> child.setEffect(null));
+            tentativeSacrifices.clear();
+            tentativeSacrifices.add(cardSelected);
+            waterfallPane.lookupButton(ButtonType.FINISH).setDisable(false);
+          } else if (card.getCardForm() instanceof DoubleBonusCardForm
+                     || cardSelected.getCardForm() instanceof DoubleBonusCardForm) {
+            choicesHBox.getChildren().forEach((child) -> {
+              if (child instanceof ImageView i && card.equals(i.getImage())) {
+                child.setEffect(null);
+              }
+            });
+            tentativeSacrifices.clear();
+            tentativeSacrifices.add(cardSelected);
+            waterfallPane.lookupButton(ButtonType.FINISH).setDisable(
+                !(cardSelected.getCardForm() instanceof DoubleBonusCardForm));
+          } else {
+            tentativeSacrifices.add(cardSelected);
+            waterfallPane.lookupButton(ButtonType.FINISH).setDisable(false);
+          }
+        } else { // The size of the list was already 2
+          if (cardSelected.getCardForm() instanceof DoubleBonusCardForm) {
+            choicesHBox.getChildren().forEach((child) -> child.setEffect(null));
+            tentativeSacrifices.clear();
+          } else {
+            final Card cardToRemove = tentativeSacrifices.remove(0);
+            choicesHBox.getChildren().forEach((child) -> {
+              if (child instanceof ImageView i && cardToRemove.equals(i.getImage())) {
+                child.setEffect(null);
+              }
+            });
+          }
+          tentativeSacrifices.add(cardSelected);
+          waterfallPane.lookupButton(ButtonType.FINISH).setDisable(false);
+        }
+        ((ImageView) event.getSource()).setEffect(BLUE_GLOW_EFFECT);
+      });
+
+      choicesHBox.getChildren().add(iv);
+    }
+
+    closeAllActionWindows();
+    waterfallPaneSubtitle.setText("Select card/s to sacrifice");
+    waterfallPaneTitle.setText("Sacrifice purchased card/s");
+    waterfallPane.setContent(choicesHBox);
+    waterfallPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
+      waterfallPane.setVisible(false);
+      waterfallPane.setDisable(true);
+      final CardForm cardToSacrifice1 = tentativeSacrifices.get(0).getCardForm();
+      final CardForm cardToSacrifice2 =
+          tentativeSacrifices.size() < 2 ? null : tentativeSacrifices.get(0).getCardForm();
+      purchaseCard(new PurchaseCardForm(sacrificeCard,
+          new CardPaymentForm(cardToSacrifice1, cardToSacrifice2),
+          player.getHandForm().reservedCards().contains(sacrificeCard), null));
+    });
+    waterfallPane.setVisible(true);
+    waterfallPane.setDisable(false);
+    waterfallPane.lookupButton(ButtonType.FINISH).setDisable(true);
   }
 
   private void purchaseLevelOneSatchelCard(SatchelCardForm satchelCard,
@@ -1208,21 +1343,8 @@ public class GameBoard {
       iv.setFitHeight(100);
       iv.setFitWidth(100);
       iv.setImage(n);
-
-      // Check if current player should be visited by a noble, else add it publicly
-//      if (isValidNobleVisit(GemsForm.costHashToArray(currentPlayer.hand().gemDiscounts()),
-//          n.getCost())) {
-//        activateAcquireNoblePrompt(iv);
-//        // Only one noble can be acquired per turn
-//        break;
-//      } else {
       publicNoblesVBox.getChildren().add(iv);
-//      }
     }
-  }
-
-  private boolean isValidNobleVisit(int[] playerBonuses, int[] nobleCost) {
-    return IntStream.range(0, nobleCost.length).noneMatch(i -> playerBonuses[i] < nobleCost[i]);
   }
 
   @FXML

@@ -125,21 +125,23 @@ public final class LobbyServiceCaller {
   }
 
   /**
-   * Parse tokens from request to LobbyService
+   * Parse tokens from request to LobbyService.
    *
    * @param response HTTP response to token refresh request from LS (see updateAccessToken())
    * @return true if tokens are found, false if error is found instead
    */
   private static boolean getTokens(HttpResponse<String> response) {
     if (response.getStatus() != 200) {
-      return false;
+      if (!login(currentUser.getUserid(), currentUser.getPassword())) {
+        return false;
+      }
     }
 
     final LoginResponse loginResponse =
         Main.GSON.fromJson(response.getBody(), LoginResponse.class);
     currentUser.setAccessToken(loginResponse.accessToken());
     currentUser.setRefreshToken(loginResponse.refreshToken());
-    return loginResponse.expiresIn() >= 35 || updateAccessToken();
+    return true;
   }
 
   /**

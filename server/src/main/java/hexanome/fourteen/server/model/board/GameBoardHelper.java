@@ -55,11 +55,6 @@ public final class GameBoardHelper {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("level one satchel card does not allow you to take a free card");
       }
-      // Now must add extra gem discount
-      final ResponseEntity<String> response = addAttachedCardGemDiscounts(card, hand);
-      if (response != null) {
-        return response;
-      }
     } else if (level == CardLevel.TWO) {
       if (card.freeCardToTake() == null) {
         if (gameBoard.cards().stream()
@@ -79,14 +74,14 @@ public final class GameBoardHelper {
           return response;
         }
       }
-      // Now must add extra gem discount
-      final ResponseEntity<String> response = addAttachedCardGemDiscounts(card, hand);
-      if (response != null) {
-        return response;
-      }
     } else {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
           .body("satchel card configured to the wrong level");
+    }
+    // Now must add extra gem discount
+    final ResponseEntity<String> response = addAttachedCardGemDiscounts(card, hand);
+    if (response != null) {
+      return response;
     }
     card.removeFreeCardToTake();
     // The card is now attached to the satchel card
@@ -107,6 +102,8 @@ public final class GameBoardHelper {
     } else if (card.cardToAttach() instanceof ReserveNobleCard c) {
       hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
     } else if (card.cardToAttach() instanceof WaterfallCard c) {
+      hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
+    } else if (card.cardToAttach() instanceof SacrificeCard c) {
       hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
     } else {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)

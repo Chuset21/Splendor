@@ -1265,7 +1265,7 @@ public class GameHandlerControllerTest {
     cardCost.put(GemColor.RED, 2);
     cardCost.put(GemColor.BLACK, 2);
     cardCost.put(GemColor.BLUE, 2);
-    Card cardToAttach = new SacrificeCard();
+    Card cardToAttach = new GoldGemCard();
     cardToPurchase =
         new SatchelCard(1, cardCost, CardLevel.ONE, Expansion.ORIENT, cardToAttach);
     player.hand().purchasedCards().add(cardToAttach);
