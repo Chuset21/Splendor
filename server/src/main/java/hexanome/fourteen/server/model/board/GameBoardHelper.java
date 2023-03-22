@@ -106,6 +106,8 @@ public final class GameBoardHelper {
       hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
     } else if (card.cardToAttach() instanceof ReserveNobleCard c) {
       hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
+    } else if (card.cardToAttach() instanceof WaterfallCard c) {
+      hand.gemDiscounts().merge(c.discountColor(), Bonus.SINGLE.getValue(), Integer::sum);
     } else {
       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
           .body("cannot attach a card that has no gem discount to a satchel card");

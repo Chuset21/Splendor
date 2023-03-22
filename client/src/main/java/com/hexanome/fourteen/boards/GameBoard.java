@@ -29,6 +29,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -334,8 +335,6 @@ public class GameBoard {
                   gameBoardForm = game;
                   updateBoard();
                 });
-              } else {
-                LobbyServiceCaller.updateAccessToken();
               }
             }
           }
@@ -408,38 +407,84 @@ public class GameBoard {
     if (gameBoardForm == null) {
       throw new InvalidParameterException("gameBoardForm is null");
     }
-
+    final Map<CardLevelForm, Map<Expansion, List<CardForm>>> cardLevelFormListMap = new HashMap<>();
+    for (CardLevelForm level : CardLevelForm.values()) {
+      cardLevelFormListMap.put(level, new HashMap<>());
+      cardLevelFormListMap.get(level).put(Expansion.STANDARD, Collections.emptyList());
+      cardLevelFormListMap.get(level).put(Expansion.ORIENT, Collections.emptyList());
+    }
     // Iterate through each list of the gameBoardForm.cards set (each different levels)
-    for (List<CardForm> cardlist : gameBoardForm.cards()) {
-
+    for (List<CardForm> cardList : gameBoardForm.cards()) {
       // Check to see that we have at least one card to assign
-      if (!cardlist.isEmpty()) {
-
+      if (!cardList.isEmpty()) {
         // set listToUpdate (GUI list) according list's level
         final ArrayList<ImageView> listToUpdate;
-
-        if (cardlist.get(0).expansion() == Expansion.STANDARD) {
-          switch (cardlist.get(0).level()) {
+        final CardForm cardForm = cardList.get(0);
+        if (cardForm.expansion() == Expansion.STANDARD) {
+          cardLevelFormListMap.get(cardForm.level()).put(Expansion.STANDARD, cardList);
+          switch (cardForm.level()) {
             case ONE -> listToUpdate = level1CardViewsBase;
             case TWO -> listToUpdate = level2CardViewsBase;
             case THREE -> listToUpdate = level3CardViewsBase;
             default -> throw new IllegalStateException("Invalid card level from gameBoardForm.");
           }
-          for (int i = 0; i < cardlist.size(); i++) {
-            listToUpdate.get(i).setImage(new StandardCard((StandardCardForm) cardlist.get(i)));
+          for (int i = 0; i < listToUpdate.size(); i++) {
+            if (i < cardList.size()) {
+              listToUpdate.get(i).setImage(new StandardCard((StandardCardForm) cardList.get(i)));
+              listToUpdate.get(i).setDisable(false);
+            } else {
+              listToUpdate.get(i).imageProperty().set(null);
+              listToUpdate.get(i).setDisable(true);
+            }
           }
         } else {
-          switch (cardlist.get(0).level()) {
+          cardLevelFormListMap.get(cardForm.level()).put(Expansion.ORIENT, cardList);
+          switch (cardForm.level()) {
             case ONE -> listToUpdate = level1CardViewsOrient;
             case TWO -> listToUpdate = level2CardViewsOrient;
             case THREE -> listToUpdate = level3CardViewsOrient;
             default -> throw new IllegalStateException("Invalid card level from gameBoardForm.");
           }
-          for (int i = 0; i < cardlist.size(); i++) {
-            listToUpdate.get(i).setImage(new OrientCard(cardlist.get(i)));
+          for (int i = 0; i < listToUpdate.size(); i++) {
+            if (i < cardList.size()) {
+              listToUpdate.get(i).setImage(new OrientCard(cardList.get(i)));
+              listToUpdate.get(i).setDisable(false);
+            } else {
+              listToUpdate.get(i).imageProperty().set(null);
+              listToUpdate.get(i).setDisable(true);
+            }
           }
         }
       }
+    }
+    for (CardLevelForm level : CardLevelForm.values()) {
+      final List<CardForm> standardCards = cardLevelFormListMap.get(level).get(Expansion.STANDARD);
+      final List<CardForm> orientCards = cardLevelFormListMap.get(level).get(Expansion.ORIENT);
+      switch (level) {
+        case ONE -> removeImagesFromDeck(standardCards, orientCards, level1CardViewsBase,
+            level1CardViewsOrient);
+        case TWO -> removeImagesFromDeck(standardCards, orientCards, level2CardViewsBase,
+            level2CardViewsOrient);
+        case THREE -> removeImagesFromDeck(standardCards, orientCards, level3CardViewsBase,
+            level3CardViewsOrient);
+        default -> throw new IllegalStateException("Invalid card level from gameBoardForm.");
+      }
+    }
+  }
+
+  private void removeImagesFromDeck(List<CardForm> standardCards, List<CardForm> orientCards,
+                                    List<ImageView> standardView, List<ImageView> orientView) {
+    if (standardCards.isEmpty()) {
+      standardView.forEach(e -> {
+        e.imageProperty().set(null);
+        e.setDisable(true);
+      });
+    }
+    if (orientCards.isEmpty()) {
+      orientView.forEach(e -> {
+        e.imageProperty().set(null);
+        e.setDisable(true);
+      });
     }
   }
 
@@ -604,7 +649,7 @@ public class GameBoard {
       }
       if (canAfford && cardForm instanceof SatchelCardForm) {
         final long gemDiscountCards =
-            player.getHandForm().purchasedCards().stream().filter(this::cardHasDiscountColor)
+            player.getHandForm().purchasedCards().stream().filter(this::cardIsAttachable)
                 .count();
         if (gemDiscountCards < 1) {
           cardPurchaseButton.setDisable(true);
@@ -623,7 +668,7 @@ public class GameBoard {
     cardActionMenu.setVisible(true);
   }
 
-  private boolean cardHasDiscountColor(CardForm cardForm) {
+  private boolean cardIsAttachable(CardForm cardForm) {
     return !(cardForm instanceof GoldGemCardForm || cardForm instanceof SatchelCardForm);
   }
 
@@ -680,7 +725,7 @@ public class GameBoard {
   private void purchaseLevelOneSatchelCard(SatchelCardForm satchelCard,
                                            Consumer<Void> function) {
     final List<CardForm> cardToAttachSelection =
-        player.getHandForm().purchasedCards().stream().filter(this::cardHasDiscountColor).toList();
+        player.getHandForm().purchasedCards().stream().filter(this::cardIsAttachable).toList();
     // Generate HBox to display the card choices to user
     final HBox choicesHBox = new HBox();
     choicesHBox.setSpacing(5);
@@ -1310,7 +1355,7 @@ public class GameBoard {
 
   private List<CardForm> fetchWaterfallSelection(CardLevelForm level) {
     final boolean canPurchaseSatchelCard =
-        player.getHandForm().purchasedCards().stream().anyMatch(this::cardHasDiscountColor);
+        player.getHandForm().purchasedCards().stream().anyMatch(this::cardIsAttachable);
     // Fetch user's free card choices
     return gameBoardForm.cards().stream().flatMap(Collection::stream)
         .filter(c -> (c.level().equals(level))
