@@ -1,6 +1,7 @@
 package com.hexanome.fourteen.boards;
 
 import com.google.gson.reflect.TypeToken;
+import com.hexanome.fourteen.GameServiceName;
 import com.hexanome.fourteen.Main;
 import com.hexanome.fourteen.ServerCaller;
 import com.hexanome.fourteen.form.server.CityForm;
@@ -57,10 +58,12 @@ import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
@@ -236,6 +239,11 @@ public class GameBoard {
   public Label discardTokenLabel;
   public TokenDiscarder tokenDiscarder;
   private boolean hasBeenLastRound;
+  @FXML
+  private Button tradingPostsButton;
+  private TradingPostsMenu tradingPostsMenu;
+  @FXML
+  private AnchorPane backgroundPane;
 
   /**
    * A call to this method displays the game on screen by initializing the scene with the gameboard.
@@ -268,6 +276,25 @@ public class GameBoard {
     cardActionMenu.setVisible(false);
     purchasedCardsView.setVisible(false);
     takenTokenPane.setVisible(false);
+
+    // Setup trading posts menu
+    if (GameServiceName.getExpansions(LobbyServiceCaller.getCurrentUserLobby().getGameServiceName())
+        .contains(Expansion.TRADING_POSTS)) {
+      tradingPostsButton.setVisible(true);
+      try {
+        tradingPostsMenu = new TradingPostsMenu(this);
+        backgroundPane.getChildren().add(tradingPostsMenu);
+        tradingPostsMenu.setLayoutX(
+            (backgroundPane.getPrefWidth() - tradingPostsMenu.getPrefWidth() - 100) / 2);
+        tradingPostsMenu.setLayoutY(
+            (backgroundPane.getPrefHeight() - tradingPostsMenu.getPrefHeight()) / 2);
+        tradingPostsMenu.setVisible(false);
+      } catch (IOException ioe) {
+        ioe.printStackTrace();
+      }
+    } else {
+      tradingPostsButton.setVisible(false);
+    }
 
 
     // Set up cards
@@ -327,6 +354,12 @@ public class GameBoard {
 
     // Setup nobles CSV data and display on board
     generateNobles();
+
+    // Update tradingPostsMenu
+    if(GameServiceName.getExpansions(LobbyServiceCaller.getCurrentUserLobby().getGameServiceName())
+        .contains(Expansion.TRADING_POSTS)){
+      tradingPostsMenu.updateMenu();
+    }
 
     final String leadingPlayer = gameBoardForm.leadingPlayer().uid();
     if (gameBoardForm.isGameOver()) {
@@ -464,7 +497,7 @@ public class GameBoard {
       if (i < players.size() && players.get(i) != null) {
         playerViews.get(i).setImage(players.get(i));
         Tooltip.install(playerViews.get(i), new Tooltip(players.get(i).getUserId()
-                                                        + (player.getUserId().equals(
+            + (player.getUserId().equals(
             players.get(i).getUserId())
             ? " (you)" : "")));
       } else {
@@ -583,7 +616,7 @@ public class GameBoard {
 
     //// Handle Reserve Availability
     cardReserveButton.setDisable(!isYourTurn() || handForm.reservedCards().size() >= 3
-                                 || handForm.reservedCards().contains(cardForm));
+        || handForm.reservedCards().contains(cardForm));
 
     // Open menu
     cardActionMenu.toFront();
@@ -1207,7 +1240,7 @@ public class GameBoard {
     // Set summary label as player title
     playerSummaryUserLabel.setText(
         requestedPlayer.uid() + "'s Board\nPrestige points: " +
-        requestedPlayer.hand().prestigePoints());
+            requestedPlayer.hand().prestigePoints());
 
     // Fetch and apply the user's discounts to the summary discount matrix
     int index = 0;
@@ -1281,7 +1314,7 @@ public class GameBoard {
     // Fetch user's free card choices
     return gameBoardForm.cards().stream().flatMap(Collection::stream)
         .filter(c -> (c.level().equals(level))
-                     && (!(c instanceof SatchelCardForm) || canPurchaseSatchelCard))
+            && (!(c instanceof SatchelCardForm) || canPurchaseSatchelCard))
         .collect(Collectors.toList());
   }
 
@@ -1430,5 +1463,10 @@ public class GameBoard {
       acquiredNobleAlertPane.setDisable(false);
       acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setDisable(true);
     }
+  }
+
+  @FXML
+  private void openTradingPostsMenu() {
+    tradingPostsMenu.toggleVisibility();
   }
 }

@@ -27,6 +27,14 @@
       <URL value="@appStyling.css" />
    </stylesheets>
    <children>
+      <Button id="takeFromBankButton" fx:id="tradingPostsButton" layoutX="65.0" layoutY="24.0" mnemonicParsing="false" onAction="#openTradingPostsMenu" prefHeight="40.0" prefWidth="189.0" style="-fx-background-color: #72465B; -fx-border-color: #72465B; -fx-background-radius: 10; -fx-border-radius: 10;" text="See Trading Posts" textFill="#f8db85">
+         <font>
+            <Font name="Satoshi Bold" size="18.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Button>
       <Pane fx:id="noblesPane" layoutX="1303.0" layoutY="83.0" prefHeight="614.0" prefWidth="187.0" style="-fx-border-radius: 20;">
          <children>
             <VBox fx:id="publicNoblesVBox" alignment="TOP_CENTER" prefHeight="620.0" prefWidth="185.0" spacing="10.0" style="-fx-background-color: #F8DB85; -fx-border-radius: 20;">

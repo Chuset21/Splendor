@@ -1,5 +1,6 @@
 package com.hexanome.fourteen.boards;
 
+import com.hexanome.fourteen.form.server.PlayerForm;
 import com.hexanome.fourteen.form.server.tradingposts.TradingPostsEnum;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,6 +9,8 @@ import java.util.List;
 import java.util.Objects;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -29,7 +32,6 @@ public class TradingPostsMenu extends DialogPane {
   GridPane shield4Grid;
   final GameBoard gameBoard;
   final List<GridPane> shieldGrids = new ArrayList<>();
-  final HashMap<Player, ImageView[]> PLAYER_TO_SHIELD_MAP = new HashMap<>();
 
   public TradingPostsMenu(GameBoard gameBoard) throws IOException {
     super();
@@ -54,6 +56,43 @@ public class TradingPostsMenu extends DialogPane {
     shieldGrids.add(shield3Grid);
     shieldGrids.add(shield4Grid);
 
+    // Set close function
+    this.lookupButton(ButtonType.CLOSE).setOnMouseClicked(e -> {
+      toggleVisibility();
+    });
 
+    updateMenu();
+  }
+
+  /**
+   * Refreshes each player's trading post status and displays it
+   */
+  public void updateMenu(){
+    PlayerForm[] players = new PlayerForm[4];
+    players = gameBoard.getGameBoardForm().players().toArray(players);
+
+    for (int playerIndex = 0; playerIndex < 4; playerIndex++) {
+      for (int shieldIndex = 0; shieldIndex < 5; shieldIndex++) {
+        for (Node node : shieldGrids.get(shieldIndex).getChildren()) {
+          int x = GridPane.getColumnIndex(node) != null ? GridPane.getColumnIndex(node) : 0;
+          int y = GridPane.getRowIndex(node) != null ? GridPane.getRowIndex(node) : 0;
+
+          if (playerIndex == x + 2 * y) {
+            // Set visibility of player
+            if (players[playerIndex] != null && players[playerIndex].hand().tradingPosts()
+                .getOrDefault(TradingPostsEnum.values()[shieldIndex], false)) {
+              node.setVisible(true);
+            } else {
+              node.setVisible(false);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  public boolean toggleVisibility(){
+    this.setVisible(!isVisible());
+    return isVisible();
   }
 }

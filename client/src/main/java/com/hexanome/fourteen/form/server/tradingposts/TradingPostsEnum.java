@@ -28,5 +28,7 @@ public enum TradingPostsEnum {
    * 1 prestige point for each of your coats of arms on the board.
    */
   ONE_POINT_PER_POWER
+
+
 }
 
