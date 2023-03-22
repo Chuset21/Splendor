@@ -242,6 +242,7 @@ public class GameBoard {
   @FXML
   private Button tradingPostsButton;
   private TradingPostsMenu tradingPostsMenu;
+  private GoldGemSubstituteMenu goldGemSubstituteMenu;
   @FXML
   private AnchorPane backgroundPane;
 
@@ -296,6 +297,19 @@ public class GameBoard {
       tradingPostsButton.setVisible(false);
     }
 
+    // Setup GoldGemSubstituteMenu
+    // Centered on screen, child of root Node
+    try {
+      goldGemSubstituteMenu = new GoldGemSubstituteMenu(this);
+      backgroundPane.getChildren().add(goldGemSubstituteMenu);
+      goldGemSubstituteMenu.setLayoutX(
+          (backgroundPane.getPrefWidth() - goldGemSubstituteMenu.getPrefWidth()) / 2);
+      goldGemSubstituteMenu.setLayoutY(
+          (backgroundPane.getPrefHeight() - goldGemSubstituteMenu.getPrefHeight()) / 2);
+      goldGemSubstituteMenu.setVisible(false);
+    } catch (IOException ioe) {
+      ioe.printStackTrace();
+    }
 
     // Set up cards
     setupCards();
@@ -387,6 +401,7 @@ public class GameBoard {
     cardActionMenu.setVisible(false);
     reservedCardsView.setVisible(false);
     purchasedCardsView.setVisible(false);
+    goldGemSubstituteMenu.close();
     if (tokenDiscarder != null) {
       tokenDiscarder.close();
     }
@@ -540,7 +555,7 @@ public class GameBoard {
       if (i < players.size() && players.get(i) != null) {
         playerViews.get(i).setImage(players.get(i));
         Tooltip.install(playerViews.get(i), new Tooltip(players.get(i).getUserId()
-                                                        + (player.getUserId().equals(
+            + (player.getUserId().equals(
             players.get(i).getUserId())
             ? " (you)" : "")));
       } else {
@@ -612,6 +627,8 @@ public class GameBoard {
       return;
     }
 
+    Card selectedCard = (Card) selectedCardView.getImage();
+
     // Set action pane image to the selected card
     cardActionImage.setImage(selectedCardView.getImage());
     final CardForm cardForm = ((Card) selectedCardView.getImage()).getCardForm();
@@ -637,21 +654,23 @@ public class GameBoard {
 
     if (isYourTurn()) {
       // If player's gems cannot pay for card, disable purchase button
-      boolean canAfford = true;
-      for (int i = 0; i < 5; i++) {
-        if (selectedCost[i] > GemsForm.costHashToArray(handForm.gems())[i]) {
-          cardPurchaseButton.setDisable(true);
-          canAfford = false;
-          break;
+      boolean canAfford =
+          (cost != null && GemsForm.isAffordable(cost, player.getHandForm().gems())) ||
+              (cost == null);
+
+      if (canAfford) {
+        if (cardForm instanceof SatchelCardForm) {
+          final long gemDiscountCards =
+              player.getHandForm().purchasedCards().stream().filter(this::cardIsAttachable)
+                  .count();
+          if (gemDiscountCards < 1) {
+            cardPurchaseButton.setDisable(true);
+          }
+        } else {
+          cardPurchaseButton.setDisable(false);
         }
-      }
-      if (canAfford && cardForm instanceof SatchelCardForm) {
-        final long gemDiscountCards =
-            player.getHandForm().purchasedCards().stream().filter(this::cardIsAttachable)
-                .count();
-        if (gemDiscountCards < 1) {
-          cardPurchaseButton.setDisable(true);
-        }
+      } else {
+        cardPurchaseButton.setDisable(true);
       }
     } else {
       cardPurchaseButton.setDisable(true);
@@ -659,7 +678,7 @@ public class GameBoard {
 
     //// Handle Reserve Availability
     cardReserveButton.setDisable(!isYourTurn() || handForm.reservedCards().size() >= 3
-                                 || handForm.reservedCards().contains(cardForm));
+        || handForm.reservedCards().contains(cardForm));
 
     // Open menu
     cardActionMenu.toFront();
@@ -681,11 +700,17 @@ public class GameBoard {
     if (cardForm instanceof StandardCardForm
         || cardForm instanceof GoldGemCardForm
         || cardForm instanceof DoubleBonusCardForm) {
-      final PurchaseCardForm purchaseCardForm = new PurchaseCardForm(cardForm,
-          new GemPaymentForm(cardForm.cost()
-              .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
-          player.getHandForm().reservedCards().contains(cardForm), null);
-      purchaseCard(purchaseCardForm);
+      if (player.getHandForm().gems().getOrDefault(GemColor.GOLD, 0).intValue() > 0) {
+        goldGemSubstituteMenu.open(cardForm, payment -> purchaseCard(new PurchaseCardForm(cardForm,
+            payment,
+            player.getHandForm().reservedCards().contains(cardForm), null)));
+      } else {
+        final PurchaseCardForm purchaseCardForm = new PurchaseCardForm(cardForm,
+            new GemPaymentForm(cardForm.cost()
+                .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
+            player.getHandForm().reservedCards().contains(cardForm), null);
+        purchaseCard(purchaseCardForm);
+      }
     } else if (cardForm instanceof WaterfallCardForm) {
       displayWaterfallChoices(cardForm, CardLevelForm.TWO, f ->
           purchaseCard(new PurchaseCardForm(cardForm,
@@ -1282,7 +1307,7 @@ public class GameBoard {
     // Set summary label as player title
     playerSummaryUserLabel.setText(
         requestedPlayer.uid() + "'s Board\nPrestige points: " +
-        requestedPlayer.hand().prestigePoints());
+            requestedPlayer.hand().prestigePoints());
 
     // Fetch and apply the user's discounts to the summary discount matrix
     int index = 0;
@@ -1356,7 +1381,7 @@ public class GameBoard {
     // Fetch user's free card choices
     return gameBoardForm.cards().stream().flatMap(Collection::stream)
         .filter(c -> (c.level().equals(level))
-                     && (!(c instanceof SatchelCardForm) || canPurchaseSatchelCard))
+            && (!(c instanceof SatchelCardForm) || canPurchaseSatchelCard))
         .collect(Collectors.toList());
   }
 

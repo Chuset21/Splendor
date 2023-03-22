@@ -136,4 +136,15 @@ public final class GemsForm extends HashMap<GemColor, Integer> {
   public int count() {
     return this.values().stream().mapToInt(value -> value).sum();
   }
+
+  /**
+   * Determines if the player can substitute gold gems for given cost
+   *
+   * @return boolean representing affordability
+   */
+  public static boolean isAffordable(GemsForm cost, GemsForm gemsInHand){
+    GemsForm tempCost = new GemsForm(cost);
+    tempCost.removeGems(gemsInHand);
+    return tempCost.count() <= gemsInHand.getOrDefault(GemColor.GOLD,0).intValue();
+  }
 }

@@ -86,6 +86,9 @@ public final class ServerCaller {
    * Returns null as the string if successful,
    * however if a noble can be reserved, it returns the list of nobles that can be reserved
    *
+   * @param lobby current user's lobby
+   * @param accessToken access token of current user
+   * @param purchaseCardForm form with details of purchase
    * @return The response.
    */
   public static HttpResponse<String> purchaseCard(Lobby lobby,
