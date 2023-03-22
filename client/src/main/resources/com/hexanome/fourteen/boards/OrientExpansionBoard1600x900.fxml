@@ -27,7 +27,7 @@
       <URL value="@appStyling.css" />
    </stylesheets>
    <children>
-      <Button id="takeFromBankButton" fx:id="tradingPostsButton" layoutX="65.0" layoutY="24.0" mnemonicParsing="false" onAction="#openTradingPostsMenu" prefHeight="40.0" prefWidth="189.0" style="-fx-background-color: #72465B; -fx-border-color: #72465B; -fx-background-radius: 10; -fx-border-radius: 10;" text="See Trading Posts" textFill="#f8db85">
+      <Button id="openTradingPostsButton" fx:id="tradingPostsButton" layoutX="65.0" layoutY="24.0" mnemonicParsing="false" onAction="#openTradingPostsMenu" prefHeight="40.0" prefWidth="189.0" style="-fx-background-color: #72465B; -fx-border-color: #72465B; -fx-background-radius: 10; -fx-border-radius: 10;" text="See Trading Posts" textFill="#f8db85">
          <font>
             <Font name="Satoshi Bold" size="18.0" />
          </font>
