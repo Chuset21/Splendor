@@ -1,5 +1,6 @@
 package hexanome.fourteen.server.model.board.tradingposts;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 /**
@@ -20,11 +21,7 @@ public class TradingPosts extends HashMap<TradingPostsEnum, Boolean> {
    */
   public static TradingPosts createDefault() {
     final TradingPosts result = new TradingPosts();
-    result.put(TradingPostsEnum.BONUS_GEM_WITH_CARD, false);
-    result.put(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO, false);
-    result.put(TradingPostsEnum.DOUBLE_GOLD_GEMS, false);
-    result.put(TradingPostsEnum.FIVE_PRESTIGE_POINTS, false);
-    result.put(TradingPostsEnum.ONE_POINT_PER_POWER, false);
+    Arrays.stream(TradingPostsEnum.values()).forEach(x -> result.put(x, false));
     return result;
   }
 }
