@@ -441,9 +441,9 @@ public class GameHandlerController {
               .body("must sacrifice a satchel card if possible");
         }
 
-        if (doubleBonusCard.discountColor() != cardToPurchase.discountColor()) {
+        if (doubleBonusCard.discountColor() != cardToPurchase.sacrificeColor()) {
           return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-              .body("sacrifice card discount color must equal purchased card discount color");
+              .body("sacrifice card discount color must equal purchased card sacrifice color");
         }
 
         hand.gemDiscounts().computeIfPresent(doubleBonusCard.discountColor(),

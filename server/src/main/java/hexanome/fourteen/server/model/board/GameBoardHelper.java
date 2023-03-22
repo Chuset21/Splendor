@@ -241,15 +241,15 @@ public final class GameBoardHelper {
   public static boolean matchesCardDiscountColor(SacrificeCard sacrificeCard,
                                                  Card card) {
     if (Objects.requireNonNull(card) instanceof ReserveNobleCard c) {
-      return c.discountColor() == sacrificeCard.discountColor();
+      return c.discountColor() == sacrificeCard.sacrificeColor();
     } else if (card instanceof DoubleBonusCard c) {
-      return c.discountColor() == sacrificeCard.discountColor();
+      return c.discountColor() == sacrificeCard.sacrificeColor();
     } else if (card instanceof SacrificeCard c) {
-      return c.discountColor() == sacrificeCard.discountColor();
+      return c.discountColor() == sacrificeCard.sacrificeColor();
     } else if (card instanceof StandardCard c) {
-      return c.discountColor() == sacrificeCard.discountColor();
+      return c.discountColor() == sacrificeCard.sacrificeColor();
     } else if (card instanceof WaterfallCard c) {
-      return c.discountColor() == sacrificeCard.discountColor();
+      return c.discountColor() == sacrificeCard.sacrificeColor();
     }
     return false;
   }
