@@ -109,11 +109,7 @@ public class InLobbyScreenController implements ScreenController {
 
     joinLobbyButton.setVisible(false);
 
-    // TODO: remove launch button when not the host (make it into a join button?)
-    if (!LobbyServiceCaller.getCurrentUserLobby().getHost()
-        .equals(LobbyServiceCaller.getCurrentUserid())) {
-      launchLobbyButton.setVisible(false);
-    }
+    updateLobbyInfo();
   }
 
   @FXML
@@ -221,7 +217,7 @@ public class InLobbyScreenController implements ScreenController {
    */
   private void updateGUI() {
     // Updates joinLobby buttons for non-host users
-    if (LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost()) || lobby.getLaunched()) {
+    if ((LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost()) && lobby.getNumPlayers() > 1) || lobby.getLaunched()) {
       joinLobbyButton.setVisible(false);
       launchLobbyButton.setVisible(true);
     } else {
