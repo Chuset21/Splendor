@@ -20,25 +20,14 @@ public class AvailableCitiesMenu extends DialogPane {
   Label titleLabel;
 
   @FXML
-  private final ToggleGroup availableCities = new ToggleGroup();
+  ImageView availableCity0;
+
 
   @FXML
-  ToggleButton availableCity0;
+  ImageView availableCity1;
 
   @FXML
-  ImageView availableCity0Image;
-
-  @FXML
-  ToggleButton availableCity1;
-
-  @FXML
-  ImageView availableCity1Image;
-
-  @FXML
-  ToggleButton availableCity2;
-
-  @FXML
-  ImageView availableCity2Image;
+  ImageView availableCity2;
 
 
 
@@ -62,38 +51,20 @@ public class AvailableCitiesMenu extends DialogPane {
 
     this.gameBoard = gameBoard;
 
-    // Make sure the images cover the full toggle button
-    availableCity0.setPadding(Insets.EMPTY);
-    availableCity1.setPadding(Insets.EMPTY);
-    availableCity2.setPadding(Insets.EMPTY);
-
-    // Set close function
-    this.lookupButton(ButtonType.CLOSE).setOnMouseClicked(e -> toggleVisibility());
-
     // Update our available cities
     updateCities();
-  }
-
-  public boolean toggleVisibility() {
-    this.setVisible(!isVisible());
-    return isVisible();
   }
 
   public void updateCities() {
 
     ArrayList<City> availableCities = City.interpretCities(gameBoard.getGameBoardForm());
 
-    availableCity0.setUserData(availableCities.get(0).cityForm);
-    availableCity0Image.setImage(availableCities.get(0));
+    availableCity0.setImage(availableCities.get(0));
 
-    availableCity1.setUserData(availableCities.get(1).cityForm);
-    availableCity1Image.setImage(availableCities.get(1));
+    availableCity1.setImage(availableCities.get(1));
 
-    availableCity2.setUserData(availableCities.get(2).cityForm);
-    availableCity2Image.setImage(availableCities.get(2));
+    availableCity2.setImage(availableCities.get(2));
 
-
-    System.out.println("BP");
   }
 
 

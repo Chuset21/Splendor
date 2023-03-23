@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 /**
@@ -28,6 +29,10 @@ public final class LoginScreenController implements ScreenController {
   private Button loginButton;
   @FXML
   private Label loginMessageLabel;
+  @FXML
+  private HBox presetCredentialsHBox;
+  @FXML
+  private Button presetCredentialsButton;
 
 
   /**
@@ -48,7 +53,11 @@ public final class LoginScreenController implements ScreenController {
     } else{
       loginMessageLabel.setText("");
     }
+    presetCredentialsButton.toFront();
+    presetCredentialsHBox.toFront();
   }
+
+
 
   @FXML
   private void handleLogin() {
@@ -90,4 +99,32 @@ public final class LoginScreenController implements ScreenController {
       ex.printStackTrace();
     }
   }
+
+  // DEV MODE
+  @FXML
+  private void togglePresetLogins() {
+    presetCredentialsHBox.setVisible(!presetCredentialsHBox.isVisible());
+  }
+  @FXML
+  private void loginLinus() { loginPreset("linus");}
+  @FXML
+  private void loginMaex() { loginPreset("maex");}
+  @FXML
+  private void loginKhabiir() { loginPreset("khabiir");}
+  @FXML
+  private void loginMarianick() { loginPreset("marianick");}
+
+  private void loginPreset(String username) {
+
+
+    User user = new User(username, "abc123_ABC123");
+
+    if (LobbyServiceCaller.login(username, "abc123_ABC123")) {
+      launchGame();
+    } else {
+      failedLogin();
+    }
+  }
+
+
 }

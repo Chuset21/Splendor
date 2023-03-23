@@ -107,7 +107,6 @@ public class GameBoard {
       new DropShadow(BlurType.GAUSSIAN, Color.web("#0048ff"), 24.5, 0, 0, 0);
 
   private ArrayList<Noble> gameNobles;
-  //private ArrayList<City> gameCities;
 
   @FXML
   private Button openBankButton;
@@ -244,8 +243,14 @@ public class GameBoard {
   private Button tradingPostsButton;
   @FXML
   private Button citiesButton;
+
   private TradingPostsMenu tradingPostsMenu;
+
   private AvailableCitiesMenu availableCitiesMenu;
+
+  @FXML
+  private HBox myCityHBox;
+
   @FXML
   private AnchorPane backgroundPane;
 
@@ -310,6 +315,8 @@ public class GameBoard {
         availableCitiesMenu.setLayoutX((backgroundPane.getPrefWidth() - availableCitiesMenu.getPrefWidth() - 100) / 2);
         availableCitiesMenu.setLayoutY((backgroundPane.getPrefHeight() - availableCitiesMenu.getPrefHeight()) / 2);
         availableCitiesMenu.setVisible(false);
+
+        myCityHBox.setVisible(true);
       } catch (IOException ioe) {
         ioe.printStackTrace();
       }
@@ -381,7 +388,16 @@ public class GameBoard {
 
     // Update our availableCitiesMenu
     if (gameBoardForm.expansions().contains(Expansion.CITIES)) {
+
+      // update available cities
       availableCitiesMenu.updateCities();
+
+      // update our own city
+      CityForm myCityForm = player.getHandForm().city();
+
+      if (myCityForm != null) {
+        ((ImageView) myCityHBox.getChildren().get(1)).setImage(new City(myCityForm));
+      }
     }
 
     final String leadingPlayer = gameBoardForm.leadingPlayer().uid();
@@ -1534,11 +1550,44 @@ public class GameBoard {
   }
 
   @FXML
-  private void openTradingPostsMenu() {
-    tradingPostsMenu.toggleVisibility();
+  private void showTradingPostsMenu() { tradingPostsMenu.setVisible(true); }
+
+  @FXML
+  private void hideTradingPostsMenu() { tradingPostsMenu.setVisible(false); }
+
+  @FXML
+  private void showAvailableCitiesMenu() { availableCitiesMenu.setVisible(true);}
+
+  @FXML
+  private void hideAvailableCitiesMenu() { availableCitiesMenu.setVisible(false);}
+
+  @FXML
+  private void showMyCity() {
+
+    CityForm myCityForm = player.getHandForm().city();
+
+    if (myCityForm == null) {
+      // Set button to display NONE and change color to RED
+      Button display = (Button) myCityHBox.getChildren().get(0);
+      display.setText("None");
+      display.setStyle("-fx-background-color: #FF0000");
+    } else {
+      // Set City image visibility to true
+      myCityHBox.getChildren().get(1).setVisible(true);
+
+    }
   }
 
   @FXML
-  private void openAvailableCitiesMenu() { availableCitiesMenu.toggleVisibility();}
+  private void hideMyCity() {
+    // Set button back to default state
+    Button myCityButton = (Button) myCityHBox.getChildren().get(0);
+    myCityButton.setText("My City");
+    myCityButton.setStyle("-fx-background-color: #72465B");
+
+    // Set City image visibility to false
+    myCityHBox.getChildren().get(1).setVisible(false);
+
+  }
 
 }
