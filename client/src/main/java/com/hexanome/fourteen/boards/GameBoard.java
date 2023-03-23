@@ -87,7 +87,7 @@ public class GameBoard {
   private static final Map<String/*Player id*/, String/*Player Icon Filename*/> PLAYER_ID_MAP =
       new HashMap<>();
   private static final String[] DEFAULT_PLAYER_ICONS =
-      {"cat.jpg", "dog.jpg", "squirrel.jpg", "chameleon.jpg"};
+          {"yellowPlayerShield.png", "blackPlayerShield.png", "redPlayerShield.png", "bluePlayerShield.png"};
 
   Bank bank;
 
@@ -511,7 +511,7 @@ public class GameBoard {
 
     for (PlayerForm player : gameBoardForm.players()) {
       PLAYER_ID_MAP.put(player.uid(),
-          User.class.getResource("images/" + DEFAULT_PLAYER_ICONS[i]).toString());
+              GameBoard.class.getResource("images/tradingPosts/" + DEFAULT_PLAYER_ICONS[i]).toString());
       i = (i + 1) % DEFAULT_PLAYER_ICONS.length;
     }
   }
@@ -528,28 +528,16 @@ public class GameBoard {
     // Reset list of players
     players = new ArrayList<>();
 
-    int i = 0;
-
     // Add all players to players list
     for (PlayerForm playerForm : gameBoardForm.players()) {
-      if (playerForm.uid().equals(LobbyServiceCaller.getCurrentUserid())) {
-        player = new Player(playerForm, PLAYER_ID_MAP.get(playerForm.uid()));
-
-        if (i != 0) {
-          Player temp = players.get(0);
-          players.set(0, player);
-          players.add(temp);
-        } else {
-          players.add(player);
-        }
-      } else {
-        players.add(new Player(playerForm, PLAYER_ID_MAP.get(playerForm.uid())));
+      players.add(new Player(playerForm, PLAYER_ID_MAP.get(playerForm.uid())));
+      if(playerForm.uid().equals(LobbyServiceCaller.getCurrentUserid())) {
+        player = players.get(players.size() - 1);
       }
-      i++;
     }
 
     // Place all players in their frames and their names
-    for (i = 0; i < playerViews.size(); i++) {
+    for (int i = 0; i < playerViews.size(); i++) {
       if (i < players.size() && players.get(i) != null) {
 
         if (i == 0) {
