@@ -4,6 +4,7 @@ import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.ServerCaller;
 import com.hexanome.fourteen.form.server.GemsForm;
 import com.hexanome.fourteen.form.server.TakeGemsForm;
+import com.hexanome.fourteen.form.server.tradingposts.TradingPostsEnum;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -239,6 +240,8 @@ public class Bank {
       handBucket.put(gem, handBucket.get(gem) + 1);
     }
 
+    boolean hasPost2 = gameBoard.player.getHandForm().tradingPosts().get(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO);
+
     // Go through the buttons of each colour and enable/disable them accordingly.
     for (int idx : GEM_INDEX) {
 
@@ -256,7 +259,8 @@ public class Bank {
           || (bankGems[idx] < 3 && selectedGems.contains(idx))
           || handBucket.get(idx) > 0 && selectedGems.size() > 1
           || selectedGems.size() == 3
-          || handBucket.containsValue(2)) {
+          || handBucket.containsValue(2) && !hasPost2
+          || hasPost2 && selectedGems.size() == 2 && selectedGems.get(0) == idx && selectedGems.get(1) == idx) {
         addGemButtons.get(idx).setDisable(true);
       } else {
         addGemButtons.get(idx).setDisable(false);
@@ -272,7 +276,11 @@ public class Bank {
                  !((selectedGems.size() == 1 && !hasDoubleColour()) ||
                    (selectedGems.size() == 2 && hasDoubleColour()))) {
         takeBankButton.setDisable(true);
-      } else {
+      }
+      else if (!gameBoard.player.getHandForm().tradingPosts().get(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO)
+          && selectedGems.size() != 3){
+        takeBankButton.setDisable(true);
+      }else {
         takeBankButton.setDisable(false);
       }
     }
