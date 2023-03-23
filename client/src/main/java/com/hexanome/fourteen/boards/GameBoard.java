@@ -980,7 +980,8 @@ public class GameBoard {
       totalGemsInHand += i;
     }
 
-    if (totalGemsInHand + 1 > 10 && gameBoardForm.availableGems().get(GemColor.GOLD) > 0) {
+    if (totalGemsInHand + 1 > 10
+        && gameBoardForm.availableGems().getOrDefault(GemColor.GOLD, 0) > 0) {
       closeAllActionWindows();
       tokenDiscarder =
           new TokenDiscarder(this, player.getHandForm().gems(), 1, this::handleReserve);
