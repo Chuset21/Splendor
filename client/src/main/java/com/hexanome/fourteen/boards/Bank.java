@@ -277,7 +277,7 @@ public class Bank {
                    (selectedGems.size() == 2 && hasDoubleColour()))) {
         takeBankButton.setDisable(true);
       }
-      else if (!gameBoard.player.getHandForm().tradingPosts().get(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO)
+      else if (hasPost2
           && selectedGems.size() != 3){
         takeBankButton.setDisable(true);
       }else {
