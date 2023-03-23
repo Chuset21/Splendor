@@ -666,8 +666,6 @@ public class GameBoard {
           if (gemDiscountCards < 1) {
             cardPurchaseButton.setDisable(true);
           }
-        } else {
-          cardPurchaseButton.setDisable(false);
         }
       } else {
         cardPurchaseButton.setDisable(true);
@@ -712,32 +710,65 @@ public class GameBoard {
         purchaseCard(purchaseCardForm);
       }
     } else if (cardForm instanceof WaterfallCardForm) {
-      displayWaterfallChoices(cardForm, CardLevelForm.TWO, f ->
-          purchaseCard(new PurchaseCardForm(cardForm,
-              new GemPaymentForm(
-                  cardForm.cost().getDiscountedCost(player.getHandForm().gemDiscounts()),
-                  0),
-              player.getHandForm().reservedCards().contains(cardForm), null)));
-    } else if (cardForm instanceof ReserveNobleCardForm r) {
-      purchaseReserveNobleCard(r, f ->
-          purchaseCard(new PurchaseCardForm(cardForm,
-              new GemPaymentForm(cardForm.cost()
-                  .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
-              player.getHandForm().reservedCards().contains(cardForm), null)));
-    } else if (cardForm instanceof SatchelCardForm s) {
-      if (s.level() == CardLevelForm.TWO) {
-        purchaseLevelOneSatchelCard(s, f -> displayWaterfallChoices(s, CardLevelForm.ONE,
-            x -> purchaseCard(new PurchaseCardForm(cardForm,
+      if (player.getHandForm().gems().getOrDefault(GemColor.GOLD, 0).intValue() > 0) {
+        goldGemSubstituteMenu.open(cardForm,
+            payment -> displayWaterfallChoices(cardForm, CardLevelForm.TWO, f ->
+                purchaseCard(new PurchaseCardForm(cardForm,
+                    payment,
+                    player.getHandForm().reservedCards().contains(cardForm), null))));
+      } else {
+        displayWaterfallChoices(cardForm, CardLevelForm.TWO, f ->
+            purchaseCard(new PurchaseCardForm(cardForm,
                 new GemPaymentForm(
                     cardForm.cost().getDiscountedCost(player.getHandForm().gemDiscounts()),
                     0),
-                player.getHandForm().reservedCards().contains(cardForm), null))));
+                player.getHandForm().reservedCards().contains(cardForm), null)));
+      }
+    } else if (cardForm instanceof ReserveNobleCardForm r) {
+      if (player.getHandForm().gems().getOrDefault(GemColor.GOLD, 0).intValue() > 0) {
+        goldGemSubstituteMenu.open(cardForm,
+            payment -> purchaseReserveNobleCard(r, f ->
+                purchaseCard(new PurchaseCardForm(cardForm,
+                    payment,
+                    player.getHandForm().reservedCards().contains(cardForm), null))));
       } else {
-        purchaseLevelOneSatchelCard(s, f ->
-            purchaseCard(new PurchaseCardForm(s,
-                new GemPaymentForm(s.cost()
+        purchaseReserveNobleCard(r, f ->
+            purchaseCard(new PurchaseCardForm(cardForm,
+                new GemPaymentForm(cardForm.cost()
                     .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
-                player.getHandForm().reservedCards().contains(s), null)));
+                player.getHandForm().reservedCards().contains(cardForm), null)));
+      }
+    } else if (cardForm instanceof SatchelCardForm s) {
+      if (s.level() == CardLevelForm.TWO) {
+        if (player.getHandForm().gems().getOrDefault(GemColor.GOLD, 0).intValue() > 0) {
+          goldGemSubstituteMenu.open(cardForm,
+              payment -> purchaseLevelOneSatchelCard(s,
+                  f -> displayWaterfallChoices(s, CardLevelForm.ONE,
+                      x -> purchaseCard(new PurchaseCardForm(cardForm,
+                          payment,
+                          player.getHandForm().reservedCards().contains(cardForm), null)))));
+        } else {
+          purchaseLevelOneSatchelCard(s, f -> displayWaterfallChoices(s, CardLevelForm.ONE,
+              x -> purchaseCard(new PurchaseCardForm(cardForm,
+                  new GemPaymentForm(
+                      cardForm.cost().getDiscountedCost(player.getHandForm().gemDiscounts()),
+                      0),
+                  player.getHandForm().reservedCards().contains(cardForm), null))));
+        }
+      } else {
+        if (player.getHandForm().gems().getOrDefault(GemColor.GOLD, 0).intValue() > 0) {
+          goldGemSubstituteMenu.open(cardForm,
+              payment -> purchaseLevelOneSatchelCard(s, f ->
+                  purchaseCard(new PurchaseCardForm(s,
+                      payment,
+                      player.getHandForm().reservedCards().contains(s), null))));
+        } else {
+          purchaseLevelOneSatchelCard(s, f ->
+              purchaseCard(new PurchaseCardForm(s,
+                  new GemPaymentForm(s.cost()
+                      .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
+                  player.getHandForm().reservedCards().contains(s), null)));
+        }
       }
     } else {
       System.out.println("This card is not yet handled");
