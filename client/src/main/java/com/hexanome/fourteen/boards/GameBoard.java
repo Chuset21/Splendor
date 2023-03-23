@@ -366,6 +366,10 @@ public class GameBoard {
       disableGameAlteringActions();
       // TODO show the player that won
       System.out.printf("Game is over, winner: %s\n", leadingPlayer);
+      try {
+        LobbyServiceCaller.deleteLaunchedSession();
+      } catch (TokenRefreshFailedException ignored) {
+      }
     } else {
       if (gameBoardForm.isLastRound() && !hasBeenLastRound) {
         hasBeenLastRound = true;
@@ -1115,18 +1119,8 @@ public class GameBoard {
 
   @FXML
   private void handleClickMenuPopupQuitButton() {
-    try {
-      service.cancel();
-      LobbyServiceCaller.deleteLaunchedSession();
-      LobbyServiceCaller.setCurrentUserLobby(null);
-    } catch (TokenRefreshFailedException e) {
-      try {
-        MenuController.returnToLogin("Session timed out, retry login");
-        stage.close();
-      } catch (IOException ioe) {
-        ioe.printStackTrace();
-      }
-    }
+    service.cancel();
+    LobbyServiceCaller.setCurrentUserLobby(null);
 
     try {
       MenuController.goToWelcomeScreen();

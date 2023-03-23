@@ -307,8 +307,8 @@ public final class LobbyServiceCaller {
    */
   public static boolean deleteLaunchedSession() throws TokenRefreshFailedException {
     // Check if currentUser is in a lobby to begin with
-    if (currentUser.getCurrentLobby() == null ||
-        !currentUser.getCurrentLobby().getHost().equals(currentUser.getUserid())) {
+    if (currentUser.getCurrentLobby() == null
+        || !currentUser.getCurrentLobby().getHost().equals(currentUser.getUserid())) {
       return false;
     }
 
