@@ -55,8 +55,21 @@ public class GoldGemSubstituteMenu extends DialogPane {
    */
   public void open(CardForm cardForm, Consumer<GemPaymentForm> endFunction) {
     // Resets chosenGems and originalGems to (normal cost - discounts)
-    chosenGems = GemsForm.costHashToArrayWithGold(
-        cardForm.cost().getDiscountedCost(gameBoard.player.getHandForm().gemDiscounts()));
+
+    // Finds missing gems
+    GemsForm missingGems = new GemsForm(cardForm.cost());
+    missingGems.removeGems(gameBoard.player.getHandForm().gems());
+    int missingGold = missingGems.count();
+
+    // Removes missing gems from starting cost
+    GemsForm tempCost =
+        cardForm.cost().getDiscountedCost(gameBoard.player.getHandForm().gemDiscounts());
+    tempCost.removeGems(missingGems);
+    tempCost.computeIfAbsent(GemColor.GOLD,
+        f -> missingGold > 0 ? missingGold : null);
+
+
+    chosenGems = GemsForm.costHashToArrayWithGold(tempCost);
     cardCost = GemsForm.costHashToArrayWithGold(
         cardForm.cost().getDiscountedCost(gameBoard.player.getHandForm().gemDiscounts()));
 
@@ -66,6 +79,7 @@ public class GoldGemSubstituteMenu extends DialogPane {
     this.lookupButton(ButtonType.FINISH).setDisable(false);
 
     // Set menu as visible
+    updateButtonsAndText();
     this.toFront();
     this.setVisible(true);
   }
@@ -133,13 +147,16 @@ public class GoldGemSubstituteMenu extends DialogPane {
         if (getNodeIndexInGrid(n)[1] == 0) {
           // Set active if (amt of gold gems < gold gems in hand)
           n.setDisable(!(chosenGems[5] <
-              gameBoard.player.getHandForm().gems().getOrDefault(GemColor.GOLD, 0).intValue()));
+              gameBoard.player.getHandForm().gems().getOrDefault(GemColor.GOLD, 0).intValue() &&
+              chosenGems[getNodeIndexInGrid(n)[0]] > 0));
         } else
           // Handle returnGemButton (+)
           if (getNodeIndexInGrid(n)[1] == 3) {
             // Set active if (amt of chosen gems in this color < cost of this card for this color)
             n.setDisable(
-                !(chosenGems[getNodeIndexInGrid(n)[0]] < cardCost[getNodeIndexInGrid(n)[0]]));
+                !(chosenGems[getNodeIndexInGrid(n)[0]] < cardCost[getNodeIndexInGrid(n)[0]] &&
+                    chosenGems[getNodeIndexInGrid(n)[0]] < gameBoard.player.getHandForm().gems()
+                        .getOrDefault(GemColor.values()[getNodeIndexInGrid(n)[0]], 0).intValue()));
           }
     }
   }
