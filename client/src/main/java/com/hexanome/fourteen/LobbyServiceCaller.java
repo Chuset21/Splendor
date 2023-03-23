@@ -131,8 +131,8 @@ public final class LobbyServiceCaller {
    * @return true if tokens are found, false if error is found instead
    */
   private static boolean getTokens(HttpResponse<String> response) {
-    if (response.getStatus() != 200) {
-      if (!login(currentUser.getUserid(), currentUser.getPassword())) {
+    if (!response.isSuccess()) {
+      if (currentUser != null && !login(currentUser.getUserid(), currentUser.getPassword())) {
         return false;
       }
     }
