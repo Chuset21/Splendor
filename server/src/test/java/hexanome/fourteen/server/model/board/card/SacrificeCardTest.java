@@ -27,13 +27,13 @@ public class SacrificeCardTest {
   public static void setUp() {
     cost = new Gems();
     sacrificeCard =
-        new SacrificeCard(prestigePoints, cost, cardLevel, expansion, discountColor);
+        new SacrificeCard(prestigePoints, cost, cardLevel, expansion, discountColor, discountColor);
   }
 
   @Test
   public void testPrestigePoints() {
     sacrificeCard =
-        new SacrificeCard(prestigePoints, cost, cardLevel, expansion, discountColor);
+        new SacrificeCard(prestigePoints, cost, cardLevel, expansion, discountColor, discountColor);
     assertEquals(prestigePoints, sacrificeCard.prestigePoints());
   }
 
@@ -44,7 +44,7 @@ public class SacrificeCardTest {
     cost.put(GemColor.BLUE, 2);
     cost.put(GemColor.WHITE, 3);
     sacrificeCard =
-        new SacrificeCard(prestigePoints, cost, cardLevel, expansion, discountColor);
+        new SacrificeCard(prestigePoints, cost, cardLevel, expansion, discountColor, discountColor);
 
     assertEquals(cost, sacrificeCard.cost());
   }
@@ -83,7 +83,7 @@ public class SacrificeCardTest {
   @Test
   public void testEqualsByValue() {
     SacrificeCard cardWithEqualValues =
-        new SacrificeCard(prestigePoints, cost, cardLevel, expansion, discountColor);
+        new SacrificeCard(prestigePoints, cost, cardLevel, expansion, discountColor, discountColor);
     assertEquals(sacrificeCard, cardWithEqualValues);
   }
 

@@ -244,6 +244,7 @@
     "type": "SacrificeCard",
     "prestige_points": 3,
     "discount_color": "BLACK",
+    "sacrifice_color": "RED",
     "cost": null,
     "level": "THREE",
     "expansion": "ORIENT"
@@ -265,6 +266,7 @@
     "type": "SacrificeCard",
     "prestige_points": 3,
     "discount_color": "BLUE",
+    "sacrifice_color": "WHITE",
     "cost": null,
     "level": "THREE",
     "expansion": "ORIENT"
@@ -286,6 +288,7 @@
     "type": "SacrificeCard",
     "prestige_points": 3,
     "discount_color": "GREEN",
+    "sacrifice_color": "BLUE",
     "cost": null,
     "level": "THREE",
     "expansion": "ORIENT"
@@ -307,6 +310,7 @@
     "type": "SacrificeCard",
     "prestige_points": 3,
     "discount_color": "RED",
+    "sacrifice_color": "GREEN",
     "cost": null,
     "level": "THREE",
     "expansion": "ORIENT"
@@ -315,6 +319,7 @@
     "type": "SacrificeCard",
     "prestige_points": 3,
     "discount_color": "WHITE",
+    "sacrifice_color": "BLACK",
     "cost": null,
     "level": "THREE",
     "expansion": "ORIENT"

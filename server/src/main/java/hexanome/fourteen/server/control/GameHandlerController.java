@@ -441,9 +441,9 @@ public class GameHandlerController {
               .body("must sacrifice a satchel card if possible");
         }
 
-        if (doubleBonusCard.discountColor() != cardToPurchase.discountColor()) {
+        if (doubleBonusCard.discountColor() != cardToPurchase.sacrificeColor()) {
           return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-              .body("sacrifice card discount color must equal purchased card discount color");
+              .body("sacrifice card discount color must equal purchased card sacrifice color");
         }
 
         hand.gemDiscounts().computeIfPresent(doubleBonusCard.discountColor(),
@@ -491,6 +491,9 @@ public class GameHandlerController {
           || !hand.purchasedCards().contains(cardToSacrifice2)) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body("you must own the cards you're sacrificing");
+      } else if (cardToSacrifice2.equals(cardToSacrifice1)) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body("cannot sacrifice the same card twice");
       }
 
       // Check that neither card is a satchel or double bonus
