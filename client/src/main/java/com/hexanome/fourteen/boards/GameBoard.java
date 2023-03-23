@@ -107,6 +107,7 @@ public class GameBoard {
       new DropShadow(BlurType.GAUSSIAN, Color.web("#0048ff"), 24.5, 0, 0, 0);
 
   private ArrayList<Noble> gameNobles;
+  //private ArrayList<City> gameCities;
 
   @FXML
   private Button openBankButton;
@@ -241,7 +242,10 @@ public class GameBoard {
   private boolean hasBeenLastRound;
   @FXML
   private Button tradingPostsButton;
+  @FXML
+  private Button citiesButton;
   private TradingPostsMenu tradingPostsMenu;
+  private AvailableCitiesMenu availableCitiesMenu;
   @FXML
   private AnchorPane backgroundPane;
 
@@ -294,6 +298,23 @@ public class GameBoard {
       }
     } else {
       tradingPostsButton.setVisible(false);
+    }
+
+    // Setup cities menu
+    if (GameServiceName.getExpansions(LobbyServiceCaller.getCurrentUserLobby().getGameServiceName())
+        .contains(Expansion.CITIES)) {
+      citiesButton.setVisible(true);
+      try {
+        availableCitiesMenu = new AvailableCitiesMenu(this);
+        backgroundPane.getChildren().add(availableCitiesMenu);
+        availableCitiesMenu.setLayoutX((backgroundPane.getPrefWidth() - availableCitiesMenu.getPrefWidth() - 100) / 2);
+        availableCitiesMenu.setLayoutY((backgroundPane.getPrefHeight() - availableCitiesMenu.getPrefHeight()) / 2);
+        availableCitiesMenu.setVisible(false);
+      } catch (IOException ioe) {
+        ioe.printStackTrace();
+      }
+    } else {
+      citiesButton.setVisible(false);
     }
 
 
@@ -356,6 +377,11 @@ public class GameBoard {
     // Update tradingPostsMenu
     if (gameBoardForm.expansions().contains(Expansion.TRADING_POSTS)) {
       tradingPostsMenu.updateMenu();
+    }
+
+    // Update our availableCitiesMenu
+    if (gameBoardForm.expansions().contains(Expansion.CITIES)) {
+      availableCitiesMenu.updateCities();
     }
 
     final String leadingPlayer = gameBoardForm.leadingPlayer().uid();
@@ -1511,4 +1537,8 @@ public class GameBoard {
   private void openTradingPostsMenu() {
     tradingPostsMenu.toggleVisibility();
   }
+
+  @FXML
+  private void openAvailableCitiesMenu() { availableCitiesMenu.toggleVisibility();}
+
 }

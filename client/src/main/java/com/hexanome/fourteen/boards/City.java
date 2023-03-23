@@ -3,8 +3,10 @@ package com.hexanome.fourteen.boards;
 import com.google.gson.reflect.TypeToken;
 import com.hexanome.fourteen.Main;
 import com.hexanome.fourteen.form.server.CityForm;
+import com.hexanome.fourteen.form.server.GameBoardForm;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
@@ -42,5 +44,15 @@ public class City extends Image {
         .collect(Collectors.toMap(Map.Entry::getValue,
             e -> Objects.requireNonNull(
                 City.class.getResource("images/cities/" + e.getKey())).toString()));
+  }
+
+  public static ArrayList<City> interpretCities(GameBoardForm gameBoardForm) {
+    ArrayList<City> cities = new ArrayList<>();
+
+    for (CityForm cf : gameBoardForm.availableCities()) {
+      cities.add(new City(cf));
+    }
+
+    return cities;
   }
 }

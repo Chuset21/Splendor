@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ButtonType?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<fx:root prefHeight="700.0" prefWidth="600.0" style="-fx-background-color: #faecc0; -fx-border-width: 5; -fx-border-color: #000000;" type="DialogPane" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
+   <header>
+      <Label fx:id="titleLabel" alignment="CENTER" prefHeight="85.0" prefWidth="800.0" text="Available Cities">
+         <font>
+            <Font size="38.0" />
+         </font>
+      </Label>
+   </header>
+   <buttonTypes>
+      <ButtonType fx:constant="CLOSE" />
+   </buttonTypes>
+   <content>
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+         <children>
+            <ToggleButton fx:id="availableCity0" mnemonicParsing="false">
+               <graphic>
+                  <ImageView fx:id="availableCity0Image" fitHeight="150.0" fitWidth="300.0" pickOnBounds="true" />
+               </graphic>
+               <VBox.margin>
+                  <Insets bottom="20.0" top="20.0" />
+               </VBox.margin>
+               <toggleGroup>
+                  <ToggleGroup fx:id="availableCities" />
+               </toggleGroup>
+            </ToggleButton>
+            <ToggleButton fx:id="availableCity1" mnemonicParsing="false" toggleGroup="$availableCities">
+               <graphic>
+                  <ImageView fx:id="availableCity1Image" fitHeight="150.0" fitWidth="300.0" pickOnBounds="true" />
+               </graphic>
+               <VBox.margin>
+                  <Insets bottom="20.0" top="20.0" />
+               </VBox.margin>
+            </ToggleButton>
+            <ToggleButton fx:id="availableCity2" mnemonicParsing="false" toggleGroup="$availableCities">
+               <graphic>
+                  <ImageView fx:id="availableCity2Image" fitHeight="150.0" fitWidth="300.0" pickOnBounds="true" />
+               </graphic>
+               <VBox.margin>
+                  <Insets bottom="20.0" top="20.0" />
+               </VBox.margin>
+            </ToggleButton>
+         </children>
+      </VBox>
+   </content>
+</fx:root>
