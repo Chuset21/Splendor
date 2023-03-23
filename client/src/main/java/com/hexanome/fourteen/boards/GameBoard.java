@@ -102,6 +102,17 @@ public class GameBoard {
   private ArrayList<ImageView> playerViews;
   @FXML
   private ArrayList<Label> playerNameLabels;
+
+  public Label winningPlayer;
+
+  public Label playerName0;
+
+  public Label playerName1;
+
+  public Label playerName2;
+
+  public Label playerName3;
+
   @FXML
   private Label currentPlayerTurnLabel;
   private static final Effect BLUE_GLOW_EFFECT =
@@ -278,6 +289,7 @@ public class GameBoard {
     cardActionMenu.setVisible(false);
     purchasedCardsView.setVisible(false);
     takenTokenPane.setVisible(false);
+    winningPlayer.setVisible(false);
 
     // Setup trading posts menu
     if (GameServiceName.getExpansions(LobbyServiceCaller.getCurrentUserLobby().getGameServiceName())
@@ -297,7 +309,6 @@ public class GameBoard {
     } else {
       tradingPostsButton.setVisible(false);
     }
-
 
     // Set up cards
     setupCards();
@@ -364,21 +375,21 @@ public class GameBoard {
     if (gameBoardForm.isGameOver()) {
       closeAllActionWindows();
       disableGameAlteringActions();
-      // TODO show the player that won
-      System.out.printf("Game is over, winner: %s\n", leadingPlayer);
+      winningPlayer.toFront();
+      winningPlayer.setText(leadingPlayer + " has won the game!!");
+      winningPlayer.setVisible(true);
     } else {
       if (gameBoardForm.isLastRound() && !hasBeenLastRound) {
         hasBeenLastRound = true;
-        System.out.println("Last round of the game!!"); // TODO show a last round message instead
+        winningPlayer.setText("Last round of the game!!");
+        winningPlayer.toFront();
         // Stub for showing popup
-        final PauseTransition wait = new PauseTransition(Duration.seconds(2));
+        final PauseTransition wait = new PauseTransition(Duration.seconds(3));
         wait.setOnFinished((e) -> {
           // Disabling the button after a duration of time
-//          popup.setDisable(true);
-//          popup.setVisible(false);
+          winningPlayer.setVisible(false);
         });
-//        popup.setDisable(false);
-//        popup.setVisible(true);
+        winningPlayer.setVisible(true);
         wait.play();
       }
       // TODO show the leading player??
@@ -537,9 +548,20 @@ public class GameBoard {
       i++;
     }
 
-    // Place all players in their frames
+    // Place all players in their frames and their names
     for (i = 0; i < playerViews.size(); i++) {
       if (i < players.size() && players.get(i) != null) {
+
+        if (i == 0) {
+          playerName0.setText(players.get(0).getUserId());
+        } else if (i == 1) {
+          playerName1.setText(players.get(1).getUserId());
+        } else if (i == 2) {
+          playerName2.setText(players.get(2).getUserId());
+        } else if (i == 3) {
+          playerName3.setText(players.get(3).getUserId());
+        }
+
         playerViews.get(i).setImage(players.get(i));
         Tooltip.install(playerViews.get(i), new Tooltip(players.get(i).getUserId()
                                                         + (player.getUserId().equals(
