@@ -94,9 +94,7 @@ public final class LobbyServiceCaller {
         .asString();
 
     // Resets current user (it's okay if login fails, it will just recreate a new user)
-    if (currentUser == null) {
-      currentUser = new User(username, password);
-    }
+    currentUser = new User(username, password);
 
     return getTokens(response);
   }
