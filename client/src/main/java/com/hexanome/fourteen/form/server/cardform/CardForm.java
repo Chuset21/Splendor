@@ -2,7 +2,9 @@ package com.hexanome.fourteen.form.server.cardform;
 
 import com.hexanome.fourteen.boards.Card;
 import com.hexanome.fourteen.boards.Expansion;
+import com.hexanome.fourteen.boards.GemColor;
 import com.hexanome.fourteen.form.server.GemsForm;
+import com.hexanome.fourteen.form.server.PlayerForm;
 
 /**
  * Card form.
@@ -68,5 +70,38 @@ public abstract class CardForm {
    */
   public Expansion expansion() {
     return expansion;
+  }
+
+  /**
+   * Determines if the player can pay for given card
+   *
+   * @param playerForm player's info to cross-reference
+   * @return boolean representing affordability
+   */
+  public boolean isAffordable(PlayerForm playerForm){
+    if(cost == null){
+      return true;
+    }
+
+    GemsForm tempCost = new GemsForm(cost);
+    tempCost.removeGems(playerForm.hand().gems());
+    tempCost.removeGems(playerForm.hand().gemDiscounts());
+    return tempCost.count() <= playerForm.hand().gems().getOrDefault(GemColor.GOLD,0).intValue();
+  }
+
+  /**
+   * Determines if the player can pay for given card
+   *
+   * @param playerForm player's info to cross-reference
+   * @return boolean representing affordability
+   */
+  public boolean needsGoldGems(PlayerForm playerForm){
+    if(this.cost() == null){
+      return true;
+    }
+
+    GemsForm tempCost = new GemsForm(this.cost());
+    tempCost.removeGems(playerForm.hand().gemDiscounts());
+    return 0 < tempCost.count() && 0 < playerForm.hand().gems().getOrDefault(GemColor.GOLD,0).intValue();
   }
 }

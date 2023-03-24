@@ -33,7 +33,7 @@ public class TradingPostsMenu extends DialogPane {
 
   public TradingPostsMenu(GameBoard gameBoard) throws IOException {
     super();
-    // Load basic lobby UI
+    // Load TradingPostsSummary.fxml
     FXMLLoader loader =
         new FXMLLoader(
             Objects.requireNonNull(TradingPostsMenu.class.getResource("TradingPostsSummary.fxml")));

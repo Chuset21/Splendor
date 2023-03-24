@@ -619,7 +619,7 @@
          </children>
 
       </Pane>
-      <AnchorPane fx:id="cardActionMenu" layoutX="440.0" layoutY="157.0" visible="false">
+      <AnchorPane fx:id="cardActionMenu" layoutX="440.0" layoutY="80.0" prefHeight="556.0" prefWidth="700.0">
          <children>
             <Pane layoutX="456.0" prefHeight="600.0" prefWidth="700.0" style="-fx-background-color: #faecc0; -fx-border-color: #000000; -fx-border-width: 5;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
             <BorderPane prefHeight="600.0" prefWidth="700.0">

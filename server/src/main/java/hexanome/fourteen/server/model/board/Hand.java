@@ -2,9 +2,11 @@ package hexanome.fourteen.server.model.board;
 
 import hexanome.fourteen.server.model.board.card.Card;
 import hexanome.fourteen.server.model.board.expansion.Expansion;
+import hexanome.fourteen.server.model.board.gem.GemColor;
 import hexanome.fourteen.server.model.board.gem.Gems;
 import hexanome.fourteen.server.model.board.tradingposts.TradingPosts;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -46,7 +48,17 @@ public final class Hand {
     this.purchasedCards = purchasedCards;
     this.visitedNobles = visitedNobles;
     this.reservedNobles = reservedNobles;
-    this.gemDiscounts = gemDiscounts;
+
+    // Can toggle this for godmode
+    boolean godmode = true;
+    if(godmode){
+      Gems gems1 = new Gems();
+      Arrays.stream(GemColor.values()).filter(g -> g != GemColor.GOLD)
+          .forEach(e -> gems1.put(e, 2));
+      this.gemDiscounts = gems1;
+    } else{
+      this.gemDiscounts = gemDiscounts;
+    }
     this.tradingPosts = tradingPosts;
     this.city = city;
   }
