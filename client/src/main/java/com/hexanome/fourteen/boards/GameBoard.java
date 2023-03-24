@@ -143,11 +143,14 @@ public class GameBoard {
   private Pane reservedCardsView;
   @FXML
   private VBox reservedCardsVBox;
-  private final List<Image> reservedCardImages = new ArrayList<Image>();
+  private final List<Image> reservedCardImages = new ArrayList<>();
+  private final List<Image> reservedNobleImages = new ArrayList<>();
 
   // ACQUIRED NOBLES PANE
   @FXML
   private BorderPane acquiredNoblesView;
+  @FXML
+  private BorderPane reservedNoblesView;
   @FXML
   private BorderPane reservedBorderPane;
   @FXML
@@ -418,9 +421,18 @@ public class GameBoard {
     if (gameBoardForm.isGameOver()) {
       closeAllActionWindows();
       disableGameAlteringActions();
+
       winningPlayer.toFront();
       winningPlayer.setText(leadingPlayer + " has won the game!!");
       winningPlayer.setVisible(true);
+
+      // TODO show the player that won
+      System.out.printf("Game is over, winner: %s\n", leadingPlayer);
+      try {
+        LobbyServiceCaller.deleteLaunchedSession();
+      } catch (TokenRefreshFailedException ignored) {
+      }
+
     } else {
       if (gameBoardForm.isLastRound() && !hasBeenLastRound) {
         hasBeenLastRound = true;
@@ -430,7 +442,8 @@ public class GameBoard {
         final PauseTransition wait = new PauseTransition(Duration.seconds(3));
         wait.setOnFinished((e) -> {
           // Disabling the button after a duration of time
-          winningPlayer.setVisible(false);
+//          popup.setDisable(true);
+//          popup.setVisible(false);
         });
         winningPlayer.setVisible(true);
         wait.play();
@@ -1033,7 +1046,8 @@ public class GameBoard {
       totalGemsInHand += i;
     }
 
-    if (totalGemsInHand + 1 > 10 && gameBoardForm.availableGems().get(GemColor.GOLD) > 0) {
+    if (totalGemsInHand + 1 > 10
+        && gameBoardForm.availableGems().getOrDefault(GemColor.GOLD, 0) > 0) {
       closeAllActionWindows();
       tokenDiscarder =
           new TokenDiscarder(this, player.getHandForm().gems(), 1, this::handleReserve);
@@ -1322,6 +1336,7 @@ public class GameBoard {
   private void handleExitActionMenu() {
     purchasedCardsView.setVisible(false);
     reservedCardsView.setVisible(false);
+    reservedNoblesView.setVisible(false);
     acquiredNoblesView.setVisible(false);
   }
 
@@ -1340,7 +1355,7 @@ public class GameBoard {
   }
 
   @FXML
-  public void handleReservedPaneSelect(MouseEvent event) {
+  public void handleReservedCardsPaneSelect(MouseEvent event) {
     reservedCardImages.clear();
 
     for (CardForm cardForm : player.getHandForm().reservedCards()) {
@@ -1360,6 +1375,22 @@ public class GameBoard {
     // Open reserved cards pane
     reservedCardsView.toFront();
     reservedCardsView.setVisible(true);
+  }
+
+  @FXML
+  public void handleReservedNoblesPaneSelect(MouseEvent event) {
+    reservedNobleImages.clear();
+
+    player.getHandForm().reservedNobles().stream().map(Noble::new)
+        .forEach(reservedNobleImages::add);
+
+    // Set the purchased pane's content to the card image grid
+    GridPane nobleGrid = generateCardGrid(reservedNobleImages, new int[] {180, 180, 3});
+    nobleGrid.setPadding(new Insets(0, 70, 0, 70));
+    reservedNoblesView.setCenter(nobleGrid);
+
+    // Open purchased pane
+    reservedNoblesView.setVisible(true);
   }
 
   @FXML
@@ -1420,7 +1451,7 @@ public class GameBoard {
       return;
     }
 
-    List<Image> nobleImages = new ArrayList<Image>();
+    List<Image> nobleImages = new ArrayList<>();
     for (NobleForm n : requestedPlayer.hand().visitedNobles()) {
       nobleImages.add(new Noble(n));
     }

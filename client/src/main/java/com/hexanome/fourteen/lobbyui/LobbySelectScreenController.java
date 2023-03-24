@@ -62,9 +62,10 @@ public class LobbySelectScreenController implements ScreenController {
                 hashedResponse = DigestUtils.md5Hex(longPollResponse.getBody());
                 final SessionsForm notLaunchedSessions = new SessionsForm(
                     Main.GSON.fromJson(longPollResponse.getBody(), SessionsForm.class).sessions()
-                        .entrySet().stream().filter(e -> !e.getValue().launched())
-                        .collect(
-                            Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+                        .entrySet().stream().filter(e -> !e.getValue().launched()
+                                                         || e.getValue().players().contains(
+                            LobbyServiceCaller.getCurrentUserid()))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
                 Platform.runLater(() -> {
                   lobbyForm = notLaunchedSessions;
                   updateLobbies();
@@ -126,7 +127,7 @@ public class LobbySelectScreenController implements ScreenController {
   public void handleJoinLobbyButton(Lobby lobby) {
     if (!lobby.getHost().equals(LobbyServiceCaller.getCurrentUserid())) {
       try {
-        if (LobbyServiceCaller.joinSession(lobby.getSessionid())) {
+        if (lobby.getLaunched() || LobbyServiceCaller.joinSession(lobby.getSessionid())) {
           MenuController.goToInLobbyScreen(lobby);
         }
       } catch (Exception e) {
