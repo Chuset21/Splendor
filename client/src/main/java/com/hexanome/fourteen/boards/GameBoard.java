@@ -1476,7 +1476,7 @@ public class GameBoard {
   @FXML
   public void createPlayerSummary(MouseEvent event) {
     Player player;
-    PlayerForm requestedPlayer = null;
+    PlayerForm requestedPlayer;
 
     // Determines which player's information is being requested
     try {
@@ -1534,7 +1534,6 @@ public class GameBoard {
     reservedSummary.getChildren()
         .add(generateCardGrid(requestedPlayerReservedCardImages, new int[] {110, 160, 3}));
 
-    // TODO: Fetch and apply the player's nobles as images
     List<Image> requestedPlayerNoblesImages = new ArrayList<>();
     for (NobleForm n : requestedPlayer.hand().visitedNobles()) {
       requestedPlayerNoblesImages.add(new Noble(n));
