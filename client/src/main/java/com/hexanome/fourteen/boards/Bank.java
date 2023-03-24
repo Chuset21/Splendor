@@ -255,12 +255,12 @@ public class Bank {
       // If (following 5 conditions) hold, 'add' should be enabled.
       //Otherwise, disable the 'add' button.
       if (idx == 5 /*Gem is gold*/
-          || bankGems[idx] == 0
-          || (bankGems[idx] < 3 && selectedGems.contains(idx))
-          || handBucket.get(idx) > 0 && selectedGems.size() > 1
-          || selectedGems.size() == 3
-          || handBucket.containsValue(2) && !hasPost2
-          || hasPost2 && selectedGems.size() == 2 && selectedGems.get(0) == idx && selectedGems.get(1) == idx) {
+          || bankGems[idx] == 0 // there are no gems left of this color
+          || (bankGems[idx] < 3 && selectedGems.contains(idx)) // cant take 2 when there are less than 4
+          || handBucket.get(idx) > 0 && selectedGems.size() > 1 //
+          || selectedGems.size() == 3 //have 3 gems already
+          || handBucket.containsValue(2) && !hasPost2 // have 2 of one color and dont have trading post 2
+          || hasPost2 && selectedGems.size() == 2 && selectedGems.get(0) == idx && selectedGems.get(1) == idx) { //have post 2 and two of the same color disable only that color
         addGemButtons.get(idx).setDisable(true);
       } else {
         addGemButtons.get(idx).setDisable(false);
@@ -278,7 +278,8 @@ public class Bank {
         takeBankButton.setDisable(true);
       }
       else if (hasPost2
-          && selectedGems.size() != 3){
+          && selectedGems.size() != 3
+          && otherColorsAvailable(selectedGems.get(0))){
         takeBankButton.setDisable(true);
       }else {
         takeBankButton.setDisable(false);
@@ -308,5 +309,14 @@ public class Bank {
     }
 
     return numTypes;
+  }
+
+  private boolean otherColorsAvailable(int color) {
+    for (int idx: GEM_INDEX){
+      if (idx != color && idx != 5 && bankGems[idx] > 0){
+        return true;
+      }
+    }
+    return false;
   }
 }
