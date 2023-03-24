@@ -57,7 +57,8 @@ public class GoldGemSubstituteMenu extends DialogPane {
     // Resets chosenGems and originalGems to (normal cost - discounts)
 
     // Finds missing gems
-    GemsForm missingGems = new GemsForm(cardForm.cost());
+    GemsForm missingGems =
+        cardForm.cost().getDiscountedCost(gameBoard.player.getHandForm().gemDiscounts());
     missingGems.removeGems(gameBoard.player.getHandForm().gems());
     int missingGold = missingGems.count();
 
@@ -143,16 +144,17 @@ public class GoldGemSubstituteMenu extends DialogPane {
       if (getNodeIndexInGrid(n)[1] == 1) {
         ((Label) n).setText("" + chosenGems[getNodeIndexInGrid(n)[0]]);
       } else
-        // Handle keepGemButton (-)
+        // Handle substituteGemButton (-)
         if (getNodeIndexInGrid(n)[1] == 0) {
-          // Set active if (amt of gold gems < gold gems in hand)
+          // Set active if (amt of gold gems < gold gems in hand && amt of this gem > 0)
           n.setDisable(!(chosenGems[5] <
               gameBoard.player.getHandForm().gems().getOrDefault(GemColor.GOLD, 0).intValue() &&
               chosenGems[getNodeIndexInGrid(n)[0]] > 0));
         } else
-          // Handle returnGemButton (+)
+          // Handle useGemButton (+)
           if (getNodeIndexInGrid(n)[1] == 3) {
-            // Set active if (amt of chosen gems in this color < cost of this card for this color)
+            // Set active if (amt of chosen gems in this color < cost of this card for this color
+            // && amt of chosen gems in this color < this color gem in your hand)
             n.setDisable(
                 !(chosenGems[getNodeIndexInGrid(n)[0]] < cardCost[getNodeIndexInGrid(n)[0]] &&
                     chosenGems[getNodeIndexInGrid(n)[0]] < gameBoard.player.getHandForm().gems()

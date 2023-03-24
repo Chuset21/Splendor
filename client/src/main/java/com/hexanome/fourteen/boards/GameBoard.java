@@ -655,7 +655,7 @@ public class GameBoard {
     if (isYourTurn()) {
       // If player's gems cannot pay for card, disable purchase button
       boolean canAfford =
-          (cost != null && GemsForm.isAffordable(cost, player.getHandForm().gems())) ||
+          (cost != null && selectedCard.getCardForm().isAffordable(player.getPlayerForm())) ||
               (cost == null);
 
       if (canAfford) {
@@ -698,7 +698,7 @@ public class GameBoard {
     if (cardForm instanceof StandardCardForm
         || cardForm instanceof GoldGemCardForm
         || cardForm instanceof DoubleBonusCardForm) {
-      if (player.getHandForm().gems().getOrDefault(GemColor.GOLD, 0).intValue() > 0) {
+      if (cardForm.needsGoldGems(player.getPlayerForm())) {
         goldGemSubstituteMenu.open(cardForm, payment -> purchaseCard(new PurchaseCardForm(cardForm,
             payment,
             player.getHandForm().reservedCards().contains(cardForm), null)));
@@ -710,7 +710,7 @@ public class GameBoard {
         purchaseCard(purchaseCardForm);
       }
     } else if (cardForm instanceof WaterfallCardForm) {
-      if (player.getHandForm().gems().getOrDefault(GemColor.GOLD, 0).intValue() > 0) {
+      if (cardForm.needsGoldGems(player.getPlayerForm())) {
         goldGemSubstituteMenu.open(cardForm,
             payment -> displayWaterfallChoices(cardForm, CardLevelForm.TWO, f ->
                 purchaseCard(new PurchaseCardForm(cardForm,
@@ -725,7 +725,7 @@ public class GameBoard {
                 player.getHandForm().reservedCards().contains(cardForm), null)));
       }
     } else if (cardForm instanceof ReserveNobleCardForm r) {
-      if (player.getHandForm().gems().getOrDefault(GemColor.GOLD, 0).intValue() > 0) {
+      if (cardForm.needsGoldGems(player.getPlayerForm())) {
         goldGemSubstituteMenu.open(cardForm,
             payment -> purchaseReserveNobleCard(r, f ->
                 purchaseCard(new PurchaseCardForm(cardForm,
@@ -740,7 +740,7 @@ public class GameBoard {
       }
     } else if (cardForm instanceof SatchelCardForm s) {
       if (s.level() == CardLevelForm.TWO) {
-        if (player.getHandForm().gems().getOrDefault(GemColor.GOLD, 0).intValue() > 0) {
+        if (cardForm.needsGoldGems(player.getPlayerForm())) {
           goldGemSubstituteMenu.open(cardForm,
               payment -> purchaseLevelOneSatchelCard(s,
                   f -> displayWaterfallChoices(s, CardLevelForm.ONE,
@@ -756,7 +756,7 @@ public class GameBoard {
                   player.getHandForm().reservedCards().contains(cardForm), null))));
         }
       } else {
-        if (player.getHandForm().gems().getOrDefault(GemColor.GOLD, 0).intValue() > 0) {
+        if (cardForm.needsGoldGems(player.getPlayerForm())) {
           goldGemSubstituteMenu.open(cardForm,
               payment -> purchaseLevelOneSatchelCard(s, f ->
                   purchaseCard(new PurchaseCardForm(s,
@@ -912,11 +912,7 @@ public class GameBoard {
 
     ReserveCardForm reserveCardForm = new ReserveCardForm(cardReserved.getCardForm(), null, false);
 
-    HttpResponse<String> response =
-        ServerCaller.reserveCard(LobbyServiceCaller.getCurrentUserLobby(),
-            LobbyServiceCaller.getCurrentUserAccessToken(), reserveCardForm);
-
-    System.out.println(response.getBody());
+    HttpResponse response = ServerCaller.reserveCard(LobbyServiceCaller.getCurrentUserLobby(), LobbyServiceCaller.getCurrentUserAccessToken(), reserveCardForm);
 
     // Close card menu
     cardActionMenu.setVisible(false);
