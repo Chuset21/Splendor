@@ -1,18 +1,13 @@
 package com.hexanome.fourteen.boards;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Insets;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 
 public class AvailableCitiesMenu extends DialogPane {
 
@@ -56,16 +51,12 @@ public class AvailableCitiesMenu extends DialogPane {
   }
 
   public void updateCities() {
+    final List<City> availableCities = City.interpretCities(gameBoard.getGameBoardForm());
 
-    ArrayList<City> availableCities = City.interpretCities(gameBoard.getGameBoardForm());
+    availableCity0.setImage(availableCities.isEmpty() ? null : availableCities.get(0));
 
-    availableCity0.setImage(availableCities.get(0));
+    availableCity1.setImage(availableCities.size() > 1 ? availableCities.get(1) : null);
 
-    availableCity1.setImage(availableCities.get(1));
-
-    availableCity2.setImage(availableCities.get(2));
-
+    availableCity2.setImage(availableCities.size() > 2 ? availableCities.get(2) : null);
   }
-
-
 }

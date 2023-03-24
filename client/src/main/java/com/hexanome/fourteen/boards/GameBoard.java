@@ -43,6 +43,7 @@ import com.hexanome.fourteen.TokenRefreshFailedException;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
@@ -87,7 +88,8 @@ public class GameBoard {
   private static final Map<String/*Player id*/, String/*Player Icon Filename*/> PLAYER_ID_MAP =
       new HashMap<>();
   private static final String[] DEFAULT_PLAYER_ICONS =
-          {"yellowPlayerShield.png", "blackPlayerShield.png", "redPlayerShield.png", "bluePlayerShield.png"};
+      {"yellowPlayerShield.png", "blackPlayerShield.png", "redPlayerShield.png",
+          "bluePlayerShield.png"};
 
   Bank bank;
 
@@ -344,8 +346,10 @@ public class GameBoard {
       try {
         availableCitiesMenu = new AvailableCitiesMenu(this);
         backgroundPane.getChildren().add(availableCitiesMenu);
-        availableCitiesMenu.setLayoutX((backgroundPane.getPrefWidth() - availableCitiesMenu.getPrefWidth() - 100) / 2);
-        availableCitiesMenu.setLayoutY((backgroundPane.getPrefHeight() - availableCitiesMenu.getPrefHeight()) / 2);
+        availableCitiesMenu.setLayoutX(
+            (backgroundPane.getPrefWidth() - availableCitiesMenu.getPrefWidth() - 100) / 2);
+        availableCitiesMenu.setLayoutY(
+            (backgroundPane.getPrefHeight() - availableCitiesMenu.getPrefHeight()) / 2);
         availableCitiesMenu.setVisible(false);
 
         myCityHBox.setVisible(true);
@@ -425,10 +429,10 @@ public class GameBoard {
       availableCitiesMenu.updateCities();
 
       // update our own city
-      CityForm myCityForm = player.getHandForm().city();
-
+      final CityForm myCityForm = player.getHandForm().city();
       if (myCityForm != null) {
         ((ImageView) myCityHBox.getChildren().get(1)).setImage(new City(myCityForm));
+        hideMyCity();
       }
     }
 
@@ -436,32 +440,36 @@ public class GameBoard {
     if (gameBoardForm.isGameOver()) {
       closeAllActionWindows();
       disableGameAlteringActions();
-
       winningPlayer.toFront();
-      winningPlayer.setText(leadingPlayer + " has won the game!!");
+      winningPlayer.setText("%s has won the game!!".formatted(leadingPlayer));
       winningPlayer.setVisible(true);
-
-      // TODO show the player that won
-      System.out.printf("Game is over, winner: %s\n", leadingPlayer);
+      final Duration duration = Duration.seconds(2);
+      final FadeTransition fadeTransition =
+          new FadeTransition(duration, winningPlayer);
+      winningPlayer.setVisible(true);
+      fadeTransition.setFromValue(0);
+      fadeTransition.setToValue(1);
+      fadeTransition.setCycleCount(1);
+      fadeTransition.play();
       try {
         LobbyServiceCaller.deleteLaunchedSession();
       } catch (TokenRefreshFailedException ignored) {
+        // Ignore
       }
-
     } else {
       if (gameBoardForm.isLastRound() && !hasBeenLastRound) {
         hasBeenLastRound = true;
         winningPlayer.setText("Last round of the game!!");
         winningPlayer.toFront();
-        // Stub for showing popup
-        final PauseTransition wait = new PauseTransition(Duration.seconds(3));
-        wait.setOnFinished((e) -> {
-          // Disabling the button after a duration of time
-//          popup.setDisable(true);
-//          popup.setVisible(false);
-        });
+        final Duration duration = Duration.seconds(2);
+        final FadeTransition fadeTransition =
+            new FadeTransition(duration, winningPlayer);
         winningPlayer.setVisible(true);
-        wait.play();
+        fadeTransition.setFromValue(0);
+        fadeTransition.setToValue(1);
+        fadeTransition.setAutoReverse(true);
+        fadeTransition.setCycleCount(2);
+        fadeTransition.play();
       }
       // TODO show the leading player??
     }
@@ -583,7 +591,7 @@ public class GameBoard {
 
     for (PlayerForm player : gameBoardForm.players()) {
       PLAYER_ID_MAP.put(player.uid(),
-              GameBoard.class.getResource("images/tradingPosts/" + DEFAULT_PLAYER_ICONS[i]).toString());
+          GameBoard.class.getResource("images/tradingPosts/" + DEFAULT_PLAYER_ICONS[i]).toString());
       i = (i + 1) % DEFAULT_PLAYER_ICONS.length;
     }
   }
@@ -603,7 +611,7 @@ public class GameBoard {
     // Add all players to players list
     for (PlayerForm playerForm : gameBoardForm.players()) {
       players.add(new Player(playerForm, PLAYER_ID_MAP.get(playerForm.uid())));
-      if(playerForm.uid().equals(LobbyServiceCaller.getCurrentUserid())) {
+      if (playerForm.uid().equals(LobbyServiceCaller.getCurrentUserid())) {
         player = players.get(players.size() - 1);
       }
     }
@@ -1767,21 +1775,28 @@ public class GameBoard {
   }
 
   @FXML
-  private void showTradingPostsMenu() { tradingPostsMenu.setVisible(true); }
+  private void showTradingPostsMenu() {
+    tradingPostsMenu.setVisible(true);
+  }
 
   @FXML
-  private void hideTradingPostsMenu() { tradingPostsMenu.setVisible(false); }
+  private void hideTradingPostsMenu() {
+    tradingPostsMenu.setVisible(false);
+  }
 
   @FXML
-  private void showAvailableCitiesMenu() { availableCitiesMenu.setVisible(true);}
+  private void showAvailableCitiesMenu() {
+    availableCitiesMenu.setVisible(true);
+  }
 
   @FXML
-  private void hideAvailableCitiesMenu() { availableCitiesMenu.setVisible(false);}
+  private void hideAvailableCitiesMenu() {
+    availableCitiesMenu.setVisible(false);
+  }
 
   @FXML
   private void showMyCity() {
-
-    CityForm myCityForm = player.getHandForm().city();
+    final CityForm myCityForm = player.getHandForm().city();
 
     if (myCityForm == null) {
       // Set button to display NONE and change color to RED
@@ -1791,7 +1806,7 @@ public class GameBoard {
     } else {
       // Set City image visibility to true
       myCityHBox.getChildren().get(1).setVisible(true);
-
+      myCityHBox.toFront();
     }
   }
 
@@ -1804,7 +1819,5 @@ public class GameBoard {
 
     // Set City image visibility to false
     myCityHBox.getChildren().get(1).setVisible(false);
-
   }
-
 }
