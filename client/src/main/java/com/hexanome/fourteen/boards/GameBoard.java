@@ -421,18 +421,14 @@ public class GameBoard {
     if (gameBoardForm.isGameOver()) {
       closeAllActionWindows();
       disableGameAlteringActions();
-
       winningPlayer.toFront();
-      winningPlayer.setText(leadingPlayer + " has won the game!!");
+      winningPlayer.setText("%s has won the game!!".formatted(leadingPlayer));
       winningPlayer.setVisible(true);
-
-      // TODO show the player that won
-      System.out.printf("Game is over, winner: %s\n", leadingPlayer);
       try {
         LobbyServiceCaller.deleteLaunchedSession();
       } catch (TokenRefreshFailedException ignored) {
+        // Ignore
       }
-
     } else {
       if (gameBoardForm.isLastRound() && !hasBeenLastRound) {
         hasBeenLastRound = true;
@@ -442,8 +438,7 @@ public class GameBoard {
         final PauseTransition wait = new PauseTransition(Duration.seconds(3));
         wait.setOnFinished((e) -> {
           // Disabling the button after a duration of time
-//          popup.setDisable(true);
-//          popup.setVisible(false);
+          winningPlayer.setVisible(false);
         });
         winningPlayer.setVisible(true);
         wait.play();
