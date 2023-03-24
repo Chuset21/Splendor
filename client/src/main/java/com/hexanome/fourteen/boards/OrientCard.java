@@ -64,7 +64,9 @@ public class OrientCard extends Card {
     } else if (cardForm instanceof WaterfallCardForm c) {
       return c.discountColor();
     } else if (cardForm instanceof SatchelCardForm c) {
-      if (c.cardToAttach() instanceof DoubleBonusCardForm d) {
+      if (c.cardToAttach() == null) {
+        return null;
+      } else if (c.cardToAttach() instanceof DoubleBonusCardForm d) {
         return d.discountColor();
       } else if (c.cardToAttach() instanceof ReserveNobleCardForm d) {
         return d.discountColor();
