@@ -88,4 +88,6 @@ public class TradingPostsMenu extends DialogPane {
     this.setVisible(!isVisible());
     return isVisible();
   }
+
+
 }

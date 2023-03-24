@@ -108,7 +108,7 @@ public class InLobbyScreenController implements ScreenController {
   private void handleLaunchButton() {
     if (LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost())) {
       try {
-        if (LobbyServiceCaller.launchSession()) {
+        if (lobby.getLaunched() || LobbyServiceCaller.launchSession()) {
           service.cancel();
 
           // Go to board screen

@@ -94,7 +94,7 @@ public final class LobbyServiceCaller {
         .asString();
 
     // Resets current user (it's okay if login fails, it will just recreate a new user)
-    if (currentUser == null) {
+    if (currentUser == null && response.isSuccess()) {
       currentUser = new User(username, password);
     }
 
@@ -125,21 +125,23 @@ public final class LobbyServiceCaller {
   }
 
   /**
-   * Parse tokens from request to LobbyService
+   * Parse tokens from request to LobbyService.
    *
    * @param response HTTP response to token refresh request from LS (see updateAccessToken())
    * @return true if tokens are found, false if error is found instead
    */
   private static boolean getTokens(HttpResponse<String> response) {
-    if (response.getStatus() != 200) {
-      return false;
+    if (!response.isSuccess()) {
+      if (currentUser != null && !login(currentUser.getUserid(), currentUser.getPassword())) {
+        return false;
+      }
     }
 
     final LoginResponse loginResponse =
         Main.GSON.fromJson(response.getBody(), LoginResponse.class);
     currentUser.setAccessToken(loginResponse.accessToken());
     currentUser.setRefreshToken(loginResponse.refreshToken());
-    return loginResponse.expiresIn() >= 35 || updateAccessToken();
+    return true;
   }
 
   /**
@@ -305,8 +307,8 @@ public final class LobbyServiceCaller {
    */
   public static boolean deleteLaunchedSession() throws TokenRefreshFailedException {
     // Check if currentUser is in a lobby to begin with
-    if (currentUser.getCurrentLobby() == null ||
-        !currentUser.getCurrentLobby().getHost().equals(currentUser.getUserid())) {
+    if (currentUser.getCurrentLobby() == null
+        || !currentUser.getCurrentLobby().getHost().equals(currentUser.getUserid())) {
       return false;
     }
 

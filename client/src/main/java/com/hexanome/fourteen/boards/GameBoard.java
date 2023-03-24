@@ -19,9 +19,11 @@ import com.hexanome.fourteen.form.server.cardform.CardLevelForm;
 import com.hexanome.fourteen.form.server.cardform.DoubleBonusCardForm;
 import com.hexanome.fourteen.form.server.cardform.GoldGemCardForm;
 import com.hexanome.fourteen.form.server.cardform.ReserveNobleCardForm;
+import com.hexanome.fourteen.form.server.cardform.SacrificeCardForm;
 import com.hexanome.fourteen.form.server.cardform.SatchelCardForm;
 import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
 import com.hexanome.fourteen.form.server.cardform.WaterfallCardForm;
+import com.hexanome.fourteen.form.server.payment.CardPaymentForm;
 import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -41,7 +43,6 @@ import com.hexanome.fourteen.TokenRefreshFailedException;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
@@ -86,7 +87,7 @@ public class GameBoard {
   private static final Map<String/*Player id*/, String/*Player Icon Filename*/> PLAYER_ID_MAP =
       new HashMap<>();
   private static final String[] DEFAULT_PLAYER_ICONS =
-      {"cat.jpg", "dog.jpg", "squirrel.jpg", "chameleon.jpg"};
+          {"yellowPlayerShield.png", "blackPlayerShield.png", "redPlayerShield.png", "bluePlayerShield.png"};
 
   Bank bank;
 
@@ -101,6 +102,17 @@ public class GameBoard {
   private ArrayList<ImageView> playerViews;
   @FXML
   private ArrayList<Label> playerNameLabels;
+
+  public Label winningPlayer;
+
+  public Label playerName0;
+
+  public Label playerName1;
+
+  public Label playerName2;
+
+  public Label playerName3;
+
   @FXML
   private Label currentPlayerTurnLabel;
   private static final Effect BLUE_GLOW_EFFECT =
@@ -131,11 +143,14 @@ public class GameBoard {
   private Pane reservedCardsView;
   @FXML
   private VBox reservedCardsVBox;
-  private final List<Image> reservedCardImages = new ArrayList<Image>();
+  private final List<Image> reservedCardImages = new ArrayList<>();
+  private final List<Image> reservedNobleImages = new ArrayList<>();
 
   // ACQUIRED NOBLES PANE
   @FXML
   private BorderPane acquiredNoblesView;
+  @FXML
+  private BorderPane reservedNoblesView;
   @FXML
   private BorderPane reservedBorderPane;
   @FXML
@@ -173,6 +188,7 @@ public class GameBoard {
   private Card tentativeCardSelection;
   private Noble tentativeNobleSelection;
   private City tentativeCitySelection;
+  private List<Card> tentativeSacrifices;
   @FXML
   private VBox nobleAcquiredLabelVBox;
 
@@ -241,8 +257,17 @@ public class GameBoard {
   private boolean hasBeenLastRound;
   @FXML
   private Button tradingPostsButton;
+  @FXML
+  private Button citiesButton;
+
   private TradingPostsMenu tradingPostsMenu;
   private GoldGemSubstituteMenu goldGemSubstituteMenu;
+
+  private AvailableCitiesMenu availableCitiesMenu;
+
+  @FXML
+  private HBox myCityHBox;
+
   @FXML
   private AnchorPane backgroundPane;
 
@@ -277,6 +302,7 @@ public class GameBoard {
     cardActionMenu.setVisible(false);
     purchasedCardsView.setVisible(false);
     takenTokenPane.setVisible(false);
+    winningPlayer.setVisible(false);
 
     // Setup trading posts menu
     if (GameServiceName.getExpansions(LobbyServiceCaller.getCurrentUserLobby().getGameServiceName())
@@ -310,6 +336,26 @@ public class GameBoard {
     } catch (IOException ioe) {
       ioe.printStackTrace();
     }
+
+    // Setup cities menu
+    if (GameServiceName.getExpansions(LobbyServiceCaller.getCurrentUserLobby().getGameServiceName())
+        .contains(Expansion.CITIES)) {
+      citiesButton.setVisible(true);
+      try {
+        availableCitiesMenu = new AvailableCitiesMenu(this);
+        backgroundPane.getChildren().add(availableCitiesMenu);
+        availableCitiesMenu.setLayoutX((backgroundPane.getPrefWidth() - availableCitiesMenu.getPrefWidth() - 100) / 2);
+        availableCitiesMenu.setLayoutY((backgroundPane.getPrefHeight() - availableCitiesMenu.getPrefHeight()) / 2);
+        availableCitiesMenu.setVisible(false);
+
+        myCityHBox.setVisible(true);
+      } catch (IOException ioe) {
+        ioe.printStackTrace();
+      }
+    } else {
+      citiesButton.setVisible(false);
+    }
+
 
     // Set up cards
     setupCards();
@@ -372,25 +418,49 @@ public class GameBoard {
       tradingPostsMenu.updateMenu();
     }
 
+    // Update our availableCitiesMenu
+    if (gameBoardForm.expansions().contains(Expansion.CITIES)) {
+
+      // update available cities
+      availableCitiesMenu.updateCities();
+
+      // update our own city
+      CityForm myCityForm = player.getHandForm().city();
+
+      if (myCityForm != null) {
+        ((ImageView) myCityHBox.getChildren().get(1)).setImage(new City(myCityForm));
+      }
+    }
+
     final String leadingPlayer = gameBoardForm.leadingPlayer().uid();
     if (gameBoardForm.isGameOver()) {
       closeAllActionWindows();
       disableGameAlteringActions();
+
+      winningPlayer.toFront();
+      winningPlayer.setText(leadingPlayer + " has won the game!!");
+      winningPlayer.setVisible(true);
+
       // TODO show the player that won
       System.out.printf("Game is over, winner: %s\n", leadingPlayer);
+      try {
+        LobbyServiceCaller.deleteLaunchedSession();
+      } catch (TokenRefreshFailedException ignored) {
+      }
+
     } else {
       if (gameBoardForm.isLastRound() && !hasBeenLastRound) {
         hasBeenLastRound = true;
-        System.out.println("Last round of the game!!"); // TODO show a last round message instead
+        winningPlayer.setText("Last round of the game!!");
+        winningPlayer.toFront();
         // Stub for showing popup
-        final PauseTransition wait = new PauseTransition(Duration.seconds(2));
+        final PauseTransition wait = new PauseTransition(Duration.seconds(3));
         wait.setOnFinished((e) -> {
           // Disabling the button after a duration of time
 //          popup.setDisable(true);
 //          popup.setVisible(false);
         });
-//        popup.setDisable(false);
-//        popup.setVisible(true);
+        winningPlayer.setVisible(true);
         wait.play();
       }
       // TODO show the leading player??
@@ -513,7 +583,7 @@ public class GameBoard {
 
     for (PlayerForm player : gameBoardForm.players()) {
       PLAYER_ID_MAP.put(player.uid(),
-          User.class.getResource("images/" + DEFAULT_PLAYER_ICONS[i]).toString());
+              GameBoard.class.getResource("images/tradingPosts/" + DEFAULT_PLAYER_ICONS[i]).toString());
       i = (i + 1) % DEFAULT_PLAYER_ICONS.length;
     }
   }
@@ -530,29 +600,28 @@ public class GameBoard {
     // Reset list of players
     players = new ArrayList<>();
 
-    int i = 0;
-
     // Add all players to players list
     for (PlayerForm playerForm : gameBoardForm.players()) {
-      if (playerForm.uid().equals(LobbyServiceCaller.getCurrentUserid())) {
-        player = new Player(playerForm, PLAYER_ID_MAP.get(playerForm.uid()));
-
-        if (i != 0) {
-          Player temp = players.get(0);
-          players.set(0, player);
-          players.add(temp);
-        } else {
-          players.add(player);
-        }
-      } else {
-        players.add(new Player(playerForm, PLAYER_ID_MAP.get(playerForm.uid())));
+      players.add(new Player(playerForm, PLAYER_ID_MAP.get(playerForm.uid())));
+      if(playerForm.uid().equals(LobbyServiceCaller.getCurrentUserid())) {
+        player = players.get(players.size() - 1);
       }
-      i++;
     }
 
-    // Place all players in their frames
-    for (i = 0; i < playerViews.size(); i++) {
+    // Place all players in their frames and their names
+    for (int i = 0; i < playerViews.size(); i++) {
       if (i < players.size() && players.get(i) != null) {
+
+        if (i == 0) {
+          playerName0.setText(players.get(0).getUserId());
+        } else if (i == 1) {
+          playerName1.setText(players.get(1).getUserId());
+        } else if (i == 2) {
+          playerName2.setText(players.get(2).getUserId());
+        } else if (i == 3) {
+          playerName3.setText(players.get(3).getUserId());
+        }
+
         playerViews.get(i).setImage(players.get(i));
         Tooltip.install(playerViews.get(i), new Tooltip(players.get(i).getUserId()
             + (player.getUserId().equals(
@@ -569,7 +638,7 @@ public class GameBoard {
     // Initialize the player's gems
     for (PlayerForm playerForm : gameBoardForm.players()) {
       if (playerForm.uid().equals(LobbyServiceCaller.getCurrentUserid())) {
-        for (i = 0; i < 6; i++) {
+        for (int i = 0; i < 6; i++) {
           pGemLabels.get(i).textProperty()
               .set("" + GemsForm.costHashToArrayWithGold(playerForm.hand().gems())[i]);
         }
@@ -666,6 +735,10 @@ public class GameBoard {
           if (gemDiscountCards < 1) {
             cardPurchaseButton.setDisable(true);
           }
+        } else if (cardForm instanceof SacrificeCardForm s) {
+          if (!canPurchaseSacrificeCard(s.sacrificeColor())) {
+            cardPurchaseButton.setDisable(true);
+          }
         }
       } else {
         cardPurchaseButton.setDisable(true);
@@ -681,6 +754,48 @@ public class GameBoard {
     // Open menu
     cardActionMenu.toFront();
     cardActionMenu.setVisible(true);
+  }
+
+  private boolean canPurchaseSacrificeCard(GemColor gemColor) {
+    final List<CardForm> cardsWithDiscountColor = getPurchasedCardsWithDiscountColor(gemColor);
+    return cardsWithDiscountColor.size() >= 2
+           || (cardsWithDiscountColor.size() == 1 && (cardsWithDiscountColor.get(0)
+                                                          instanceof DoubleBonusCardForm
+                                                      || cardsWithDiscountColor.get(0)
+                                                          instanceof SatchelCardForm));
+  }
+
+  private List<CardForm> getPurchasedCardsWithDiscountColor(GemColor gemColor) {
+    return player.getHandForm().purchasedCards().stream()
+        .filter(c -> cardHasDiscountOfColor(c, gemColor)).toList();
+  }
+
+  private boolean cardHasDiscountOfColor(CardForm cardForm, GemColor gemColor) {
+    if (cardForm == null || cardForm instanceof GoldGemCardForm) {
+      return false;
+    }
+
+    if (cardForm instanceof DoubleBonusCardForm c) {
+      return c.discountColor() == gemColor;
+    } else if (cardForm instanceof ReserveNobleCardForm c) {
+      return c.discountColor() == gemColor;
+    } else if (cardForm instanceof SacrificeCardForm c) {
+      return c.discountColor() == gemColor;
+    } else if (cardForm instanceof StandardCardForm c) {
+      return c.discountColor() == gemColor;
+    } else if (cardForm instanceof WaterfallCardForm c) {
+      return c.discountColor() == gemColor;
+    } else if (cardForm instanceof SatchelCardForm c) {
+      return cardHasDiscountOfColor(c.cardToAttach(), gemColor);
+    }
+    return false;
+  }
+
+  private List<CardForm> getPossibleCardsToSacrifice(GemColor gemColor) {
+    final List<CardForm> cardsWithDiscountColor = getPurchasedCardsWithDiscountColor(gemColor);
+    final List<CardForm> satchelCards =
+        cardsWithDiscountColor.stream().filter(c -> c instanceof SatchelCardForm).toList();
+    return satchelCards.isEmpty() ? cardsWithDiscountColor : satchelCards;
   }
 
   private boolean cardIsAttachable(CardForm cardForm) {
@@ -770,9 +885,96 @@ public class GameBoard {
                   player.getHandForm().reservedCards().contains(s), null)));
         }
       }
-    } else {
-      System.out.println("This card is not yet handled");
+    } else if (cardForm instanceof SacrificeCardForm c) {
+      purchaseSacrificeCard(c);
     }
+  }
+
+  private void purchaseSacrificeCard(SacrificeCardForm sacrificeCard) {
+    final List<CardForm> possibleCardsToSacrifice =
+        getPossibleCardsToSacrifice(sacrificeCard.sacrificeColor());
+    // Generate HBox to display the card choices to user
+    final HBox choicesHBox = new HBox();
+    choicesHBox.setSpacing(5);
+    choicesHBox.setPadding(new Insets(5));
+
+    tentativeSacrifices = new ArrayList<>();
+    // Generate ImageView for each selectable card form
+    for (CardForm c : possibleCardsToSacrifice) {
+      ImageView iv = new ImageView();
+      iv.setImage((c instanceof StandardCardForm) ? new StandardCard((StandardCardForm) c) :
+          new OrientCard(c));
+      iv.setFitHeight(140);
+      iv.setFitWidth(100);
+
+      // Apply event handler to each card in choices
+      iv.setOnMouseClicked(event -> {
+        final Card cardSelected = (Card) ((ImageView) event.getSource()).getImage();
+        if (tentativeSacrifices.isEmpty()) {
+          tentativeSacrifices.add(cardSelected);
+          waterfallPane.lookupButton(ButtonType.FINISH)
+              .setDisable(!(cardSelected.getCardForm() instanceof DoubleBonusCardForm
+                            || cardSelected.getCardForm() instanceof SatchelCardForm));
+        } else if (tentativeSacrifices.size() == 1) {
+          final Card card = tentativeSacrifices.get(0);
+          if (card.getCardForm() instanceof SatchelCardForm) {
+            choicesHBox.getChildren().forEach((child) -> child.setEffect(null));
+            tentativeSacrifices.clear();
+            tentativeSacrifices.add(cardSelected);
+            waterfallPane.lookupButton(ButtonType.FINISH).setDisable(false);
+          } else if (card.getCardForm() instanceof DoubleBonusCardForm
+                     || cardSelected.getCardForm() instanceof DoubleBonusCardForm) {
+            choicesHBox.getChildren().forEach((child) -> {
+              if (child instanceof ImageView i && card.equals(i.getImage())) {
+                child.setEffect(null);
+              }
+            });
+            tentativeSacrifices.clear();
+            tentativeSacrifices.add(cardSelected);
+            waterfallPane.lookupButton(ButtonType.FINISH).setDisable(
+                !(cardSelected.getCardForm() instanceof DoubleBonusCardForm));
+          } else {
+            tentativeSacrifices.add(cardSelected);
+            waterfallPane.lookupButton(ButtonType.FINISH).setDisable(false);
+          }
+        } else { // The size of the list was already 2
+          if (cardSelected.getCardForm() instanceof DoubleBonusCardForm) {
+            choicesHBox.getChildren().forEach((child) -> child.setEffect(null));
+            tentativeSacrifices.clear();
+          } else {
+            final Card cardToRemove = tentativeSacrifices.remove(0);
+            choicesHBox.getChildren().forEach((child) -> {
+              if (child instanceof ImageView i && cardToRemove.equals(i.getImage())) {
+                child.setEffect(null);
+              }
+            });
+          }
+          tentativeSacrifices.add(cardSelected);
+          waterfallPane.lookupButton(ButtonType.FINISH).setDisable(false);
+        }
+        ((ImageView) event.getSource()).setEffect(BLUE_GLOW_EFFECT);
+      });
+
+      choicesHBox.getChildren().add(iv);
+    }
+
+    closeAllActionWindows();
+    waterfallPaneSubtitle.setText("Select card/s to sacrifice");
+    waterfallPaneTitle.setText("Sacrifice purchased card/s");
+    waterfallPane.setContent(choicesHBox);
+    waterfallPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
+      waterfallPane.setVisible(false);
+      waterfallPane.setDisable(true);
+      final CardForm cardToSacrifice1 = tentativeSacrifices.get(0).getCardForm();
+      final CardForm cardToSacrifice2 =
+          tentativeSacrifices.size() < 2 ? null : tentativeSacrifices.get(1).getCardForm();
+      purchaseCard(new PurchaseCardForm(sacrificeCard,
+          new CardPaymentForm(cardToSacrifice1, cardToSacrifice2),
+          player.getHandForm().reservedCards().contains(sacrificeCard), null));
+    });
+    waterfallPane.setVisible(true);
+    waterfallPane.setDisable(false);
+    waterfallPane.lookupButton(ButtonType.FINISH).setDisable(true);
   }
 
   private void purchaseLevelOneSatchelCard(SatchelCardForm satchelCard,
@@ -901,7 +1103,8 @@ public class GameBoard {
       totalGemsInHand += i;
     }
 
-    if (totalGemsInHand + 1 > 10 && gameBoardForm.availableGems().get(GemColor.GOLD) > 0) {
+    if (totalGemsInHand + 1 > 10
+        && gameBoardForm.availableGems().getOrDefault(GemColor.GOLD, 0) > 0) {
       closeAllActionWindows();
       tokenDiscarder =
           new TokenDiscarder(this, player.getHandForm().gems(), 1, this::handleReserve);
@@ -1186,6 +1389,7 @@ public class GameBoard {
   private void handleExitActionMenu() {
     purchasedCardsView.setVisible(false);
     reservedCardsView.setVisible(false);
+    reservedNoblesView.setVisible(false);
     acquiredNoblesView.setVisible(false);
   }
 
@@ -1204,7 +1408,7 @@ public class GameBoard {
   }
 
   @FXML
-  public void handleReservedPaneSelect(MouseEvent event) {
+  public void handleReservedCardsPaneSelect(MouseEvent event) {
     reservedCardImages.clear();
 
     for (CardForm cardForm : player.getHandForm().reservedCards()) {
@@ -1224,6 +1428,22 @@ public class GameBoard {
     // Open reserved cards pane
     reservedCardsView.toFront();
     reservedCardsView.setVisible(true);
+  }
+
+  @FXML
+  public void handleReservedNoblesPaneSelect(MouseEvent event) {
+    reservedNobleImages.clear();
+
+    player.getHandForm().reservedNobles().stream().map(Noble::new)
+        .forEach(reservedNobleImages::add);
+
+    // Set the purchased pane's content to the card image grid
+    GridPane nobleGrid = generateCardGrid(reservedNobleImages, new int[] {180, 180, 3});
+    nobleGrid.setPadding(new Insets(0, 70, 0, 70));
+    reservedNoblesView.setCenter(nobleGrid);
+
+    // Open purchased pane
+    reservedNoblesView.setVisible(true);
   }
 
   @FXML
@@ -1260,21 +1480,8 @@ public class GameBoard {
       iv.setFitHeight(100);
       iv.setFitWidth(100);
       iv.setImage(n);
-
-      // Check if current player should be visited by a noble, else add it publicly
-//      if (isValidNobleVisit(GemsForm.costHashToArray(currentPlayer.hand().gemDiscounts()),
-//          n.getCost())) {
-//        activateAcquireNoblePrompt(iv);
-//        // Only one noble can be acquired per turn
-//        break;
-//      } else {
       publicNoblesVBox.getChildren().add(iv);
-//      }
     }
-  }
-
-  private boolean isValidNobleVisit(int[] playerBonuses, int[] nobleCost) {
-    return IntStream.range(0, nobleCost.length).noneMatch(i -> playerBonuses[i] < nobleCost[i]);
   }
 
   @FXML
@@ -1297,7 +1504,7 @@ public class GameBoard {
       return;
     }
 
-    List<Image> nobleImages = new ArrayList<Image>();
+    List<Image> nobleImages = new ArrayList<>();
     for (NobleForm n : requestedPlayer.hand().visitedNobles()) {
       nobleImages.add(new Noble(n));
     }
@@ -1560,7 +1767,44 @@ public class GameBoard {
   }
 
   @FXML
-  private void openTradingPostsMenu() {
-    tradingPostsMenu.toggleVisibility();
+  private void showTradingPostsMenu() { tradingPostsMenu.setVisible(true); }
+
+  @FXML
+  private void hideTradingPostsMenu() { tradingPostsMenu.setVisible(false); }
+
+  @FXML
+  private void showAvailableCitiesMenu() { availableCitiesMenu.setVisible(true);}
+
+  @FXML
+  private void hideAvailableCitiesMenu() { availableCitiesMenu.setVisible(false);}
+
+  @FXML
+  private void showMyCity() {
+
+    CityForm myCityForm = player.getHandForm().city();
+
+    if (myCityForm == null) {
+      // Set button to display NONE and change color to RED
+      Button display = (Button) myCityHBox.getChildren().get(0);
+      display.setText("None");
+      display.setStyle("-fx-background-color: #FF0000");
+    } else {
+      // Set City image visibility to true
+      myCityHBox.getChildren().get(1).setVisible(true);
+
+    }
   }
+
+  @FXML
+  private void hideMyCity() {
+    // Set button back to default state
+    Button myCityButton = (Button) myCityHBox.getChildren().get(0);
+    myCityButton.setText("My City");
+    myCityButton.setStyle("-fx-background-color: #72465B");
+
+    // Set City image visibility to false
+    myCityHBox.getChildren().get(1).setVisible(false);
+
+  }
+
 }
