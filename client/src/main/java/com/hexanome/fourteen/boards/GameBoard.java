@@ -44,7 +44,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javafx.animation.FadeTransition;
-import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -74,7 +73,6 @@ import javafx.stage.Stage;
 import com.hexanome.fourteen.lobbyui.*;
 import javafx.util.Duration;
 import kong.unirest.HttpResponse;
-import kong.unirest.HttpStatus;
 import org.apache.commons.codec.digest.DigestUtils;
 
 /**
@@ -1268,7 +1266,7 @@ public class GameBoard {
     final HttpResponse<String> response =
         ServerCaller.saveGame(LobbyServiceCaller.getCurrentUserLobby(),
             LobbyServiceCaller.getCurrentUserAccessToken());
-    if (response.getStatus() == HttpStatus.OK) {
+    if (response.isSuccess()) {
       System.out.printf("Saved game successfully with save game id: %s%n", response.getBody());
     } else {
       System.err.printf("Unable to save game\n%s%n", response.getBody());
@@ -1690,7 +1688,7 @@ public class GameBoard {
     final Set<CityForm> validCities;
 
     // Fetch valid noble or cities choices
-    if (response.getBody() != null && response.getStatus() == HttpStatus.OK) {
+    if (response.getBody() != null && response.isSuccess()) {
       if (response.getBody().contains("cost")) { // They're nobles
         final Type type = new TypeToken<Set<NobleForm>>() {
         }.getType();
@@ -1703,7 +1701,7 @@ public class GameBoard {
         validNobles = null;
       }
     } else {
-      if (response.getBody() != null && response.getStatus() != HttpStatus.OK) {
+      if (response.getBody() != null && !response.isSuccess()) {
         System.out.printf("DEBUG: Failed to get available nobles or cities\n\tResponse body: %s\n",
             response.getBody());
       }

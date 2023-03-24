@@ -31,7 +31,7 @@ public final class ServerCaller {
         .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
         .queryString("access_token", accessToken).asString();
 
-    if (response.getStatus() != 200) {
+    if (!response.isSuccess()) {
       return null;
     }
 

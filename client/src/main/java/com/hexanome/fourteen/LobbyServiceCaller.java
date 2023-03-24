@@ -67,7 +67,7 @@ public final class LobbyServiceCaller {
         .body("user_oauth_approval=true&_csrf=19beb2db-3807-4dd5-9f64-6c733462281b&authorize=true")
         .asString();
 
-    if (response.getStatus() != 200) {
+    if (!response.isSuccess()) {
       return null;
     }
 
@@ -180,7 +180,7 @@ public final class LobbyServiceCaller {
         .queryString("access_token", getCurrentUserAccessToken())
         .asString();
 
-    return response.getStatus() == 200;
+    return response.isSuccess();
   }
 
   /**
@@ -201,7 +201,7 @@ public final class LobbyServiceCaller {
             .queryString("access_token", getCurrentUserAccessToken())
             .asString();
 
-    return response.getStatus() == 200;
+    return response.isSuccess();
   }
 
   /**
@@ -241,7 +241,7 @@ public final class LobbyServiceCaller {
             .queryString("access_token", getCurrentUserAccessToken())
             .asString();
 
-    return response.getStatus() == 200;
+    return response.isSuccess();
   }
 
   /**
@@ -256,7 +256,7 @@ public final class LobbyServiceCaller {
             .queryString("access_token", getCurrentUserAccessToken())
             .asString();
 
-    return response.getStatus() == 200;
+    return response.isSuccess();
   }
 
   /**
@@ -273,7 +273,7 @@ public final class LobbyServiceCaller {
         .body(Main.GSON.toJson(createSessionForm))
         .asString();
 
-    if (response.getStatus() != 200) {
+    if (!response.isSuccess()) {
       return null;
     }
 
@@ -297,7 +297,7 @@ public final class LobbyServiceCaller {
         .queryString("access_token", getCurrentUserAccessToken())
         .asString();
 
-    return response.getStatus() == 200;
+    return response.isSuccess();
   }
 
   /**
@@ -325,7 +325,7 @@ public final class LobbyServiceCaller {
         .queryString("access_token", gsToken)
         .asString();
 
-    return response.getStatus() == 200;
+    return response.isSuccess();
   }
 
 
@@ -347,7 +347,7 @@ public final class LobbyServiceCaller {
               .header("authorization", "Basic YmdwLWNsaWVudC1uYW1lOmJncC1jbGllbnQtcHc=")
               .queryString("access_token", authToken).asString();
 
-      if (response.getStatus() == 200) {
+      if (response.isSuccess()) {
         saveGameForms.addAll(Main.GSON.fromJson(response.getBody(), listType));
       }
     }
