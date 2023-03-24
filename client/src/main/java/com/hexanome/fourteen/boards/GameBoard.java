@@ -434,12 +434,8 @@ public class GameBoard {
         hasBeenLastRound = true;
         winningPlayer.setText("Last round of the game!!");
         winningPlayer.toFront();
-        // Stub for showing popup
         final PauseTransition wait = new PauseTransition(Duration.seconds(3));
-        wait.setOnFinished((e) -> {
-          // Disabling the button after a duration of time
-          winningPlayer.setVisible(false);
-        });
+        wait.setOnFinished((e) -> winningPlayer.setVisible(false));
         winningPlayer.setVisible(true);
         wait.play();
       }
