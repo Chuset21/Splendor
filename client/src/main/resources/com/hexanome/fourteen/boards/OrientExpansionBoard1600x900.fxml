@@ -89,6 +89,42 @@
          </children></Pane>
       <Pane id="playersPane" fx:id="playersPane" layoutX="529.0" layoutY="-21.0" prefHeight="184.0" prefWidth="532.0" style="-fx-background-color: #F8DB85; -fx-background-radius: 20;" AnchorPane.topAnchor="-21.0">
          <children>
+            <HBox fx:id="crownHBox" layoutX="47.0" layoutY="35.0" prefHeight="43.0" prefWidth="439.0" spacing="45.0">
+               <children>
+                  <ImageView fitHeight="34.0" fitWidth="76.0" pickOnBounds="true" visible="false">
+                     <image>
+                        <Image url="@images/crown.png" />
+                     </image>
+                     <effect>
+                        <DropShadow />
+                     </effect>
+                  </ImageView>
+                  <ImageView fitHeight="34.0" fitWidth="76.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" visible="false">
+                     <image>
+                        <Image url="@images/crown.png" />
+                     </image>
+                     <effect>
+                        <DropShadow />
+                     </effect>
+                  </ImageView>
+                  <ImageView fitHeight="34.0" fitWidth="76.0" layoutX="131.0" layoutY="10.0" pickOnBounds="true" visible="false">
+                     <image>
+                        <Image url="@images/crown.png" />
+                     </image>
+                     <effect>
+                        <DropShadow />
+                     </effect>
+                  </ImageView>
+                  <ImageView fitHeight="34.0" fitWidth="76.0" layoutX="252.0" layoutY="10.0" pickOnBounds="true" visible="false">
+                     <image>
+                        <Image url="@images/crown.png" />
+                     </image>
+                     <effect>
+                        <DropShadow />
+                     </effect>
+                  </ImageView>
+               </children>
+            </HBox>
             <Label fx:id="currentPlayerTurnLabel" alignment="CENTER" layoutX="166.0" layoutY="28.0" prefHeight="47.0" prefWidth="200.0" text="Billy's Turn" textAlignment="CENTER" textFill="#72465b">
                <font>
                   <Font name="Satoshi Bold" size="24.0" />
@@ -619,7 +655,7 @@
          </children>
 
       </Pane>
-      <AnchorPane fx:id="cardActionMenu" layoutX="440.0" layoutY="80.0" prefHeight="556.0" prefWidth="700.0">
+      <AnchorPane fx:id="cardActionMenu" layoutX="440.0" layoutY="80.0" prefHeight="556.0" prefWidth="700.0" visible="false">
          <children>
             <Pane layoutX="456.0" prefHeight="600.0" prefWidth="700.0" style="-fx-background-color: #faecc0; -fx-border-color: #000000; -fx-border-width: 5;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
             <BorderPane prefHeight="600.0" prefWidth="700.0">

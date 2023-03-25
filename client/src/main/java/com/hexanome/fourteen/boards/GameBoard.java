@@ -79,6 +79,8 @@ import org.apache.commons.codec.digest.DigestUtils;
  * A class to represent the game objects required to represent a OrientExpansion Splendor game.
  */
 public class GameBoard {
+  @FXML
+  private HBox crownHBox;
   private Stage stage;
 
   private GameBoardForm gameBoardForm;
@@ -469,7 +471,6 @@ public class GameBoard {
         fadeTransition.setCycleCount(2);
         fadeTransition.play();
       }
-      // TODO show the leading player??
     }
   }
 
@@ -627,6 +628,7 @@ public class GameBoard {
         } else if (i == 3) {
           playerName3.setText(players.get(3).getUserId());
         }
+        crownHBox.getChildren().get(i).setVisible(gameBoardForm.leadingPlayer().uid().equals(players.get(i).getUserId()));
 
         playerViews.get(i).setImage(players.get(i));
         Tooltip.install(playerViews.get(i), new Tooltip(players.get(i).getUserId()
@@ -1091,7 +1093,6 @@ public class GameBoard {
     cardActionMenu.setVisible(false);
 
     closeAllActionWindows();
-    //updateBoard();
     acquireNobleAndCityCheck(response);
   }
 
