@@ -81,4 +81,8 @@ public final class PurchaseCardForm {
   public TradingPostTakeGem tradingPostTakeGem() {
     return tradingPostTakeGem;
   }
+
+  public void setTradingPostTakeGem(TradingPostTakeGem bonusGem) {
+    this.tradingPostTakeGem = bonusGem;
+  }
 }

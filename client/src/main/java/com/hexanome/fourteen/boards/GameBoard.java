@@ -43,6 +43,8 @@ import com.hexanome.fourteen.TokenRefreshFailedException;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import com.hexanome.fourteen.form.server.tradingposts.TradingPostsEnum;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
@@ -246,6 +248,8 @@ public class GameBoard {
   private TradingPostsMenu tradingPostsMenu;
   @FXML
   private AnchorPane backgroundPane;
+
+  private boolean selectingBonusGem = false;
 
   /**
    * A call to this method displays the game on screen by initializing the scene with the gameboard.
@@ -733,7 +737,23 @@ public class GameBoard {
           new GemPaymentForm(cardForm.cost()
               .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
           player.getHandForm().reservedCards().contains(cardForm), null);
-      purchaseCard(purchaseCardForm);
+      if (player.getHandForm().tradingPosts().get(TradingPostsEnum.BONUS_GEM_WITH_CARD)){
+        selectingBonusGem = true;
+        waterfallPaneTitle.setText("You Have Trading Post 1. Take a free gem!");
+        waterfallPaneSubtitle.setText("Select one gem from the bank to the left.");
+        closeAllActionWindows();
+        //selectedCardView.setDisable(true);
+        waterfallPane.setVisible(true);
+        waterfallPane.setDisable(false);
+        waterfallPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
+          waterfallPane.setVisible(false);
+          waterfallPane.setDisable(true);
+        });
+        bank.getBonusGem(purchaseCardForm);
+      }
+      else {
+        purchaseCard(purchaseCardForm);
+      }
     } else if (cardForm instanceof WaterfallCardForm) {
       displayWaterfallChoices(cardForm, CardLevelForm.TWO, f ->
           purchaseCard(new PurchaseCardForm(cardForm,
@@ -951,7 +971,7 @@ public class GameBoard {
    *
    * @param purchaseCardForm form of purchase card
    */
-  private void purchaseCard(PurchaseCardForm purchaseCardForm) {
+  public void purchaseCard(PurchaseCardForm purchaseCardForm) {
     final HttpResponse<String> response =
         ServerCaller.purchaseCard(LobbyServiceCaller.getCurrentUserLobby(),
             LobbyServiceCaller.getCurrentUserAccessToken(), purchaseCardForm);
@@ -1093,7 +1113,12 @@ public class GameBoard {
 
   @FXML
   private void handleClickTakeBankButton() {
-    bank.take();
+    if (selectingBonusGem) {
+      selectingBonusGem = false;
+      bank.takeBonusGem();
+    } else {
+      bank.take();
+    }
   }
 
   @FXML
