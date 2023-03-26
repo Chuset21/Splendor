@@ -5,6 +5,7 @@ import com.hexanome.fourteen.ServerCaller;
 import com.hexanome.fourteen.form.server.GemsForm;
 import com.hexanome.fourteen.form.server.PurchaseCardForm;
 import com.hexanome.fourteen.form.server.TakeGemsForm;
+import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
 import com.hexanome.fourteen.form.server.tradingposts.TradingPostTakeGem;
 import com.hexanome.fourteen.form.server.tradingposts.TradingPostsEnum;
 import java.util.ArrayList;
@@ -151,11 +152,29 @@ public class Bank {
   }
 
   public void takeBonusGem(){
-    selectingBonusGem = false;
     //check if there are too many gems
+    final int totalGemsInHand = gameBoard.player.getHandForm().gems().count();
+    int gemsToLoseFromPurchase = 0;
+    if (bonusGemCardForm.payment() instanceof GemPaymentForm){
+      gemsToLoseFromPurchase = ((GemPaymentForm) bonusGemCardForm.payment()).getChosenGems().count();
+    }
+    if (totalGemsInHand - gemsToLoseFromPurchase + 1 > 10){
+      openTokenDiscarder((totalGemsInHand - gemsToLoseFromPurchase + 1) - 10);
+    } else {
+      GemColor bonusGemColor = GemColor.INT_CONVERSION_ARRAY.get(selectedGems.get(0));
+      TradingPostTakeGem tradingPostTakeGem = new TradingPostTakeGem(bonusGemColor, null);
+      bonusGemCardForm.setTradingPostTakeGem(tradingPostTakeGem);
+      selectingBonusGem = false;
+      gameBoard.purchaseCard(bonusGemCardForm);
+    }
+  }
+
+  public void takeBonusGem(GemsForm gemsToRemove) {
     GemColor bonusGemColor = GemColor.INT_CONVERSION_ARRAY.get(selectedGems.get(0));
-    TradingPostTakeGem tradingPostTakeGem = new TradingPostTakeGem(bonusGemColor,null);
+    GemColor removeGemColor = GemColor.INT_CONVERSION_ARRAY.get(gemsToRemove.get(0));
+    TradingPostTakeGem tradingPostTakeGem = new TradingPostTakeGem(bonusGemColor, removeGemColor);
     bonusGemCardForm.setTradingPostTakeGem(tradingPostTakeGem);
+    selectingBonusGem = false;
     gameBoard.purchaseCard(bonusGemCardForm);
   }
 
@@ -183,8 +202,13 @@ public class Bank {
     selectedGems.forEach(i -> convertedForm.put(GemColor.INT_CONVERSION_ARRAY.get(i),
         convertedForm.getOrDefault(GemColor.INT_CONVERSION_ARRAY.get(i), 0) + 1));
     gemsOwnedAfterTakingTokens.addGems(convertedForm);
-    gameBoard.tokenDiscarder =
-        new TokenDiscarder(gameBoard, gemsOwnedAfterTakingTokens, tokensToDiscard, this::take);
+    if (selectingBonusGem){
+      gameBoard.tokenDiscarder =
+              new TokenDiscarder(gameBoard, gemsOwnedAfterTakingTokens, tokensToDiscard, this::takeBonusGem);
+    }else {
+      gameBoard.tokenDiscarder =
+              new TokenDiscarder(gameBoard, gemsOwnedAfterTakingTokens, tokensToDiscard, this::take);
+    }
     gameBoard.tokenDiscarder.open();
   }
 

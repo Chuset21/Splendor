@@ -742,7 +742,6 @@ public class GameBoard {
         waterfallPaneTitle.setText("You Have Trading Post 1. Take a free gem!");
         waterfallPaneSubtitle.setText("Select one gem from the bank to the left.");
         closeAllActionWindows();
-        //selectedCardView.setDisable(true);
         waterfallPane.setVisible(true);
         waterfallPane.setDisable(false);
         waterfallPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
