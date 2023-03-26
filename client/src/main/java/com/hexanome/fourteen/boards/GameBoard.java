@@ -739,15 +739,7 @@ public class GameBoard {
           player.getHandForm().reservedCards().contains(cardForm), null);
       if (player.getHandForm().tradingPosts().get(TradingPostsEnum.BONUS_GEM_WITH_CARD)){
         selectingBonusGem = true;
-        waterfallPaneTitle.setText("You Have Trading Post 1. Take a free gem!");
-        waterfallPaneSubtitle.setText("Select one gem from the bank to the left.");
-        closeAllActionWindows();
-        waterfallPane.setVisible(true);
-        waterfallPane.setDisable(false);
-        waterfallPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
-          waterfallPane.setVisible(false);
-          waterfallPane.setDisable(true);
-        });
+        takeFreeGemPrompt();
         bank.getBonusGem(purchaseCardForm);
       }
       else {
@@ -864,9 +856,17 @@ public class GameBoard {
       final CardForm cardToSacrifice1 = tentativeSacrifices.get(0).getCardForm();
       final CardForm cardToSacrifice2 =
           tentativeSacrifices.size() < 2 ? null : tentativeSacrifices.get(1).getCardForm();
-      purchaseCard(new PurchaseCardForm(sacrificeCard,
-          new CardPaymentForm(cardToSacrifice1, cardToSacrifice2),
-          player.getHandForm().reservedCards().contains(sacrificeCard), null));
+      if (player.getHandForm().tradingPosts().get(TradingPostsEnum.BONUS_GEM_WITH_CARD)){
+        selectingBonusGem = true;
+        takeFreeGemPrompt();
+        bank.getBonusGem(new PurchaseCardForm(sacrificeCard,
+                new CardPaymentForm(cardToSacrifice1, cardToSacrifice2),
+                player.getHandForm().reservedCards().contains(sacrificeCard), null));
+      } else {
+        purchaseCard(new PurchaseCardForm(sacrificeCard,
+                new CardPaymentForm(cardToSacrifice1, cardToSacrifice2),
+                player.getHandForm().reservedCards().contains(sacrificeCard), null));
+      }
     });
     waterfallPane.setVisible(true);
     waterfallPane.setDisable(false);
@@ -1051,6 +1051,19 @@ public class GameBoard {
 
     closeAllActionWindows();
     updateBoard();
+  }
+
+  private void takeFreeGemPrompt(){
+    waterfallPaneTitle.setText("You Have Trading Post 1. Take a free gem!");
+    waterfallPaneSubtitle.setText("Select one gem from the bank to the left.");
+    waterfallPane.setContent(new HBox());
+    closeAllActionWindows();
+    waterfallPane.setVisible(true);
+    waterfallPane.setDisable(false);
+    waterfallPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
+      waterfallPane.setVisible(false);
+      waterfallPane.setDisable(true);
+    });
   }
 
   private boolean isYourTurn() {
