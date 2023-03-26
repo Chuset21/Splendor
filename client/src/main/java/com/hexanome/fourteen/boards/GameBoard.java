@@ -729,6 +729,10 @@ public class GameBoard {
     // Get card to be purchased
     Card cardPurchased = (Card) selectedCardView.getImage();
 
+    if (player.getHandForm().tradingPosts().get(TradingPostsEnum.BONUS_GEM_WITH_CARD)){
+      selectingBonusGem = true;
+    }
+
     final CardForm cardForm = cardPurchased.getCardForm();
     if (cardForm instanceof StandardCardForm
         || cardForm instanceof GoldGemCardForm
@@ -737,14 +741,7 @@ public class GameBoard {
           new GemPaymentForm(cardForm.cost()
               .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
           player.getHandForm().reservedCards().contains(cardForm), null);
-      if (player.getHandForm().tradingPosts().get(TradingPostsEnum.BONUS_GEM_WITH_CARD)){
-        selectingBonusGem = true;
-        takeFreeGemPrompt();
-        bank.getBonusGem(purchaseCardForm);
-      }
-      else {
-        purchaseCard(purchaseCardForm);
-      }
+      purchaseCard(purchaseCardForm);
     } else if (cardForm instanceof WaterfallCardForm) {
       displayWaterfallChoices(cardForm, CardLevelForm.TWO, f ->
           purchaseCard(new PurchaseCardForm(cardForm,
@@ -856,17 +853,10 @@ public class GameBoard {
       final CardForm cardToSacrifice1 = tentativeSacrifices.get(0).getCardForm();
       final CardForm cardToSacrifice2 =
           tentativeSacrifices.size() < 2 ? null : tentativeSacrifices.get(1).getCardForm();
-      if (player.getHandForm().tradingPosts().get(TradingPostsEnum.BONUS_GEM_WITH_CARD)){
-        selectingBonusGem = true;
-        takeFreeGemPrompt();
-        bank.getBonusGem(new PurchaseCardForm(sacrificeCard,
+      purchaseCard(new PurchaseCardForm(sacrificeCard,
                 new CardPaymentForm(cardToSacrifice1, cardToSacrifice2),
                 player.getHandForm().reservedCards().contains(sacrificeCard), null));
-      } else {
-        purchaseCard(new PurchaseCardForm(sacrificeCard,
-                new CardPaymentForm(cardToSacrifice1, cardToSacrifice2),
-                player.getHandForm().reservedCards().contains(sacrificeCard), null));
-      }
+
     });
     waterfallPane.setVisible(true);
     waterfallPane.setDisable(false);
@@ -942,10 +932,11 @@ public class GameBoard {
       acquiredNobleAlertPane.setDisable(false);
       acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setDisable(true);
     } else {
-      purchaseCard(new PurchaseCardForm(cardPurchased,
-          new GemPaymentForm(cardPurchased.cost()
-              .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
-          player.getHandForm().reservedCards().contains(cardPurchased), null));
+        purchaseCard(new PurchaseCardForm(cardPurchased,
+                new GemPaymentForm(cardPurchased.cost()
+                        .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
+                player.getHandForm().reservedCards().contains(cardPurchased), null));
+
     }
   }
 
@@ -971,6 +962,11 @@ public class GameBoard {
    * @param purchaseCardForm form of purchase card
    */
   public void purchaseCard(PurchaseCardForm purchaseCardForm) {
+    if (selectingBonusGem){
+      takeFreeGemPrompt();
+      bank.getBonusGem(purchaseCardForm);
+      return;
+    }
     final HttpResponse<String> response =
         ServerCaller.purchaseCard(LobbyServiceCaller.getCurrentUserLobby(),
             LobbyServiceCaller.getCurrentUserAccessToken(), purchaseCardForm);
@@ -1127,6 +1123,8 @@ public class GameBoard {
   private void handleClickTakeBankButton() {
     if (selectingBonusGem) {
       selectingBonusGem = false;
+      waterfallPane.setVisible(false);
+      waterfallPane.setDisable(true);
       bank.takeBonusGem();
     } else {
       bank.take();

@@ -159,6 +159,7 @@ public class Bank {
       gemsToLoseFromPurchase = ((GemPaymentForm) bonusGemCardForm.payment()).getChosenGems().count();
     }
     if (totalGemsInHand - gemsToLoseFromPurchase + 1 > 10){
+      selectingBonusGem = false;
       openTokenDiscarder((totalGemsInHand - gemsToLoseFromPurchase + 1) - 10);
     } else {
       GemColor bonusGemColor = GemColor.INT_CONVERSION_ARRAY.get(selectedGems.get(0));
