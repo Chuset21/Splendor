@@ -44,6 +44,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
+import com.hexanome.fourteen.form.server.tradingposts.TradingPostsEnum;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -272,6 +274,8 @@ public class GameBoard {
 
   @FXML
   private AnchorPane backgroundPane;
+
+  private boolean selectingBonusGem = false;
 
   /**
    * A call to this method displays the game on screen by initializing the scene with the gameboard.
@@ -817,6 +821,10 @@ public class GameBoard {
     // Get card to be purchased
     Card cardPurchased = (Card) selectedCardView.getImage();
 
+    if (player.getHandForm().tradingPosts().get(TradingPostsEnum.BONUS_GEM_WITH_CARD)){
+      selectingBonusGem = true;
+    }
+
     final CardForm cardForm = cardPurchased.getCardForm();
     if (cardForm instanceof StandardCardForm
         || cardForm instanceof GoldGemCardForm
@@ -1082,7 +1090,12 @@ public class GameBoard {
    *
    * @param purchaseCardForm form of purchase card
    */
-  private void purchaseCard(PurchaseCardForm purchaseCardForm) {
+  public void purchaseCard(PurchaseCardForm purchaseCardForm) {
+    if (selectingBonusGem){
+      takeFreeGemPrompt();
+      bank.getBonusGem(purchaseCardForm);
+      return;
+    }
     final HttpResponse<String> response =
         ServerCaller.purchaseCard(LobbyServiceCaller.getCurrentUserLobby(),
             LobbyServiceCaller.getCurrentUserAccessToken(), purchaseCardForm);
@@ -1161,6 +1174,19 @@ public class GameBoard {
     updateBoard();
   }
 
+  private void takeFreeGemPrompt(){
+    waterfallPaneTitle.setText("You Have Trading Post 1. Take a free gem!");
+    waterfallPaneSubtitle.setText("Select one gem from the bank to the left.");
+    waterfallPane.setContent(new HBox());
+    closeAllActionWindows();
+    waterfallPane.setVisible(true);
+    waterfallPane.setDisable(false);
+    waterfallPane.lookupButton(ButtonType.FINISH).setOnMouseClicked(event -> {
+      waterfallPane.setVisible(false);
+      waterfallPane.setDisable(true);
+    });
+  }
+
   private boolean isYourTurn() {
     return gameBoardForm.playerTurnid().equals(player.getUserId());
   }
@@ -1220,7 +1246,14 @@ public class GameBoard {
 
   @FXML
   private void handleClickTakeBankButton() {
-    bank.take();
+    if (selectingBonusGem) {
+      selectingBonusGem = false;
+      waterfallPane.setVisible(false);
+      waterfallPane.setDisable(true);
+      bank.takeBonusGem();
+    } else {
+      bank.take();
+    }
   }
 
   @FXML

@@ -3,7 +3,11 @@ package com.hexanome.fourteen.boards;
 import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.ServerCaller;
 import com.hexanome.fourteen.form.server.GemsForm;
+import com.hexanome.fourteen.form.server.PurchaseCardForm;
 import com.hexanome.fourteen.form.server.TakeGemsForm;
+import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
+import com.hexanome.fourteen.form.server.tradingposts.TradingPostTakeGem;
+import com.hexanome.fourteen.form.server.tradingposts.TradingPostsEnum;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -24,6 +28,8 @@ public class Bank {
   public boolean isTaking; // If the Shop interface is open or not.
   private int[] bankGems = new int[6]; // bank's Gems (in Bank)
   private List<Integer> selectedGems; // gems the player is currently selecting
+  private boolean selectingBonusGem; // if player is choosing bonus gem from post 3
+  private PurchaseCardForm bonusGemCardForm;
 
   // Fields [Scene Nodes]
   List<Button> addGemButtons;
@@ -68,6 +74,8 @@ public class Bank {
     this.takenTokenPane = takenTokenPane;
     this.gameBoard = gameBoard;
     isTaking = false;
+    selectingBonusGem = false;
+    bonusGemCardForm = new PurchaseCardForm();
 
     // Initialize Starting Tokens and the respective Labels
     int initialTokens = (numPlayers < 4) ? (2 + numPlayers) : 7;
@@ -111,7 +119,11 @@ public class Bank {
           gemLabels.get(idx).setText("" + 0);
         }
       }
-      updateBankButtons();
+      if (!selectingBonusGem){
+        updateBankButtons();
+      } else {
+        updateButtonsForBonusGem();
+      }
 
     } else {
       close(gameBoard.getGameBoardForm().availableGems());
@@ -139,6 +151,34 @@ public class Bank {
     sendTakeGems(selectedGems, gemsToRemove);
   }
 
+  public void takeBonusGem(){
+    //check if there are too many gems
+    final int totalGemsInHand = gameBoard.player.getHandForm().gems().count();
+    int gemsToLoseFromPurchase = 0;
+    if (bonusGemCardForm.payment() instanceof GemPaymentForm){
+      gemsToLoseFromPurchase = ((GemPaymentForm) bonusGemCardForm.payment()).getChosenGems().count();
+    }
+    if (totalGemsInHand - gemsToLoseFromPurchase + 1 > 10){
+      selectingBonusGem = false;
+      openTokenDiscarder((totalGemsInHand - gemsToLoseFromPurchase + 1) - 10);
+    } else {
+      GemColor bonusGemColor = GemColor.INT_CONVERSION_ARRAY.get(selectedGems.get(0));
+      TradingPostTakeGem tradingPostTakeGem = new TradingPostTakeGem(bonusGemColor, null);
+      bonusGemCardForm.setTradingPostTakeGem(tradingPostTakeGem);
+      selectingBonusGem = false;
+      gameBoard.purchaseCard(bonusGemCardForm);
+    }
+  }
+
+  public void takeBonusGem(GemsForm gemsToRemove) {
+    GemColor bonusGemColor = GemColor.INT_CONVERSION_ARRAY.get(selectedGems.get(0));
+    GemColor removeGemColor = GemColor.INT_CONVERSION_ARRAY.get(gemsToRemove.get(0));
+    TradingPostTakeGem tradingPostTakeGem = new TradingPostTakeGem(bonusGemColor, removeGemColor);
+    bonusGemCardForm.setTradingPostTakeGem(tradingPostTakeGem);
+    selectingBonusGem = false;
+    gameBoard.purchaseCard(bonusGemCardForm);
+  }
+
   public void close(GemsForm gemsForm) {
     openBankButton.textProperty().set("Open");
     openBankButton.setPrefWidth(84);
@@ -163,8 +203,13 @@ public class Bank {
     selectedGems.forEach(i -> convertedForm.put(GemColor.INT_CONVERSION_ARRAY.get(i),
         convertedForm.getOrDefault(GemColor.INT_CONVERSION_ARRAY.get(i), 0) + 1));
     gemsOwnedAfterTakingTokens.addGems(convertedForm);
-    gameBoard.tokenDiscarder =
-        new TokenDiscarder(gameBoard, gemsOwnedAfterTakingTokens, tokensToDiscard, this::take);
+    if (selectingBonusGem){
+      gameBoard.tokenDiscarder =
+              new TokenDiscarder(gameBoard, gemsOwnedAfterTakingTokens, tokensToDiscard, this::takeBonusGem);
+    }else {
+      gameBoard.tokenDiscarder =
+              new TokenDiscarder(gameBoard, gemsOwnedAfterTakingTokens, tokensToDiscard, this::take);
+    }
     gameBoard.tokenDiscarder.open();
   }
 
@@ -203,7 +248,11 @@ public class Bank {
     gemLabels.get(index).setText("" + (Integer.parseInt(gemLabels.get(index).getText()) + 1));
 
     // Update the buttons (specifically, their Enabled/Disabled state)
-    updateBankButtons();
+    if (!selectingBonusGem){
+      updateBankButtons();
+    } else {
+      updateButtonsForBonusGem();
+    }
   }
 
   /**
@@ -239,6 +288,8 @@ public class Bank {
       handBucket.put(gem, handBucket.get(gem) + 1);
     }
 
+    boolean hasPost2 = gameBoard.player.getHandForm().tradingPosts().get(TradingPostsEnum.BONUS_GEM_AFTER_TAKE_TWO);
+
     // Go through the buttons of each colour and enable/disable them accordingly.
     for (int idx : GEM_INDEX) {
 
@@ -252,11 +303,12 @@ public class Bank {
       // If (following 5 conditions) hold, 'add' should be enabled.
       //Otherwise, disable the 'add' button.
       if (idx == 5 /*Gem is gold*/
-          || bankGems[idx] == 0
-          || (bankGems[idx] < 3 && selectedGems.contains(idx))
-          || handBucket.get(idx) > 0 && selectedGems.size() > 1
-          || selectedGems.size() == 3
-          || handBucket.containsValue(2)) {
+          || bankGems[idx] == 0 // there are no gems left of this color
+          || (bankGems[idx] < 3 && selectedGems.contains(idx)) // cant take 2 when there are less than 4
+          || handBucket.get(idx) > 0 && selectedGems.size() > 1 //
+          || selectedGems.size() == 3 //have 3 gems already
+          || handBucket.containsValue(2) && !hasPost2 // have 2 of one color and dont have trading post 2
+          || hasPost2 && selectedGems.size() == 2 && selectedGems.get(0) == idx && selectedGems.get(1) == idx) { //have post 2 and two of the same color disable only that color
         addGemButtons.get(idx).setDisable(true);
       } else {
         addGemButtons.get(idx).setDisable(false);
@@ -272,8 +324,49 @@ public class Bank {
                  !((selectedGems.size() == 1 && !hasDoubleColour()) ||
                    (selectedGems.size() == 2 && hasDoubleColour()))) {
         takeBankButton.setDisable(true);
-      } else {
+      }
+      else if (hasPost2
+          && selectedGems.size() != 3
+          && otherColorsAvailable(selectedGems.get(0))){
+        takeBankButton.setDisable(true);
+      }else {
         takeBankButton.setDisable(false);
+      }
+    }
+  }
+
+  public void getBonusGem(PurchaseCardForm purchaseCardForm){
+    this.selectingBonusGem = true;
+    this.bonusGemCardForm = purchaseCardForm;
+    if (getNumGemTypesTakeable() == 0){
+      gameBoard.purchaseCard(purchaseCardForm);
+    } else {
+    takeBankButton.setDisable(true);
+    toggle();
+    }
+  }
+
+
+  private void updateButtonsForBonusGem(){
+    for (int idx : GEM_INDEX){
+      // If we have the gem colour in our hand, 'remove' should be enabled;
+      // Otherwise, disable the 'remove' button.
+      if (!selectedGems.contains(idx) || idx == 5 /*Gem is gold*/) {
+        removeGemButtons.get(idx).setDisable(true);
+      } else {
+        removeGemButtons.get(idx).setDisable(false);
+      }
+
+      if (idx == 5 || selectedGems.size() == 1){
+        addGemButtons.get(idx).setDisable(true);
+      } else {
+        addGemButtons.get(idx).setDisable(false);
+      }
+
+      if (selectedGems.size() == 1){
+        takeBankButton.setDisable(false);
+      } else {
+        takeBankButton.setDisable(true);
       }
     }
   }
@@ -300,5 +393,14 @@ public class Bank {
     }
 
     return numTypes;
+  }
+
+  private boolean otherColorsAvailable(int color) {
+    for (int idx: GEM_INDEX){
+      if (idx != color && idx != 5 && bankGems[idx] > 0){
+        return true;
+      }
+    }
+    return false;
   }
 }
