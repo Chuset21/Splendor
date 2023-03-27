@@ -5,7 +5,7 @@
     <artifactId>splendor</artifactId>
     <packaging>jar</packaging>
     <version>0.1.0-SNAPSHOT</version>
-    <name>demo</name>
+    <name>splendor_frontend</name>
     <url>https://maven.apache.org</url>
 
 
