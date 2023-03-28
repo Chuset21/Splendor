@@ -632,11 +632,12 @@ public class GameBoard {
         } else if (i == 3) {
           playerName3.setText(players.get(3).getUserId());
         }
-        crownHBox.getChildren().get(i).setVisible(gameBoardForm.leadingPlayer().uid().equals(players.get(i).getUserId()));
+        crownHBox.getChildren().get(i)
+            .setVisible(gameBoardForm.leadingPlayer().uid().equals(players.get(i).getUserId()));
 
         playerViews.get(i).setImage(players.get(i));
         Tooltip.install(playerViews.get(i), new Tooltip(players.get(i).getUserId()
-            + (player.getUserId().equals(
+                                                        + (player.getUserId().equals(
             players.get(i).getUserId())
             ? " (you)" : "")));
       } else {
@@ -737,7 +738,7 @@ public class GameBoard {
       // If player's gems cannot pay for card, disable purchase button
       boolean canAfford =
           (cost != null && selectedCard.getCardForm().isAffordable(player.getPlayerForm())) ||
-              (cost == null);
+          (cost == null);
 
       if (canAfford) {
         if (cardForm instanceof SatchelCardForm) {
@@ -761,7 +762,7 @@ public class GameBoard {
 
     //// Handle Reserve Availability
     cardReserveButton.setDisable(!isYourTurn() || handForm.reservedCards().size() >= 3
-        || handForm.reservedCards().contains(cardForm));
+                                 || handForm.reservedCards().contains(cardForm));
 
     // Open menu
     cardActionMenu.toFront();
@@ -821,7 +822,8 @@ public class GameBoard {
     // Get card to be purchased
     Card cardPurchased = (Card) selectedCardView.getImage();
 
-    if (player.getHandForm().tradingPosts().get(TradingPostsEnum.BONUS_GEM_WITH_CARD)){
+    if (player.getHandForm().tradingPosts()
+        .getOrDefault(TradingPostsEnum.BONUS_GEM_WITH_CARD, false)) {
       selectingBonusGem = true;
     }
 
@@ -1091,7 +1093,7 @@ public class GameBoard {
    * @param purchaseCardForm form of purchase card
    */
   public void purchaseCard(PurchaseCardForm purchaseCardForm) {
-    if (selectingBonusGem){
+    if (selectingBonusGem) {
       takeFreeGemPrompt();
       bank.getBonusGem(purchaseCardForm);
       return;
@@ -1135,7 +1137,8 @@ public class GameBoard {
 
     ReserveCardForm reserveCardForm = new ReserveCardForm(cardReserved.getCardForm(), null, false);
 
-    HttpResponse response = ServerCaller.reserveCard(LobbyServiceCaller.getCurrentUserLobby(), LobbyServiceCaller.getCurrentUserAccessToken(), reserveCardForm);
+    HttpResponse response = ServerCaller.reserveCard(LobbyServiceCaller.getCurrentUserLobby(),
+        LobbyServiceCaller.getCurrentUserAccessToken(), reserveCardForm);
 
     // Close card menu
     cardActionMenu.setVisible(false);
@@ -1174,7 +1177,7 @@ public class GameBoard {
     updateBoard();
   }
 
-  private void takeFreeGemPrompt(){
+  private void takeFreeGemPrompt() {
     waterfallPaneTitle.setText("You Have Trading Post 1. Take a free gem!");
     waterfallPaneSubtitle.setText("Select one gem from the bank to the left.");
     waterfallPane.setContent(new HBox());
@@ -1581,7 +1584,7 @@ public class GameBoard {
     // Set summary label as player title
     playerSummaryUserLabel.setText(
         requestedPlayer.uid() + "'s Board\nPrestige points: " +
-            requestedPlayer.hand().prestigePoints());
+        requestedPlayer.hand().prestigePoints());
 
     // Fetch and apply the user's discounts to the summary discount matrix
     int index = 0;
@@ -1654,7 +1657,7 @@ public class GameBoard {
     // Fetch user's free card choices
     return gameBoardForm.cards().stream().flatMap(Collection::stream)
         .filter(c -> (c.level().equals(level))
-            && (!(c instanceof SatchelCardForm) || canPurchaseSatchelCard))
+                     && (!(c instanceof SatchelCardForm) || canPurchaseSatchelCard))
         .collect(Collectors.toList());
   }
 
