@@ -736,9 +736,8 @@ public class GameBoard {
 
     if (isYourTurn()) {
       // If player's gems cannot pay for card, disable purchase button
-      boolean canAfford =
-          (cost != null && selectedCard.getCardForm().isAffordable(player.getPlayerForm())) ||
-          (cost == null);
+      final boolean canAfford =
+          cost == null || selectedCard.getCardForm().isAffordable(player.getPlayerForm());
 
       if (canAfford) {
         if (cardForm instanceof SatchelCardForm) {
