@@ -105,5 +105,12 @@
       "BLACK": 2,
       "BLUE": 2
     }
+  },
+  "max_city.png": {
+    "prestige_points": 14,
+    "gem_discounts": {
+      "GREEN": 3,
+      "BLACK": 3
+    }
   }
 }
