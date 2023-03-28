@@ -1001,6 +1001,7 @@
         {
           "type": "SacrificeCard",
           "discount_color": "BLACK",
+          "sacrifice_color": "RED",
           "prestige_points": 3,
           "cost": null,
           "level": "THREE",
@@ -1009,6 +1010,7 @@
         {
           "type": "SacrificeCard",
           "discount_color": "WHITE",
+          "sacrifice_color": "BLACK",
           "prestige_points": 3,
           "cost": null,
           "level": "THREE",
@@ -1017,6 +1019,7 @@
         {
           "type": "SacrificeCard",
           "discount_color": "RED",
+          "sacrifice_color": "GREEN",
           "prestige_points": 3,
           "cost": null,
           "level": "THREE",
@@ -1051,6 +1054,7 @@
         {
           "type": "SacrificeCard",
           "discount_color": "GREEN",
+          "sacrifice_color": "BLUE",
           "prestige_points": 3,
           "cost": null,
           "level": "THREE",
@@ -1085,6 +1089,7 @@
         {
           "type": "SacrificeCard",
           "discount_color": "BLUE",
+          "sacrifice_color": "WHITE",
           "prestige_points": 3,
           "cost": null,
           "level": "THREE",
@@ -3145,6 +3150,7 @@
         {
           "type": "SacrificeCard",
           "discount_color": "WHITE",
+          "sacrifice_color": "BLACK",
           "prestige_points": 3,
           "cost": null,
           "level": "THREE",
@@ -3166,6 +3172,7 @@
         {
           "type": "SacrificeCard",
           "discount_color": "BLUE",
+          "sacrifice_color": "WHITE",
           "prestige_points": 3,
           "cost": null,
           "level": "THREE",
@@ -3187,6 +3194,7 @@
         {
           "type": "SacrificeCard",
           "discount_color": "RED",
+          "sacrifice_color": "GREEN",
           "prestige_points": 3,
           "cost": null,
           "level": "THREE",
@@ -3221,6 +3229,7 @@
         {
           "type": "SacrificeCard",
           "discount_color": "BLACK",
+          "sacrifice_color": "RED",
           "prestige_points": 3,
           "cost": null,
           "level": "THREE",
@@ -3229,6 +3238,7 @@
         {
           "type": "SacrificeCard",
           "discount_color": "GREEN",
+          "sacrifice_color": "BLUE",
           "prestige_points": 3,
           "cost": null,
           "level": "THREE",
