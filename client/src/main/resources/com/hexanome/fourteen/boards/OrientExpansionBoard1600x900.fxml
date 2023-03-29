@@ -928,7 +928,7 @@
             </Label>
          </header>
       </DialogPane>
-      <BorderPane fx:id="playerSummaryPane" layoutX="468.0" layoutY="200.0" prefHeight="451.0" prefWidth="654.0" style="-fx-background-color: #faecc0; -fx-border-color: #000000; -fx-border-width: 5;" visible="false">
+      <BorderPane fx:id="playerSummaryPane" layoutX="468.0" layoutY="200.0" prefHeight="530.0" prefWidth="654.0" style="-fx-background-color: #faecc0; -fx-border-color: #000000; -fx-border-width: 5;">
          <top>
             <Label fx:id="playerSummaryUserLabel" text="Player Info" textAlignment="CENTER" BorderPane.alignment="CENTER">
                <font>
@@ -1070,6 +1070,12 @@
                            </font>
                         </Label>
                         <HBox fx:id="noblesSummary" prefHeight="100.0" prefWidth="250.0" />
+                        <Label fx:id="citySummaryLabel" text="Acquired City" visible="false">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <ImageView fx:id="citySummaryImage" fitHeight="100.0" fitWidth="200.0" pickOnBounds="true" visible="false" />
                      </children>
                   </VBox>
                </children>

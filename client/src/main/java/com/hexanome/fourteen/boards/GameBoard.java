@@ -173,6 +173,13 @@ public class GameBoard {
   private HBox reservedSummary;
   @FXML
   private HBox noblesSummary;
+
+  @FXML
+  private Label citySummaryLabel;
+
+  @FXML
+  private ImageView citySummaryImage;
+
   @FXML
   private Label playerSummaryUserLabel;
   @FXML
@@ -357,6 +364,10 @@ public class GameBoard {
         availableCitiesMenu.setVisible(false);
 
         myCityHBox.setVisible(true);
+
+        citySummaryLabel.setVisible(true);
+        citySummaryImage.setVisible(true);
+
       } catch (IOException ioe) {
         ioe.printStackTrace();
       }
@@ -438,6 +449,8 @@ public class GameBoard {
         ((ImageView) myCityHBox.getChildren().get(1)).setImage(new City(myCityForm));
         hideMyCity();
       }
+
+
     }
 
     final String leadingPlayer = gameBoardForm.leadingPlayer().uid();
@@ -1627,6 +1640,12 @@ public class GameBoard {
     }
     noblesSummary.getChildren()
         .add(generateCardGrid(requestedPlayerNoblesImages, new int[] {140, 140, 5}));
+
+
+    if (gameBoardForm.expansions().contains(Expansion.CITIES)) {
+      CityForm playerCityForm = requestedPlayer.hand().city();
+      citySummaryImage.setImage(playerCityForm == null ? null : new City(playerCityForm));
+    }
 
     // Display data
     playerSummaryPane.toFront();
