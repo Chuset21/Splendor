@@ -149,8 +149,12 @@ public class GoldGemSubstituteMenu extends DialogPane {
         if (getNodeIndexInGrid(n)[1] == 0) {
           if(gameBoard.player.getHandForm().tradingPosts().getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false)){
             ((Button) n).setText("-2");
+            ((Button) n).setMaxWidth(30);
+            ((Button) n).setPrefWidth(30);
           } else {
             ((Button) n).setText("-");
+            ((Button) n).setMaxWidth(25);
+            ((Button) n).setPrefWidth(25);
           }
 
           // Set active if (amt of gold gems < gold gems in hand && amt of this gem > 0)
@@ -162,8 +166,12 @@ public class GoldGemSubstituteMenu extends DialogPane {
           if (getNodeIndexInGrid(n)[1] == 3) {
             if(gameBoard.player.getHandForm().tradingPosts().getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false)){
               ((Button) n).setText("+2");
+              ((Button) n).setMaxWidth(33);
+              ((Button) n).setPrefWidth(33);
             } else {
               ((Button) n).setText("+");
+              ((Button) n).setMaxWidth(25);
+              ((Button) n).setPrefWidth(25);
             }
 
 
