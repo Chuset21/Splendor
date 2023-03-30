@@ -1001,6 +1001,7 @@
         {
           "type": "SacrificeCard",
           "discount_color": "BLACK",
+          "sacrifice_color": "RED",
           "prestige_points": 3,
           "cost": null,
           "level": "THREE",
@@ -1009,6 +1010,7 @@
         {
           "type": "SacrificeCard",
           "discount_color": "WHITE",
+          "sacrifice_color": "BLACK",
           "prestige_points": 3,
           "cost": null,
           "level": "THREE",
@@ -1017,6 +1019,7 @@
         {
           "type": "SacrificeCard",
           "discount_color": "RED",
+          "sacrifice_color": "GREEN",
           "prestige_points": 3,
           "cost": null,
           "level": "THREE",
@@ -1051,6 +1054,7 @@
         {
           "type": "SacrificeCard",
           "discount_color": "GREEN",
+          "sacrifice_color": "BLUE",
           "prestige_points": 3,
           "cost": null,
           "level": "THREE",
@@ -1085,6 +1089,7 @@
         {
           "type": "SacrificeCard",
           "discount_color": "BLUE",
+          "sacrifice_color": "WHITE",
           "prestige_points": 3,
           "cost": null,
           "level": "THREE",
@@ -3145,6 +3150,7 @@
         {
           "type": "SacrificeCard",
           "discount_color": "WHITE",
+          "sacrifice_color": "BLACK",
           "prestige_points": 3,
           "cost": null,
           "level": "THREE",
@@ -3166,6 +3172,7 @@
         {
           "type": "SacrificeCard",
           "discount_color": "BLUE",
+          "sacrifice_color": "WHITE",
           "prestige_points": 3,
           "cost": null,
           "level": "THREE",
@@ -3187,6 +3194,7 @@
         {
           "type": "SacrificeCard",
           "discount_color": "RED",
+          "sacrifice_color": "GREEN",
           "prestige_points": 3,
           "cost": null,
           "level": "THREE",
@@ -3221,6 +3229,7 @@
         {
           "type": "SacrificeCard",
           "discount_color": "BLACK",
+          "sacrifice_color": "RED",
           "prestige_points": 3,
           "cost": null,
           "level": "THREE",
@@ -3229,6 +3238,7 @@
         {
           "type": "SacrificeCard",
           "discount_color": "GREEN",
+          "sacrifice_color": "BLUE",
           "prestige_points": 3,
           "cost": null,
           "level": "THREE",
@@ -5850,6 +5860,2104 @@
     "gameid": "3121052453215961539",
     "is_last_round": false,
     "creator": "maex",
+    "is_action_taken": false
+  },
+  "cities-win": {
+    "player_turn": 0,
+    "starting_player_turn": 0,
+    "player_turn_map": {
+      "0": {
+        "uid": "linus",
+        "hand": {
+          "prestige_points": 11,
+          "gems": {
+            "RED": 2
+          },
+          "reserved_cards": [],
+          "purchased_cards": [
+            {
+              "type": "StandardCard",
+              "discount_color": "BLACK",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 2,
+                "RED": 1
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "BLACK",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 2,
+                "WHITE": 2
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "BLACK",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 1,
+                "RED": 3,
+                "BLACK": 1
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "GREEN",
+              "prestige_points": 0,
+              "cost": {
+                "RED": 3
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "SatchelCard",
+              "card_to_attach": {
+                "type": "StandardCard",
+                "discount_color": "GREEN",
+                "prestige_points": 0,
+                "cost": {
+                  "GREEN": 1,
+                  "BLUE": 3,
+                  "WHITE": 1
+                },
+                "level": "ONE",
+                "expansion": "STANDARD"
+              },
+              "free_card_to_take": null,
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 2,
+                "BLUE": 3
+              },
+              "level": "ONE",
+              "expansion": "ORIENT"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "BLACK",
+              "prestige_points": 3,
+              "cost": {
+                "BLACK": 6
+              },
+              "level": "TWO",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "BLACK",
+              "prestige_points": 2,
+              "cost": {
+                "WHITE": 5
+              },
+              "level": "TWO",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "WHITE",
+              "prestige_points": 4,
+              "cost": {
+                "BLACK": 7
+              },
+              "level": "THREE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "WHITE",
+              "prestige_points": 2,
+              "cost": {
+                "GREEN": 1,
+                "RED": 4,
+                "BLACK": 2
+              },
+              "level": "TWO",
+              "expansion": "STANDARD"
+            }
+          ],
+          "visited_nobles": [],
+          "reserved_nobles": [],
+          "gem_discounts": {
+            "GREEN": 3,
+            "WHITE": 2,
+            "BLACK": 5
+          },
+          "trading_posts": {},
+          "city": null
+        }
+      },
+      "1": {
+        "uid": "khabiir",
+        "hand": {
+          "prestige_points": 5,
+          "gems": {},
+          "reserved_cards": [],
+          "purchased_cards": [
+            {
+              "type": "StandardCard",
+              "discount_color": "WHITE",
+              "prestige_points": 0,
+              "cost": {
+                "RED": 2,
+                "BLACK": 1
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "WHITE",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 2,
+                "BLUE": 1,
+                "RED": 1,
+                "BLACK": 1
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "RED",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 1,
+                "BLUE": 2
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "WHITE",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 2,
+                "BLUE": 2,
+                "BLACK": 1
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "WHITE",
+              "prestige_points": 0,
+              "cost": {
+                "BLUE": 3
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "BLUE",
+              "prestige_points": 1,
+              "cost": {
+                "RED": 4
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "BLACK",
+              "prestige_points": 0,
+              "cost": {
+                "BLUE": 2,
+                "WHITE": 2,
+                "RED": 1
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "ReserveNobleCard",
+              "discount_color": "RED",
+              "noble_to_reserve": null,
+              "prestige_points": 1,
+              "cost": {
+                "GREEN": 2,
+                "BLUE": 2,
+                "WHITE": 2,
+                "BLACK": 2
+              },
+              "level": "TWO",
+              "expansion": "ORIENT"
+            },
+            {
+              "type": "ReserveNobleCard",
+              "discount_color": "WHITE",
+              "noble_to_reserve": null,
+              "prestige_points": 1,
+              "cost": {
+                "GREEN": 2,
+                "BLUE": 2,
+                "RED": 2,
+                "BLACK": 2
+              },
+              "level": "TWO",
+              "expansion": "ORIENT"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "RED",
+              "prestige_points": 2,
+              "cost": {
+                "BLACK": 5
+              },
+              "level": "TWO",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "WaterfallCard",
+              "discount_color": "BLUE",
+              "card_to_take": null,
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 1,
+                "RED": 6,
+                "BLACK": 3
+              },
+              "level": "THREE",
+              "expansion": "ORIENT"
+            },
+            {
+              "type": "GoldGemCard",
+              "prestige_points": 0,
+              "cost": {
+                "BLACK": 3
+              },
+              "level": "ONE",
+              "expansion": "ORIENT"
+            }
+          ],
+          "visited_nobles": [],
+          "reserved_nobles": [
+            {
+              "prestige_points": 3,
+              "cost": {
+                "WHITE": 4,
+                "BLACK": 4
+              }
+            },
+            {
+              "prestige_points": 3,
+              "cost": {
+                "BLUE": 4,
+                "WHITE": 4
+              }
+            }
+          ],
+          "gem_discounts": {
+            "BLUE": 2,
+            "WHITE": 5,
+            "RED": 3,
+            "BLACK": 1
+          },
+          "trading_posts": {},
+          "city": null
+        }
+      },
+      "2": {
+        "uid": "maex",
+        "hand": {
+          "prestige_points": 4,
+          "gems": {},
+          "reserved_cards": [],
+          "purchased_cards": [
+            {
+              "type": "StandardCard",
+              "discount_color": "BLUE",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 2,
+                "BLACK": 2
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "GoldGemCard",
+              "prestige_points": 0,
+              "cost": {
+                "WHITE": 3
+              },
+              "level": "ONE",
+              "expansion": "ORIENT"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "BLUE",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 3,
+                "BLUE": 1,
+                "RED": 1
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "RED",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 1,
+                "BLUE": 1,
+                "WHITE": 1,
+                "BLACK": 1
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "RED",
+              "prestige_points": 0,
+              "cost": {
+                "WHITE": 3
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "BLUE",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 1,
+                "WHITE": 1,
+                "RED": 2,
+                "BLACK": 1
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "DoubleBonusCard",
+              "discount_color": "RED",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 4,
+                "BLACK": 3
+              },
+              "level": "TWO",
+              "expansion": "ORIENT"
+            },
+            {
+              "type": "DoubleBonusCard",
+              "discount_color": "GREEN",
+              "prestige_points": 0,
+              "cost": {
+                "WHITE": 4,
+                "RED": 3
+              },
+              "level": "TWO",
+              "expansion": "ORIENT"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "BLACK",
+              "prestige_points": 2,
+              "cost": {
+                "GREEN": 4,
+                "BLUE": 1,
+                "RED": 2
+              },
+              "level": "TWO",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "GoldGemCard",
+              "prestige_points": 0,
+              "cost": {
+                "BLUE": 3
+              },
+              "level": "ONE",
+              "expansion": "ORIENT"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "GREEN",
+              "prestige_points": 2,
+              "cost": {
+                "GREEN": 5
+              },
+              "level": "TWO",
+              "expansion": "STANDARD"
+            }
+          ],
+          "visited_nobles": [],
+          "reserved_nobles": [],
+          "gem_discounts": {
+            "GREEN": 3,
+            "BLUE": 3,
+            "RED": 4,
+            "BLACK": 1
+          },
+          "trading_posts": {},
+          "city": null
+        }
+      }
+    },
+    "available_nobles": [
+      {
+        "prestige_points": 3,
+        "cost": {
+          "GREEN": 3,
+          "WHITE": 3,
+          "BLACK": 3
+        }
+      },
+      {
+        "prestige_points": 3,
+        "cost": {
+          "GREEN": 3,
+          "RED": 3,
+          "BLACK": 3
+        }
+      }
+    ],
+    "available_cities": [
+      {
+        "prestige_points": 14,
+        "gem_discounts": {
+          "GREEN": 3,
+          "BLACK": 3
+        }
+      },
+      {
+        "prestige_points": 13,
+        "gem_discounts": {
+          "GREEN": 2,
+          "BLUE": 2,
+          "WHITE": 2,
+          "RED": 2,
+          "BLACK": 2
+        }
+      },
+      {
+        "prestige_points": 11,
+        "gem_discounts": {
+          "GREEN": 3,
+          "WHITE": 3,
+          "RED": 3,
+          "BLACK": 3
+        }
+      }
+    ],
+    "available_gems": {
+      "GREEN": 5,
+      "BLUE": 5,
+      "WHITE": 5,
+      "RED": 3,
+      "BLACK": 5,
+      "GOLD": 5
+    },
+    "cards": [
+      [
+        {
+          "type": "StandardCard",
+          "discount_color": "RED",
+          "prestige_points": 0,
+          "cost": {
+            "GREEN": 1,
+            "WHITE": 2,
+            "BLACK": 2
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLACK",
+          "prestige_points": 0,
+          "cost": {
+            "GREEN": 1,
+            "BLUE": 1,
+            "WHITE": 1,
+            "RED": 1
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "GREEN",
+          "prestige_points": 1,
+          "cost": {
+            "BLACK": 4
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "RED",
+          "prestige_points": 0,
+          "cost": {
+            "WHITE": 2,
+            "RED": 2
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLUE",
+          "prestige_points": 0,
+          "cost": {
+            "WHITE": 1,
+            "BLACK": 2
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "WHITE",
+          "prestige_points": 1,
+          "cost": {
+            "GREEN": 4
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "GREEN",
+          "prestige_points": 0,
+          "cost": {
+            "BLUE": 1,
+            "WHITE": 2
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "GREEN",
+          "prestige_points": 0,
+          "cost": {
+            "BLUE": 1,
+            "WHITE": 1,
+            "RED": 1,
+            "BLACK": 2
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "GREEN",
+          "prestige_points": 0,
+          "cost": {
+            "BLUE": 1,
+            "RED": 2,
+            "BLACK": 2
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "WHITE",
+          "prestige_points": 0,
+          "cost": {
+            "GREEN": 1,
+            "BLUE": 1,
+            "RED": 1,
+            "BLACK": 1
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLUE",
+          "prestige_points": 0,
+          "cost": {
+            "GREEN": 1,
+            "WHITE": 1,
+            "RED": 1,
+            "BLACK": 1
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLACK",
+          "prestige_points": 0,
+          "cost": {
+            "GREEN": 1,
+            "BLUE": 2,
+            "WHITE": 1,
+            "RED": 1
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "RED",
+          "prestige_points": 0,
+          "cost": {
+            "WHITE": 1,
+            "RED": 1,
+            "BLACK": 3
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "WHITE",
+          "prestige_points": 0,
+          "cost": {
+            "BLUE": 1,
+            "WHITE": 3,
+            "BLACK": 1
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "RED",
+          "prestige_points": 0,
+          "cost": {
+            "GREEN": 1,
+            "BLUE": 1,
+            "WHITE": 2,
+            "BLACK": 1
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLACK",
+          "prestige_points": 1,
+          "cost": {
+            "BLUE": 4
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "GREEN",
+          "prestige_points": 0,
+          "cost": {
+            "BLUE": 1,
+            "WHITE": 1,
+            "RED": 1,
+            "BLACK": 1
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLUE",
+          "prestige_points": 0,
+          "cost": {
+            "BLACK": 3
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLUE",
+          "prestige_points": 0,
+          "cost": {
+            "GREEN": 2,
+            "WHITE": 1,
+            "RED": 2
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "WHITE",
+          "prestige_points": 0,
+          "cost": {
+            "BLUE": 2,
+            "BLACK": 2
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "RED",
+          "prestige_points": 1,
+          "cost": {
+            "WHITE": 4
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "GREEN",
+          "prestige_points": 0,
+          "cost": {
+            "BLUE": 2,
+            "RED": 2
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLACK",
+          "prestige_points": 0,
+          "cost": {
+            "GREEN": 3
+          },
+          "level": "ONE",
+          "expansion": "STANDARD"
+        }
+      ],
+      [
+        {
+          "type": "DoubleBonusCard",
+          "discount_color": "BLACK",
+          "prestige_points": 0,
+          "cost": {
+            "BLUE": 3,
+            "RED": 4
+          },
+          "level": "TWO",
+          "expansion": "ORIENT"
+        },
+        {
+          "type": "ReserveNobleCard",
+          "discount_color": "GREEN",
+          "noble_to_reserve": null,
+          "prestige_points": 1,
+          "cost": {
+            "BLUE": 2,
+            "WHITE": 2,
+            "RED": 2,
+            "BLACK": 2
+          },
+          "level": "TWO",
+          "expansion": "ORIENT"
+        },
+        {
+          "type": "SatchelCard",
+          "card_to_attach": null,
+          "free_card_to_take": null,
+          "prestige_points": 0,
+          "cost": {
+            "GREEN": 4,
+            "RED": 3,
+            "BLACK": 1
+          },
+          "level": "TWO",
+          "expansion": "ORIENT"
+        },
+        {
+          "type": "SatchelCard",
+          "card_to_attach": null,
+          "free_card_to_take": null,
+          "prestige_points": 0,
+          "cost": {
+            "BLUE": 3,
+            "WHITE": 4,
+            "BLACK": 1
+          },
+          "level": "TWO",
+          "expansion": "ORIENT"
+        },
+        {
+          "type": "DoubleBonusCard",
+          "discount_color": "WHITE",
+          "prestige_points": 0,
+          "cost": {
+            "GREEN": 3,
+            "BLUE": 4
+          },
+          "level": "TWO",
+          "expansion": "ORIENT"
+        },
+        {
+          "type": "DoubleBonusCard",
+          "discount_color": "BLUE",
+          "prestige_points": 0,
+          "cost": {
+            "WHITE": 3,
+            "BLACK": 4
+          },
+          "level": "TWO",
+          "expansion": "ORIENT"
+        }
+      ],
+      [
+        {
+          "type": "SatchelCard",
+          "card_to_attach": null,
+          "free_card_to_take": null,
+          "prestige_points": 0,
+          "cost": {
+            "WHITE": 3,
+            "RED": 2
+          },
+          "level": "ONE",
+          "expansion": "ORIENT"
+        },
+        {
+          "type": "SatchelCard",
+          "card_to_attach": null,
+          "free_card_to_take": null,
+          "prestige_points": 0,
+          "cost": {
+            "GREEN": 3,
+            "BLACK": 2
+          },
+          "level": "ONE",
+          "expansion": "ORIENT"
+        },
+        {
+          "type": "GoldGemCard",
+          "prestige_points": 0,
+          "cost": {
+            "GREEN": 3
+          },
+          "level": "ONE",
+          "expansion": "ORIENT"
+        },
+        {
+          "type": "SatchelCard",
+          "card_to_attach": null,
+          "free_card_to_take": null,
+          "prestige_points": 0,
+          "cost": {
+            "WHITE": 2,
+            "BLACK": 3
+          },
+          "level": "ONE",
+          "expansion": "ORIENT"
+        },
+        {
+          "type": "SatchelCard",
+          "card_to_attach": null,
+          "free_card_to_take": null,
+          "prestige_points": 0,
+          "cost": {
+            "BLUE": 2,
+            "RED": 3
+          },
+          "level": "ONE",
+          "expansion": "ORIENT"
+        },
+        {
+          "type": "GoldGemCard",
+          "prestige_points": 0,
+          "cost": {
+            "RED": 3
+          },
+          "level": "ONE",
+          "expansion": "ORIENT"
+        }
+      ],
+      [
+        {
+          "type": "StandardCard",
+          "discount_color": "GREEN",
+          "prestige_points": 4,
+          "cost": {
+            "GREEN": 3,
+            "BLUE": 6,
+            "WHITE": 3
+          },
+          "level": "THREE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLACK",
+          "prestige_points": 5,
+          "cost": {
+            "RED": 7,
+            "BLACK": 3
+          },
+          "level": "THREE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "WHITE",
+          "prestige_points": 3,
+          "cost": {
+            "GREEN": 3,
+            "BLUE": 3,
+            "RED": 5,
+            "BLACK": 3
+          },
+          "level": "THREE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLACK",
+          "prestige_points": 3,
+          "cost": {
+            "GREEN": 5,
+            "BLUE": 3,
+            "WHITE": 3,
+            "RED": 3
+          },
+          "level": "THREE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "WHITE",
+          "prestige_points": 4,
+          "cost": {
+            "WHITE": 3,
+            "RED": 3,
+            "BLACK": 6
+          },
+          "level": "THREE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "RED",
+          "prestige_points": 4,
+          "cost": {
+            "GREEN": 7
+          },
+          "level": "THREE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLUE",
+          "prestige_points": 4,
+          "cost": {
+            "BLUE": 3,
+            "WHITE": 6,
+            "BLACK": 3
+          },
+          "level": "THREE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLUE",
+          "prestige_points": 5,
+          "cost": {
+            "BLUE": 3,
+            "WHITE": 7
+          },
+          "level": "THREE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLUE",
+          "prestige_points": 4,
+          "cost": {
+            "WHITE": 7
+          },
+          "level": "THREE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "WHITE",
+          "prestige_points": 5,
+          "cost": {
+            "WHITE": 3,
+            "BLACK": 7
+          },
+          "level": "THREE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLACK",
+          "prestige_points": 4,
+          "cost": {
+            "RED": 7
+          },
+          "level": "THREE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "RED",
+          "prestige_points": 3,
+          "cost": {
+            "GREEN": 3,
+            "BLUE": 5,
+            "WHITE": 3,
+            "BLACK": 3
+          },
+          "level": "THREE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "GREEN",
+          "prestige_points": 3,
+          "cost": {
+            "BLUE": 3,
+            "WHITE": 5,
+            "RED": 3,
+            "BLACK": 3
+          },
+          "level": "THREE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "RED",
+          "prestige_points": 5,
+          "cost": {
+            "GREEN": 7,
+            "RED": 3
+          },
+          "level": "THREE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "GREEN",
+          "prestige_points": 5,
+          "cost": {
+            "GREEN": 3,
+            "BLUE": 7
+          },
+          "level": "THREE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLACK",
+          "prestige_points": 4,
+          "cost": {
+            "GREEN": 3,
+            "RED": 6,
+            "BLACK": 3
+          },
+          "level": "THREE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLUE",
+          "prestige_points": 3,
+          "cost": {
+            "GREEN": 3,
+            "WHITE": 3,
+            "RED": 3,
+            "BLACK": 5
+          },
+          "level": "THREE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "RED",
+          "prestige_points": 4,
+          "cost": {
+            "GREEN": 6,
+            "BLUE": 3,
+            "RED": 3
+          },
+          "level": "THREE",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "GREEN",
+          "prestige_points": 4,
+          "cost": {
+            "BLUE": 7
+          },
+          "level": "THREE",
+          "expansion": "STANDARD"
+        }
+      ],
+      [
+        {
+          "type": "SacrificeCard",
+          "discount_color": "BLUE",
+          "sacrifice_color": "WHITE",
+          "prestige_points": 3,
+          "cost": null,
+          "level": "THREE",
+          "expansion": "ORIENT"
+        },
+        {
+          "type": "WaterfallCard",
+          "discount_color": "RED",
+          "card_to_take": null,
+          "prestige_points": 0,
+          "cost": {
+            "WHITE": 3,
+            "RED": 1,
+            "BLACK": 6
+          },
+          "level": "THREE",
+          "expansion": "ORIENT"
+        },
+        {
+          "type": "WaterfallCard",
+          "discount_color": "BLACK",
+          "card_to_take": null,
+          "prestige_points": 0,
+          "cost": {
+            "BLUE": 3,
+            "WHITE": 6,
+            "BLACK": 1
+          },
+          "level": "THREE",
+          "expansion": "ORIENT"
+        },
+        {
+          "type": "WaterfallCard",
+          "discount_color": "BLUE",
+          "card_to_take": null,
+          "prestige_points": 0,
+          "cost": {
+            "GREEN": 6,
+            "BLUE": 1,
+            "RED": 3
+          },
+          "level": "THREE",
+          "expansion": "ORIENT"
+        },
+        {
+          "type": "SacrificeCard",
+          "discount_color": "WHITE",
+          "sacrifice_color": "BLACK",
+          "prestige_points": 3,
+          "cost": null,
+          "level": "THREE",
+          "expansion": "ORIENT"
+        },
+        {
+          "type": "SacrificeCard",
+          "discount_color": "BLACK",
+          "sacrifice_color": "RED",
+          "prestige_points": 3,
+          "cost": null,
+          "level": "THREE",
+          "expansion": "ORIENT"
+        },
+        {
+          "type": "SacrificeCard",
+          "discount_color": "RED",
+          "sacrifice_color": "GREEN",
+          "prestige_points": 3,
+          "cost": null,
+          "level": "THREE",
+          "expansion": "ORIENT"
+        },
+        {
+          "type": "WaterfallCard",
+          "discount_color": "WHITE",
+          "card_to_take": null,
+          "prestige_points": 0,
+          "cost": {
+            "GREEN": 3,
+            "BLUE": 6,
+            "WHITE": 1
+          },
+          "level": "THREE",
+          "expansion": "ORIENT"
+        },
+        {
+          "type": "SacrificeCard",
+          "discount_color": "GREEN",
+          "sacrifice_color": "BLUE",
+          "prestige_points": 3,
+          "cost": null,
+          "level": "THREE",
+          "expansion": "ORIENT"
+        }
+      ],
+      [
+        {
+          "type": "StandardCard",
+          "discount_color": "WHITE",
+          "prestige_points": 1,
+          "cost": {
+            "GREEN": 3,
+            "RED": 2,
+            "BLACK": 2
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "GREEN",
+          "prestige_points": 2,
+          "cost": {
+            "BLUE": 2,
+            "WHITE": 4,
+            "BLACK": 1
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "RED",
+          "prestige_points": 1,
+          "cost": {
+            "WHITE": 2,
+            "RED": 2,
+            "BLACK": 3
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLACK",
+          "prestige_points": 1,
+          "cost": {
+            "GREEN": 2,
+            "BLUE": 2,
+            "WHITE": 3
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "RED",
+          "prestige_points": 2,
+          "cost": {
+            "GREEN": 2,
+            "BLUE": 4,
+            "WHITE": 1
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLUE",
+          "prestige_points": 2,
+          "cost": {
+            "BLUE": 5
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "GREEN",
+          "prestige_points": 3,
+          "cost": {
+            "GREEN": 6
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "GREEN",
+          "prestige_points": 1,
+          "cost": {
+            "BLUE": 3,
+            "WHITE": 2,
+            "BLACK": 2
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "WHITE",
+          "prestige_points": 1,
+          "cost": {
+            "BLUE": 3,
+            "WHITE": 2,
+            "RED": 3
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "GREEN",
+          "prestige_points": 2,
+          "cost": {
+            "GREEN": 3,
+            "BLUE": 5
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLUE",
+          "prestige_points": 3,
+          "cost": {
+            "BLUE": 6
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLACK",
+          "prestige_points": 2,
+          "cost": {
+            "GREEN": 5,
+            "RED": 3
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "WHITE",
+          "prestige_points": 3,
+          "cost": {
+            "WHITE": 6
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLUE",
+          "prestige_points": 2,
+          "cost": {
+            "BLUE": 3,
+            "WHITE": 5
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "RED",
+          "prestige_points": 2,
+          "cost": {
+            "WHITE": 3,
+            "BLACK": 5
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "RED",
+          "prestige_points": 1,
+          "cost": {
+            "BLUE": 3,
+            "RED": 2,
+            "BLACK": 3
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLACK",
+          "prestige_points": 1,
+          "cost": {
+            "GREEN": 3,
+            "WHITE": 3,
+            "BLACK": 2
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "WHITE",
+          "prestige_points": 2,
+          "cost": {
+            "RED": 5
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLUE",
+          "prestige_points": 1,
+          "cost": {
+            "GREEN": 2,
+            "BLUE": 2,
+            "RED": 3
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLUE",
+          "prestige_points": 1,
+          "cost": {
+            "GREEN": 3,
+            "BLUE": 2,
+            "BLACK": 3
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "BLUE",
+          "prestige_points": 2,
+          "cost": {
+            "WHITE": 2,
+            "RED": 1,
+            "BLACK": 4
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "RED",
+          "prestige_points": 3,
+          "cost": {
+            "RED": 6
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "WHITE",
+          "prestige_points": 2,
+          "cost": {
+            "RED": 5,
+            "BLACK": 3
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        },
+        {
+          "type": "StandardCard",
+          "discount_color": "GREEN",
+          "prestige_points": 1,
+          "cost": {
+            "GREEN": 2,
+            "WHITE": 3,
+            "RED": 3
+          },
+          "level": "TWO",
+          "expansion": "STANDARD"
+        }
+      ]
+    ],
+    "expansions": [
+      "ORIENT",
+      "CITIES",
+      "STANDARD"
+    ],
+    "leading_player": {
+      "uid": "linus",
+      "hand": {
+        "prestige_points": 11,
+        "gems": {
+          "RED": 2
+        },
+        "reserved_cards": [],
+        "purchased_cards": [
+          {
+            "type": "StandardCard",
+            "discount_color": "BLACK",
+            "prestige_points": 0,
+            "cost": {
+              "GREEN": 2,
+              "RED": 1
+            },
+            "level": "ONE",
+            "expansion": "STANDARD"
+          },
+          {
+            "type": "StandardCard",
+            "discount_color": "BLACK",
+            "prestige_points": 0,
+            "cost": {
+              "GREEN": 2,
+              "WHITE": 2
+            },
+            "level": "ONE",
+            "expansion": "STANDARD"
+          },
+          {
+            "type": "StandardCard",
+            "discount_color": "BLACK",
+            "prestige_points": 0,
+            "cost": {
+              "GREEN": 1,
+              "RED": 3,
+              "BLACK": 1
+            },
+            "level": "ONE",
+            "expansion": "STANDARD"
+          },
+          {
+            "type": "StandardCard",
+            "discount_color": "GREEN",
+            "prestige_points": 0,
+            "cost": {
+              "RED": 3
+            },
+            "level": "ONE",
+            "expansion": "STANDARD"
+          },
+          {
+            "type": "SatchelCard",
+            "card_to_attach": {
+              "type": "StandardCard",
+              "discount_color": "GREEN",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 1,
+                "BLUE": 3,
+                "WHITE": 1
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            "free_card_to_take": null,
+            "prestige_points": 0,
+            "cost": {
+              "GREEN": 2,
+              "BLUE": 3
+            },
+            "level": "ONE",
+            "expansion": "ORIENT"
+          },
+          {
+            "type": "StandardCard",
+            "discount_color": "BLACK",
+            "prestige_points": 3,
+            "cost": {
+              "BLACK": 6
+            },
+            "level": "TWO",
+            "expansion": "STANDARD"
+          },
+          {
+            "type": "StandardCard",
+            "discount_color": "BLACK",
+            "prestige_points": 2,
+            "cost": {
+              "WHITE": 5
+            },
+            "level": "TWO",
+            "expansion": "STANDARD"
+          },
+          {
+            "type": "StandardCard",
+            "discount_color": "WHITE",
+            "prestige_points": 4,
+            "cost": {
+              "BLACK": 7
+            },
+            "level": "THREE",
+            "expansion": "STANDARD"
+          },
+          {
+            "type": "StandardCard",
+            "discount_color": "WHITE",
+            "prestige_points": 2,
+            "cost": {
+              "GREEN": 1,
+              "RED": 4,
+              "BLACK": 2
+            },
+            "level": "TWO",
+            "expansion": "STANDARD"
+          }
+        ],
+        "visited_nobles": [],
+        "reserved_nobles": [],
+        "gem_discounts": {
+          "GREEN": 3,
+          "WHITE": 2,
+          "BLACK": 5
+        },
+        "trading_posts": {},
+        "city": null
+      }
+    },
+    "players": [
+      {
+        "uid": "linus",
+        "hand": {
+          "prestige_points": 11,
+          "gems": {
+            "RED": 2
+          },
+          "reserved_cards": [],
+          "purchased_cards": [
+            {
+              "type": "StandardCard",
+              "discount_color": "BLACK",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 2,
+                "RED": 1
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "BLACK",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 2,
+                "WHITE": 2
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "BLACK",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 1,
+                "RED": 3,
+                "BLACK": 1
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "GREEN",
+              "prestige_points": 0,
+              "cost": {
+                "RED": 3
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "SatchelCard",
+              "card_to_attach": {
+                "type": "StandardCard",
+                "discount_color": "GREEN",
+                "prestige_points": 0,
+                "cost": {
+                  "GREEN": 1,
+                  "BLUE": 3,
+                  "WHITE": 1
+                },
+                "level": "ONE",
+                "expansion": "STANDARD"
+              },
+              "free_card_to_take": null,
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 2,
+                "BLUE": 3
+              },
+              "level": "ONE",
+              "expansion": "ORIENT"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "BLACK",
+              "prestige_points": 3,
+              "cost": {
+                "BLACK": 6
+              },
+              "level": "TWO",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "BLACK",
+              "prestige_points": 2,
+              "cost": {
+                "WHITE": 5
+              },
+              "level": "TWO",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "WHITE",
+              "prestige_points": 4,
+              "cost": {
+                "BLACK": 7
+              },
+              "level": "THREE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "WHITE",
+              "prestige_points": 2,
+              "cost": {
+                "GREEN": 1,
+                "RED": 4,
+                "BLACK": 2
+              },
+              "level": "TWO",
+              "expansion": "STANDARD"
+            }
+          ],
+          "visited_nobles": [],
+          "reserved_nobles": [],
+          "gem_discounts": {
+            "GREEN": 3,
+            "WHITE": 2,
+            "BLACK": 5
+          },
+          "trading_posts": {},
+          "city": null
+        }
+      },
+      {
+        "uid": "khabiir",
+        "hand": {
+          "prestige_points": 5,
+          "gems": {},
+          "reserved_cards": [],
+          "purchased_cards": [
+            {
+              "type": "StandardCard",
+              "discount_color": "WHITE",
+              "prestige_points": 0,
+              "cost": {
+                "RED": 2,
+                "BLACK": 1
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "WHITE",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 2,
+                "BLUE": 1,
+                "RED": 1,
+                "BLACK": 1
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "RED",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 1,
+                "BLUE": 2
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "WHITE",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 2,
+                "BLUE": 2,
+                "BLACK": 1
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "WHITE",
+              "prestige_points": 0,
+              "cost": {
+                "BLUE": 3
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "BLUE",
+              "prestige_points": 1,
+              "cost": {
+                "RED": 4
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "BLACK",
+              "prestige_points": 0,
+              "cost": {
+                "BLUE": 2,
+                "WHITE": 2,
+                "RED": 1
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "ReserveNobleCard",
+              "discount_color": "RED",
+              "noble_to_reserve": null,
+              "prestige_points": 1,
+              "cost": {
+                "GREEN": 2,
+                "BLUE": 2,
+                "WHITE": 2,
+                "BLACK": 2
+              },
+              "level": "TWO",
+              "expansion": "ORIENT"
+            },
+            {
+              "type": "ReserveNobleCard",
+              "discount_color": "WHITE",
+              "noble_to_reserve": null,
+              "prestige_points": 1,
+              "cost": {
+                "GREEN": 2,
+                "BLUE": 2,
+                "RED": 2,
+                "BLACK": 2
+              },
+              "level": "TWO",
+              "expansion": "ORIENT"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "RED",
+              "prestige_points": 2,
+              "cost": {
+                "BLACK": 5
+              },
+              "level": "TWO",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "WaterfallCard",
+              "discount_color": "BLUE",
+              "card_to_take": null,
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 1,
+                "RED": 6,
+                "BLACK": 3
+              },
+              "level": "THREE",
+              "expansion": "ORIENT"
+            },
+            {
+              "type": "GoldGemCard",
+              "prestige_points": 0,
+              "cost": {
+                "BLACK": 3
+              },
+              "level": "ONE",
+              "expansion": "ORIENT"
+            }
+          ],
+          "visited_nobles": [],
+          "reserved_nobles": [
+            {
+              "prestige_points": 3,
+              "cost": {
+                "WHITE": 4,
+                "BLACK": 4
+              }
+            },
+            {
+              "prestige_points": 3,
+              "cost": {
+                "BLUE": 4,
+                "WHITE": 4
+              }
+            }
+          ],
+          "gem_discounts": {
+            "BLUE": 2,
+            "WHITE": 5,
+            "RED": 3,
+            "BLACK": 1
+          },
+          "trading_posts": {},
+          "city": null
+        }
+      },
+      {
+        "uid": "maex",
+        "hand": {
+          "prestige_points": 4,
+          "gems": {},
+          "reserved_cards": [],
+          "purchased_cards": [
+            {
+              "type": "StandardCard",
+              "discount_color": "BLUE",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 2,
+                "BLACK": 2
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "GoldGemCard",
+              "prestige_points": 0,
+              "cost": {
+                "WHITE": 3
+              },
+              "level": "ONE",
+              "expansion": "ORIENT"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "BLUE",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 3,
+                "BLUE": 1,
+                "RED": 1
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "RED",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 1,
+                "BLUE": 1,
+                "WHITE": 1,
+                "BLACK": 1
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "RED",
+              "prestige_points": 0,
+              "cost": {
+                "WHITE": 3
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "BLUE",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 1,
+                "WHITE": 1,
+                "RED": 2,
+                "BLACK": 1
+              },
+              "level": "ONE",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "DoubleBonusCard",
+              "discount_color": "RED",
+              "prestige_points": 0,
+              "cost": {
+                "GREEN": 4,
+                "BLACK": 3
+              },
+              "level": "TWO",
+              "expansion": "ORIENT"
+            },
+            {
+              "type": "DoubleBonusCard",
+              "discount_color": "GREEN",
+              "prestige_points": 0,
+              "cost": {
+                "WHITE": 4,
+                "RED": 3
+              },
+              "level": "TWO",
+              "expansion": "ORIENT"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "BLACK",
+              "prestige_points": 2,
+              "cost": {
+                "GREEN": 4,
+                "BLUE": 1,
+                "RED": 2
+              },
+              "level": "TWO",
+              "expansion": "STANDARD"
+            },
+            {
+              "type": "GoldGemCard",
+              "prestige_points": 0,
+              "cost": {
+                "BLUE": 3
+              },
+              "level": "ONE",
+              "expansion": "ORIENT"
+            },
+            {
+              "type": "StandardCard",
+              "discount_color": "GREEN",
+              "prestige_points": 2,
+              "cost": {
+                "GREEN": 5
+              },
+              "level": "TWO",
+              "expansion": "STANDARD"
+            }
+          ],
+          "visited_nobles": [],
+          "reserved_nobles": [],
+          "gem_discounts": {
+            "GREEN": 3,
+            "BLUE": 3,
+            "RED": 4,
+            "BLACK": 1
+          },
+          "trading_posts": {},
+          "city": null
+        }
+      }
+    ],
+    "gameid": "1301011624938004176",
+    "is_last_round": false,
+    "creator": "khabiir",
     "is_action_taken": false
   }
 }

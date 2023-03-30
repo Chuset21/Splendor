@@ -176,6 +176,13 @@ public class GameBoard {
   private HBox reservedSummary;
   @FXML
   private HBox noblesSummary;
+
+  @FXML
+  private Label citySummaryLabel;
+
+  @FXML
+  private ImageView citySummaryImage;
+
   @FXML
   private Label playerSummaryUserLabel;
   @FXML
@@ -333,6 +340,10 @@ public class GameBoard {
         availableCitiesMenu.setVisible(false);
 
         myCityHBox.setVisible(true);
+
+        citySummaryLabel.setVisible(true);
+        citySummaryImage.setVisible(true);
+
       } catch (IOException ioe) {
         ioe.printStackTrace();
       }
@@ -414,6 +425,8 @@ public class GameBoard {
         ((ImageView) myCityHBox.getChildren().get(1)).setImage(new City(myCityForm));
         hideMyCity();
       }
+
+
     }
 
     final String leadingPlayer = gameBoardForm.leadingPlayer().uid();
@@ -610,8 +623,10 @@ public class GameBoard {
             .setVisible(gameBoardForm.leadingPlayer().uid().equals(players.get(i).getUserId()));
 
         playerViews.get(i).setImage(players.get(i));
-        Tooltip.install(playerViews.get(i), new Tooltip(players.get(i).getUserId() +
-            (player.getUserId().equals(players.get(i).getUserId()) ? " (you)" : "")));
+        Tooltip.install(playerViews.get(i), new Tooltip(players.get(i).getUserId()
+                                                        + (player.getUserId().equals(
+            players.get(i).getUserId())
+            ? " (you)" : "")));
       } else {
         playerViews.get(i).imageProperty().set(null);
       }
@@ -708,9 +723,8 @@ public class GameBoard {
 
     if (isYourTurn()) {
       // If player's gems cannot pay for card, disable purchase button
-      boolean canAfford =
-          (cost != null && selectedCard.getCardForm().isAffordable(player.getPlayerForm())) ||
-              (cost == null);
+      final boolean canAfford =
+          cost == null || selectedCard.getCardForm().isAffordable(player.getPlayerForm());
 
       if (canAfford) {
         if (cardForm instanceof SatchelCardForm) {
@@ -791,7 +805,8 @@ public class GameBoard {
     // Get card to be purchased
     Card cardPurchased = (Card) selectedCardView.getImage();
 
-    if (player.getHandForm().tradingPosts().get(TradingPostsEnum.BONUS_GEM_WITH_CARD)) {
+    if (player.getHandForm().tradingPosts()
+        .getOrDefault(TradingPostsEnum.BONUS_GEM_WITH_CARD, false)) {
       selectingBonusGem = true;
     }
 
@@ -1613,6 +1628,12 @@ public class GameBoard {
     }
     noblesSummary.getChildren()
         .add(generateCardGrid(requestedPlayerNoblesImages, new int[] {140, 140, 5}));
+
+
+    if (gameBoardForm.expansions().contains(Expansion.CITIES)) {
+      CityForm playerCityForm = requestedPlayer.hand().city();
+      citySummaryImage.setImage(playerCityForm == null ? null : new City(playerCityForm));
+    }
 
     // Display data
     playerSummaryPane.toFront();
