@@ -177,22 +177,22 @@
                <children>
                   <Label fx:id="playerName0" text="hi">
                      <font>
-                        <Font name="Satoshi Bold" size="10.0" />
+                        <Font name="Satoshi Bold" size="14.0" />
                      </font>
                   </Label>
                   <Label fx:id="playerName1" text="hi">
                      <font>
-                        <Font name="Satoshi Bold" size="10.0" />
+                        <Font name="Satoshi Bold" size="14.0" />
                      </font>
                   </Label>
                   <Label fx:id="playerName2" text="hi">
                      <font>
-                        <Font name="Satoshi Bold" size="10.0" />
+                        <Font name="Satoshi Bold" size="14.0" />
                      </font>
                   </Label>
                   <Label fx:id="playerName3" text="hi">
                      <font>
-                        <Font name="Satoshi Bold" size="10.0" />
+                        <Font name="Satoshi Bold" size="14.0" />
                      </font>
                   </Label>
                </children>
