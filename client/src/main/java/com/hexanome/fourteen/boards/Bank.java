@@ -341,6 +341,7 @@ public class Bank {
       gameBoard.purchaseCard(purchaseCardForm);
     } else {
       takeBankButton.setDisable(true);
+      updateButtonsForBonusGem();
       toggle();
     }
   }
