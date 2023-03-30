@@ -5,6 +5,7 @@ import com.hexanome.fourteen.boards.Expansion;
 import com.hexanome.fourteen.boards.GemColor;
 import com.hexanome.fourteen.form.server.GemsForm;
 import com.hexanome.fourteen.form.server.PlayerForm;
+import com.hexanome.fourteen.form.server.tradingposts.TradingPostsEnum;
 
 /**
  * Card form.
@@ -86,7 +87,9 @@ public abstract class CardForm {
     GemsForm tempCost = new GemsForm(cost);
     tempCost.removeGems(playerForm.hand().gems());
     tempCost.removeGems(playerForm.hand().gemDiscounts());
-    return tempCost.count() <= playerForm.hand().gems().getOrDefault(GemColor.GOLD,0).intValue();
+    return (playerForm.hand().tradingPosts().getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false)
+        && tempCost.count() <= 2*playerForm.hand().gems().getOrDefault(GemColor.GOLD,0).intValue())
+        || (tempCost.count() <= playerForm.hand().gems().getOrDefault(GemColor.GOLD,0).intValue());
   }
 
   /**
