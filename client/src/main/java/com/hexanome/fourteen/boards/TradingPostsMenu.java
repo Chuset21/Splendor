@@ -9,7 +9,6 @@ import java.util.Objects;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -54,9 +53,6 @@ public class TradingPostsMenu extends DialogPane {
     shieldGrids.add(shield3Grid);
     shieldGrids.add(shield4Grid);
 
-    // Set close function
-    this.lookupButton(ButtonType.CLOSE).setOnMouseClicked(e -> toggleVisibility());
-
     updateMenu();
   }
 
@@ -86,6 +82,9 @@ public class TradingPostsMenu extends DialogPane {
 
   public boolean toggleVisibility() {
     this.setVisible(!isVisible());
+    if(isVisible()){
+      toFront();
+    }
     return isVisible();
   }
 

@@ -3,6 +3,7 @@ package com.hexanome.fourteen.boards;
 import com.hexanome.fourteen.form.server.GemsForm;
 import com.hexanome.fourteen.form.server.cardform.CardForm;
 import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
+import com.hexanome.fourteen.form.server.tradingposts.TradingPostsEnum;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Objects;
@@ -146,6 +147,12 @@ public class GoldGemSubstituteMenu extends DialogPane {
       } else
         // Handle substituteGemButton (-)
         if (getNodeIndexInGrid(n)[1] == 0) {
+          if(gameBoard.player.getHandForm().tradingPosts().getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false)){
+            ((Button) n).setText("-2");
+          } else {
+            ((Button) n).setText("-");
+          }
+
           // Set active if (amt of gold gems < gold gems in hand && amt of this gem > 0)
           n.setDisable(!(chosenGems[5] <
               gameBoard.player.getHandForm().gems().getOrDefault(GemColor.GOLD, 0).intValue() &&
@@ -153,6 +160,13 @@ public class GoldGemSubstituteMenu extends DialogPane {
         } else
           // Handle useGemButton (+)
           if (getNodeIndexInGrid(n)[1] == 3) {
+            if(gameBoard.player.getHandForm().tradingPosts().getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false)){
+              ((Button) n).setText("+2");
+            } else {
+              ((Button) n).setText("+");
+            }
+
+
             // Set active if (amt of chosen gems in this color < cost of this card for this color
             // && amt of chosen gems in this color < this color gem in your hand)
             n.setDisable(

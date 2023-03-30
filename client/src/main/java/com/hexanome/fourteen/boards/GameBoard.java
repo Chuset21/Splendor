@@ -1827,6 +1827,7 @@ public class GameBoard {
   @FXML
   private void showAvailableCitiesMenu() {
     availableCitiesMenu.setVisible(true);
+    availableCitiesMenu.toFront();
   }
 
   @FXML

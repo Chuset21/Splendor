@@ -136,7 +136,7 @@
                      <center>
                         <ImageView fx:id="playerView0" fitHeight="74.0" fitWidth="76.0" onMouseEntered="#createPlayerSummary" onMouseExited="#closePlayerSummary" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                            <image>
-                              <Image url="@images/profile1.png" />
+                              <Image url="@images/tradingPosts/yellowPlayerShield.png" />
                            </image>
                            <effect>
                               <DropShadow blurType="GAUSSIAN" color="#0048ff" height="50.0" radius="24.5" width="50.0" />
@@ -148,7 +148,7 @@
                      <center>
                         <ImageView fx:id="playerView1" fitHeight="74.0" fitWidth="76.0" onMouseEntered="#createPlayerSummary" onMouseExited="#closePlayerSummary" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                            <image>
-                              <Image url="@images/profile2.png" />
+                              <Image url="@images/tradingPosts/blackPlayerShield.png" />
                            </image>
                         </ImageView>
                      </center>
@@ -157,7 +157,7 @@
                      <center>
                         <ImageView fx:id="playerView2" fitHeight="74.0" fitWidth="76.0" onMouseEntered="#createPlayerSummary" onMouseExited="#closePlayerSummary" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                            <image>
-                              <Image url="@images/profile3.png" />
+                              <Image url="@images/tradingPosts/redPlayerShield.png" />
                            </image>
                         </ImageView>
                      </center>
@@ -166,31 +166,31 @@
                      <center>
                         <ImageView fx:id="playerView3" fitHeight="80.0" fitWidth="76.0" onMouseEntered="#createPlayerSummary" onMouseExited="#closePlayerSummary" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
                            <image>
-                              <Image url="@images/profile4.png" />
+                              <Image url="@images/tradingPosts/bluePlayerShield.png" />
                            </image>
                         </ImageView>
                      </center>
                   </BorderPane>
                </children>
             </HBox>
-            <HBox alignment="CENTER" layoutX="47.0" layoutY="154.0" prefHeight="29.0" prefWidth="439.0" spacing="110.0">
+            <HBox alignment="CENTER" layoutX="18.0" layoutY="155.0" minWidth="436.0" prefHeight="29.0" prefWidth="495.0" spacing="115.0">
                <children>
-                  <Label fx:id="playerName0">
+                  <Label fx:id="playerName0" text="hi">
                      <font>
                         <Font name="Satoshi Bold" size="10.0" />
                      </font>
                   </Label>
-                  <Label fx:id="playerName1">
+                  <Label fx:id="playerName1" text="hi">
                      <font>
                         <Font name="Satoshi Bold" size="10.0" />
                      </font>
                   </Label>
-                  <Label fx:id="playerName2">
+                  <Label fx:id="playerName2" text="hi">
                      <font>
                         <Font name="Satoshi Bold" size="10.0" />
                      </font>
                   </Label>
-                  <Label fx:id="playerName3">
+                  <Label fx:id="playerName3" text="hi">
                      <font>
                         <Font name="Satoshi Bold" size="10.0" />
                      </font>
