@@ -747,7 +747,7 @@ public class GameBoard {
 
     //// Handle Reserve Availability
     cardReserveButton.setDisable(!isYourTurn() || handForm.reservedCards().size() >= 3 ||
-        handForm.reservedCards().contains(cardForm));
+                                 handForm.reservedCards().contains(cardForm));
 
     // Open menu
     cardActionMenu.toFront();
@@ -757,8 +757,10 @@ public class GameBoard {
   private boolean canPurchaseSacrificeCard(GemColor gemColor) {
     final List<CardForm> cardsWithDiscountColor = getPurchasedCardsWithDiscountColor(gemColor);
     return cardsWithDiscountColor.size() >= 2 || (cardsWithDiscountColor.size() == 1 &&
-        (cardsWithDiscountColor.get(0) instanceof DoubleBonusCardForm ||
-            cardsWithDiscountColor.get(0) instanceof SatchelCardForm));
+                                                  (cardsWithDiscountColor.get(
+                                                      0) instanceof DoubleBonusCardForm ||
+                                                   cardsWithDiscountColor.get(
+                                                       0) instanceof SatchelCardForm));
   }
 
   private List<CardForm> getPurchasedCardsWithDiscountColor(GemColor gemColor) {
@@ -888,8 +890,8 @@ public class GameBoard {
     // Generate ImageView for each selectable card form
     for (CardForm c : possibleCardsToSacrifice) {
       ImageView iv = new ImageView();
-      iv.setImage((c instanceof StandardCardForm) ? new StandardCard((StandardCardForm) c) :
-          new OrientCard(c));
+      iv.setImage((c instanceof StandardCardForm) ? new StandardCard((StandardCardForm) c)
+          : (c instanceof SatchelCardForm x) ? generateSatchelImage(x) : new OrientCard(c));
       iv.setFitHeight(140);
       iv.setFitWidth(100);
 
@@ -899,8 +901,8 @@ public class GameBoard {
         if (tentativeSacrifices.isEmpty()) {
           tentativeSacrifices.add(cardSelected);
           waterfallPane.lookupButton(ButtonType.FINISH).setDisable(
-              !(cardSelected.getCardForm() instanceof DoubleBonusCardForm ||
-                  cardSelected.getCardForm() instanceof SatchelCardForm));
+              !(cardSelected.getCardForm() instanceof DoubleBonusCardForm
+                || cardSelected.getCardForm() instanceof SatchelCardForm));
         } else if (tentativeSacrifices.size() == 1) {
           final Card card = tentativeSacrifices.get(0);
           if (card.getCardForm() instanceof SatchelCardForm) {
@@ -909,7 +911,7 @@ public class GameBoard {
             tentativeSacrifices.add(cardSelected);
             waterfallPane.lookupButton(ButtonType.FINISH).setDisable(false);
           } else if (card.getCardForm() instanceof DoubleBonusCardForm ||
-              cardSelected.getCardForm() instanceof DoubleBonusCardForm) {
+                     cardSelected.getCardForm() instanceof DoubleBonusCardForm) {
             choicesHBox.getChildren().forEach((child) -> {
               if (child instanceof ImageView i && card.equals(i.getImage())) {
                 child.setEffect(null);
@@ -1381,8 +1383,8 @@ public class GameBoard {
 
     // Create attached card image
     CardForm attachedForm = cardForm.cardToAttach();
-    Image attachedImage = (attachedForm instanceof StandardCardForm) ?
-        new StandardCard((StandardCardForm) attachedForm) : new OrientCard(attachedForm);
+    Image attachedImage = (attachedForm instanceof StandardCardForm)
+        ? new StandardCard((StandardCardForm) attachedForm) : new OrientCard(attachedForm);
 
     // Set canvas attributes
     double canvasWidth = Math.max(satchel.getWidth() + 140, attachedImage.getWidth());
@@ -1584,7 +1586,7 @@ public class GameBoard {
 
     // Set summary label as player title
     playerSummaryUserLabel.setText(requestedPlayer.uid() + "'s Board\nPrestige points: " +
-        requestedPlayer.hand().prestigePoints());
+                                   requestedPlayer.hand().prestigePoints());
 
     // Fetch and apply the user's discounts to the summary discount matrix
     int index = 0;
@@ -1663,7 +1665,7 @@ public class GameBoard {
     // Fetch user's free card choices
     return gameBoardForm.cards().stream().flatMap(Collection::stream).filter(
             c -> (c.level().equals(level)) &&
-                (!(c instanceof SatchelCardForm) || canPurchaseSatchelCard))
+                 (!(c instanceof SatchelCardForm) || canPurchaseSatchelCard))
         .collect(Collectors.toList());
   }
 
