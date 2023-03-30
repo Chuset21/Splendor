@@ -1146,6 +1146,7 @@ public class GameBoard {
   }
 
   private void takeFreeGemPrompt() {
+    disableGameAlteringActions();
     waterfallPaneTitle.setText("You Have Trading Post 1. Take a free gem!");
     waterfallPaneSubtitle.setText("Select one gem from the bank to the left.");
     waterfallPane.setContent(new HBox());
