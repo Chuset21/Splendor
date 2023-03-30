@@ -24,6 +24,7 @@ public class GoldGemSubstituteMenu extends DialogPane {
   GridPane substituteGemGrid;
   private int[] chosenGems;
   private int[] cardCost;
+  private int[] originalCost;
   final GameBoard gameBoard;
 
 
@@ -67,13 +68,22 @@ public class GoldGemSubstituteMenu extends DialogPane {
     GemsForm tempCost =
         cardForm.cost().getDiscountedCost(gameBoard.player.getHandForm().gemDiscounts());
     tempCost.removeGems(missingGems);
-    tempCost.computeIfAbsent(GemColor.GOLD,
-        f -> missingGold > 0 ? missingGold : null);
+    if (gameBoard.player.getHandForm().tradingPosts()
+        .getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false)) {
+      tempCost.computeIfAbsent(GemColor.GOLD,
+          f -> missingGold > 0 ? ((missingGold % 2 == 0) ? missingGold / 2 : missingGold / 2 + 1) :
+              null);
+    } else {
+      tempCost.computeIfAbsent(GemColor.GOLD,
+          f -> missingGold > 0 ? missingGold : null);
+    }
 
 
     chosenGems = GemsForm.costHashToArrayWithGold(tempCost);
     cardCost = GemsForm.costHashToArrayWithGold(
         cardForm.cost().getDiscountedCost(gameBoard.player.getHandForm().gemDiscounts()));
+    originalCost = GemsForm.costHashToArrayWithGold(tempCost);
+
 
     // Set submit payment function and enable finish button
     this.lookupButton(ButtonType.FINISH).setOnMouseClicked(
@@ -113,7 +123,15 @@ public class GoldGemSubstituteMenu extends DialogPane {
    * @param source button selection was made from
    */
   public void substituteGem(Button source) {
-    chosenGems[getNodeIndexInGrid(source)[0]]--;
+    if (gameBoard.player.getHandForm().tradingPosts()
+        .getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false)) {
+      chosenGems[getNodeIndexInGrid(source)[0]]--;
+      if (chosenGems[getNodeIndexInGrid(source)[0]] > 0) {
+        chosenGems[getNodeIndexInGrid(source)[0]]--;
+      }
+    } else {
+      chosenGems[getNodeIndexInGrid(source)[0]]--;
+    }
     chosenGems[5]++;
   }
 
@@ -123,7 +141,18 @@ public class GoldGemSubstituteMenu extends DialogPane {
    * @param source button selection was made from
    */
   public void useGem(Button source) {
-    chosenGems[getNodeIndexInGrid(source)[0]]++;
+    if (gameBoard.player.getHandForm().tradingPosts()
+        .getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false)) {
+      chosenGems[getNodeIndexInGrid(source)[0]]++;
+      if ((chosenGems[getNodeIndexInGrid(source)[0]] > 1 ||
+          originalCost[getNodeIndexInGrid(source)[0]] % 2 == 0)
+          && chosenGems[getNodeIndexInGrid(source)[0]] < gameBoard.player.getHandForm().gems()
+          .getOrDefault(GemColor.values()[getNodeIndexInGrid(source)[0]], 0).intValue()) {
+        chosenGems[getNodeIndexInGrid(source)[0]]++;
+      }
+    } else {
+      chosenGems[getNodeIndexInGrid(source)[0]]++;
+    }
     chosenGems[5]--;
   }
 
@@ -147,7 +176,8 @@ public class GoldGemSubstituteMenu extends DialogPane {
       } else
         // Handle substituteGemButton (-)
         if (getNodeIndexInGrid(n)[1] == 0) {
-          if(gameBoard.player.getHandForm().tradingPosts().getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false)){
+          if (gameBoard.player.getHandForm().tradingPosts()
+              .getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false)) {
             ((Button) n).setText("-2");
             ((Button) n).setMaxWidth(30);
             ((Button) n).setPrefWidth(30);
@@ -164,7 +194,8 @@ public class GoldGemSubstituteMenu extends DialogPane {
         } else
           // Handle useGemButton (+)
           if (getNodeIndexInGrid(n)[1] == 3) {
-            if(gameBoard.player.getHandForm().tradingPosts().getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false)){
+            if (gameBoard.player.getHandForm().tradingPosts()
+                .getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false)) {
               ((Button) n).setText("+2");
               ((Button) n).setMaxWidth(33);
               ((Button) n).setPrefWidth(33);
@@ -173,7 +204,6 @@ public class GoldGemSubstituteMenu extends DialogPane {
               ((Button) n).setMaxWidth(25);
               ((Button) n).setPrefWidth(25);
             }
-
 
             // Set active if (amt of chosen gems in this color < cost of this card for this color
             // && amt of chosen gems in this color < this color gem in your hand)
