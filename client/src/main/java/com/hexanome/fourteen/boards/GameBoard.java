@@ -2,8 +2,10 @@ package com.hexanome.fourteen.boards;
 
 import com.google.gson.reflect.TypeToken;
 import com.hexanome.fourteen.GameServiceName;
+import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.Main;
 import com.hexanome.fourteen.ServerCaller;
+import com.hexanome.fourteen.TokenRefreshFailedException;
 import com.hexanome.fourteen.form.server.CityForm;
 import com.hexanome.fourteen.form.server.ClaimCityForm;
 import com.hexanome.fourteen.form.server.ClaimNobleForm;
@@ -25,6 +27,8 @@ import com.hexanome.fourteen.form.server.cardform.StandardCardForm;
 import com.hexanome.fourteen.form.server.cardform.WaterfallCardForm;
 import com.hexanome.fourteen.form.server.payment.CardPaymentForm;
 import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
+import com.hexanome.fourteen.form.server.tradingposts.TradingPostsEnum;
+import com.hexanome.fourteen.lobbyui.MenuController;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.security.InvalidParameterException;
@@ -37,20 +41,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
-
-import com.hexanome.fourteen.LobbyServiceCaller;
-import com.hexanome.fourteen.TokenRefreshFailedException;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javafx.animation.FadeTransition;
-import javafx.animation.PauseTransition;
-import com.hexanome.fourteen.form.server.tradingposts.TradingPostsEnum;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
@@ -68,11 +69,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import com.hexanome.fourteen.lobbyui.*;
 import javafx.util.Duration;
 import kong.unirest.HttpResponse;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -81,49 +81,58 @@ import org.apache.commons.codec.digest.DigestUtils;
  * A class to represent the game objects required to represent a OrientExpansion Splendor game.
  */
 public class GameBoard {
-  @FXML
-  private HBox crownHBox;
-  private Stage stage;
-
-  private GameBoardForm gameBoardForm;
-
+  public static final int[] GEM_INDEX = {0, 1, 2, 3, 4, 5};
   private static final Map<String/*Player id*/, String/*Player Icon Filename*/> PLAYER_ID_MAP =
       new HashMap<>();
   private static final String[] DEFAULT_PLAYER_ICONS =
       {"yellowPlayerShield.png", "blackPlayerShield.png", "redPlayerShield.png",
           "bluePlayerShield.png"};
-
-  Bank bank;
-
-  public static final int[] GEM_INDEX = {0, 1, 2, 3, 4, 5};
-
   private static final Random random = new Random();
+  private static final Effect BLUE_GLOW_EFFECT =
+      new DropShadow(BlurType.GAUSSIAN, Color.web("#0048ff"), 24.5, 0, 0, 0);
+  //CARD FIELDS
+  //2D Array with all card FX ID names.
+  @FXML
+  private static final String[][] CARDS = new String[3][6];
 
+  static {
+    for (int row = 1; row < 4; row++) {
+      for (int column = 1; column < 7; column++) {
+        CARDS[row - 1][column - 1] = "R" + row + "C" + column;
+      }
+    }
+  }
+
+  private final List<Image> purchasedCardImages = new ArrayList<Image>();
+  private final List<Image> reservedCardImages = new ArrayList<>();
+  private final List<Image> reservedNobleImages = new ArrayList<>();
   // Player's Info
   public Player player;
+  public Label winningPlayer;
+  public Label playerName0;
+  public Label playerName1;
+  public Label playerName2;
+  public Label playerName3;
+  @FXML
+  public DialogPane discardTokenPane;
+  @FXML
+  public GridPane discardTokenGrid;
+  @FXML
+  public Label discardTokenLabel;
+  public TokenDiscarder tokenDiscarder;
+  Bank bank;
+  @FXML
+  private HBox crownHBox;
+  private Stage stage;
+  private GameBoardForm gameBoardForm;
   private List<Player> players;
   @FXML
   private ArrayList<ImageView> playerViews;
   @FXML
   private ArrayList<Label> playerNameLabels;
-
-  public Label winningPlayer;
-
-  public Label playerName0;
-
-  public Label playerName1;
-
-  public Label playerName2;
-
-  public Label playerName3;
-
   @FXML
   private Label currentPlayerTurnLabel;
-  private static final Effect BLUE_GLOW_EFFECT =
-      new DropShadow(BlurType.GAUSSIAN, Color.web("#0048ff"), 24.5, 0, 0, 0);
-
   private ArrayList<Noble> gameNobles;
-
   @FXML
   private Button openBankButton;
   @FXML
@@ -134,22 +143,16 @@ public class GameBoard {
   private Button cardReserveButton;
   @FXML
   private Button cardPurchaseButton;
-
   // PURCHASED CARDS PANE
   @FXML
   private Pane purchasedCardsView;
-  private final List<Image> purchasedCardImages = new ArrayList<Image>();
   @FXML
   private BorderPane purchasedBorderPane;
-
   // RESERVED CARDS PANE
   @FXML
   private Pane reservedCardsView;
   @FXML
   private VBox reservedCardsVBox;
-  private final List<Image> reservedCardImages = new ArrayList<>();
-  private final List<Image> reservedNobleImages = new ArrayList<>();
-
   // ACQUIRED NOBLES PANE
   @FXML
   private BorderPane acquiredNoblesView;
@@ -183,33 +186,16 @@ public class GameBoard {
   private DialogPane waterfallPane;
   @FXML
   private Label waterfallPaneSubtitle;
-
   @FXML
   private Label waterfallPaneTitle;
   @FXML
   private VBox waterfallVBox;
-
   private Card tentativeCardSelection;
   private Noble tentativeNobleSelection;
   private City tentativeCitySelection;
   private List<Card> tentativeSacrifices;
   @FXML
   private VBox nobleAcquiredLabelVBox;
-
-
-  //CARD FIELDS
-  //2D Array with all card FX ID names.
-  @FXML
-  private static final String[][] CARDS = new String[3][6];
-
-  static {
-    for (int row = 1; row < 4; row++) {
-      for (int column = 1; column < 7; column++) {
-        CARDS[row - 1][column - 1] = "R" + row + "C" + column;
-      }
-    }
-  }
-
   @FXML
   private ImageView selectedCardView;
   @FXML
@@ -232,7 +218,6 @@ public class GameBoard {
   private ArrayList<ImageView> level1CardViewsOrient;
   @FXML
   private ArrayList<ArrayList> cardViews;
-
   //GEM FIELDS
   @FXML
   private List<Label> pGemLabels;
@@ -251,13 +236,6 @@ public class GameBoard {
   @FXML
   private Button takeBankButton;
   private Service<Void> service;
-  @FXML
-  public DialogPane discardTokenPane;
-  @FXML
-  public GridPane discardTokenGrid;
-  @FXML
-  public Label discardTokenLabel;
-  public TokenDiscarder tokenDiscarder;
   private boolean hasBeenLastRound;
   @FXML
   private Button tradingPostsButton;
@@ -288,9 +266,7 @@ public class GameBoard {
 
     HttpResponse<String> s = ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby());
     // Get gameBoardForm
-    gameBoardForm = Main.GSON.fromJson(
-        Objects.requireNonNull(s)
-            .getBody(), GameBoardForm.class);
+    gameBoardForm = Main.GSON.fromJson(Objects.requireNonNull(s).getBody(), GameBoardForm.class);
 
     setupPlayerMap();
     setupPlayers();
@@ -383,9 +359,9 @@ public class GameBoard {
             while (true) {
               int responseCode = 408;
               while (responseCode == 408) {
-                longPollResponse = hashedResponse != null
-                    ? ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby(),
-                    hashedResponse) :
+                longPollResponse = hashedResponse != null ?
+                    ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby(),
+                        hashedResponse) :
                     ServerCaller.getGameBoard(LobbyServiceCaller.getCurrentUserLobby());
 
                 if (longPollResponse == null) {
@@ -448,8 +424,7 @@ public class GameBoard {
       winningPlayer.setText("%s has won the game!!".formatted(leadingPlayer));
       winningPlayer.setVisible(true);
       final Duration duration = Duration.seconds(2);
-      final FadeTransition fadeTransition =
-          new FadeTransition(duration, winningPlayer);
+      final FadeTransition fadeTransition = new FadeTransition(duration, winningPlayer);
       winningPlayer.setVisible(true);
       fadeTransition.setFromValue(0);
       fadeTransition.setToValue(1);
@@ -466,8 +441,7 @@ public class GameBoard {
         winningPlayer.setText("Last round of the game!!");
         winningPlayer.toFront();
         final Duration duration = Duration.seconds(2);
-        final FadeTransition fadeTransition =
-            new FadeTransition(duration, winningPlayer);
+        final FadeTransition fadeTransition = new FadeTransition(duration, winningPlayer);
         winningPlayer.setVisible(true);
         fadeTransition.setFromValue(0);
         fadeTransition.setToValue(1);
@@ -632,13 +606,12 @@ public class GameBoard {
         } else if (i == 3) {
           playerName3.setText(players.get(3).getUserId());
         }
-        crownHBox.getChildren().get(i).setVisible(gameBoardForm.leadingPlayer().uid().equals(players.get(i).getUserId()));
+        crownHBox.getChildren().get(i)
+            .setVisible(gameBoardForm.leadingPlayer().uid().equals(players.get(i).getUserId()));
 
         playerViews.get(i).setImage(players.get(i));
-        Tooltip.install(playerViews.get(i), new Tooltip(players.get(i).getUserId()
-            + (player.getUserId().equals(
-            players.get(i).getUserId())
-            ? " (you)" : "")));
+        Tooltip.install(playerViews.get(i), new Tooltip(players.get(i).getUserId() +
+            (player.getUserId().equals(players.get(i).getUserId()) ? " (you)" : "")));
       } else {
         playerViews.get(i).imageProperty().set(null);
       }
@@ -714,8 +687,8 @@ public class GameBoard {
     cardActionImage.setImage(selectedCardView.getImage());
     final CardForm cardForm = ((Card) selectedCardView.getImage()).getCardForm();
     final GemsForm cost = cardForm.cost();
-    final int[] gemsCost = cost == null ? new int[] {0, 0, 0, 0, 0, 0} : GemsForm.costHashToArray(
-        cost.getDiscountedCost(player.getHandForm().gemDiscounts()));
+    final int[] gemsCost = cost == null ? new int[] {0, 0, 0, 0, 0, 0} :
+        GemsForm.costHashToArray(cost.getDiscountedCost(player.getHandForm().gemDiscounts()));
 
     // Set values in action pane to the card's cost
     for (int i = 0; i < gemsCost.length; i++) {
@@ -742,8 +715,7 @@ public class GameBoard {
       if (canAfford) {
         if (cardForm instanceof SatchelCardForm) {
           final long gemDiscountCards =
-              player.getHandForm().purchasedCards().stream().filter(this::cardIsAttachable)
-                  .count();
+              player.getHandForm().purchasedCards().stream().filter(this::cardIsAttachable).count();
           if (gemDiscountCards < 1) {
             cardPurchaseButton.setDisable(true);
           }
@@ -760,8 +732,8 @@ public class GameBoard {
     }
 
     //// Handle Reserve Availability
-    cardReserveButton.setDisable(!isYourTurn() || handForm.reservedCards().size() >= 3
-        || handForm.reservedCards().contains(cardForm));
+    cardReserveButton.setDisable(!isYourTurn() || handForm.reservedCards().size() >= 3 ||
+        handForm.reservedCards().contains(cardForm));
 
     // Open menu
     cardActionMenu.toFront();
@@ -770,11 +742,9 @@ public class GameBoard {
 
   private boolean canPurchaseSacrificeCard(GemColor gemColor) {
     final List<CardForm> cardsWithDiscountColor = getPurchasedCardsWithDiscountColor(gemColor);
-    return cardsWithDiscountColor.size() >= 2
-           || (cardsWithDiscountColor.size() == 1 && (cardsWithDiscountColor.get(0)
-                                                          instanceof DoubleBonusCardForm
-                                                      || cardsWithDiscountColor.get(0)
-                                                          instanceof SatchelCardForm));
+    return cardsWithDiscountColor.size() >= 2 || (cardsWithDiscountColor.size() == 1 &&
+        (cardsWithDiscountColor.get(0) instanceof DoubleBonusCardForm ||
+            cardsWithDiscountColor.get(0) instanceof SatchelCardForm));
   }
 
   private List<CardForm> getPurchasedCardsWithDiscountColor(GemColor gemColor) {
@@ -821,84 +791,69 @@ public class GameBoard {
     // Get card to be purchased
     Card cardPurchased = (Card) selectedCardView.getImage();
 
-    if (player.getHandForm().tradingPosts().get(TradingPostsEnum.BONUS_GEM_WITH_CARD)){
+    if (player.getHandForm().tradingPosts().get(TradingPostsEnum.BONUS_GEM_WITH_CARD)) {
       selectingBonusGem = true;
     }
 
     final CardForm cardForm = cardPurchased.getCardForm();
-    if (cardForm instanceof StandardCardForm
-        || cardForm instanceof GoldGemCardForm
-        || cardForm instanceof DoubleBonusCardForm) {
+    if (cardForm instanceof StandardCardForm || cardForm instanceof GoldGemCardForm ||
+        cardForm instanceof DoubleBonusCardForm) {
       if (cardForm.needsGoldGems(player.getPlayerForm())) {
-        goldGemSubstituteMenu.open(cardForm, payment -> purchaseCard(new PurchaseCardForm(cardForm,
-            payment,
-            player.getHandForm().reservedCards().contains(cardForm), null)));
+        goldGemSubstituteMenu.open(cardForm, payment -> purchaseCard(
+            new PurchaseCardForm(cardForm, payment,
+                player.getHandForm().reservedCards().contains(cardForm), null)));
       } else {
-        final PurchaseCardForm purchaseCardForm = new PurchaseCardForm(cardForm,
-            new GemPaymentForm(cardForm.cost()
-                .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
+        final PurchaseCardForm purchaseCardForm = new PurchaseCardForm(cardForm, new GemPaymentForm(
+            cardForm.cost().getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
             player.getHandForm().reservedCards().contains(cardForm), null);
         purchaseCard(purchaseCardForm);
       }
     } else if (cardForm instanceof WaterfallCardForm) {
       if (cardForm.needsGoldGems(player.getPlayerForm())) {
         goldGemSubstituteMenu.open(cardForm,
-            payment -> displayWaterfallChoices(cardForm, CardLevelForm.TWO, f ->
-                purchaseCard(new PurchaseCardForm(cardForm,
-                    payment,
+            payment -> displayWaterfallChoices(cardForm, CardLevelForm.TWO, f -> purchaseCard(
+                new PurchaseCardForm(cardForm, payment,
                     player.getHandForm().reservedCards().contains(cardForm), null))));
       } else {
-        displayWaterfallChoices(cardForm, CardLevelForm.TWO, f ->
-            purchaseCard(new PurchaseCardForm(cardForm,
-                new GemPaymentForm(
-                    cardForm.cost().getDiscountedCost(player.getHandForm().gemDiscounts()),
-                    0),
+        displayWaterfallChoices(cardForm, CardLevelForm.TWO, f -> purchaseCard(
+            new PurchaseCardForm(cardForm, new GemPaymentForm(
+                cardForm.cost().getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
                 player.getHandForm().reservedCards().contains(cardForm), null)));
       }
     } else if (cardForm instanceof ReserveNobleCardForm r) {
       if (cardForm.needsGoldGems(player.getPlayerForm())) {
-        goldGemSubstituteMenu.open(cardForm,
-            payment -> purchaseReserveNobleCard(r, f ->
-                purchaseCard(new PurchaseCardForm(cardForm,
-                    payment,
-                    player.getHandForm().reservedCards().contains(cardForm), null))));
+        goldGemSubstituteMenu.open(cardForm, payment -> purchaseReserveNobleCard(r,
+            f -> purchaseCard(new PurchaseCardForm(cardForm, payment,
+                player.getHandForm().reservedCards().contains(cardForm), null))));
       } else {
-        purchaseReserveNobleCard(r, f ->
-            purchaseCard(new PurchaseCardForm(cardForm,
-                new GemPaymentForm(cardForm.cost()
-                    .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
-                player.getHandForm().reservedCards().contains(cardForm), null)));
+        purchaseReserveNobleCard(r, f -> purchaseCard(new PurchaseCardForm(cardForm,
+            new GemPaymentForm(
+                cardForm.cost().getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
+            player.getHandForm().reservedCards().contains(cardForm), null)));
       }
     } else if (cardForm instanceof SatchelCardForm s) {
       if (s.level() == CardLevelForm.TWO) {
         if (cardForm.needsGoldGems(player.getPlayerForm())) {
-          goldGemSubstituteMenu.open(cardForm,
-              payment -> purchaseLevelOneSatchelCard(s,
-                  f -> displayWaterfallChoices(s, CardLevelForm.ONE,
-                      x -> purchaseCard(new PurchaseCardForm(cardForm,
-                          payment,
-                          player.getHandForm().reservedCards().contains(cardForm), null)))));
+          goldGemSubstituteMenu.open(cardForm, payment -> purchaseLevelOneSatchelCard(s,
+              f -> displayWaterfallChoices(s, CardLevelForm.ONE, x -> purchaseCard(
+                  new PurchaseCardForm(cardForm, payment,
+                      player.getHandForm().reservedCards().contains(cardForm), null)))));
         } else {
           purchaseLevelOneSatchelCard(s, f -> displayWaterfallChoices(s, CardLevelForm.ONE,
-              x -> purchaseCard(new PurchaseCardForm(cardForm,
-                  new GemPaymentForm(
-                      cardForm.cost().getDiscountedCost(player.getHandForm().gemDiscounts()),
-                      0),
+              x -> purchaseCard(new PurchaseCardForm(cardForm, new GemPaymentForm(
+                  cardForm.cost().getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
                   player.getHandForm().reservedCards().contains(cardForm), null))));
         }
       } else {
         if (cardForm.needsGoldGems(player.getPlayerForm())) {
-          goldGemSubstituteMenu.open(cardForm,
-              payment -> purchaseLevelOneSatchelCard(s, f ->
-                  purchaseCard(new PurchaseCardForm(s,
-                      payment,
-                      player.getHandForm().reservedCards().contains(s), null))));
+          goldGemSubstituteMenu.open(cardForm, payment -> purchaseLevelOneSatchelCard(s,
+              f -> purchaseCard(
+                  new PurchaseCardForm(s, payment, player.getHandForm().reservedCards().contains(s),
+                      null))));
         } else {
-          purchaseLevelOneSatchelCard(s, f ->
-              purchaseCard(new PurchaseCardForm(s,
-                  new GemPaymentForm(s.cost()
-                      .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
-                  player.getHandForm().reservedCards().contains(s), null)));
+          purchaseLevelOneSatchelCard(s, f -> purchaseCard(new PurchaseCardForm(s,
+              new GemPaymentForm(s.cost().getDiscountedCost(player.getHandForm().gemDiscounts()),
+                  0), player.getHandForm().reservedCards().contains(s), null)));
         }
       }
     } else if (cardForm instanceof SacrificeCardForm c) {
@@ -928,9 +883,9 @@ public class GameBoard {
         final Card cardSelected = (Card) ((ImageView) event.getSource()).getImage();
         if (tentativeSacrifices.isEmpty()) {
           tentativeSacrifices.add(cardSelected);
-          waterfallPane.lookupButton(ButtonType.FINISH)
-              .setDisable(!(cardSelected.getCardForm() instanceof DoubleBonusCardForm
-                            || cardSelected.getCardForm() instanceof SatchelCardForm));
+          waterfallPane.lookupButton(ButtonType.FINISH).setDisable(
+              !(cardSelected.getCardForm() instanceof DoubleBonusCardForm ||
+                  cardSelected.getCardForm() instanceof SatchelCardForm));
         } else if (tentativeSacrifices.size() == 1) {
           final Card card = tentativeSacrifices.get(0);
           if (card.getCardForm() instanceof SatchelCardForm) {
@@ -938,8 +893,8 @@ public class GameBoard {
             tentativeSacrifices.clear();
             tentativeSacrifices.add(cardSelected);
             waterfallPane.lookupButton(ButtonType.FINISH).setDisable(false);
-          } else if (card.getCardForm() instanceof DoubleBonusCardForm
-                     || cardSelected.getCardForm() instanceof DoubleBonusCardForm) {
+          } else if (card.getCardForm() instanceof DoubleBonusCardForm ||
+              cardSelected.getCardForm() instanceof DoubleBonusCardForm) {
             choicesHBox.getChildren().forEach((child) -> {
               if (child instanceof ImageView i && card.equals(i.getImage())) {
                 child.setEffect(null);
@@ -947,8 +902,8 @@ public class GameBoard {
             });
             tentativeSacrifices.clear();
             tentativeSacrifices.add(cardSelected);
-            waterfallPane.lookupButton(ButtonType.FINISH).setDisable(
-                !(cardSelected.getCardForm() instanceof DoubleBonusCardForm));
+            waterfallPane.lookupButton(ButtonType.FINISH)
+                .setDisable(!(cardSelected.getCardForm() instanceof DoubleBonusCardForm));
           } else {
             tentativeSacrifices.add(cardSelected);
             waterfallPane.lookupButton(ButtonType.FINISH).setDisable(false);
@@ -993,8 +948,7 @@ public class GameBoard {
     waterfallPane.lookupButton(ButtonType.FINISH).setDisable(true);
   }
 
-  private void purchaseLevelOneSatchelCard(SatchelCardForm satchelCard,
-                                           Consumer<Void> function) {
+  private void purchaseLevelOneSatchelCard(SatchelCardForm satchelCard, Consumer<Void> function) {
     final List<CardForm> cardToAttachSelection =
         player.getHandForm().purchasedCards().stream().filter(this::cardIsAttachable).toList();
     // Generate HBox to display the card choices to user
@@ -1062,9 +1016,8 @@ public class GameBoard {
       acquiredNobleAlertPane.setDisable(false);
       acquiredNobleAlertPane.lookupButton(ButtonType.FINISH).setDisable(true);
     } else {
-      purchaseCard(new PurchaseCardForm(cardPurchased,
-          new GemPaymentForm(cardPurchased.cost()
-              .getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
+      purchaseCard(new PurchaseCardForm(cardPurchased, new GemPaymentForm(
+          cardPurchased.cost().getDiscountedCost(player.getHandForm().gemDiscounts()), 0),
           player.getHandForm().reservedCards().contains(cardPurchased), null));
     }
   }
@@ -1091,7 +1044,7 @@ public class GameBoard {
    * @param purchaseCardForm form of purchase card
    */
   public void purchaseCard(PurchaseCardForm purchaseCardForm) {
-    if (selectingBonusGem){
+    if (selectingBonusGem) {
       takeFreeGemPrompt();
       bank.getBonusGem(purchaseCardForm);
       return;
@@ -1123,8 +1076,8 @@ public class GameBoard {
       totalGemsInHand += i;
     }
 
-    if (totalGemsInHand + 1 > 10
-        && gameBoardForm.availableGems().getOrDefault(GemColor.GOLD, 0) > 0) {
+    if (totalGemsInHand + 1 > 10 &&
+        gameBoardForm.availableGems().getOrDefault(GemColor.GOLD, 0) > 0) {
       closeAllActionWindows();
       tokenDiscarder =
           new TokenDiscarder(this, player.getHandForm().gems(), 1, this::handleReserve);
@@ -1135,7 +1088,8 @@ public class GameBoard {
 
     ReserveCardForm reserveCardForm = new ReserveCardForm(cardReserved.getCardForm(), null, false);
 
-    HttpResponse response = ServerCaller.reserveCard(LobbyServiceCaller.getCurrentUserLobby(), LobbyServiceCaller.getCurrentUserAccessToken(), reserveCardForm);
+    HttpResponse response = ServerCaller.reserveCard(LobbyServiceCaller.getCurrentUserLobby(),
+        LobbyServiceCaller.getCurrentUserAccessToken(), reserveCardForm);
 
     // Close card menu
     cardActionMenu.setVisible(false);
@@ -1174,7 +1128,7 @@ public class GameBoard {
     updateBoard();
   }
 
-  private void takeFreeGemPrompt(){
+  private void takeFreeGemPrompt() {
     waterfallPaneTitle.setText("You Have Trading Post 1. Take a free gem!");
     waterfallPaneSubtitle.setText("Select one gem from the bank to the left.");
     waterfallPane.setContent(new HBox());
@@ -1406,12 +1360,47 @@ public class GameBoard {
     return cardImageGrid;
   }
 
+  private Image generateSatchelImage(SatchelCardForm cardForm) {
+    // Create satchel image
+    Image satchel = new OrientCard(cardForm);
+
+    // Create attached card image
+    CardForm attachedForm = cardForm.cardToAttach();
+    Image attachedImage = (attachedForm instanceof StandardCardForm) ?
+        new StandardCard((StandardCardForm) attachedForm) : new OrientCard(attachedForm);
+
+    // Set canvas attributes
+    double canvasWidth = Math.max(satchel.getWidth() + 140, attachedImage.getWidth());
+    double canvasHeight = Math.max(satchel.getHeight() + 140, attachedImage.getHeight());
+
+    // Create canvas for image layering
+    Canvas canvas = new Canvas(canvasWidth, canvasHeight);
+    GraphicsContext gc = canvas.getGraphicsContext2D();
+
+    // Set canvas background
+    gc.setFill(Color.web("#FAECC0"));
+    gc.fillRect(0, 0, canvasWidth, canvasHeight);
+
+    // Draw satchel with an upward and right offset, starting from bottom-left
+    gc.drawImage(satchel, 140, canvasHeight - satchel.getHeight() - 140);
+
+    // Draw attachedImage in the bottom-left corner
+    gc.drawImage(attachedImage, 0, canvasHeight - attachedImage.getHeight());
+
+    // Convert the canvas to a single Image object
+    return canvas.snapshot(null, null);
+  }
+
   @FXML
   public void handlePurchasedPaneSelect(MouseEvent event) {
     purchasedCardImages.clear();
 
-    // TODO fix error with showing satchel cards when they've been purchased
     for (CardForm cardForm : player.getHandForm().purchasedCards()) {
+      if (cardForm instanceof SatchelCardForm) {
+        Image stackedSatchel = generateSatchelImage((SatchelCardForm) cardForm);
+        purchasedCardImages.add(stackedSatchel);
+        continue;
+      }
       purchasedCardImages.add(
           (cardForm instanceof StandardCardForm) ? new StandardCard((StandardCardForm) cardForm) :
               new OrientCard(cardForm));
@@ -1579,9 +1568,8 @@ public class GameBoard {
     }
 
     // Set summary label as player title
-    playerSummaryUserLabel.setText(
-        requestedPlayer.uid() + "'s Board\nPrestige points: " +
-            requestedPlayer.hand().prestigePoints());
+    playerSummaryUserLabel.setText(requestedPlayer.uid() + "'s Board\nPrestige points: " +
+        requestedPlayer.hand().prestigePoints());
 
     // Fetch and apply the user's discounts to the summary discount matrix
     int index = 0;
@@ -1652,9 +1640,9 @@ public class GameBoard {
     final boolean canPurchaseSatchelCard =
         player.getHandForm().purchasedCards().stream().anyMatch(this::cardIsAttachable);
     // Fetch user's free card choices
-    return gameBoardForm.cards().stream().flatMap(Collection::stream)
-        .filter(c -> (c.level().equals(level))
-            && (!(c instanceof SatchelCardForm) || canPurchaseSatchelCard))
+    return gameBoardForm.cards().stream().flatMap(Collection::stream).filter(
+            c -> (c.level().equals(level)) &&
+                (!(c instanceof SatchelCardForm) || canPurchaseSatchelCard))
         .collect(Collectors.toList());
   }
 

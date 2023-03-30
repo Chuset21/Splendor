@@ -1,22 +1,15 @@
 package com.hexanome.fourteen.lobbyui;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.Objects;
-import java.util.ResourceBundle;
-
 import com.hexanome.fourteen.LobbyServiceCaller;
+import java.io.IOException;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-public class WelcomeScreenController implements ScreenController{
+public class WelcomeScreenController implements ScreenController {
 
   @FXML
   private AnchorPane anchorPane;
@@ -30,6 +23,8 @@ public class WelcomeScreenController implements ScreenController{
   private Button createGameButton;
   @FXML
   private Button quitButton;
+  @FXML
+  private Button logoutButton;
 
   private Stage stage;
 
@@ -46,6 +41,13 @@ public class WelcomeScreenController implements ScreenController{
   public void handleQuitButton() {
     Platform.exit();
     System.exit(0);
+  }
+
+  @FXML
+  // TODO: Actually change user on next login (LobbyServiceCaller@line97? Always replace instead of only on == null?)
+  // or maybe use a http delete request on the user? idk
+  public void handleLogoutButton() throws IOException {
+    MenuController.returnToLogin("You've successfully logged out.");
   }
 
   @FXML

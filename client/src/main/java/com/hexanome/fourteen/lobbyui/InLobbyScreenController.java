@@ -1,10 +1,9 @@
 package com.hexanome.fourteen.lobbyui;
 
+import com.hexanome.fourteen.LobbyServiceCaller;
 import com.hexanome.fourteen.Main;
 import com.hexanome.fourteen.form.lobbyservice.SessionForm;
 import java.io.IOException;
-
-import com.hexanome.fourteen.LobbyServiceCaller;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -21,6 +20,12 @@ public class InLobbyScreenController implements ScreenController {
 
   //TODO: Add "Waiting for player" text in empty player spots
 
+  // Temp names to use for players
+  private static final String[] playerNames =
+      {"Billy Bob", "John Smith", "Gerald", "Betsy", "Brenda"};
+  // Template for lobby text
+  private static final String LOBBY_NAME_TEMPLATE = "[ownerName]'s Lobby";
+  private static final String PLAYER_COUNT_TEMPLATE = "[curPlayers]/[maxPlayers] Players";
   @FXML
   private AnchorPane anchorPane;
   @FXML
@@ -35,23 +40,13 @@ public class InLobbyScreenController implements ScreenController {
   private Button joinLobbyButton;
   @FXML
   private Button leaveLobbyButton;
-
+  @FXML
+  private Text waitingOnHostAlert;
   private Service<Void> service;
   // Holds data of current lobby (primarily the lobby location)
   private Lobby lobby;
-
-
   // List of current players
   private DisplayPlayer[] displayPlayers = new DisplayPlayer[4];
-
-  // Temp names to use for players
-  private static final String[] playerNames =
-      {"Billy Bob", "John Smith", "Gerald", "Betsy", "Brenda"};
-
-  // Template for lobby text
-  private static final String LOBBY_NAME_TEMPLATE = "[ownerName]'s Lobby";
-  private static final String PLAYER_COUNT_TEMPLATE = "[curPlayers]/[maxPlayers] Players";
-
   private Stage stage;
 
   @Override
@@ -188,14 +183,17 @@ public class InLobbyScreenController implements ScreenController {
    * Updates GUI elements to match gamestate
    */
   private void updateGUI() {
+    boolean isHost = (LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost()));
+
     // Updates joinLobby buttons for non-host users
-    if ((LobbyServiceCaller.getCurrentUserid().equals(lobby.getHost()) && lobby.getNumPlayers() > 1) || lobby.getLaunched()) {
+    if ((isHost && lobby.getNumPlayers() > 1) || lobby.getLaunched()) {
       joinLobbyButton.setVisible(false);
       launchLobbyButton.setVisible(true);
     } else {
       joinLobbyButton.setVisible(false);
       launchLobbyButton.setVisible(false);
     }
+    waitingOnHostAlert.setVisible(!isHost && !lobby.getLaunched());
   }
 
   /**

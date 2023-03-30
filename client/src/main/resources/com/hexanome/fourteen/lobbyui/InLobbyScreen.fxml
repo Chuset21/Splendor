@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.InLobbyScreenController">
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hexanome.fourteen.lobbyui.InLobbyScreenController">
    <children>
       <Text fx:id="titleText" layoutX="77.0" layoutY="102.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Bob's Lobby" wrappingWidth="400.0">
          <font>
@@ -50,5 +55,10 @@
             </GridPane>
          </children>
       </Pane>
+      <Text fx:id="waitingOnHostAlert" layoutX="77.0" layoutY="636.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Waiting for Host to Launch...">
+         <font>
+            <Font name="Satoshi Bold Italic" size="26.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>
