@@ -5,7 +5,6 @@ import com.hexanome.fourteen.form.server.cardform.CardForm;
 import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
 import com.hexanome.fourteen.form.server.tradingposts.TradingPostsEnum;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Consumer;
 import javafx.fxml.FXML;
@@ -22,10 +21,20 @@ public class GoldGemSubstituteMenu extends DialogPane {
 
   @FXML
   GridPane substituteGemGrid;
+  @FXML
+  GridPane chooseGoldGemGrid;
+  @FXML
+  GridPane chooseGoldCardGrid;
+  @FXML
+  Label instructionLabel;
   private int[] chosenGems;
   private int[] cardCost;
-  private int[] originalCost;
+  private GemsForm costDifference;
+  private int chosenGoldCards;
   final GameBoard gameBoard;
+  static final String ADD_GEMS = "Add %d more gem%s to payment:";
+  static final String REMOVE_GEMS = "Remove %d more gem%s from payment:";
+  static final String ACCEPT_GEMS = "Payment is valid!";
 
 
   public GoldGemSubstituteMenu(GameBoard gameBoard) throws IOException {
@@ -62,33 +71,31 @@ public class GoldGemSubstituteMenu extends DialogPane {
     GemsForm missingGems =
         cardForm.cost().getDiscountedCost(gameBoard.player.getHandForm().gemDiscounts());
     missingGems.removeGems(gameBoard.player.getHandForm().gems());
-    int missingGold = missingGems.count();
 
     // Removes missing gems from starting cost
     GemsForm tempCost =
         cardForm.cost().getDiscountedCost(gameBoard.player.getHandForm().gemDiscounts());
     tempCost.removeGems(missingGems);
-    if (gameBoard.player.getHandForm().tradingPosts()
-        .getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false)) {
-      tempCost.computeIfAbsent(GemColor.GOLD,
-          f -> missingGold > 0 ? ((missingGold % 2 == 0) ? missingGold / 2 : missingGold / 2 + 1) :
-              null);
-    } else {
-      tempCost.computeIfAbsent(GemColor.GOLD,
-          f -> missingGold > 0 ? missingGold : null);
-    }
 
-
+    // Sets the starting cost, chosen gems and chosen cards for payment
     chosenGems = GemsForm.costHashToArrayWithGold(tempCost);
+    chosenGoldCards = 0;
     cardCost = GemsForm.costHashToArrayWithGold(
         cardForm.cost().getDiscountedCost(gameBoard.player.getHandForm().gemDiscounts()));
-    originalCost = GemsForm.costHashToArrayWithGold(tempCost);
+
+    // Calculate difference between the cost and the gems chosen
+    costDifference = GemsForm.costArrayToHash(cardCost);
+    costDifference.removeGems(GemsForm.costArrayToHash(chosenGems));
 
 
     // Set submit payment function and enable finish button
     this.lookupButton(ButtonType.FINISH).setOnMouseClicked(
-        e -> endFunction.accept(new GemPaymentForm(GemsForm.costArrayToHash(chosenGems), 0)));
+        e -> endFunction.accept(
+            new GemPaymentForm(GemsForm.costArrayToHash(chosenGems), chosenGoldCards)));
     this.lookupButton(ButtonType.FINISH).setDisable(false);
+
+    // Hide all other menus
+    gameBoard.closeAllActionWindows();
 
     // Set menu as visible
     updateButtonsAndText();
@@ -108,52 +115,26 @@ public class GoldGemSubstituteMenu extends DialogPane {
   private void handleClick(MouseEvent e) {
     Button source = ((Button) e.getSource());
 
-    if (getNodeIndexInGrid(source)[1] == 0) {
-      substituteGem(source);
-    } else {
-      useGem(source);
-    }
-
-    updateButtonsAndText();
-  }
-
-  /**
-   * Remove selected gem from payment and substitute it with a gold gem
-   *
-   * @param source button selection was made from
-   */
-  public void substituteGem(Button source) {
-    if (gameBoard.player.getHandForm().tradingPosts()
-        .getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false)) {
-      chosenGems[getNodeIndexInGrid(source)[0]]--;
-      if (chosenGems[getNodeIndexInGrid(source)[0]] > 0) {
+    if (source.getParent().equals(substituteGemGrid)) {
+      if (getNodeIndexInGrid(source)[1] == 0) {
         chosenGems[getNodeIndexInGrid(source)[0]]--;
-      }
-    } else {
-      chosenGems[getNodeIndexInGrid(source)[0]]--;
-    }
-    chosenGems[5]++;
-  }
-
-  /**
-   * Add selected gem to payment and remove one gold gem
-   *
-   * @param source button selection was made from
-   */
-  public void useGem(Button source) {
-    if (gameBoard.player.getHandForm().tradingPosts()
-        .getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false)) {
-      chosenGems[getNodeIndexInGrid(source)[0]]++;
-      if ((chosenGems[getNodeIndexInGrid(source)[0]] > 1 ||
-          originalCost[getNodeIndexInGrid(source)[0]] % 2 == 0)
-          && chosenGems[getNodeIndexInGrid(source)[0]] < gameBoard.player.getHandForm().gems()
-          .getOrDefault(GemColor.values()[getNodeIndexInGrid(source)[0]], 0).intValue()) {
+      } else {
         chosenGems[getNodeIndexInGrid(source)[0]]++;
       }
-    } else {
-      chosenGems[getNodeIndexInGrid(source)[0]]++;
+    } else if (source.getParent().equals(chooseGoldGemGrid)) {
+      if (getNodeIndexInGrid(source)[1] == 0) {
+        chosenGems[5]--;
+      } else {
+        chosenGems[5]++;
+      }
+    } else if (source.getParent().equals(chooseGoldCardGrid)) {
+      if (getNodeIndexInGrid(source)[1] == 0) {
+        chosenGoldCards--;
+      } else {
+        chosenGoldCards++;
+      }
     }
-    chosenGems[5]--;
+    updateButtonsAndText();
   }
 
   /**
@@ -173,45 +154,78 @@ public class GoldGemSubstituteMenu extends DialogPane {
       // Display all gem amounts
       if (getNodeIndexInGrid(n)[1] == 1) {
         ((Label) n).setText("" + chosenGems[getNodeIndexInGrid(n)[0]]);
-      } else
+      } else if (getNodeIndexInGrid(n)[1] == 0) {
         // Handle substituteGemButton (-)
-        if (getNodeIndexInGrid(n)[1] == 0) {
-          if (gameBoard.player.getHandForm().tradingPosts()
-              .getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false)) {
-            ((Button) n).setText("-2");
-            ((Button) n).setMaxWidth(30);
-            ((Button) n).setPrefWidth(30);
-          } else {
-            ((Button) n).setText("-");
-            ((Button) n).setMaxWidth(25);
-            ((Button) n).setPrefWidth(25);
-          }
 
-          // Set active if (amt of gold gems < gold gems in hand && amt of this gem > 0)
-          n.setDisable(!(chosenGems[5] <
-              gameBoard.player.getHandForm().gems().getOrDefault(GemColor.GOLD, 0).intValue() &&
-              chosenGems[getNodeIndexInGrid(n)[0]] > 0));
-        } else
-          // Handle useGemButton (+)
-          if (getNodeIndexInGrid(n)[1] == 3) {
-            if (gameBoard.player.getHandForm().tradingPosts()
-                .getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false)) {
-              ((Button) n).setText("+2");
-              ((Button) n).setMaxWidth(33);
-              ((Button) n).setPrefWidth(33);
-            } else {
-              ((Button) n).setText("+");
-              ((Button) n).setMaxWidth(25);
-              ((Button) n).setPrefWidth(25);
-            }
+        // Set active if (&&)
+        //        - chosen(gem) > 0
+        n.setDisable(!(chosenGems[getNodeIndexInGrid(n)[0]] > 0));
+      } else if (getNodeIndexInGrid(n)[1] == 3) {
+        // Handle useGemButton (+)
 
-            // Set active if (amt of chosen gems in this color < cost of this card for this color
-            // && amt of chosen gems in this color < this color gem in your hand)
-            n.setDisable(
-                !(chosenGems[getNodeIndexInGrid(n)[0]] < cardCost[getNodeIndexInGrid(n)[0]] &&
-                    chosenGems[getNodeIndexInGrid(n)[0]] < gameBoard.player.getHandForm().gems()
-                        .getOrDefault(GemColor.values()[getNodeIndexInGrid(n)[0]], 0).intValue()));
-          }
+        // Set active if (&&)
+        //        - 0 < cost(gem)
+        //        - chosen(gem) < cost(gem)
+        //        - chosen(gem) < hand(gem)
+        n.setDisable(!(0 < cardCost[getNodeIndexInGrid(n)[0]] &&
+            chosenGems[getNodeIndexInGrid(n)[0]] < cardCost[getNodeIndexInGrid(n)[0]] &&
+            chosenGems[getNodeIndexInGrid(n)[0]] < gameBoard.player.getHandForm().gems()
+                .getOrDefault(GemColor.values()[getNodeIndexInGrid(n)[0]], 0)));
+      }
+    }
+
+    for (Node n : chooseGoldGemGrid.getChildren()) {
+      if (getNodeIndexInGrid(n)[1] == 1) {
+        ((Label) n).setText("" + chosenGems[5]);
+      } else if (getNodeIndexInGrid(n)[1] == 0) {
+        // Handle (-) button
+
+        // Set active if (gold gems used > 0)
+        n.setDisable(!(chosenGems[5] > 0));
+      } else if (getNodeIndexInGrid(n)[1] == 3) {
+        // Handle (+) button
+
+        // Set active if (gold gems used < gold gems in hand)
+        n.setDisable(!(chosenGems[5] <
+            gameBoard.player.getHandForm().gems().getOrDefault(GemColor.GOLD, 0)));
+      }
+    }
+    for (Node n : chooseGoldCardGrid.getChildren()) {
+      if (getNodeIndexInGrid(n)[1] == 1) {
+        ((Label) n).setText("" + chosenGoldCards);
+      } else if (getNodeIndexInGrid(n)[1] == 0) {
+        // Handle (-) button
+
+        // Set active if (gold gem cards used > 0)
+        n.setDisable(!(chosenGoldCards > 0));
+      } else if (getNodeIndexInGrid(n)[1] == 3) {
+        // Handle (+) button
+
+        // Set active if (gold gem cards used < gold gem cards in hand)
+        n.setDisable(!(chosenGoldCards < gameBoard.player.getHandForm().getNumGoldGemCards()));
+      }
+    }
+
+    // Calculate difference between the cost and the gems chosen
+    costDifference = GemsForm.costArrayToHash(cardCost);
+    costDifference.removeGems(GemsForm.costArrayToHash(chosenGems));
+
+    // Set the done button on or off
+    // Should be active when:
+    //    gold discount = unpaid cost of cards
+    int goldDiscount =
+        (chosenGoldCards * 2 + chosenGems[5]) * (gameBoard.player.getHandForm().tradingPosts()
+            .getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false) ? 2 : 1);
+    this.lookupButton(ButtonType.FINISH).setDisable(!(costDifference.count() == goldDiscount));
+
+    if (goldDiscount > costDifference.count()) {
+      instructionLabel.setText(REMOVE_GEMS.formatted(goldDiscount - costDifference.count(),
+          ((goldDiscount - costDifference.count()) > 1) ? "s" : ""));
+    } else if (goldDiscount < costDifference.count()) {
+      instructionLabel.setText(ADD_GEMS.formatted((goldDiscount - costDifference.count()) * -1,
+          ((goldDiscount - costDifference.count()) * -1 > 1) ? "s" : ""));
+    } else {
+      instructionLabel.setText(ACCEPT_GEMS);
     }
   }
 }

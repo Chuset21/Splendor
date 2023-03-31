@@ -1,6 +1,5 @@
 package com.hexanome.fourteen.form.server.cardform;
 
-import com.hexanome.fourteen.boards.Card;
 import com.hexanome.fourteen.boards.Expansion;
 import com.hexanome.fourteen.boards.GemColor;
 import com.hexanome.fourteen.form.server.GemsForm;
@@ -79,17 +78,21 @@ public abstract class CardForm {
    * @param playerForm player's info to cross-reference
    * @return boolean representing affordability
    */
-  public boolean isAffordable(PlayerForm playerForm){
-    if(cost == null){
+  public boolean isAffordable(PlayerForm playerForm) {
+    if (cost == null) {
       return true;
     }
 
     GemsForm tempCost = new GemsForm(cost);
     tempCost.removeGems(playerForm.hand().gems());
     tempCost.removeGems(playerForm.hand().gemDiscounts());
-    return (playerForm.hand().tradingPosts().getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false)
-        && tempCost.count() <= 2*playerForm.hand().gems().getOrDefault(GemColor.GOLD,0).intValue())
-        || (tempCost.count() <= playerForm.hand().gems().getOrDefault(GemColor.GOLD,0).intValue());
+
+    int goldDiscount = (playerForm.hand().getNumGoldGemCards() * 2 +
+        playerForm.hand().gems().getOrDefault(GemColor.GOLD, 0).intValue()) *
+        (playerForm.hand().tradingPosts().getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false) ?
+            2 : 1);
+
+    return tempCost.count() <= goldDiscount;
   }
 
   /**
@@ -98,13 +101,15 @@ public abstract class CardForm {
    * @param playerForm player's info to cross-reference
    * @return boolean representing affordability
    */
-  public boolean needsGoldGems(PlayerForm playerForm){
-    if(this.cost() == null){
+  public boolean canUseGoldGemCards(PlayerForm playerForm) {
+    if (this.cost() == null) {
       return true;
     }
 
     GemsForm tempCost = new GemsForm(this.cost());
     tempCost.removeGems(playerForm.hand().gemDiscounts());
-    return 0 < tempCost.count() && 0 < playerForm.hand().gems().getOrDefault(GemColor.GOLD,0).intValue();
+    return 0 < tempCost.count() &&
+        (0 < playerForm.hand().gems().getOrDefault(GemColor.GOLD, 0).intValue() ||
+            0 < playerForm.hand().getNumGoldGemCards());
   }
 }

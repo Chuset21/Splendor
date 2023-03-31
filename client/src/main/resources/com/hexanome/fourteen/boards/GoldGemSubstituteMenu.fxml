@@ -12,115 +12,168 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
 <fx:root prefHeight="520.0" prefWidth="584.0" style="-fx-background-color: #faecc0; -fx-border-width: 5; -fx-border-color: #000000;" type="DialogPane" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1">
-   <content>
-      <GridPane id="bankMatrix" fx:id="substituteGemGrid" alignment="CENTER" prefHeight="300.0" prefWidth="574.0">
-         <children>
-            <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
-               <font>
-                  <Font name="Satoshi Black" size="24.0" />
-               </font>
-            </Label>
-            <Label alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
-               <font>
-                  <Font name="Satoshi Black" size="24.0" />
-               </font>
-            </Label>
-            <Label alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="7" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2">
-               <font>
-                  <Font name="Satoshi Black" size="24.0" />
-               </font>
-            </Label>
-            <Label alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3">
-               <font>
-                  <Font name="Satoshi Black" size="24.0" />
-               </font>
-            </Label>
-            <Label alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4">
-               <font>
-                  <Font name="Satoshi Black" size="24.0" />
-               </font>
-            </Label>
-            <Label alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="3" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5">
-               <font>
-                  <Font name="Satoshi Black" size="24.0" />
-               </font>
-            </Label>
-            <Circle fill="#17ae4c" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
-            <Circle fill="#dfe8e2" layoutX="93.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-            <Circle fill="#3d91ff" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-            <Circle fill="#323232" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
-            <Circle fill="#fc6060" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
-            <Circle fill="#fce410" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
-            <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" text="-" />
-            <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" text="-" GridPane.rowIndex="1" />
-            <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" text="-" GridPane.rowIndex="2" />
-            <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" text="-" GridPane.rowIndex="3" />
-            <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" text="-" GridPane.rowIndex="4" />
-            <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" text="+" GridPane.columnIndex="3" />
-            <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" text="+" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-            <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" text="+" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-            <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" text="+" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-            <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" text="+" GridPane.columnIndex="3" GridPane.rowIndex="4" />
-         </children>
-         <columnConstraints>
-            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="69.0" minWidth="10.0" prefWidth="33.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="10.0" prefWidth="48.0" />
-            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-         </rowConstraints>
-      </GridPane>
-   </content>
    <buttonTypes>
       <ButtonType fx:constant="FINISH" />
    </buttonTypes>
    <header>
-      <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="85.0">
+      <VBox alignment="CENTER" prefHeight="118.0" prefWidth="574.0" spacing="5.0">
          <children>
-            <VBox alignment="CENTER" spacing="5.0">
+            <StackPane prefHeight="150.0" prefWidth="200.0">
                <children>
                   <Label alignment="TOP_CENTER" text="Gold Gems Available!" textAlignment="CENTER" textFill="#72465b">
                      <font>
-                        <Font name="Satoshi Bold" size="24.0" />
+                        <Font name="Satoshi Bold" size="30.0" />
                      </font>
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding>
                   </Label>
-                  <Label text="Select gems to pay with:" />
+                  <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#close" style="-fx-background-color: transparent;" StackPane.alignment="TOP_RIGHT">
+                     <cursor>
+                        <Cursor fx:constant="OPEN_HAND" />
+                     </cursor>
+                     <font>
+                        <Font name="Satoshi Black" size="20.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@images/close_x.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
                </children>
-            </VBox>
-            <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#close" style="-fx-background-color: transparent;">
-               <cursor>
-                  <Cursor fx:constant="OPEN_HAND" />
-               </cursor>
+            </StackPane>
+            <Label fx:id="instructionLabel" text="Remove 2 more gems from payment">
                <font>
-                  <Font name="Satoshi Black" size="20.0" />
+                  <Font size="25.0" />
                </font>
-               <graphic>
-                  <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@images/close_x.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-               <HBox.margin>
-                  <Insets right="10.0" top="10.0" />
-               </HBox.margin>
-            </Button>
+            </Label>
          </children>
-      </HBox>
+      </VBox>
    </header>
+   <content>
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+         <children>
+            <HBox prefHeight="300.0" prefWidth="200.0">
+               <children>
+                  <GridPane id="bankMatrix" fx:id="substituteGemGrid" alignment="CENTER" prefHeight="300.0" prefWidth="574.0">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="2" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                           <font>
+                              <Font name="Satoshi Black" size="24.0" />
+                           </font>
+                        </Label>
+                        <Label alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="0" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1">
+                           <font>
+                              <Font name="Satoshi Black" size="24.0" />
+                           </font>
+                        </Label>
+                        <Label alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="0" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2">
+                           <font>
+                              <Font name="Satoshi Black" size="24.0" />
+                           </font>
+                        </Label>
+                        <Label alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="0" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3">
+                           <font>
+                              <Font name="Satoshi Black" size="24.0" />
+                           </font>
+                        </Label>
+                        <Label alignment="CENTER" layoutX="10.0" layoutY="15.0" prefHeight="35.0" prefWidth="53.0" text="0" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4">
+                           <font>
+                              <Font name="Satoshi Black" size="24.0" />
+                           </font>
+                        </Label>
+                        <Circle fill="#17ae4c" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                        <Circle fill="#dfe8e2" layoutX="93.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                        <Circle fill="#3d91ff" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                        <Circle fill="#323232" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+                        <Circle fill="#fc6060" layoutX="30.0" layoutY="32.0" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+                        <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" style="-fx-background-radius: 50;" text="-" GridPane.rowIndex="4" />
+                        <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" style="-fx-background-radius: 50;" text="+" GridPane.columnIndex="3" />
+                        <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" style="-fx-background-radius: 50;" text="+" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                        <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" style="-fx-background-radius: 50;" text="+" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                        <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" style="-fx-background-radius: 50;" text="+" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                        <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" style="-fx-background-radius: 50;" text="+" GridPane.columnIndex="3" GridPane.rowIndex="4" />
+                        <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" style="-fx-background-radius: 50;" text="-" GridPane.rowIndex="3" />
+                        <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" style="-fx-background-radius: 50;" text="-" GridPane.rowIndex="2" />
+                        <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" style="-fx-background-radius: 50;" text="-" GridPane.rowIndex="1" />
+                        <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" style="-fx-background-radius: 50;" text="-" />
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="69.0" minWidth="10.0" prefWidth="33.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="10.0" prefWidth="48.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" VBox.vgrow="NEVER">
+               <children>
+                  <GridPane id="bankMatrix" fx:id="chooseGoldGemGrid" alignment="CENTER" prefHeight="300.0" prefWidth="574.0">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                           <font>
+                              <Font name="Satoshi Black" size="24.0" />
+                           </font>
+                        </Label>
+                        <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" text="-" />
+                        <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" text="+" GridPane.columnIndex="3" />
+                        <Circle fill="#fce410" radius="20.0" stroke="BLACK" strokeType="INSIDE" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="CENTER" />
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="69.0" minWidth="10.0" prefWidth="33.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="10.0" prefWidth="48.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+                  <GridPane id="bankMatrix" fx:id="chooseGoldCardGrid" alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="300.0" prefWidth="574.0">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="35.0" prefWidth="53.0" text="1" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                           <font>
+                              <Font name="Satoshi Black" size="24.0" />
+                           </font>
+                        </Label>
+                        <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" text="-" />
+                        <Button maxHeight="25.0" maxWidth="25.0" mnemonicParsing="false" onMouseClicked="#handleClick" prefHeight="25.0" prefWidth="25.0" text="+" GridPane.columnIndex="3" />
+                        <ImageView fitHeight="81.0" fitWidth="54.0" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" GridPane.halignment="CENTER">
+                           <image>
+                              <Image url="@images/cards/orient-1j-1.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                     <columnConstraints>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="69.0" minWidth="10.0" prefWidth="33.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="10.0" prefWidth="48.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </content>
 </fx:root>

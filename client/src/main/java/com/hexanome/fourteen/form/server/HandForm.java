@@ -1,6 +1,7 @@
 package com.hexanome.fourteen.form.server;
 
 import com.hexanome.fourteen.form.server.cardform.CardForm;
+import com.hexanome.fourteen.form.server.cardform.GoldGemCardForm;
 import com.hexanome.fourteen.form.server.tradingposts.TradingPosts;
 import java.util.List;
 import java.util.Objects;
@@ -133,6 +134,19 @@ public final class HandForm {
    */
   public CityForm city() {
     return city;
+  }
+
+  /**
+   * Getter for number of gold gem cards
+   *
+   * @return number of gold gems cards in this hand
+   */
+  public int getNumGoldGemCards(){
+    int numCards = 0;
+    for(CardForm c : purchasedCards){
+      numCards += c instanceof GoldGemCardForm ? 1 : 0;
+    }
+    return numCards;
   }
 
   @Override

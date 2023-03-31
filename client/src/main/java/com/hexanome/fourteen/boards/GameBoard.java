@@ -815,7 +815,7 @@ public class GameBoard {
     final CardForm cardForm = cardPurchased.getCardForm();
     if (cardForm instanceof StandardCardForm || cardForm instanceof GoldGemCardForm ||
         cardForm instanceof DoubleBonusCardForm) {
-      if (cardForm.needsGoldGems(player.getPlayerForm())) {
+      if (cardForm.canUseGoldGemCards(player.getPlayerForm())) {
         goldGemSubstituteMenu.open(cardForm, payment -> purchaseCard(
             new PurchaseCardForm(cardForm, payment,
                 player.getHandForm().reservedCards().contains(cardForm), null)));
@@ -826,7 +826,7 @@ public class GameBoard {
         purchaseCard(purchaseCardForm);
       }
     } else if (cardForm instanceof WaterfallCardForm) {
-      if (cardForm.needsGoldGems(player.getPlayerForm())) {
+      if (cardForm.canUseGoldGemCards(player.getPlayerForm())) {
         goldGemSubstituteMenu.open(cardForm,
             payment -> displayWaterfallChoices(cardForm, CardLevelForm.TWO, f -> purchaseCard(
                 new PurchaseCardForm(cardForm, payment,
@@ -838,7 +838,7 @@ public class GameBoard {
                 player.getHandForm().reservedCards().contains(cardForm), null)));
       }
     } else if (cardForm instanceof ReserveNobleCardForm r) {
-      if (cardForm.needsGoldGems(player.getPlayerForm())) {
+      if (cardForm.canUseGoldGemCards(player.getPlayerForm())) {
         goldGemSubstituteMenu.open(cardForm, payment -> purchaseReserveNobleCard(r,
             f -> purchaseCard(new PurchaseCardForm(cardForm, payment,
                 player.getHandForm().reservedCards().contains(cardForm), null))));
@@ -850,7 +850,7 @@ public class GameBoard {
       }
     } else if (cardForm instanceof SatchelCardForm s) {
       if (s.level() == CardLevelForm.TWO) {
-        if (cardForm.needsGoldGems(player.getPlayerForm())) {
+        if (cardForm.canUseGoldGemCards(player.getPlayerForm())) {
           goldGemSubstituteMenu.open(cardForm, payment -> purchaseLevelOneSatchelCard(s,
               f -> displayWaterfallChoices(s, CardLevelForm.ONE, x -> purchaseCard(
                   new PurchaseCardForm(cardForm, payment,
@@ -862,7 +862,7 @@ public class GameBoard {
                   player.getHandForm().reservedCards().contains(cardForm), null))));
         }
       } else {
-        if (cardForm.needsGoldGems(player.getPlayerForm())) {
+        if (cardForm.canUseGoldGemCards(player.getPlayerForm())) {
           goldGemSubstituteMenu.open(cardForm, payment -> purchaseLevelOneSatchelCard(s,
               f -> purchaseCard(
                   new PurchaseCardForm(s, payment, player.getHandForm().reservedCards().contains(s),
@@ -1146,7 +1146,7 @@ public class GameBoard {
   }
 
   private void takeFreeGemPrompt() {
-    disableGameAlteringActions();
+    //disableGameAlteringActions();
     waterfallPaneTitle.setText("You Have Trading Post 1. Take a free gem!");
     waterfallPaneSubtitle.setText("Select one gem from the bank to the left.");
     waterfallPane.setContent(new HBox());
