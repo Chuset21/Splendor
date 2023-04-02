@@ -432,7 +432,7 @@ public class GameBoard {
     final String leadingPlayer = gameBoardForm.leadingPlayer().uid();
     if (gameBoardForm.isGameOver()) {
       closeAllActionWindows();
-      disableGameAlteringActions();
+      disableGameAlteringActions(true);
       winningPlayer.toFront();
       winningPlayer.setText("%s has won the game!!".formatted(leadingPlayer));
       winningPlayer.setVisible(true);
@@ -623,10 +623,8 @@ public class GameBoard {
             .setVisible(gameBoardForm.leadingPlayer().uid().equals(players.get(i).getUserId()));
 
         playerViews.get(i).setImage(players.get(i));
-        Tooltip.install(playerViews.get(i), new Tooltip(players.get(i).getUserId()
-                                                        + (player.getUserId().equals(
-            players.get(i).getUserId())
-            ? " (you)" : "")));
+        Tooltip.install(playerViews.get(i), new Tooltip(players.get(i).getUserId() +
+            (player.getUserId().equals(players.get(i).getUserId()) ? " (you)" : "")));
       } else {
         playerViews.get(i).imageProperty().set(null);
       }
@@ -666,7 +664,7 @@ public class GameBoard {
       currentPlayerTurnLabel.setText("Your Turn");
       enableGameAlteringActions();
     } else {
-      disableGameAlteringActions();
+      disableGameAlteringActions(true);
     }
   }
 
@@ -747,7 +745,7 @@ public class GameBoard {
 
     //// Handle Reserve Availability
     cardReserveButton.setDisable(!isYourTurn() || handForm.reservedCards().size() >= 3 ||
-                                 handForm.reservedCards().contains(cardForm));
+        handForm.reservedCards().contains(cardForm));
 
     // Open menu
     cardActionMenu.toFront();
@@ -757,10 +755,8 @@ public class GameBoard {
   private boolean canPurchaseSacrificeCard(GemColor gemColor) {
     final List<CardForm> cardsWithDiscountColor = getPurchasedCardsWithDiscountColor(gemColor);
     return cardsWithDiscountColor.size() >= 2 || (cardsWithDiscountColor.size() == 1 &&
-                                                  (cardsWithDiscountColor.get(
-                                                      0) instanceof DoubleBonusCardForm ||
-                                                   cardsWithDiscountColor.get(
-                                                       0) instanceof SatchelCardForm));
+        (cardsWithDiscountColor.get(0) instanceof DoubleBonusCardForm ||
+            cardsWithDiscountColor.get(0) instanceof SatchelCardForm));
   }
 
   private List<CardForm> getPurchasedCardsWithDiscountColor(GemColor gemColor) {
@@ -890,19 +886,29 @@ public class GameBoard {
     // Generate ImageView for each selectable card form
     for (CardForm c : possibleCardsToSacrifice) {
       ImageView iv = new ImageView();
-      iv.setImage((c instanceof StandardCardForm) ? new StandardCard((StandardCardForm) c)
-          : (c instanceof SatchelCardForm x) ? generateSatchelImage(x) : new OrientCard(c));
+      iv.setImage((c instanceof StandardCardForm) ? new StandardCard((StandardCardForm) c) :
+          (c instanceof SatchelCardForm x) ?
+              new CustomImageOrientCard(generateSatchelImage(x), new OrientCard(x)) :
+              new OrientCard(c));
       iv.setFitHeight(140);
       iv.setFitWidth(100);
 
       // Apply event handler to each card in choices
       iv.setOnMouseClicked(event -> {
-        final Card cardSelected = (Card) ((ImageView) event.getSource()).getImage();
+        ImageView source = (ImageView) event.getSource();
+        final Card cardSelected;
+
+        if (source.getImage() instanceof CustomImageOrientCard custom) {
+          cardSelected = (Card) custom.getCardData();
+        } else {
+          cardSelected = (Card) source.getImage();
+        }
+
         if (tentativeSacrifices.isEmpty()) {
           tentativeSacrifices.add(cardSelected);
           waterfallPane.lookupButton(ButtonType.FINISH).setDisable(
-              !(cardSelected.getCardForm() instanceof DoubleBonusCardForm
-                || cardSelected.getCardForm() instanceof SatchelCardForm));
+              !(cardSelected.getCardForm() instanceof DoubleBonusCardForm ||
+                  cardSelected.getCardForm() instanceof SatchelCardForm));
         } else if (tentativeSacrifices.size() == 1) {
           final Card card = tentativeSacrifices.get(0);
           if (card.getCardForm() instanceof SatchelCardForm) {
@@ -911,7 +917,7 @@ public class GameBoard {
             tentativeSacrifices.add(cardSelected);
             waterfallPane.lookupButton(ButtonType.FINISH).setDisable(false);
           } else if (card.getCardForm() instanceof DoubleBonusCardForm ||
-                     cardSelected.getCardForm() instanceof DoubleBonusCardForm) {
+              cardSelected.getCardForm() instanceof DoubleBonusCardForm) {
             choicesHBox.getChildren().forEach((child) -> {
               if (child instanceof ImageView i && card.equals(i.getImage())) {
                 child.setEffect(null);
@@ -1146,7 +1152,7 @@ public class GameBoard {
   }
 
   private void takeFreeGemPrompt() {
-    //disableGameAlteringActions();
+    disableGameAlteringActions(false);
     waterfallPaneTitle.setText("You Have Trading Post 1. Take a free gem!");
     waterfallPaneSubtitle.setText("Select one gem from the bank to the left.");
     waterfallPane.setContent(new HBox());
@@ -1384,8 +1390,8 @@ public class GameBoard {
 
     // Create attached card image
     CardForm attachedForm = cardForm.cardToAttach();
-    Image attachedImage = (attachedForm instanceof StandardCardForm)
-        ? new StandardCard((StandardCardForm) attachedForm) : new OrientCard(attachedForm);
+    Image attachedImage = (attachedForm instanceof StandardCardForm) ?
+        new StandardCard((StandardCardForm) attachedForm) : new OrientCard(attachedForm);
 
     // Set canvas attributes
     double canvasWidth = Math.max(satchel.getWidth() + 140, attachedImage.getWidth());
@@ -1414,8 +1420,10 @@ public class GameBoard {
     purchasedCardImages.clear();
 
     for (CardForm cardForm : player.getHandForm().purchasedCards()) {
-      if (cardForm instanceof SatchelCardForm) {
-        Image stackedSatchel = generateSatchelImage((SatchelCardForm) cardForm);
+      if (cardForm instanceof SatchelCardForm s) {
+        CustomImageOrientCard stackedSatchel =
+            new CustomImageOrientCard(generateSatchelImage((SatchelCardForm) cardForm),
+                new OrientCard(cardForm));
         purchasedCardImages.add(stackedSatchel);
         continue;
       }
@@ -1587,7 +1595,7 @@ public class GameBoard {
 
     // Set summary label as player title
     playerSummaryUserLabel.setText(requestedPlayer.uid() + "'s Board\nPrestige points: " +
-                                   requestedPlayer.hand().prestigePoints());
+        requestedPlayer.hand().prestigePoints());
 
     // Fetch and apply the user's discounts to the summary discount matrix
     int index = 0;
@@ -1649,8 +1657,8 @@ public class GameBoard {
   }
 
   @FXML
-  private void disableGameAlteringActions() {
-    bankPane.setDisable(true);
+  private void disableGameAlteringActions(boolean isBankDisabled) {
+    bankPane.setDisable(isBankDisabled);
     cardMatrix.setDisable(true);
   }
 
@@ -1666,7 +1674,7 @@ public class GameBoard {
     // Fetch user's free card choices
     return gameBoardForm.cards().stream().flatMap(Collection::stream).filter(
             c -> (c.level().equals(level)) &&
-                 (!(c instanceof SatchelCardForm) || canPurchaseSatchelCard))
+                (!(c instanceof SatchelCardForm) || canPurchaseSatchelCard))
         .collect(Collectors.toList());
   }
 
