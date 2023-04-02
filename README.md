@@ -64,11 +64,12 @@
 
 ## Authors
 
-Fill e.g. names + link to github profiles in list below.
-
 * [Miguel Arrieta Torrecilla](https://github.com/Chuset21)
 * [Eamonn Lye](https://github.com/eamonn-lye)
 * [Kai Turanski](https://github.com/kailaidescope)
+* [Fernando Borrell](https://github.com/fjborrell)
+* [Matan Atlas](https://github.com/Matanatlas)
+* [Krishi Madipelly](https://github.com/krishidub)
 
 ## How to run
 
