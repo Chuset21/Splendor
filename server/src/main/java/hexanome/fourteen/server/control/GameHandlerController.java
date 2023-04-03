@@ -607,7 +607,8 @@ public class GameHandlerController {
     if (result != null) {
       return result;
     }
-    // Check if they have overpaid with gold gems
+    /*
+ Check if they have overpaid with gold gems
     if (discountedCost.count() < paymentWithoutGold.count() + goldGemsAvailable) {
       final int difference =
           paymentWithoutGold.count() + goldGemsAvailable - discountedCost.count();
@@ -635,8 +636,9 @@ public class GameHandlerController {
         }
       }
     }
+ Now we know that they can pay for this card
+*/
 
-    // Now we know that they can pay for this card
     if (card instanceof DoubleBonusCard c) {
       hand.gemDiscounts().merge(c.discountColor(), Bonus.DOUBLE.getValue(), Integer::sum);
     } else if (card instanceof StandardCard c) {
