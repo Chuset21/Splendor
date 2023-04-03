@@ -52,7 +52,7 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Button>
-      <HBox fx:id="myCityHBox" alignment="CENTER" layoutX="65.0" layoutY="595.0" prefHeight="148.0" prefWidth="414.0" visible="false">
+      <HBox fx:id="myCityHBox" alignment="CENTER" layoutX="330.0" layoutY="10.0" prefHeight="148.0" prefWidth="414.0" visible="false">
          <children>
             <Button id="takeFromBankButton" contentDisplay="BOTTOM" mnemonicParsing="false" onMouseEntered="#showMyCity" onMouseExited="#hideMyCity" prefHeight="48.0" prefWidth="95.0" style="-fx-background-color: #72465B; -fx-border-color: #72465B; -fx-background-radius: 10; -fx-border-radius: 10;" text="My City" textFill="#f8db85">
                <font>
