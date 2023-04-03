@@ -21,7 +21,7 @@ public class TradingPosts extends HashMap<TradingPostsEnum, Boolean> {
    */
   public static TradingPosts createDefault() {
     final TradingPosts result = new TradingPosts();
-    Arrays.stream(TradingPostsEnum.values()).forEach(x -> result.put(x, false));
+    Arrays.stream(TradingPostsEnum.values()).forEach(x -> result.put(x, true));
     return result;
   }
 }

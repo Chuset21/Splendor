@@ -6,6 +6,7 @@ import com.hexanome.fourteen.form.server.payment.GemPaymentForm;
 import com.hexanome.fourteen.form.server.tradingposts.TradingPostsEnum;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Stack;
 import java.util.function.Consumer;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +20,10 @@ import javafx.scene.layout.GridPane;
 
 public class GoldGemSubstituteMenu extends DialogPane {
 
+  static final String ADD_GEMS = "Add %d more gem%s to payment:";
+  static final String REMOVE_GEMS = "Payment is valid, but overpaying by %d gem%s!";
+  static final String ACCEPT_GEMS = "Payment is valid!";
+  final GameBoard gameBoard;
   @FXML
   GridPane substituteGemGrid;
   @FXML
@@ -31,10 +36,6 @@ public class GoldGemSubstituteMenu extends DialogPane {
   private int[] cardCost;
   private GemsForm costDifference;
   private int chosenGoldCards;
-  final GameBoard gameBoard;
-  static final String ADD_GEMS = "Add %d more gem%s to payment:";
-  static final String REMOVE_GEMS = "Remove %d more gem%s from payment:";
-  static final String ACCEPT_GEMS = "Payment is valid!";
 
 
   public GoldGemSubstituteMenu(GameBoard gameBoard) throws IOException {
@@ -210,22 +211,54 @@ public class GoldGemSubstituteMenu extends DialogPane {
     costDifference = GemsForm.costArrayToHash(cardCost);
     costDifference.removeGems(GemsForm.costArrayToHash(chosenGems));
 
-    // Set the done button on or off
-    // Should be active when:
-    //    gold discount = unpaid cost of cards
-    int goldDiscount =
-        (chosenGoldCards * 2 + chosenGems[5]) * (gameBoard.player.getHandForm().tradingPosts()
-            .getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false) ? 2 : 1);
-    this.lookupButton(ButtonType.FINISH).setDisable(!(costDifference.count() == goldDiscount));
+    boolean isDoubleGemsEnabled = gameBoard.player.getHandForm().tradingPosts()
+        .getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false);
 
-    if (goldDiscount > costDifference.count()) {
-      instructionLabel.setText(REMOVE_GEMS.formatted(goldDiscount - costDifference.count(),
-          ((goldDiscount - costDifference.count()) > 1) ? "s" : ""));
-    } else if (goldDiscount < costDifference.count()) {
+    Stack<Integer> goldGems = new Stack<>();
+
+    // Add gold gem cards selected to stack
+    for (int i = 0; i < chosenGoldCards; i++) {
+      goldGems.push(isDoubleGemsEnabled ? 2 : 1);
+      goldGems.push(isDoubleGemsEnabled ? 2 : 1);
+    }
+
+    // Add gold tokens to stack
+    for (int i = 0; i < chosenGems[5]; i++) {
+      goldGems.push(isDoubleGemsEnabled ? 2 : 1);
+    }
+
+    // Check if payment is valid.
+    boolean requireMoreGems = false;
+    for (int price : GemsForm.costHashToArray(costDifference)) {
+      while (price > 0) {
+        if (goldGems.empty()) {
+          requireMoreGems = true;
+          break;
+        }
+        price -= goldGems.pop();
+      }
+      if (requireMoreGems) {
+        break;
+      }
+    }
+
+    // Set the done button on or off
+    this.lookupButton(ButtonType.FINISH).setDisable(requireMoreGems);
+
+
+    int goldDiscount = (chosenGoldCards * 2 + chosenGems[5]) * (isDoubleGemsEnabled ? 2 : 1);
+
+    // Set the instructions text
+    if (requireMoreGems) {
       instructionLabel.setText(ADD_GEMS.formatted((goldDiscount - costDifference.count()) * -1,
           ((goldDiscount - costDifference.count()) * -1 > 1) ? "s" : ""));
     } else {
-      instructionLabel.setText(ACCEPT_GEMS);
+      if (goldDiscount > costDifference.count()) {
+        instructionLabel.setText(REMOVE_GEMS.formatted(goldDiscount - costDifference.count(),
+            ((goldDiscount - costDifference.count()) > 1) ? "s" : ""));
+      } else {
+        instructionLabel.setText(ACCEPT_GEMS);
+      }
     }
   }
 }
