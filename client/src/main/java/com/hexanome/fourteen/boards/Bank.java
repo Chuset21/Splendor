@@ -357,7 +357,7 @@ public class Bank {
         removeGemButtons.get(idx).setDisable(false);
       }
 
-      if (idx == 5 || selectedGems.size() == 1) {
+      if (idx == 5 || selectedGems.size() == 1 || bankGems[idx] == 0) {
         addGemButtons.get(idx).setDisable(true);
       } else {
         addGemButtons.get(idx).setDisable(false);
