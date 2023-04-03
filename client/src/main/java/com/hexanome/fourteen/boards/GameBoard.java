@@ -433,7 +433,7 @@ public class GameBoard {
     if (gameBoardForm.isGameOver()) {
       closeAllActionWindows();
       disableGameAlteringActions(true);
-      winningPlayer.toFront();
+      winningPlayer.getParent().toFront();
       winningPlayer.setText("%s has won the game!!".formatted(leadingPlayer));
       winningPlayer.setVisible(true);
       final Duration duration = Duration.seconds(2);
@@ -452,7 +452,7 @@ public class GameBoard {
       if (gameBoardForm.isLastRound() && !hasBeenLastRound) {
         hasBeenLastRound = true;
         winningPlayer.setText("Last round of the game!!");
-        winningPlayer.toFront();
+        winningPlayer.getParent().toFront();
         final Duration duration = Duration.seconds(2);
         final FadeTransition fadeTransition = new FadeTransition(duration, winningPlayer);
         winningPlayer.setVisible(true);
