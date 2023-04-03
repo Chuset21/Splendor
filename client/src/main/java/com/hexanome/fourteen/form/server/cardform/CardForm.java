@@ -87,12 +87,31 @@ public abstract class CardForm {
     tempCost.removeGems(playerForm.hand().gems());
     tempCost.removeGems(playerForm.hand().gemDiscounts());
 
-    int goldDiscount = (playerForm.hand().getNumGoldGemCards() * 2 +
-        playerForm.hand().gems().getOrDefault(GemColor.GOLD, 0).intValue()) *
-        (playerForm.hand().tradingPosts().getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false) ?
-            2 : 1);
+    int[] tempArrayCost = GemsForm.costHashToArray(tempCost);
 
-    return tempCost.count() <= goldDiscount;
+    int goldGems = playerForm.hand().getNumGoldGemCards() * 2 +
+        playerForm.hand().gems().getOrDefault(GemColor.GOLD, 0).intValue();
+
+    boolean doubleGoldTradingPostActive =
+        playerForm.hand().tradingPosts().getOrDefault(TradingPostsEnum.DOUBLE_GOLD_GEMS, false);
+    boolean isAffordable = true;
+
+    for (int i : tempArrayCost) {
+      if (i <= goldGems * (doubleGoldTradingPostActive ? 2 : 1)) {
+        // Subtract # of gold gems
+        if (doubleGoldTradingPostActive) {
+          goldGems -= i/2 + i%2 == 1 ? 1 : 0;
+        } else {
+          goldGems -= i;
+        }
+      } else {
+        // Gold cannot cover cost
+        isAffordable = false;
+        break;
+      }
+    }
+
+    return isAffordable;
   }
 
   /**

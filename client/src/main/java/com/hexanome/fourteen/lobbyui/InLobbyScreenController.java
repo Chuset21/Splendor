@@ -193,7 +193,14 @@ public class InLobbyScreenController implements ScreenController {
       joinLobbyButton.setVisible(false);
       launchLobbyButton.setVisible(false);
     }
-    waitingOnHostAlert.setVisible(!isHost && !lobby.getLaunched());
+
+    if(isHost){
+      waitingOnHostAlert.setText("Waiting for Players...");
+      waitingOnHostAlert.setVisible(lobby.getNumPlayers() < 2);
+    } else {
+      waitingOnHostAlert.setText("Waiting for Host to Launch...");
+      waitingOnHostAlert.setVisible(!lobby.getLaunched());
+    }
   }
 
   /**

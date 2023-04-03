@@ -21,7 +21,8 @@ import javafx.scene.layout.GridPane;
 public class GoldGemSubstituteMenu extends DialogPane {
 
   static final String ADD_GEMS = "Add %d more gem%s to payment:";
-  static final String REMOVE_GEMS = "Payment is valid, but overpaying by %d gem%s!";
+  static final String REMOVE_GEMS_VALID = "Payment is valid, but overpaying by %d gem%s!";
+  static final String REMOVE_GEMS = "Overpaying by %d gem%s!";
   static final String ACCEPT_GEMS = "Payment is valid!";
   final GameBoard gameBoard;
   @FXML
@@ -243,7 +244,7 @@ public class GoldGemSubstituteMenu extends DialogPane {
     }
 
     // Set the done button on or off
-    this.lookupButton(ButtonType.FINISH).setDisable(requireMoreGems);
+    this.lookupButton(ButtonType.FINISH).setDisable(requireMoreGems && goldGems.empty());
 
 
     int goldDiscount = (chosenGoldCards * 2 + chosenGems[5]) * (isDoubleGemsEnabled ? 2 : 1);
@@ -252,9 +253,12 @@ public class GoldGemSubstituteMenu extends DialogPane {
     if (requireMoreGems) {
       instructionLabel.setText(ADD_GEMS.formatted((goldDiscount - costDifference.count()) * -1,
           ((goldDiscount - costDifference.count()) * -1 > 1) ? "s" : ""));
+    } else if (!goldGems.empty()) {
+      instructionLabel.setText(REMOVE_GEMS_VALID.formatted(goldDiscount - costDifference.count(),
+          ((goldDiscount - costDifference.count()) > 1) ? "s" : ""));
     } else {
       if (goldDiscount > costDifference.count()) {
-        instructionLabel.setText(REMOVE_GEMS.formatted(goldDiscount - costDifference.count(),
+        instructionLabel.setText(REMOVE_GEMS_VALID.formatted(goldDiscount - costDifference.count(),
             ((goldDiscount - costDifference.count()) > 1) ? "s" : ""));
       } else {
         instructionLabel.setText(ACCEPT_GEMS);
