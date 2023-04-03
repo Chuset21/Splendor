@@ -230,6 +230,8 @@ public class GoldGemSubstituteMenu extends DialogPane {
 
     // Check if payment is valid.
     boolean requireMoreGems = false;
+    int surplusCount = 0;
+
     for (int price : GemsForm.costHashToArray(costDifference)) {
       while (price > 0) {
         if (goldGems.empty()) {
@@ -237,6 +239,9 @@ public class GoldGemSubstituteMenu extends DialogPane {
           break;
         }
         price -= goldGems.pop();
+        if (price < 0) {
+          surplusCount += Math.abs(price);
+        }
       }
       if (requireMoreGems) {
         break;
@@ -251,7 +256,7 @@ public class GoldGemSubstituteMenu extends DialogPane {
 
     // Set the instructions text
     if (requireMoreGems) {
-      instructionLabel.setText(ADD_GEMS.formatted((goldDiscount - costDifference.count()) * -1,
+      instructionLabel.setText(ADD_GEMS.formatted((goldDiscount - costDifference.count()) * -1 + surplusCount,
           ((goldDiscount - costDifference.count()) * -1 > 1) ? "s" : ""));
     } else if (!goldGems.empty()) {
       instructionLabel.setText(REMOVE_GEMS.formatted(goldDiscount - costDifference.count(),
